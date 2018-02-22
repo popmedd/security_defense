@@ -1,0 +1,10 @@
+1、120.24.86.145:8002/web2
+2、120.24.86.145:8002/yanzhengma
+3、120.24.86.145:8002/get
+4、120.24.86.145:8002/post
+5、120.24.86.145:8002/get/index1.php
+6、120.24.86.145:8002/web3
+7、http://www.shiyanbar.com/ctf  ?
+8、http://ctf5.shiyanbar.com/phpaudit
+9、http://ctf5.shiyanbar.com/sHeader
+10、http://ctf5.shiyanbar.com/DUTCTF/1.html
