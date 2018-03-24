@@ -1,0 +1,251 @@
+web.config文件本地加密解密方法(BAT命令版） 打开.Net Framework附带的SDK命令提示符。
+
+加密命令：
+aspnet_regiis -pe “connectionStrings” -app “/encrypttest”
+
+-pe开关用来指定web.config中需要加密的节（Web.Config文件中的connectionStrings配置节）。
+
+-app开关用来指定IIS里面的虚拟目录，如果为根目录网站，为”/”.
+
+解密命令：
+
+aspnet_regiis -pd “connectionStrings” -app “/encrypttest”
+
+唯一的区别就是，我们用-pd开关代替了-pe开关。
+
+1、加密EncryptWebConfig.bat
+
+@echo off
+C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\aspnet_regiis.exe -pef “connectionStrings” “D:\Program Files\Microsoft.NET\ Pet Shop 4.0Web”
+PAUSE
+ 
+2、解密DecryptWebConfig.bat
+ 
+@echo off
+C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\aspnet_regiis.exe -pdf “connectionStrings” “D:\Program Files\Microsoft.NET\ Pet Shop 4.0Web”
+PAUSE
+
+解决方法是：
+
+进dos运行：
+
+aspnet_regiis -pa “NetFrameworkConfigurationKey” “NT AUTHORITY\NETWORK SERVICE”
+
+如果运行出错，需要把目录 C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727 放入环境变量path中。
+
+此时就可以成功访问网站了。
+
+同样可以通过命令行来实现“RSAProtectedConfigurationProvider”加密
+
+现在把找到文件附在下面:
+
+我们如果想对web.config的数据库连接字符串进行加密的话，那么这里提供了两个方法。
+
+方法一、
+
+使用“DataProtectionConfigurationProvider”形式加密，创建tmdsb.aspx文件，代码如下：
+
+需要添加引用
+
+using System.Web.Configuration;
+ 
+using System.IO;
+ 
+//加密
+ 
+protected void Button1_Click(object sender, EventArgs e)
+ 
+{
+ 
+Configuration config = WebConfigurationManager.OpenWebConfiguration(Request.ApplicationPath);
+ 
+ConfigurationSection section = config.GetSection(“connectionStrings”);
+if (section != null && !section.SectionInformation.IsProtected)
+ 
+{
+ 
+section.SectionInformation.ProtectSection(“DataProtectionConfigurationProvider”);
+ 
+config.Save();
+ 
+}
+ 
+}
+ 
+//解密
+ 
+protected void Button2_Click(object sender, EventArgs e)
+ 
+{
+ 
+Configuration config = WebConfigurationManager.OpenWebConfiguration(Request.ApplicationPath);
+ 
+ConfigurationSection section = config.GetSection(“connectionStrings”);
+ 
+if (section != null && section.SectionInformation.IsProtected)
+ 
+{
+ 
+section.SectionInformation.UnprotectSection();
+ 
+config.Save();
+ 
+}
+ 
+}
+
+总结：此方法很方便，并且很简单，但安全性没有密钥加密高。
+
+方法二、
+
+使用“RSAProtectedConfigurationProvider”形式来加密
+
+test.aspx程序文件基本如上，
+
+把
+
+section.SectionInformation.ProtectSection(“DataProtectionConfigurationProvider”);
+
+改成
+
+section.SectionInformation.ProtectSection(“RSAProtectedConfigurationProvider”);
+
+但这个时候你访问网站的时候很有可能会出现
+
+说明:
+
+在处理向该请求提供服务所需的配置文件时出错。请检查下面的特定错误详细信息并适当地修改配置文件。
+
+分析器错误信息: 未能使用提供程序“RsaProtectedConfigurationProvider”进行解密。
+
+提供程序返回错误信息为: 打不开 RSA 密钥容器。
+
+这样的错误,解决方法是：
+
+进dos运行：aspnet_regiis -pa “NetFrameworkConfigurationKey”
+
+“NT AUTHORITY\NETWORK SERVICE”
+
+如果运行出错，需要把目录 C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727
+
+放入环境变量path中。此时就可以成功访问网站了。
+
+同样可以通过命令行来实现“RSAProtectedConfigurationProvider”加密
+
+注意：你也可以不运行 aspnet_regiis -pa “NetFrameworkConfigurationKey”
+
+“NT AUTHORITY\NETWORK SERVICE”命令来注册默认的
+
+RsaProtectedConfigurationProvider 的RSA 密钥容器
+
+方法如下：
+
+１）创建一个可导出的rsa密钥容器，命名为Key
+
+aspnet_regiis -pc “Key” -exp
+
+２）在你要加密的信息前面指定密钥容器，如：
+
+<configProtectedData>
+ 
+<providers>
+ 
+<clear />
+ 
+<add name=”KeyProvider”
+ 
+　　　　　 type=”System.Configuration.RsaProtectedConfigurationProvider, System.Configuration, Version=2.0.0.0,Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL”
+ 
+　　　　　 keyContainerName=”Key”
+ 
+　　　　　 useMachineContainer=”true”/>
+ 
+</providers>
+ 
+</configProtectedData>
+ 
+<connectionStrings>
+ 
+<add name=”SQLConnString” connectionString=”Data Source=yourIP;Initial Catalog=test;User Id=yourID;Password=yourPassword;”
+ 
+providerName=”System.Data.SqlClient” />
+</connectionStrings> 
+
+
+并且确保在configuration节的xmlns属性有如下值：
+
+
+３）对配置文件进行加密
+
+aspnet_regiis -pef “connectionStrings” “E:\project\Test” -prov “KeyProvider”
+
+参数分别为：需要加密的配置节、项目所在目录的物理路径、加密所使用的密钥容器名称
+
+再看web.config文件，就会发现connectionStrings节已经被加密了，但
+
+是运行程序会发现程序仍然可以正确访问数据库。
+
+此时，只需运行：
+
+aspnet_regiis -pdf “connectionStrings” “E:\project\Test”
+
+就可以对web.config文件进行解密。
+
+（注意，如果还是有错误，那可能是您没有给生成的密匙文件足够的权限，
+
+去到C:\Documents and Settings\All Users\Application Data\Microsoft\Crypto\RSA\MachineKeys
+
+目录下，找到刚生成的密匙文件，把network service用户的读取权限赋予给它，就可以了，
+
+直接用命令的话也可以：命令如下 aspnet_regiis -pa “Key” “NT AUTHORITY\NETWORK SERVICE” ，
+
+可能需要重新启动iis
+
+４）把密钥容器导出为xml文件
+
+aspnet_regiis -px “Key” “e:\Key.xml”
+
+这个命令只导出公钥，因此以后只能用于加密，而无法解密。
+
+aspnet_regiis -px “Key” “e:\Keys.xml” -pri
+
+这个则连私钥一起导出了，所以我们要用这个。
+
+５）把密钥容器删除
+
+aspnet_regiis -pz “Key”
+
+删除后再运行程序，会提示出错：
+
+分析器错误信息: 未能使用提供程序“KeyProvider”进行解密。
+
+提供程序返回错误信息为: 打不开 RSA 密钥容器。
+
+同理可以证明，在任何一台未安装正确的密钥容器Key的机器上，
+
+程序都无法对connectionStrings节进行解密，因此也就无法正常运行。
+
+６）导入key.xml文件
+
+aspnet_regiis -pi “Key” “e:\Keys.xml”
+
+此时，再运行程序会发现又可以解密了。证明加密与解密机制运行正常。
+
+最后说一下这个机制所提供的安全性保障可以运用在什么方面：
+
+对winform程序的app.config进行加密实际意义并不大，因为无论如何，
+
+客户机都可以通过运行aspnet_regiis -pdf 来对配置文件进行解密，从而暴露敏感信息。
+
+对于web.config进行加密的意义也仅限于，当web.config文件不小心泄露时，
+
+不会同时泄露敏感信息，如果恶意攻击者已经取得了在服务器上运行程序的权限，
+
+那么同app.config一样，可以很容易通过通过运行aspnet_regiis -pdf 获取明文了。
+
+还有，通过aspnet_regiis -pa “Key” “NT AUTHORITY\NETWORK SERVICE”
+
+控制对不同用户对密钥容器的访问权限，应该还可以进一步获取一些安全性，
+
+比如可以控制某些用户即使登录到服务器上，也无法用aspnet_regiis -pdf对配置文件进行解密。
+ 

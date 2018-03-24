@@ -1,0 +1,48 @@
+.editor_tb {
+	BORDER-BOTTOM: #ccc 1px; BORDER-LEFT: #999 1px solid; MARGIN: 5px 0px 0px; WIDTH: 600px; BACKGROUND: #efefef; HEIGHT: 26px; BORDER-TOP: #999 1px solid; BORDER-RIGHT: #ccc 1px solid
+}
+.editor_tb .right A {
+	COLOR: #000000
+}
+.editor_tb .right {
+	LINE-HEIGHT: 26px; PADDING-RIGHT: 10px
+}
+.editor_tb DIV A {
+	LINE-HEIGHT: 16px; TEXT-INDENT: -9999px; MARGIN: 5px 3px 0px; WIDTH: 16px; BACKGROUND: url(../../images/common/editor.gif) no-repeat; FLOAT: left; HEIGHT: 16px; OVERFLOW: hidden
+}
+.editor_tb DIV A.tb_bold {
+	BACKGROUND-POSITION: -3px -1px
+}
+.editor_tb DIV A.tb_color {
+	BACKGROUND-POSITION: -3px -81px
+}
+.editor_tb DIV A.tb_img {
+	BACKGROUND-POSITION: -3px -823px
+}
+.editor_tb DIV A.tb_link {
+	BACKGROUND-POSITION: -3px -121px
+}
+.editor_tb DIV A.tb_quote {
+	BACKGROUND-POSITION: -3px -441px
+}
+.editor_tb DIV A.tb_code {
+	BACKGROUND-POSITION: -3px -461px
+}
+.editor_tb DIV A.tb_smilies {
+	BACKGROUND-POSITION: -2px -803px
+}
+.editor_tb DIV A.tb_imme {
+	BACKGROUND-POSITION: -3px -763px
+}
+.editor_tb .popupmenu_popup TD {
+	PADDING-BOTTOM: 0px !important; PADDING-LEFT: 0px !important; WIDTH: 14px; PADDING-RIGHT: 0px !important; HEIGHT: 14px; PADDING-TOP: 0px !important
+}
+.editor_tb .popupmenu_popup TD DIV {
+	WIDTH: 10px; HEIGHT: 10px; CURSOR: pointer
+}
+.float_post .editor_tb {
+	WIDTH: 566px
+}
+.float_post .txtarea {
+	WIDTH: 562px; HEIGHT: 257px
+}

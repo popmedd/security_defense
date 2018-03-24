@@ -1,0 +1,15 @@
+webshell下查找所有IIS站点配置
+
+
+默认IIS站点配置文件有2个MBSchema.xm和MetaBase.xml,
+路径是C:\WINDOWS\system32\inetsrv\(一般这个目录设置的everyone读的权限.)
+MetaBase.xml这个文件是存的站点IIS配置的信息.里面可以查到所有本服务器IIS下设置的站点目录和配置。
+几个主要的配置有:
+ServerComment:我的网站 //站点的名称
+ServerBindings:80 //站点的端口
+Path="D:\wwwroot" //这里是站点的路径
+DefaultDoc="index.asp,index.php,index.htm,Default.htm,Default.asp,Default.aspx" //默认文档头,就是主页显示文件名
+ScriptMaps==".asa,C:\WINDOWS\syst..........." //站点支持的哪些脚本.
+
+还有就是看C:\WINDOWS\system32\inetsrv\History这个目录,这个目录里是对每次站点的IIS设置进行的备份.
+但这些都涉及到权限问题，如果权限默认设置严格就访问不了了。

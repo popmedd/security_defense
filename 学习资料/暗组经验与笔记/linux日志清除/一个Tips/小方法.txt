@@ -1,0 +1,23 @@
+cat /dev/null > logfile 把以下代码保存为.sh后缀脚本来运行即可清除Linux系统日志
+
+#!/bin/sh   
+cat /dev/null > /var/log/syslog   
+cat /dev/null > /var/adm/sylog   
+cat /dev/null > /var/log/wtmp   
+cat /dev/null > /var/log/maillog   
+cat /dev/null > /var/log/messages   
+cat /dev/null > /var/log/openwebmail.log   
+cat /dev/null > /var/log/maillog   
+cat /dev/null > /var/log/secure   
+cat /dev/null > /var/log/httpd/error_log  
+cat /dev/null > /var/log/httpd/ssl_error_log  
+cat /dev/null > /var/log/httpd/ssl_request_log   
+cat /dev/null > /var/log/httpd/ssl_access_log 
+
+另外清理linux系统垃圾还有以下命令
+
+sudo apt-get autoclean 清理旧版本的软件缓存
+
+sudo apt-get clean 清理所有软件缓存
+
+sudo apt-get autoremove 删除系统不再使用的孤立软件

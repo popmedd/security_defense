@@ -1,0 +1,17 @@
+1、dnswalk工具
+作用：dns排错工具
+路径：/pentest/enumeration/dns/dnswalk
+命令： ./dnswalk baidu.com.
+
+
+2、dnstracer
+作用：获取dns的记录
+命令： dnstracer koohik.com
+
+
+3、dnsenum
+作用：收集一个域的信息
+路径：/pentest/enumeration/dns/dnsenum
+命令：./dnsenum.pl koohik.com
+常用命令：./dnsenum.pl --enum -f dns.txt --update a -r remote 
+

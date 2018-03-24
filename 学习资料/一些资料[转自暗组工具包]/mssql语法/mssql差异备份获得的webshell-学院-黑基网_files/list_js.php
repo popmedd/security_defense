@@ -1,0 +1,1 @@
+document.write("<iframe name=\"vip2009\" src=\"/2009/vip.html\"  marginwidth=\"1\" marginheight=\"1\" scrolling=\"no\" border=\"0\" frameborder=\"0\" width=\"700\" height=\"1000\" onload=\"this.height=vip2009.document.body.scrollHeight\"></iframe>");

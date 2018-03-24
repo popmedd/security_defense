@@ -1,0 +1,38 @@
+启动oracle plus：
+sqlplus "sys/sid as sysdba"
+startup
+startup mount 
+关闭：shutdown immediat 立即关闭
+http://操作系统机器名:5560/sqlplus
+系统帐号：
+sys 以sysdba的身份登陆
+其他用户登陆：
+sqlplus scott/tiger
+sqlplus命令：
+help index帮助
+set sqlblanklines on开启空格行支持
+oracle 不区别大小写。
+column /col 给字段一个标签
+col id HEADING "编号"    // 编号是标签
+格式化输出：
+col id FORMAT A10 HEADING "学号"  //"A"字符格式，10个。FORMAT 在HEAING前面。
+
+all_tab_columns 存放所有列名
+user_tables 存放所有用户表名  table_name 字段名
+USER_TAB_COLUMNS    column_name 字段名
+ORDER BY 用于对查询到的结果进行排序输出
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

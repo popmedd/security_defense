@@ -1,0 +1,10 @@
+DOS下开3389 并修改端口号
+sc config termservice start= auto
+
+net start termservice
+
+//允许外连
+reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server" /v fDenyTSConnections /t REG_DWORD /d 0x0 /f 
+
+//该3389端口到80
+reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp" /v PortNumber /t REG_DWORD /d 80 /f

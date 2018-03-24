@@ -1,0 +1,11 @@
+public Function RSQL(strChar)
+        If strChar = "" or IsNull(strChar) Then RSQL = "":Exit Function
+        Dim strBadChar, arrBadChar, tempChar, I
+        strBadChar = "$,#,',%,^,&,?,(,),<,>,[,],{,},/,\,;,:," & Chr(34) & "," & Chr(0) & ""’注意这里过滤的是特殊字符    ‘Chr(34)对应的ASCII码是双引号。Chr(0)其实就是我们上传改包把空格（20）改成的00
+        arrBadChar = Split(strBadChar, ",")
+        tempChar = strChar
+        For I = 0 To UBound(arrBadChar)
+                tempChar = Replace(tempChar, arrBadChar(I), "")  ‘将特殊字符过滤为空
+        Next
+        RSQL = tempChar
+End Function

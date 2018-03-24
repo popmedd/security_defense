@@ -1,0 +1,33 @@
+1、查看本地网卡
+命令：ifconfig -a
+
+2、激活网卡
+命令：ifconfig eth0 up
+
+3、DHCP网络自动获取IP
+命令：dhclient eth0
+
+4、手动设置IP
+命令：ifconfig eth0 IP netmask 子网掩码
+
+5、设置网关
+命令：route add default gw 网关地址
+
+6、配置静态IP地址
+文件：/etc/network/interfaces
+设置参数：
+iface eth0 inet static
+address IP地址
+netmask 子网掩码
+gateway 网关地址
+
+7、DNS配置文件
+文件：/etc/resolv.conf
+
+8、汉化设置
+	apt-get install language-pack-gnome-zh language-pack-gnome-zh-base language-pack-zh language-pack-zh-base language-selector   
+	安装完成之后打开system>administration>language support
+	后面选择语言应用，大家都懂得，然后重启！
+
+9、安装deb软件	dpkg -i *.deb
+	

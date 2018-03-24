@@ -1,0 +1,4 @@
+1、apache的启动文件
+	/etc/init.d/httpd
+	/etc/init.d/apache
+	/etc/init.d/apache2

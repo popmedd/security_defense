@@ -1,0 +1,64 @@
+第一步 应该是快速的扫描判断
+这里面你需要了解一些网站的基本内容     1 网站的脚本类型
+                                      2 所用的整站系统
+                                     3 旁注------> 这里给出几个查询用的网站
+                                                 www.114best.com/
+                                                 www.seologs.com/ip_domains.html
+                                                  www.myipneighbors.com
+                                     4. 后台的猜解,管理员信息的搜索猜解
+
+第二步 正规化的踩点猜解    获取信息最简单的方法就是PING命令
+
+                            TTL=32     9X/ME
+
+                            TTL=64     LINUX
+
+                            TTL=128    2000X/XP
+
+                            TTL=255     UNIX
+
+虽然TTL值可以改,但去改的人估计中国的网管不超过1万人,这里面还有个TTL查询
+
+TTL=原来的TTL+经过的路由器个数,有时候我们会发现返回的TTL+66的这样的情况这样是因为其经过的路由器决定的,查看方法为命令TRACERT/TRACEROUTE(LINUX)
+
+                           获取/查找域名服务器信息
+
+                       Nslookup--------set query type =any --------待查询域名
+
+小技巧:当存在备份域名服务器的时候,我们利用其DNS区域传送的设置不当来进行对域名信息的查询 输入 SERVER (域名服务器)----------LS –D (待查域名)
+
+NBTSTAT 获得对方计算机名,工作组MAC   
+
+NBTSTAT –A IP/主机名
+
+NSLOOKUP 获得查询的节点名和IP地址的对应关系
+
+             NSLOOKUP 节点名/IP
+
+FINGER(LINUX) 远程连接开启了 FINGE服务的主机 (端口79)
+
+          FINGER 用户名@IP
+
+SSH(LINUX)    
+
+           SSH –L 登陆用户 IP
+
+WHOIS 可以获取注册邮箱等非常多有用的信息的命令
+
+WHOIS –H     WHOIS.INTERNIC.NET (默认)               IP
+
+               WHOIS.NETWORKSLATIONS.COM
+
+               WHOIS.ARIN.NET
+
+               WHOIS.APNIC.NET    (亚洲服务器)
+
+               WHOIS.RIPE.NET      (欧洲服务器)
+
+               WHOIS.NIC.GOV
+
+               WHOIS.NIC.MIL
+
+RPCINFO 探测(LINUX/UNIX)所提供的RPC服务 (111端口)
+
+          RPCINFO –P IP

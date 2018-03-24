@@ -1,0 +1,80 @@
+查询终端端口 
+开启XP&2003终端服务 
+更改终端端口为20008(0x4E28) 
+取消xp&2003系统防火墙对终端服务3389端口的限制及IP连接的限制 
+开启Win2000的终端，端口为3389(需重启) 
+强行重启Win2000&Win2003系统(注：执行完最后一条一句后将自动重启) 
+禁用TCP/IP端口筛选 (需重启) 
+终端超出最大连接数时可用下面的命令来连接 
+调整NTFS分区权限 
+ 
+
+    【注：以下命令全部为CMD命令，可在Telnet环境下执行】
+
+1.查询终端端口 (适用于XP专业版、2000服务器版与2003操作系统)：
+
+REG query HKLM\SYSTEM\CurrentControlSet\Control\Terminal" "Server\WinStations\RDP-Tcp /v PortNumber
+
+或以下命令：
+
+regedit /e tsp.reg "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal server\Wds\rdpwd\Tds\tcp"
+type tsp.reg
+
+2.开启XP&2003终端服务
+
+REG ADD HKLM\SYSTEM\CurrentControlSet\Control\Terminal" "Server /v fDenyTSConnections /t REG_DWORD /d 0 /f
+
+3.更改终端端口为20008 (0x4E28)
+
+REG ADD HKLM\SYSTEM\CurrentControlSet\Control\Terminal" "Server\Wds\rdpwd\Tds\tcp /v PortNumber /t REG_DWORD /d 0x4E28 /f
+
+REG ADD HKLM\SYSTEM\CurrentControlSet\Control\Terminal" "Server\WinStations\RDP-Tcp /v PortNumber /t REG_DWORD /d 0x4E28 /f
+
+4.取消xp&2003系统防火墙对终端服务3389端口的限制及IP连接的限制
+
+REG ADD HKLM\SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\StandardProfile\GloballyOpenPorts\List /v 3389:TCP /t REG_SZ /d 3389:TCP:*:Enabled:@xpsp2res.dll,-22009 /f
+
+5.开启Win2000的终端，端口为3389(需重启)
+
+echo Windows Registry Editor Version 5.00 >2000.reg 
+echo. >>2000.reg
+echo [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\netcache] >>2000.reg 
+echo "Enabled"="0" >>2000.reg 
+echo [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon] >>2000.reg 
+echo "ShutdownWithoutLogon"="0" >>2000.reg 
+echo [HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Installer] >>2000.reg 
+echo "EnableAdminTSRemote"=dword:00000001 >>2000.reg 
+echo [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server] >>2000.reg 
+echo "TSEnabled"=dword:00000001 >>2000.reg 
+echo [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\TermDD] >>2000.reg 
+echo "Start"=dword:00000002 >>2000.reg 
+echo [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\TermService] >>2000.reg 
+echo "Start"=dword:00000002 >>2000.reg 
+echo [HKEY_USERS\.DEFAULT\Keyboard Layout\Toggle] >>2000.reg 
+echo "Hotkey"="1" >>2000.reg 
+echo [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server\Wds\rdpwd\Tds\tcp] >>2000.reg 
+echo "PortNumber"=dword:00000D3D >>2000.reg 
+echo [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp] >>2000.reg 
+echo "PortNumber"=dword:00000D3D >>2000.reg
+
+6.强行重启Win2000&Win2003系统(执行完最后一条一句后自动重启)
+
+@ECHO OFF & cd/d %temp% & echo [version] > restart.inf
+(set inf=InstallHinfSection DefaultInstall)
+echo signature=$chicago$ >> restart.inf
+echo [defaultinstall] >> restart.inf
+rundll32 setupapi,%inf% 1 %temp%\restart.inf
+
+7.禁用TCP/IP端口筛选 (需重启)
+
+REG ADD HKLM\SYSTEM\ControlSet001\Services\Tcpip\parameters /v EnableSecurityFilters /t REG_DWORD /d 0 /f
+
+8.终端超出最大连接数时可用下面的命令来连接
+
+mstsc /v:ip:3389 /console
+
+9.调整NTFS分区权限
+
+cacls c: /e /t /g everyone:F     (所有人对c盘都有一切权利)
+
+cacls %systemroot%\system32\*.exe /d everyone     (拒绝所有人访问system32中exe文件)

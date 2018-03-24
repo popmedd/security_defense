@@ -1,0 +1,6 @@
+比较32位MD5.asp和40位MD5.asp文件时发现的，40位的加密是能找出规律的，我们还可以弄出48位的加密来。先看32位加密:MD5=LCase(WordToHex(a)&WordToHex(b)&WordToHex(c)&WordToHex(d))
+再看40位加密:MD5=LCase(WordToHex(c)&WordToHex(a)&WordToHex(b)&WordToHex(c)&WordToHex(d))
+32位加密用&连接4个变量，40位加密用&连接5个变量，这样以来每个变量就占用了加密密文里的8个位子，所以在破解是时候只要去掉前8位就可以了，不过这只是针对这一种加密的破解方法，我们还可以进行其他方式的40位MD5加密，比如说:MD5=LCase(WordToHex(a)&WordToHex(b)&WordToHex(c)&WordToHex(d)WordToHex(c))，这里我将WordToHex(c)变量移到了后面，那么这时我们再破解的时候就要去掉后8位来跑MD5了，其他的放中间或者是加倍的可以以此类推的得到结果，但前提是我们必须的知道连接变量的规律，也就是你看了40位加密的MD5.asp文件。下面看看普通的40位MD5加密和32位加密的区别吧:
+32位admin加密:21232f297a57a5a743894a0e4a801fc3
+40位admin加密:43894a0e21232f297a57a5a743894a0e4a801fc3
+大家可以对比下40位加密中的前8位是不是32位加密中的WordToHex(c)变量部分，以此类推如果我们再40位MD5加密前面再加上一个WordToHex(c)，那么加密的结果就成了48位的加密了。

